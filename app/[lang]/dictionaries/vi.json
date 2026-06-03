@@ -1,1 +1,146 @@
-{}
+{
+  "home": {
+    "cta": "Bấm vào đây"
+  },
+  "common": {
+    "dialog": {
+      "close": "Đóng"
+    },
+    "sortable": {
+      "dragStart": "Đã nhấc {{item}}, mục {{position}} trên {{total}}.",
+      "dragOver": "{{item}} đã di chuyển {{direction}} đến vị trí {{position}} trên {{total}}.",
+      "dragEnd": "{{item}} đã được thả tại vị trí {{position}} trên {{total}}.",
+      "dragEndNoChanges": "{{item}} đã được thả mà không đổi vị trí.",
+      "dragCancel": "Đã hủy kéo {{item}}, mục {{position}} trên {{total}}.",
+      "dragMove": "{{item}} đang di chuyển {{direction}} đến vị trí {{position}} trên {{total}}.",
+      "notOverDropzone": "Mục không nằm trên vùng thả.",
+      "direction": {
+        "up": "lên",
+        "down": "xuống",
+        "upAndDown": "lên và xuống",
+        "leftAndRight": "sang trái và phải",
+        "arrow": "bằng các phím mũi tên"
+      },
+      "instructions": {
+        "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {{direction}}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
+      }
+    }
+  },
+  "dataTable": {
+    "table": {
+      "noResults": "Không có kết quả."
+    },
+    "column": {
+      "asc": "Tăng dần",
+      "desc": "Giảm dần",
+      "reset": "Đặt lại",
+      "hide": "Ẩn"
+    },
+    "operator": {
+      "contains": "chứa",
+      "notContains": "không chứa",
+      "is": "là",
+      "isNot": "không là",
+      "isLessThan": "nhỏ hơn",
+      "isLessThanOrEqualTo": "nhỏ hơn hoặc bằng",
+      "isGreaterThan": "lớn hơn",
+      "isGreaterThanOrEqualTo": "lớn hơn hoặc bằng",
+      "isBetween": "trong khoảng",
+      "isBefore": "trước",
+      "isAfter": "sau",
+      "isOnOrBefore": "vào hoặc trước",
+      "isOnOrAfter": "vào hoặc sau",
+      "isRelativeToToday": "tương đối với hôm nay",
+      "isEmpty": "trống",
+      "isNotEmpty": "không trống",
+      "hasAnyOf": "có bất kỳ giá trị nào",
+      "hasNoneOf": "không có giá trị nào"
+    },
+    "pagination": {
+      "rowsSelected": "Đã chọn {{selected}} trong {{total}} hàng.",
+      "rowsPerPage": "Số hàng mỗi trang",
+      "pageXofY": "Trang {{current}} / {{total}}",
+      "goToFirstPage": "Đến trang đầu",
+      "goToPreviousPage": "Đến trang trước",
+      "goToNextPage": "Đến trang tiếp theo",
+      "goToLastPage": "Đến trang cuối"
+    },
+    "viewOptions": {
+      "toggleColumns": "Bật tắt cột",
+      "view": "Hiển thị",
+      "searchColumns": "Tìm cột...",
+      "noColumnsFound": "Không tìm thấy cột."
+    },
+    "toolbar": {
+      "reset": "Đặt lại"
+    },
+    "sort": {
+      "sort": "Sắp xếp",
+      "sortBy": "Sắp xếp theo",
+      "noSortingApplied": "Chưa áp dụng sắp xếp",
+      "modifySortingDescription": "Điều chỉnh quy tắc sắp xếp cho bảng này.",
+      "addSortingDescription": "Thêm quy tắc sắp xếp cho bảng này.",
+      "addSort": "Thêm sắp xếp",
+      "resetSorting": "Đặt lại sắp xếp",
+      "searchFields": "Tìm trường...",
+      "noFieldsFound": "Không tìm thấy trường."
+    },
+    "filter": {
+      "filter": "Lọc",
+      "filters": "Bộ lọc",
+      "where": "Điều kiện",
+      "from": "Từ",
+      "to": "Đến",
+      "clear": "Xóa",
+      "selected": "đã chọn",
+      "selectedCount": "Đã chọn {{count}}",
+      "true": "Đúng",
+      "false": "Sai",
+      "resetFilters": "Đặt lại bộ lọc",
+      "resetAllFilters": "Đặt lại tất cả bộ lọc",
+      "openFilterCommandMenu": "Mở menu lệnh lọc",
+      "noFiltersApplied": "Chưa áp dụng bộ lọc",
+      "modifyFiltersDescription": "Điều chỉnh bộ lọc cho bảng này.",
+      "addFiltersDescription": "Thêm bộ lọc để thu hẹp kết quả trong bảng.",
+      "addFilter": "Thêm bộ lọc",
+      "searchFields": "Tìm trường...",
+      "searchOptions": "Tìm tùy chọn...",
+      "noFieldsFound": "Không tìm thấy trường.",
+      "noOptionsFound": "Không tìm thấy tùy chọn.",
+      "noResultsFound": "Không tìm thấy kết quả.",
+      "typeToAddFilter": "Nhập để thêm bộ lọc",
+      "filterByValue": "Lọc theo \"{{value}}\"",
+      "selectField": "Chọn trường",
+      "selectOption": "Chọn tùy chọn",
+      "selectOptions": "Chọn tùy chọn",
+      "selectDate": "Chọn ngày",
+      "selectDateRange": "Chọn khoảng ngày",
+      "pickDate": "Chọn ngày",
+      "enterValue": "Nhập giá trị",
+      "clearFilter": "Xóa bộ lọc",
+      "clearFilters": "Xóa bộ lọc",
+      "clearSpecificFilter": "Xóa bộ lọc {{title}}",
+      "joinOperator": {
+        "and": "và",
+        "or": "hoặc"
+      },
+      "selectJoinOperator": "Chọn toán tử kết hợp",
+      "aria": {
+        "filterState": "Bộ lọc {{field}} đang {{state}}",
+        "empty": "trống",
+        "notEmpty": "không trống",
+        "filterValue": "Giá trị lọc cho {{field}}",
+        "minimumValue": "Giá trị nhỏ nhất cho {{field}}",
+        "maximumValue": "Giá trị lớn nhất cho {{field}}",
+        "booleanFilter": "Bộ lọc boolean cho {{field}}",
+        "selectFilter": "Bộ lọc lựa chọn cho {{field}}{{suffix}}",
+        "multipleSuffix": ", chọn nhiều",
+        "searchOptions": "Tìm tùy chọn cho {{field}}",
+        "dateFilter": "Bộ lọc ngày cho {{field}}",
+        "selectDateRange": "Chọn khoảng ngày cho {{field}}",
+        "selectDate": "Chọn ngày cho {{field}}",
+        "slider": "Khoảng giá trị {{title}}"
+      }
+    }
+  }
+}

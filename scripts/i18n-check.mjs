@@ -96,6 +96,7 @@ function sameArray(a, b) {
 function findTranslatorBindings(source) {
   const bindings = new Map()
   const patterns = [
+    /\b(?:const|let|var)\s+\{\s*t\s*(?::\s*([A-Za-z_$][\w$]*))?[\s\S]*?\}\s*=\s*useTranslation\(\s*\)/g,
     /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:await\s+)?(?:useTranslations|getTranslations)\(\s*['"`]([^'"`]+)['"`]\s*\)/g,
     /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:await\s+)?(?:useTranslations|getTranslations)\(\s*\{[\s\S]*?namespace\s*:\s*['"`]([^'"`]+)['"`][\s\S]*?\}\s*\)/g,
     /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:await\s+)?(?:useTranslations|getTranslations)\(\s*\)/g
@@ -103,7 +104,7 @@ function findTranslatorBindings(source) {
 
   for (const pattern of patterns) {
     for (const match of source.matchAll(pattern)) {
-      bindings.set(match[1], match[2] ?? '')
+      bindings.set(match[1] ?? 't', match[2] ?? '')
     }
   }
 
@@ -132,7 +133,13 @@ function findReferencedKeys(sourceFiles) {
       const callRegex = new RegExp(`\\b${name}(?:\\.(?:rich|markup|raw|has))?\\(\\s*['"\`]([^'"\`]+)['"\`]`, 'g')
 
       for (const match of source.matchAll(callRegex)) {
-        keys.add(namespace ? `${namespace}.${match[1]}` : match[1])
+        const key = namespace ? `${namespace}.${match[1]}` : match[1]
+        if (key.includes('${')) {
+          const prefix = key.slice(0, key.indexOf('${'))
+          if (prefix.includes('.')) templatePrefixes.add(prefix)
+        } else {
+          keys.add(key)
+        }
       }
 
       const dynamicCallRegex = new RegExp(`\\b${name}(?:\\.(?:rich|markup|raw|has))?\\(\\s*(?!['"\`])`, 'g')

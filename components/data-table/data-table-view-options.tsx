@@ -1,0 +1,62 @@
+import { Button } from '@/components/ui/button'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { cn } from '@/shared/utils'
+import { CheckIcon, Settings01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import type { Table } from '@tanstack/react-table'
+import * as React from 'react'
+
+interface DataTableViewOptionsProps<TData> extends React.ComponentProps<typeof PopoverContent> {
+  table: Table<TData>
+  disabled?: boolean
+}
+
+export function DataTableViewOptions<TData>({ table, disabled, ...props }: DataTableViewOptionsProps<TData>) {
+  const { t } = useTranslation()
+
+  const columns = React.useMemo(
+    () => table.getAllColumns().filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide()),
+    [table]
+  )
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          aria-label={t('dataTable.viewOptions.toggleColumns')}
+          role='combobox'
+          variant='outline'
+          size='sm'
+          className='ml-auto hidden font-normal lg:flex'
+          disabled={disabled}
+        >
+          <HugeiconsIcon icon={Settings01Icon} className='text-muted-foreground' />
+          {t('dataTable.viewOptions.view')}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className='w-44 p-0' {...props}>
+        <Command>
+          <CommandInput placeholder={t('dataTable.viewOptions.searchColumns')} />
+          <CommandList>
+            <CommandEmpty>{t('dataTable.viewOptions.noColumnsFound')}</CommandEmpty>
+            <CommandGroup>
+              {columns.map((column) => (
+                <CommandItem key={column.id} onSelect={() => column.toggleVisibility(!column.getIsVisible())}>
+                  <span className='truncate'>
+                    {column.columnDef.meta?.label ? t(column.columnDef.meta.label) : column.id}
+                  </span>
+                  <HugeiconsIcon
+                    icon={CheckIcon}
+                    className={cn('ml-auto size-4 shrink-0', column.getIsVisible() ? 'opacity-100' : 'opacity-0')}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  )
+}
