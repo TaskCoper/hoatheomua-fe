@@ -1,18 +1,33 @@
 {
-  "home": {
-    "cta": "Bấm vào đây"
+  "auth": {
+    "signIn": {
+      "title": "Đăng nhập",
+      "description": "Nhập thông tin tài khoản của bạn để tiếp tục.",
+      "email": "Email",
+      "emailPlaceholder": "example@gmail.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Nhập mật khẩu",
+      "submit": "Đăng nhập",
+      "signUpPrompt": "Chưa có tài khoản? Đăng ký"
+    }
   },
   "common": {
+    "validation": {
+      "required": "{field} là bắt buộc.",
+      "email": "Vui lòng nhập địa chỉ email hợp lệ.",
+      "minLength": "{field} phải có ít nhất {min} ký tự.",
+      "maxLength": "{field} không được vượt quá {max} ký tự."
+    },
     "dialog": {
       "close": "Đóng"
     },
     "sortable": {
-      "dragStart": "Đã nhấc {{item}}, mục {{position}} trên {{total}}.",
-      "dragOver": "{{item}} đã di chuyển {{direction}} đến vị trí {{position}} trên {{total}}.",
-      "dragEnd": "{{item}} đã được thả tại vị trí {{position}} trên {{total}}.",
-      "dragEndNoChanges": "{{item}} đã được thả mà không đổi vị trí.",
-      "dragCancel": "Đã hủy kéo {{item}}, mục {{position}} trên {{total}}.",
-      "dragMove": "{{item}} đang di chuyển {{direction}} đến vị trí {{position}} trên {{total}}.",
+      "dragStart": "Đã nhấc {item}, mục {position} trên {total}.",
+      "dragOver": "{item} đã di chuyển {direction} đến vị trí {position} trên {total}.",
+      "dragEnd": "{item} đã được thả tại vị trí {position} trên {total}.",
+      "dragEndNoChanges": "{item} đã được thả mà không đổi vị trí.",
+      "dragCancel": "Đã hủy kéo {item}, mục {position} trên {total}.",
+      "dragMove": "{item} đang di chuyển {direction} đến vị trí {position} trên {total}.",
       "notOverDropzone": "Mục không nằm trên vùng thả.",
       "direction": {
         "up": "lên",
@@ -22,7 +37,7 @@
         "arrow": "bằng các phím mũi tên"
       },
       "instructions": {
-        "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {{direction}}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
+        "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {direction}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
       }
     }
   },
@@ -57,9 +72,9 @@
       "hasNoneOf": "không có giá trị nào"
     },
     "pagination": {
-      "rowsSelected": "Đã chọn {{selected}} trong {{total}} hàng.",
+      "rowsSelected": "Đã chọn {selected} trong {total} hàng.",
       "rowsPerPage": "Số hàng mỗi trang",
-      "pageXofY": "Trang {{current}} / {{total}}",
+      "pageXofY": "Trang {current} / {total}",
       "goToFirstPage": "Đến trang đầu",
       "goToPreviousPage": "Đến trang trước",
       "goToNextPage": "Đến trang tiếp theo",
@@ -93,7 +108,7 @@
       "to": "Đến",
       "clear": "Xóa",
       "selected": "đã chọn",
-      "selectedCount": "Đã chọn {{count}}",
+      "selectedCount": "Đã chọn {count}",
       "true": "Đúng",
       "false": "Sai",
       "resetFilters": "Đặt lại bộ lọc",
@@ -109,7 +124,7 @@
       "noOptionsFound": "Không tìm thấy tùy chọn.",
       "noResultsFound": "Không tìm thấy kết quả.",
       "typeToAddFilter": "Nhập để thêm bộ lọc",
-      "filterByValue": "Lọc theo \"{{value}}\"",
+      "filterByValue": "Lọc theo \"{value}\"",
       "selectField": "Chọn trường",
       "selectOption": "Chọn tùy chọn",
       "selectOptions": "Chọn tùy chọn",
@@ -119,27 +134,27 @@
       "enterValue": "Nhập giá trị",
       "clearFilter": "Xóa bộ lọc",
       "clearFilters": "Xóa bộ lọc",
-      "clearSpecificFilter": "Xóa bộ lọc {{title}}",
+      "clearSpecificFilter": "Xóa bộ lọc {title}",
       "joinOperator": {
         "and": "và",
         "or": "hoặc"
       },
       "selectJoinOperator": "Chọn toán tử kết hợp",
       "aria": {
-        "filterState": "Bộ lọc {{field}} đang {{state}}",
+        "filterState": "Bộ lọc {field} đang {state}",
         "empty": "trống",
         "notEmpty": "không trống",
-        "filterValue": "Giá trị lọc cho {{field}}",
-        "minimumValue": "Giá trị nhỏ nhất cho {{field}}",
-        "maximumValue": "Giá trị lớn nhất cho {{field}}",
-        "booleanFilter": "Bộ lọc boolean cho {{field}}",
-        "selectFilter": "Bộ lọc lựa chọn cho {{field}}{{suffix}}",
+        "filterValue": "Giá trị lọc cho {field}",
+        "minimumValue": "Giá trị nhỏ nhất cho {field}",
+        "maximumValue": "Giá trị lớn nhất cho {field}",
+        "booleanFilter": "Bộ lọc boolean cho {field}",
+        "selectFilter": "Bộ lọc lựa chọn cho {field}{suffix}",
         "multipleSuffix": ", chọn nhiều",
-        "searchOptions": "Tìm tùy chọn cho {{field}}",
-        "dateFilter": "Bộ lọc ngày cho {{field}}",
-        "selectDateRange": "Chọn khoảng ngày cho {{field}}",
-        "selectDate": "Chọn ngày cho {{field}}",
-        "slider": "Khoảng giá trị {{title}}"
+        "searchOptions": "Tìm tùy chọn cho {field}",
+        "dateFilter": "Bộ lọc ngày cho {field}",
+        "selectDateRange": "Chọn khoảng ngày cho {field}",
+        "selectDate": "Chọn ngày cho {field}",
+        "slider": "Khoảng giá trị {title}"
       }
     }
   }

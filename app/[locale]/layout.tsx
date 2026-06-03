@@ -1,10 +1,11 @@
 import { Toaster } from '@/components/ui/sonner'
-import { DictionaryProvider } from '@/lib/i18n/dictionary-provider'
+import { routing } from '@/lib/i18n/routing'
 import ReactQueryProvider from '@/lib/react-query'
 import type { Metadata } from 'next'
+import { hasLocale, NextIntlClientProvider } from 'next-intl'
+import { setRequestLocale } from 'next-intl/server'
 import { Be_Vietnam_Pro } from 'next/font/google'
 import { notFound } from 'next/navigation'
-import { getDictionary, hasLocale } from './dictionaries'
 
 import '../globals.css'
 
@@ -19,32 +20,35 @@ export const metadata: Metadata = {
 }
 
 export async function generateStaticParams() {
-  return [{ lang: 'vi' }, { lang: 'en' }]
+  return routing.locales.map((locale) => ({ locale }))
 }
 
 export default async function RootLayout({
   children,
+  modal,
   params
 }: {
   children: React.ReactNode
-  params: Promise<{ lang: string }>
+  modal: React.ReactNode
+  params: Promise<{ locale: string }>
 }) {
-  const { lang } = await params
-  if (!hasLocale(lang)) {
+  const { locale } = await params
+  if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
 
-  const dictionary = await getDictionary(lang)
+  setRequestLocale(locale)
 
   return (
-    <html lang={lang} className={`${beVietnamPro.className} h-full antialiased`}>
+    <html lang={locale} className={`${beVietnamPro.className} h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
-        <DictionaryProvider locale={lang} dictionary={dictionary}>
+        <NextIntlClientProvider>
           <ReactQueryProvider>
             {children}
+            {modal}
             <Toaster position='top-center' duration={2000} />
           </ReactQueryProvider>
-        </DictionaryProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

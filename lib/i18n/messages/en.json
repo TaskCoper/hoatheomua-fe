@@ -1,18 +1,33 @@
 {
-  "home": {
-    "cta": "Click me"
+  "auth": {
+    "signIn": {
+      "title": "Sign in",
+      "description": "Enter your account details to continue.",
+      "email": "Email",
+      "emailPlaceholder": "example@gmail.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Sign in",
+      "signUpPrompt": "Don't have an account? Sign up"
+    }
   },
   "common": {
+    "validation": {
+      "required": "{field} is required.",
+      "email": "Please enter a valid email address.",
+      "minLength": "{field} must be at least {min} characters.",
+      "maxLength": "{field} must be no more than {max} characters."
+    },
     "dialog": {
       "close": "Close"
     },
     "sortable": {
-      "dragStart": "Picked up {{item}}, item {{position}} of {{total}}.",
-      "dragOver": "{{item}} moved {{direction}} to position {{position}} of {{total}}.",
-      "dragEnd": "{{item}} dropped at position {{position}} of {{total}}.",
-      "dragEndNoChanges": "{{item}} dropped with no position change.",
-      "dragCancel": "Cancelled dragging {{item}}, item {{position}} of {{total}}.",
-      "dragMove": "{{item}} moving {{direction}} to position {{position}} of {{total}}.",
+      "dragStart": "Picked up {item}, item {position} of {total}.",
+      "dragOver": "{item} moved {direction} to position {position} of {total}.",
+      "dragEnd": "{item} dropped at position {position} of {total}.",
+      "dragEndNoChanges": "{item} dropped with no position change.",
+      "dragCancel": "Cancelled dragging {item}, item {position} of {total}.",
+      "dragMove": "{item} moving {direction} to position {position} of {total}.",
       "notOverDropzone": "Item is not over a drop zone.",
       "direction": {
         "up": "up",
@@ -22,7 +37,7 @@
         "arrow": "with the arrow keys"
       },
       "instructions": {
-        "draggable": "Press space to pick up the item, then move it {{direction}}. Press space again to drop it, or escape to cancel."
+        "draggable": "Press space to pick up the item, then move it {direction}. Press space again to drop it, or escape to cancel."
       }
     }
   },
@@ -57,9 +72,9 @@
       "hasNoneOf": "has none of"
     },
     "pagination": {
-      "rowsSelected": "{{selected}} of {{total}} row(s) selected.",
+      "rowsSelected": "{selected} of {total} row(s) selected.",
       "rowsPerPage": "Rows per page",
-      "pageXofY": "Page {{current}} of {{total}}",
+      "pageXofY": "Page {current} of {total}",
       "goToFirstPage": "Go to first page",
       "goToPreviousPage": "Go to previous page",
       "goToNextPage": "Go to next page",
@@ -93,7 +108,7 @@
       "to": "To",
       "clear": "Clear",
       "selected": "selected",
-      "selectedCount": "{{count}} selected",
+      "selectedCount": "{count} selected",
       "true": "True",
       "false": "False",
       "resetFilters": "Reset filters",
@@ -109,7 +124,7 @@
       "noOptionsFound": "No options found.",
       "noResultsFound": "No results found.",
       "typeToAddFilter": "Type to add a filter",
-      "filterByValue": "Filter by \"{{value}}\"",
+      "filterByValue": "Filter by \"{value}\"",
       "selectField": "Select field",
       "selectOption": "Select option",
       "selectOptions": "Select options",
@@ -119,27 +134,27 @@
       "enterValue": "Enter a value",
       "clearFilter": "Clear filter",
       "clearFilters": "Clear filters",
-      "clearSpecificFilter": "Clear {{title}} filter",
+      "clearSpecificFilter": "Clear {title} filter",
       "joinOperator": {
         "and": "and",
         "or": "or"
       },
       "selectJoinOperator": "Select join operator",
       "aria": {
-        "filterState": "{{field}} filter is {{state}}",
+        "filterState": "{field} filter is {state}",
         "empty": "empty",
         "notEmpty": "not empty",
-        "filterValue": "Filter value for {{field}}",
-        "minimumValue": "Minimum value for {{field}}",
-        "maximumValue": "Maximum value for {{field}}",
-        "booleanFilter": "Boolean filter for {{field}}",
-        "selectFilter": "Select filter for {{field}}{{suffix}}",
+        "filterValue": "Filter value for {field}",
+        "minimumValue": "Minimum value for {field}",
+        "maximumValue": "Maximum value for {field}",
+        "booleanFilter": "Boolean filter for {field}",
+        "selectFilter": "Select filter for {field}{suffix}",
         "multipleSuffix": ", multiple selection",
-        "searchOptions": "Search options for {{field}}",
-        "dateFilter": "Date filter for {{field}}",
-        "selectDateRange": "Select date range for {{field}}",
-        "selectDate": "Select date for {{field}}",
-        "slider": "{{title}} range"
+        "searchOptions": "Search options for {field}",
+        "dateFilter": "Date filter for {field}",
+        "selectDateRange": "Select date range for {field}",
+        "selectDate": "Select date for {field}",
+        "slider": "{title} range"
       }
     }
   }
