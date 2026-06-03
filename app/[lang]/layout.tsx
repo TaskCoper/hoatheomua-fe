@@ -1,4 +1,6 @@
+import { Toaster } from '@/components/ui/sonner'
 import { DictionaryProvider } from '@/lib/i18n/dictionary-provider'
+import ReactQueryProvider from '@/lib/react-query'
 import type { Metadata } from 'next'
 import { Be_Vietnam_Pro } from 'next/font/google'
 import { notFound } from 'next/navigation'
@@ -38,7 +40,10 @@ export default async function RootLayout({
     <html lang={lang} className={`${beVietnamPro.className} h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
         <DictionaryProvider locale={lang} dictionary={dictionary}>
-          {children}
+          <ReactQueryProvider>
+            {children}
+            <Toaster position='top-center' duration={2000} />
+          </ReactQueryProvider>
         </DictionaryProvider>
       </body>
     </html>
