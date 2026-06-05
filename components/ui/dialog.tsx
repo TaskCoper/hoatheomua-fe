@@ -4,8 +4,7 @@ import { Dialog as DialogPrimitive } from 'radix-ui'
 import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { cn } from '@/lib/utils'
+import { cn } from '@/shared/utils'
 import { Cancel01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
@@ -30,7 +29,7 @@ function DialogOverlay({ className, ...props }: React.ComponentProps<typeof Dial
     <DialogPrimitive.Overlay
       data-slot='dialog-overlay'
       className={cn(
-        'backdrop-blur-xs fixed inset-0 isolate z-50 bg-black/30 duration-100 supports-backdrop-filter:backdrop-blur-sm data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0',
+        'fixed inset-0 isolate z-50 bg-black/30 duration-100 supports-backdrop-filter:backdrop-blur-sm data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0',
         className
       )}
       {...props}
@@ -46,8 +45,6 @@ function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
 }) {
-  const { t } = useTranslation()
-
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -64,7 +61,7 @@ function DialogContent({
           <DialogPrimitive.Close data-slot='dialog-close' asChild>
             <Button variant='ghost' className='absolute top-4 right-4 bg-secondary' size='icon-sm'>
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
-              <span className='sr-only'>{t('common.dialog.close')}</span>
+              <span className='sr-only'>Close</span>
             </Button>
           </DialogPrimitive.Close>
         )}
@@ -85,8 +82,6 @@ function DialogFooter({
 }: React.ComponentProps<'div'> & {
   showCloseButton?: boolean
 }) {
-  const { t } = useTranslation()
-
   return (
     <div
       data-slot='dialog-footer'
@@ -96,7 +91,7 @@ function DialogFooter({
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
-          <Button variant='outline'>{t('common.dialog.close')}</Button>
+          <Button variant='outline'>Close</Button>
         </DialogPrimitive.Close>
       )}
     </div>

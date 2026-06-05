@@ -13,13 +13,9 @@
   },
   "common": {
     "validation": {
-      "required": "{field} is required.",
       "email": "Please enter a valid email address.",
       "minLength": "{field} must be at least {min} characters.",
       "maxLength": "{field} must be no more than {max} characters."
-    },
-    "dialog": {
-      "close": "Close"
     },
     "sortable": {
       "dragStart": "Picked up {item}, item {position} of {total}.",

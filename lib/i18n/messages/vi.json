@@ -13,13 +13,9 @@
   },
   "common": {
     "validation": {
-      "required": "{field} là bắt buộc.",
       "email": "Vui lòng nhập địa chỉ email hợp lệ.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
       "maxLength": "{field} không được vượt quá {max} ký tự."
-    },
-    "dialog": {
-      "close": "Đóng"
     },
     "sortable": {
       "dragStart": "Đã nhấc {item}, mục {position} trên {total}.",

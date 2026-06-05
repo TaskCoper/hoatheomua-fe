@@ -4,14 +4,21 @@ import ReactQueryProvider from '@/lib/react-query'
 import type { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import { Be_Vietnam_Pro } from 'next/font/google'
+import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google'
 import { notFound } from 'next/navigation'
 
 import '../globals.css'
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['400', '500', '600', '700'],
-  subsets: ['latin']
+  subsets: ['latin'],
+  variable: '--font-sans'
+})
+
+const playfairDisplay = Playfair_Display({
+  weight: ['400', '500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+  variable: '--font-title'
 })
 
 export const metadata: Metadata = {
@@ -40,7 +47,7 @@ export default async function RootLayout({
   setRequestLocale(locale)
 
   return (
-    <html lang={locale} className={`${beVietnamPro.className} h-full antialiased`}>
+    <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
         <NextIntlClientProvider>
           <ReactQueryProvider>
