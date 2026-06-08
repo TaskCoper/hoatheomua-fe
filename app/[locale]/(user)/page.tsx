@@ -20,21 +20,21 @@ export default function HomePage() {
 
       <ShopFreshFlowersSection />
 
-      <div className='mx-auto w-full max-w-7xl xl:px-0 px-4 relative'>
+      <div className='mx-auto w-full max-w-7xl px-4 mt-4 sm:mt-6 md:mt-8 lg:mt-10'>
         <Image
           src={bannerOne}
           alt='Banner'
-          className='w-full h-auto rounded-4xl shadow-lg border-2 border-secondary/80'
+          className='w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-secondary/80'
         />
       </div>
 
       <SignatureBouquetsSection />
 
-      <div className='mx-auto w-full max-w-7xl relative mt-16 mb-6 xl:px-0 px-4'>
+      <div className='mx-auto w-full max-w-7xl px-4 mt-4 sm:mt-6 md:mt-8 lg:mt-10'>
         <Image
           src={saleBanner}
           alt='Banner'
-          className='w-full h-auto rounded-4xl shadow-lg border-2 border-primary/5'
+          className='w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-primary/5'
         />
       </div>
 

@@ -39,8 +39,8 @@ export default function Footer() {
         <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6'>
           <div className='space-y-2 lg:col-span-4'>
             <Image src={logo} alt='Logo' className='h-24 w-auto sm:h-28 lg:h-32' />
-            <p className='text-lg font-bold sm:text-xl'>CÔNG TY TNHH HOA THEO MÙA</p>
-            <div className='space-y-2 text-sm leading-relaxed text-foreground sm:text-base'>
+            <p className='text-base sm:text-lg font-bold'>CÔNG TY TNHH HOA THEO MÙA</p>
+            <div className='space-y-2 text-xs sm:text-sm leading-relaxed text-foreground'>
               <p>
                 <span className='font-semibold'>Hoa Theo Mùa</span> - Hệ thống hoa tươi online tại TP. Hồ Chí Minh
                 chuyên cung cấp các dịch vụ hoa tươi & giao hoa tận nơi siêu nhanh trong 2 giờ.
@@ -64,12 +64,12 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className='space-y-3 lg:col-span-3 lg:space-y-4'>
-            <h2 className='text-lg font-bold text-primary sm:text-xl'>CHÍNH SÁCH</h2>
-            <ul className='space-y-2 text-sm text-foreground sm:text-base'>
+          <div className='space-y-2 lg:col-span-3'>
+            <h2 className='text-sm sm:text-base font-bold text-primary'>CHÍNH SÁCH</h2>
+            <ul className='space-y-2 text-xs sm:text-sm text-foreground'>
               {POLICIES.map((policy) => (
-                <li key={policy} className='flex items-start gap-2'>
-                  <span className='mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
+                <li key={policy} className='flex items-center gap-2'>
+                  <span className='inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
                   <a href='#' className='transition-colors hover:text-primary'>
                     {policy}
                   </a>
@@ -78,12 +78,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className='space-y-3 lg:col-span-2 lg:space-y-4'>
-            <h2 className='text-lg font-bold text-primary sm:text-xl'>SẢN PHẨM NỔI BẬT</h2>
-            <ul className='space-y-2 text-sm text-foreground sm:text-base'>
+          <div className='space-y-2 lg:col-span-2'>
+            <h2 className='text-sm sm:text-base font-bold text-primary'>SẢN PHẨM NỔI BẬT</h2>
+            <ul className='space-y-2 text-xs sm:text-sm text-foreground'>
               {FEATURED_PRODUCTS.map((product) => (
-                <li key={product} className='flex items-start gap-2'>
-                  <span className='mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
+                <li key={product} className='flex items-center gap-2'>
+                  <span className='inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
                   <a href='#' className='transition-colors hover:text-primary'>
                     {product}
                   </a>
@@ -92,8 +92,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className='space-y-3 lg:col-span-3 lg:space-y-4'>
-            <h2 className='text-lg font-bold text-primary sm:text-xl'>BẢN ĐỒ</h2>
+          <div className='space-y-2 lg:col-span-3'>
+            <h2 className='text-sm sm:text-base font-bold text-primary'>BẢN ĐỒ</h2>
             <div className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md'>
               <iframe
                 src='https://www.google.com/maps?q=13A+Dao+Duy+Anh,+Phu+Nhuan,+Ho+Chi+Minh&output=embed'

@@ -35,12 +35,13 @@ const FLOATING_PETALS: Array<{
   const id = index + 1
   const duration = 32 + seededRandom(id + 20) * 24
   const direction = seededRandom(id + 90) > 0.5 ? 1 : -1
+  const baseSize = 10 + seededRandom(id + 40) * 6
 
   return {
     id,
     src: PETAL_IMAGES[index % PETAL_IMAGES.length],
     left: `${Math.min(98, (index / (PETAL_COUNT - 1)) * 100 + (seededRandom(id) - 0.5) * 2.5).toFixed(2)}%`,
-    size: `${(10 + seededRandom(id + 40) * 6).toFixed(2)}rem`,
+    size: `clamp(${(baseSize * 0.4).toFixed(2)}rem, ${(baseSize * 1.5).toFixed(2)}vw, ${baseSize.toFixed(2)}rem)`,
     duration: `${duration.toFixed(2)}s`,
     delay: `${(-seededRandom(id + 60) * duration).toFixed(2)}s`,
     drift: `${(-5 + seededRandom(id + 80) * 10).toFixed(2)}rem`,

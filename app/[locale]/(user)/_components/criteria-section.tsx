@@ -39,26 +39,28 @@ const CRITERIAS = [
 
 export default function CriteriaSection() {
   return (
-    <div className='w-full bg-secondary flex items-center relative py-8 lg:py-0 lg:h-56'>
+    <div className='w-full bg-secondary flex items-center relative py-4 lg:py-10'>
       <Image
         src={leftBranch}
         alt='Cành lá trang trí'
-        className='wind-wiggle-left h-3/4 w-auto absolute -left-4 top-1/2 -translate-y-1/2 opacity-70 hidden xl:block'
+        className='wind-wiggle-left h-3/4 w-auto absolute -left-4 top-1/2 -translate-y-1/2 opacity-70 hidden lg:block'
       />
 
-      <div className='mx-auto grid w-full max-w-7xl grid-cols-6 gap-x-4 gap-y-10 px-4 z-10 lg:flex lg:h-full lg:items-center lg:justify-between lg:gap-0 xl:px-0 *:col-span-2 [&>*:nth-child(4)]:col-start-2'>
+      <div className='mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 z-10 sm:grid sm:grid-cols-6 sm:gap-x-4 sm:gap-y-4 sm:*:col-span-2 sm:[&>*:nth-child(4)]:col-start-2 lg:grid-cols-5 lg:gap-x-10 lg:*:col-span-1 lg:[&>*:nth-child(4)]:col-start-auto'>
         {CRITERIAS.map((criteria) => (
           <div
             key={criteria.id}
-            className='flex flex-col items-center text-center space-y-1.5 sm:space-y-2 lg:items-start lg:text-left'
+            className='flex w-full flex-row gap-2 items-center sm:flex-col sm:text-center lg:text-left lg:items-start'
           >
-            <div className='p-2 sm:p-2.5 rounded-full flex justify-center items-center bg-primary w-fit shadow-lg'>
-              <HugeiconsIcon icon={criteria.icon} className='size-5 sm:size-6 lg:size-7.5 text-white' />
+            <div className='p-1.5 rounded-full flex justify-center items-center bg-primary w-fit shadow-lg'>
+              <HugeiconsIcon icon={criteria.icon} className='size-5 sm:size-6 md:size-7 text-white' />
             </div>
 
             <div className='-space-y-0.5'>
-              <p className='font-semibold text-foreground text-sm sm:text-base'>{criteria.label}</p>
-              <p className='text-[0.625rem] sm:text-xs text-foreground/80'>{criteria.description}</p>
+              <p className='font-semibold text-foreground text-xs sm:text-sm lg:text-base line-clamp-1'>
+                {criteria.label}
+              </p>
+              <p className='text-[0.625rem] text-foreground/80 line-clamp-1'>{criteria.description}</p>
             </div>
           </div>
         ))}
@@ -67,7 +69,7 @@ export default function CriteriaSection() {
       <Image
         src={rightBranch}
         alt='Cành lá trang trí'
-        className='wind-wiggle-right h-3/4 w-auto absolute -right-4 top-1/2 -translate-y-1/2 opacity-70 hidden xl:block'
+        className='wind-wiggle-right h-3/4 w-auto absolute -right-4 top-1/2 -translate-y-1/2 opacity-70 hidden lg:block'
       />
     </div>
   )
