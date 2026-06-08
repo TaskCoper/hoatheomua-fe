@@ -8,28 +8,28 @@ const WHY_CHOOSE_FEATURES = [
     title: 'Sản Phẩm Tươi',
     description:
       'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững.',
-    className: 'lg:left-16 lg:top-18 xl:left-180 xl:top-22'
+    className: 'lg:left-16 lg:top-18 xl:left-24 xl:top-22'
   },
   {
     number: '02',
     title: '100% Tự Nhiên',
     description:
       'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững.',
-    className: 'lg:-right-2 lg:top-18 xl:right-170 xl:top-22'
+    className: 'lg:-right-2 lg:top-18 xl:right-20 xl:top-22 2xl:right-18 2xl:top-22'
   },
   {
     number: '03',
     title: 'Chăm Sóc Tận Tâm',
     description:
       'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế.',
-    className: 'lg:left-28 lg:bottom-18 xl:left-200 xl:bottom-22'
+    className: 'lg:left-28 lg:bottom-18 xl:left-50 xl:bottom-22 2xl:left-52 2xl:bottom-22'
   },
   {
     number: '04',
     title: 'Hoàn Tiền Đảm Bảo',
     description:
       'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế.',
-    className: 'lg:right-10 lg:bottom-18 xl:right-180 xl:bottom-22'
+    className: 'lg:right-10 lg:bottom-18 xl:right-20 xl:bottom-22 2xl:right-28 2xl:bottom-22'
   }
 ]
 
@@ -62,11 +62,11 @@ export default function WhyChooseUsSection() {
         </p>
       </div>
 
-      <section className='relative w-full lg:h-[40rem] lg:overflow-hidden xl:h-[44rem] 2xl:h-[48rem]'>
+      <section className='relative mx-auto w-full max-w-7xl lg:h-160 lg:overflow-hidden xl:h-176 2xl:h-192'>
         <Image
           src={banner}
           alt='Bó hoa tươi'
-          className='mx-auto h-64 w-auto max-w-none object-contain lg:absolute lg:left-1/2 lg:top-0 lg:h-[40rem] lg:-translate-x-1/2 xl:h-[44rem] 2xl:h-[48rem]'
+          className='mx-auto h-64 w-auto max-w-none object-contain lg:absolute lg:left-1/2 lg:top-0 lg:h-160 lg:-translate-x-1/2 xl:h-176 2xl:h-192'
           priority
         />
 
