@@ -28,37 +28,37 @@ const SIGNATURE_BOUQUETS = [
 export default function SignatureBouquetsSection() {
   return (
     <>
-      <div className='mt-8 mb-12 space-y-2 overflow-hidden px-4 sm:mt-10 sm:mb-16 sm:space-y-4 lg:space-y-6'>
-        <div className='mx-auto w-full max-w-7xl space-y-2 sm:space-y-4 lg:space-y-6'>
-          <div className='flex items-center justify-center gap-2 sm:gap-3 lg:gap-4'>
+      <div className='my-4 sm:my-6 md:my-8 lg:my-10 space-y-2 overflow-hidden px-4'>
+        <div className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'>
+          <div className='flex items-center justify-start sm:justify-center gap-3'>
             <SparkleDivider
-              className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-              iconClassName='size-4 sm:size-5 lg:size-7'
+              className='min-w-0 max-w-96 flex-1 hidden sm:flex'
+              iconClassName='sm:size-5 md:size-6 lg:size-7'
               color='#516c6c'
             />
 
-            <h1 className='shrink-0 text-center font-title text-2xl font-bold sm:text-3xl lg:text-4xl'>
+            <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
               Bó Hoa Đặc Trưng
             </h1>
 
             <SparkleDivider
-              className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-              iconClassName='size-4 sm:size-5 lg:size-7'
+              className='min-w-0 max-w-96 flex-1 hidden sm:flex'
+              iconClassName='sm:size-5 md:size-6 lg:size-7'
               direction='rtl'
               color='#516c6c'
             />
           </div>
 
-          <p className='mx-auto max-w-[50rem] text-center text-sm leading-relaxed text-foreground/80 sm:text-base'>
+          <p className='leading-relaxed mx-auto max-w-full sm:max-w-140 md:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground/80'>
             Được cắm thủ công tỉ mỉ bởi những nghệ nhân chuyên nghiệp với các loài hoa tươi mới nhất, mỗi bó hoa của
             chúng tôi đều mang đến vẻ đẹp, hương thơm và ấn tượng khó quên cho mọi dịp.
           </p>
         </div>
       </div>
 
-      <section className='relative left-1/2 w-screen -translate-x-1/2 bg-background'>
-        <div className='mx-auto grid w-full max-w-7xl gap-8 px-4 sm:px-5 lg:grid-cols-[22rem_1fr] lg:gap-20'>
-          <div className='space-y-2 pt-1 text-sm text-muted-foreground sm:space-y-3 sm:text-base lg:space-y-4'>
+      <section className='relative left-1/2 -translate-x-1/2 bg-background'>
+        <div className='mx-auto grid w-full max-w-7xl gap-4 px-4 lg:grid-cols-12'>
+          <div className='flex flex-col gap-2 items-center lg:items-start text-sm text-muted-foreground lg:col-span-5'>
             {SIGNATURE_FLOWERS.map((flower, index) => {
               const isActive = index === 2
 
@@ -67,9 +67,9 @@ export default function SignatureBouquetsSection() {
                   key={flower}
                   type='button'
                   className={[
-                    'block max-w-full rounded-xl px-3 py-2 text-left transition-colors',
+                    'block w-full sm:w-fit rounded-xl px-3 py-2 text-center lg:text-left text-xs sm:text-sm transition-colors',
                     isActive
-                      ? 'bg-card font-bold text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108_/_12%)]'
+                      ? 'bg-card font-bold text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)]'
                       : 'hover:text-primary'
                   ].join(' ')}
                 >
@@ -79,42 +79,52 @@ export default function SignatureBouquetsSection() {
             })}
           </div>
 
-          <div className='grid gap-8 sm:grid-cols-2 sm:gap-10 xl:grid-cols-3 xl:gap-x-14 xl:gap-y-14'>
-            {SIGNATURE_BOUQUETS.map((bouquet, index) => (
-              <article
-                key={bouquet.id}
-                className={[
-                  'relative flex h-60 flex-col justify-between rounded-2xl bg-card p-4 shadow-[0_0.8rem_2rem_rgb(81_108_108_/_7%)] sm:h-66 sm:p-5',
-                  index === 0 ? 'ring-1 ring-primary' : ''
-                ].join(' ')}
-              >
-                <div className='flex flex-1 items-center justify-center'>
-                  <Image
-                    src={flowerImage}
-                    alt=''
-                    className={`h-32 w-auto object-contain sm:h-40 ${bouquet.imageClassName}`}
-                    loading='lazy'
-                  />
-                </div>
+          <div className='grid gap-4 sm:gap-6 md:gap-8 lg:gap-10 grid-cols-2 lg:col-span-7 xl:grid-cols-3'>
+            {SIGNATURE_BOUQUETS.map((bouquet, index) => {
+              const isActive = index === 0
 
-                <div className='flex items-end justify-between gap-4'>
-                  <div className='min-w-0'>
-                    <h2 className='truncate text-base font-bold leading-tight text-foreground sm:text-lg'>
-                      {bouquet.name}
-                    </h2>
-                    <p className='text-xs font-medium text-foreground'>{bouquet.price}</p>
-                  </div>
+              return (
+                <article key={bouquet.id} className={['relative h-60', isActive ? 'rounded-[1.75rem]' : ''].join(' ')}>
+                  {isActive ? (
+                    <div
+                      aria-hidden='true'
+                      className='pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-[1.9rem] border border-primary'
+                    />
+                  ) : null}
 
-                  <button
-                    type='button'
-                    className='grid size-8 shrink-0 place-items-center rounded-full border border-foreground bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground sm:size-9'
-                    aria-label={`Thêm ${bouquet.name} vào giỏ`}
+                  <div
+                    className={[
+                      'relative z-10 flex h-full flex-col justify-between rounded-[1.75rem] bg-card p-4 shadow-[0_0.8rem_2rem_rgb(81_108_108_/_7%)]',
+                      isActive ? 'rounded-[1.75rem] bg-white shadow-[0_1rem_2.5rem_rgb(81_108_108_/_16%)]' : ''
+                    ].join(' ')}
                   >
-                    <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                  </button>
-                </div>
-              </article>
-            ))}
+                    <div className='flex flex-1 items-center justify-center'>
+                      <Image
+                        src={flowerImage}
+                        alt=''
+                        className={`h-32 w-auto object-contain ${bouquet.imageClassName}`}
+                        loading='lazy'
+                      />
+                    </div>
+
+                    <div className='flex items-end justify-between gap-4'>
+                      <div className='min-w-0'>
+                        <h2 className='truncate text-base font-bold leading-tight text-foreground'>{bouquet.name}</h2>
+                        <p className='text-xs font-medium text-foreground'>{bouquet.price}</p>
+                      </div>
+
+                      <button
+                        type='button'
+                        className='grid size-8 shrink-0 place-items-center rounded-full border border-foreground bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground'
+                        aria-label={`Thêm ${bouquet.name} vào giỏ`}
+                      >
+                        <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              )
+            })}
           </div>
         </div>
       </section>
