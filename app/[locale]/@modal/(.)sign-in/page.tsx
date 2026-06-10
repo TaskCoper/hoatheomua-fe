@@ -35,8 +35,6 @@ export default function SignInModalPage() {
     }
   }
 
-  // Name
-
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent showCloseButton={false} onInteractOutside={() => handleOpenChange(false)}>
