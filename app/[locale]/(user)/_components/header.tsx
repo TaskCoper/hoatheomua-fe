@@ -5,7 +5,13 @@ import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import logo from '@/public/images/logo.png'
 import vine from '@/public/images/vine.png'
-import { LoginCircle01Icon, Menu01Icon, Search01Icon, ShoppingBasket03Icon } from '@hugeicons/core-free-icons'
+import {
+  LoginCircle01Icon,
+  Menu01Icon,
+  RegisteredIcon,
+  Search01Icon,
+  ShoppingBasket03Icon
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -112,6 +118,13 @@ export default function Header() {
             </Link>
           </Button>
 
+          <Button asChild>
+            <Link href='/sign-up'>
+              {t('auth.signUp.title')}
+              <HugeiconsIcon icon={RegisteredIcon} />
+            </Link>
+          </Button>
+
           <Button
             variant='outline'
             size='icon-sm'
@@ -174,6 +187,15 @@ export default function Header() {
                   <Link href='/sign-in'>
                     {t('auth.signIn.title')}
                     <HugeiconsIcon icon={LoginCircle01Icon} />
+                  </Link>
+                </Button>
+              </SheetClose>
+
+              <SheetClose asChild>
+                <Button asChild className='w-full'>
+                  <Link href='/sign-up'>
+                    {t('auth.signUp.title')}
+                    <HugeiconsIcon icon={RegisteredIcon} />
                   </Link>
                 </Button>
               </SheetClose>

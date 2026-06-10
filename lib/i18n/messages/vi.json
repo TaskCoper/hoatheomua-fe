@@ -9,6 +9,22 @@
       "passwordPlaceholder": "Nhập mật khẩu",
       "submit": "Đăng nhập",
       "signUpPrompt": "Chưa có tài khoản? Đăng ký"
+    },
+    "signUp": {
+      "title": "Đăng ký",
+      "description": "Tạo tài khoản để bắt đầu.",
+      "firstName": "Tên",
+      "firstNamePlaceholder": "Nhập tên của bạn",
+      "lastName": "Họ",
+      "lastNamePlaceholder": "Nhập họ của bạn",
+      "email": "Email",
+      "emailPlaceholder": "example@gmail.com",
+      "password": "Mật khẩu",
+      "passwordPlaceholder": "Nhập mật khẩu",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+      "submit": "Đăng ký",
+      "signUpPrompt": "Đã có tài khoản? Đăng nhập"
     }
   },
   "error": {
@@ -29,8 +45,11 @@
     },
     "validation": {
       "email": "Vui lòng nhập địa chỉ email hợp lệ.",
+      "required": "{field} là bắt buộc.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
-      "maxLength": "{field} không được vượt quá {max} ký tự."
+      "maxLength": "{field} không được vượt quá {max} ký tự.",
+      "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái, 1 chữ số và 1 ký tự đặc biệt.",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp."
     },
     "sortable": {
       "dragStart": "Đã nhấc {item}, mục {position} trên {total}.",

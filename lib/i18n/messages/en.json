@@ -9,6 +9,22 @@
       "passwordPlaceholder": "Enter your password",
       "submit": "Sign in",
       "signUpPrompt": "Don't have an account? Sign up"
+    },
+    "signUp": {
+      "title": "Sign up",
+      "description": "Create your account to get started.",
+      "firstName": "First name",
+      "firstNamePlaceholder": "Enter your first name",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Enter your last name",
+      "email": "Email",
+      "emailPlaceholder": "example@gmail.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Re-enter your password",
+      "submit": "Sign up",
+      "signUpPrompt": "Already have an account? Sign in"
     }
   },
   "error": {
@@ -29,8 +45,11 @@
     },
     "validation": {
       "email": "Please enter a valid email address.",
+      "required": "{field} is required.",
       "minLength": "{field} must be at least {min} characters.",
-      "maxLength": "{field} must be no more than {max} characters."
+      "maxLength": "{field} must be no more than {max} characters.",
+      "passwordStrength": "Password must contain at least 1 letter, 1 number, and 1 special character.",
+      "passwordMismatch": "Confirm password does not match."
     },
     "sortable": {
       "dragStart": "Picked up {item}, item {position} of {total}.",
