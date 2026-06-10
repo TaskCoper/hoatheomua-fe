@@ -1,6 +1,14 @@
 'use client'
 
 import { environmentManager, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import { ErrorResponse } from './axios'
+
+declare module '@tanstack/react-query' {
+  interface Register {
+    defaultError: AxiosError<ErrorResponse>
+  }
+}
 
 function makeQueryClient() {
   return new QueryClient({

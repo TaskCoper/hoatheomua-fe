@@ -33,6 +33,11 @@ const NAV_ITEMS = [
     href: '/news'
   },
   {
+    id: 250,
+    label: 'Tuyển dụng',
+    href: '/careers'
+  },
+  {
     id: 300,
     label: 'Liên hệ',
     href: '/contact'

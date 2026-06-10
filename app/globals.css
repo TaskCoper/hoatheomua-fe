@@ -1,3 +1,6 @@
+@import '../styles/_variables.scss';
+@import '../styles/_keyframe-animations.scss';
+
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
@@ -249,5 +252,25 @@
   }
   78% {
     transform: translate3d(-0.1rem, 0.05rem, 0) rotate(0.9deg) skewX(0.7deg);
+  }
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  @apply text-muted-foreground;
+  content: attr(data-placeholder);
+  float: left;
+  font-size: 0.875rem;
+  font-weight: 400;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  a {
+    cursor: pointer;
   }
 }

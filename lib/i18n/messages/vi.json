@@ -11,7 +11,22 @@
       "signUpPrompt": "Chưa có tài khoản? Đăng ký"
     }
   },
+  "error": {
+    "somethingWentWrong": "Đã xảy ra lỗi"
+  },
   "common": {
+    "ui": {
+      "more": "Thêm",
+      "uploading": "Đang tải lên...",
+      "pleaseWait": "Vui lòng chờ",
+      "uploadSuccess": "Tải lên thành công"
+    },
+    "button": {
+      "clearAll": "Xóa tất cả"
+    },
+    "error": {
+      "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về"
+    },
     "validation": {
       "email": "Vui lòng nhập địa chỉ email hợp lệ.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
@@ -35,6 +50,82 @@
       "instructions": {
         "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {direction}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
       }
+    }
+  },
+  "richTextEditor": {
+    "placeholder": "Nhập nội dung...",
+    "attachFile": "Đính kèm tệp",
+    "strikethrough": "Gạch ngang",
+    "inlineCode": "Mã nội tuyến",
+    "heading": {
+      "label": "Tiêu đề",
+      "ariaLabel": "Định dạng thành tiêu đề",
+      "heading1": "Tiêu đề 1",
+      "heading2": "Tiêu đề 2",
+      "heading3": "Tiêu đề 3",
+      "heading4": "Tiêu đề 4",
+      "heading5": "Tiêu đề 5",
+      "heading6": "Tiêu đề 6"
+    },
+    "mark": {
+      "bold": "In đậm",
+      "italic": "In nghiêng",
+      "strike": "Gạch ngang",
+      "code": "Mã nội tuyến"
+    },
+    "list": {
+      "label": "Danh sách",
+      "ariaLabel": "Định dạng thành danh sách",
+      "bulletList": "Danh sách gạch đầu dòng",
+      "orderedList": "Danh sách đánh số",
+      "taskList": "Danh sách công việc"
+    },
+    "link": {
+      "label": "Liên kết",
+      "ariaLabel": "Thêm hoặc sửa liên kết",
+      "placeholder": "Dán liên kết...",
+      "applyLink": "Áp dụng liên kết",
+      "openInNewWindow": "Mở trong cửa sổ mới",
+      "removeLink": "Xóa liên kết"
+    },
+    "image": {
+      "label": "Hình ảnh"
+    },
+    "imageUpload": {
+      "clickToUpload": "Nhấn để tải lên",
+      "orDragAndDrop": "hoặc kéo và thả",
+      "maximumFiles": "Tối đa {count} tệp, mỗi tệp {sizeMb}MB.",
+      "uploadingFiles": "Đang tải lên {count} tệp",
+      "errors": {
+        "noFileSelected": "Chưa chọn tệp"
+      }
+    },
+    "blockquote": {
+      "label": "Trích dẫn"
+    },
+    "codeBlock": {
+      "label": "Khối mã"
+    }
+  },
+  "careers": {
+    "eyebrow": "Tuyển dụng",
+    "title": "Đồng hành cùng Hoa Theo Mùa",
+    "description": "Chia sẻ hồ sơ của bạn và cho chúng tôi biết bạn muốn đóng góp thế nào cho đội ngũ hoa theo mùa.",
+    "form": {
+      "name": "Họ và tên",
+      "namePlaceholder": "Nguyễn Văn A",
+      "email": "Email",
+      "emailPlaceholder": "ban@example.com",
+      "role": "Vị trí mong muốn",
+      "rolePlaceholder": "Florist, tư vấn bán hàng, vận hành...",
+      "coverLetter": "Thư ứng tuyển",
+      "coverLetterPlaceholder": "Chia sẻ kinh nghiệm, vị trí mong muốn và lý do bạn muốn đồng hành cùng Hoa Theo Mùa.",
+      "submit": "Gửi ứng tuyển",
+      "submitted": "Đã gửi bản nháp ứng tuyển"
+    },
+    "preview": {
+      "title": "Xem trước hồ sơ",
+      "empty": "Nội dung thư ứng tuyển sẽ hiển thị tại đây."
     }
   },
   "dataTable": {
