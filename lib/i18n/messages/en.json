@@ -1,6 +1,7 @@
 {
   "auth": {
     "signIn": {
+      "label": "Sign in",
       "title": "Sign in",
       "description": "Enter your account details to continue.",
       "email": "Email",
@@ -26,6 +27,16 @@
       "submit": "Sign up",
       "signUpPrompt": "Already have an account? Sign in"
     }
+  },
+  "account": {
+    "account": "Account",
+    "language": "Language",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "language": {
+    "english": "English",
+    "vietnamese": "Vietnamese"
   },
   "error": {
     "somethingWentWrong": "Something went wrong"

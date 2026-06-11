@@ -2,7 +2,10 @@
 
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useGetMe } from '@/features/auth/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { usePathname } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
 import vine from '@/public/images/vine.png'
 import {
@@ -15,7 +18,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import NavUser from './nav-user'
 
 const NAV_ITEMS = [
   {
@@ -51,6 +54,8 @@ const NAV_ITEMS = [
 ]
 
 export default function Header() {
+  const { isAuthenticated, me, isGettingMe } = useGetMe()
+
   const { t } = useTranslation()
   const pathname = usePathname()
 
@@ -111,28 +116,29 @@ export default function Header() {
         </nav>
 
         <div className='hidden items-center gap-2 lg:flex lg:justify-self-end'>
-          <Button asChild>
-            <Link href='/sign-in'>
-              {t('auth.signIn.title')}
-              <HugeiconsIcon icon={LoginCircle01Icon} />
-            </Link>
-          </Button>
+          {isGettingMe ? (
+            <Skeleton className='h-9 w-32 rounded-full' />
+          ) : isAuthenticated ? (
+            <>
+              <NavUser user={me} />
 
-          <Button asChild>
-            <Link href='/sign-up'>
-              {t('auth.signUp.title')}
-              <HugeiconsIcon icon={RegisteredIcon} />
-            </Link>
-          </Button>
-
-          <Button
-            variant='outline'
-            size='icon-sm'
-            className='border-none ring ring-primary ring-inset'
-            aria-label='Mở giỏ hàng'
-          >
-            <HugeiconsIcon icon={ShoppingBasket03Icon} />
-          </Button>
+              <Button
+                variant='outline'
+                size='icon-sm'
+                className='border-none ring ring-primary ring-inset'
+                aria-label='Mở giỏ hàng'
+              >
+                <HugeiconsIcon icon={ShoppingBasket03Icon} />
+              </Button>
+            </>
+          ) : (
+            <Button asChild>
+              <Link href='/sign-in'>
+                {t('auth.signIn.title')}
+                <HugeiconsIcon icon={LoginCircle01Icon} />
+              </Link>
+            </Button>
+          )}
 
           <Button
             variant='outline'

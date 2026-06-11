@@ -1,13 +1,11 @@
-import config from '@/shared/config'
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 
 interface ApiResponse {
   isSuccess: boolean
-  isFailure: boolean
-  error: {
-    code: string
-    message: string
-  }
+  isFailed: boolean
+  error: unknown
+  traceId: string
+  timestampUtc: string
 }
 
 export interface BaseResponse<T> extends ApiResponse {
@@ -30,19 +28,14 @@ export interface ErrorResponse {
   status: number
   detail: string
   messageCode: string
-  errors: Record<string, unknown>[] | null
+  errors: {
+    detail: string
+  }
+  traceId: string
+  timestampUtc: string
 }
 
-const PUBLIC_ROUTE_PATHS = new Set([
-  '/',
-  '/commissions',
-  '/forgot-password',
-  '/redirect',
-  '/sign-in',
-  '/sign-up',
-  '/terms-of-service',
-  '/privacy-policy'
-])
+const PUBLIC_ROUTE_PATHS = new Set(['/', '/sign-in', '/sign-up', '/verify', '/verify-sent'])
 
 const SUPPORTED_LOCALES = ['vi', 'en'] as const
 const DEFAULT_LOCALE = 'vi'
@@ -89,7 +82,7 @@ const getCurrentTimezone = () => {
 }
 
 export const api = axios.create({
-  baseURL: `${config.baseURL}/api`,
+  baseURL: '/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -128,7 +121,7 @@ api.interceptors.request.use((config) => {
 const refreshAccessToken = async (): Promise<boolean> => {
   try {
     await axios.post(
-      `${config.baseURL}/api/v1/users/refresh_token`,
+      '/api/v1/auth/refresh',
       {},
       {
         withCredentials: true,
@@ -145,7 +138,7 @@ const refreshAccessToken = async (): Promise<boolean> => {
     const error = err as AxiosError<ErrorResponse>
 
     // If refresh token is invalid
-    if (error.response?.data?.messageCode === 'InvalidRefreshToken') {
+    if (error.response?.data?.messageCode === 'EXPIRED_REFRESH_TOKEN') {
       // TODO: clear all zustand persisted states here
       const isOnPublicRoute = isPublicRoutePath(window.location.pathname)
 
@@ -179,8 +172,8 @@ api.interceptors.response.use(
     const messageCode = (error.response?.data as ErrorResponse)?.messageCode
 
     const isExpiredAccessToken =
-      status === 401 && (messageCode === 'ExpiredAccessToken' || messageCode === 'MissingAccessToken')
-    const isRefreshRequest = originalRequest.url?.includes('/users/refresh_token')
+      status === 401 && (messageCode === 'EXPIRED_ACCESS_TOKEN' || messageCode === 'MISSING_ACCESS_TOKEN')
+    const isRefreshRequest = originalRequest.url?.includes('/auth/refresh')
 
     if (!originalRequest || !isExpiredAccessToken || isRefreshRequest) {
       return Promise.reject(error)
