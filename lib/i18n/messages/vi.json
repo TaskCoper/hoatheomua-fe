@@ -63,6 +63,7 @@
       "required": "{field} là bắt buộc.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
       "maxLength": "{field} không được vượt quá {max} ký tự.",
+      "phoneNumber": "Vui lòng nhập số điện thoại hợp lệ.",
       "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái, 1 chữ số và 1 ký tự đặc biệt.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp."
     },
@@ -139,6 +140,49 @@
     },
     "codeBlock": {
       "label": "Khối mã"
+    }
+  },
+  "contact": {
+    "eyebrow": "Tiệm hoa theo mùa",
+    "header": "Gửi gắm điều bạn muốn nói",
+    "subHeader": "Hãy để chúng tôi giúp bạn biến cảm xúc, lời chúc và những dịp đặc biệt thành một thiết kế hoa thật tinh tế.",
+    "title": "Để mỗi bó hoa kể một câu chuyện riêng",
+    "description": "Chia sẻ điều bạn muốn gửi gắm, Hoa Theo Mùa sẽ cùng bạn biến cảm xúc ấy thành một thiết kế hoa thật riêng.",
+    "links": {
+      "instagram": "Instagram",
+      "instagramValue": "@hoatheomua",
+      "email": "Email",
+      "emailValue": "hello@hoatheomua.vn",
+      "phone": "Điện thoại",
+      "phoneValue": "+84 90 123 4567",
+      "address": "Studio",
+      "addressValue": "Thành phố Hồ Chí Minh",
+      "communityValue": "Cộng đồng Hoa Theo Mùa"
+    },
+    "form": {
+      "eyebrow": "Biểu mẫu liên hệ",
+      "title": "Liên hệ với chúng tôi",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "email": "Email",
+      "emailPlaceholder": "ban@example.com",
+      "phoneNumber": "Số điện thoại",
+      "phoneNumberPlaceholder": "901 234 567",
+      "topic": "Chủ đề",
+      "topicPlaceholder": "Chọn chủ đề",
+      "topics": {
+        "general": "Tư vấn chung",
+        "customBouquet": "Bó hoa theo yêu cầu",
+        "eventFlowers": "Hoa sự kiện",
+        "deliverySupport": "Hỗ trợ giao hàng"
+      },
+      "message": "Nội dung",
+      "messagePlaceholder": "Chia sẻ dịp tặng, thời gian, phong cách và loài hoa bạn yêu thích.",
+      "agreement": "Tôi đồng ý được liên hệ lại về yêu cầu này.",
+      "agreementRequired": "Vui lòng đồng ý được liên hệ trước khi gửi lời nhắn.",
+      "submit": "Gửi lời nhắn",
+      "submitting": "Đang gửi...",
+      "submitted": "Đã gửi bản nháp lời nhắn."
     }
   },
   "careers": {
