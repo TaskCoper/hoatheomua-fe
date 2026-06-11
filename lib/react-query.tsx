@@ -14,6 +14,36 @@ function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
+        throwOnError: (error) => {
+          if (error.response?.status === 401) {
+            if (
+              // If access token is expired => axios interceptors
+              // If access token is invalid => layout will handle it
+              error.response.data.messageCode === 'MISSING_ACCESS_TOKEN' ||
+              error.response.data.messageCode === 'EXPIRED_ACCESS_TOKEN' ||
+              error.response.data.messageCode === 'EXPIRED_REFRESH_TOKEN'
+            ) {
+              return false
+            }
+          }
+
+          return true
+        },
+        refetchOnWindowFocus: false,
+        retry: (failureCount, error) => {
+          // Don't retry on 400/401/403/404/500
+          if (
+            error.response?.status === 400 ||
+            error.response?.status === 401 ||
+            error.response?.status === 403 ||
+            error.response?.status === 404 ||
+            error.response?.status === 500
+          )
+            return false
+
+          return failureCount < 1
+        },
+        retryDelay: 3000,
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
         staleTime: 60 * 1000

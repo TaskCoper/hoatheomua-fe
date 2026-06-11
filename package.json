@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -13,6 +13,8 @@
     "i18n:check": "node scripts/i18n-check.mjs --check",
     "i18n:unused": "node scripts/i18n-check.mjs --unused",
     "i18n:unused:fix": "node scripts/i18n-check.mjs --unused --fix",
+    "i18n:fill": "node scripts/i18n-check.mjs --fill",
+    "i18n:dupes": "node scripts/i18n-check.mjs --dupes",
     "i18n:verify": "pnpm run i18n:lint && pnpm run i18n:check",
     "check": "pnpm run lint && pnpm run i18n:verify && pnpm run typecheck"
   },

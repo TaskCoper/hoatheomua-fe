@@ -1,6 +1,7 @@
+const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '')
+
 const config = {
-  baseURL: process.env.API_BASE_URL as string,
-  baseFileUrl: process.env.FILE_BASE_URL as string
+  baseFileUrl: trimTrailingSlash(process.env.NEXT_PUBLIC_FILE_BASE_URL ?? '')
 } as const
 
 export default config

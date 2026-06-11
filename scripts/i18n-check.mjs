@@ -14,6 +14,8 @@ const args = new Set(process.argv.slice(2))
 const runLint = args.size === 0 || args.has('--lint') || args.has('--check')
 const runUndefined = args.size === 0 || args.has('--check')
 const runUnused = args.has('--unused')
+const runFill = args.has('--fill')
+const runDupes = args.has('--dupes')
 const fix = args.has('--fix')
 
 function walk(dir, out = []) {
@@ -53,6 +55,22 @@ function flattenMessages(value, prefix = '') {
   }
 
   return messages
+}
+
+function setKey(obj, path, value) {
+  const parts = path.split('.')
+  let node = obj
+
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i]
+    if (typeof node[part] !== 'object' || node[part] === null || Array.isArray(node[part])) {
+      node[part] = {}
+    }
+    node = node[part]
+  }
+
+  const leaf = parts[parts.length - 1]
+  if (!(leaf in node)) node[leaf] = value
 }
 
 function deleteKey(obj, path) {
@@ -284,6 +302,60 @@ if (runUnused) {
     } else {
       console.log('\nRun again with --fix to delete these keys from all locale files.')
       failed = true
+    }
+  }
+}
+
+if (runFill) {
+  const missingInPrimary = [...referencedKeys].sort().filter((key) => !primary.messages.has(key))
+
+  for (const key of missingInPrimary) {
+    const leaf = key.split('.').pop()
+    setKey(primary.json, key, leaf)
+  }
+
+  const primaryAfterFill = flattenMessages(primary.json)
+
+  for (const [locale, { json }] of locales) {
+    if (locale === PRIMARY_LOCALE) continue
+
+    for (const [key, value] of primaryAfterFill) {
+      setKey(json, key, value)
+    }
+  }
+
+  for (const { file, json } of locales.values()) {
+    const path = join(MESSAGES_DIR, file)
+    writeFileSync(path, `${JSON.stringify(json, null, 2)}\n`)
+    console.log(`Wrote ${relative(ROOT, path)}`)
+  }
+
+  console.log(`\nAdded ${missingInPrimary.length} missing keys to ${PRIMARY_LOCALE}.json.`)
+  if (missingInPrimary.length > 0) {
+    console.log('Stubbed values (review and translate):')
+    for (const key of missingInPrimary) console.log(`  ${key}`)
+  }
+}
+
+if (runDupes) {
+  for (const [locale, { messages }] of locales) {
+    const byValue = new Map()
+    for (const [key, value] of messages) {
+      if (typeof value !== 'string') continue
+      if (!byValue.has(value)) byValue.set(value, [])
+      byValue.get(value).push(key)
+    }
+
+    const groups = [...byValue.entries()].filter(([, keys]) => keys.length > 1)
+    if (groups.length === 0) {
+      console.log(`${locale}.json: no duplicate values.`)
+      continue
+    }
+
+    console.log(`\n${locale}.json duplicate values (${groups.length} groups):`)
+    for (const [value, keys] of groups) {
+      console.log(`  "${value}"`)
+      for (const key of keys) console.log(`    - ${key}`)
     }
   }
 }
