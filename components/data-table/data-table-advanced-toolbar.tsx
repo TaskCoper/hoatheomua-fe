@@ -3,8 +3,6 @@ import { cn } from '@/shared/utils'
 import type { Table } from '@tanstack/react-table'
 import type * as React from 'react'
 
-// Hello
-
 interface DataTableAdvancedToolbarProps<TData> extends React.ComponentProps<'div'> {
   table: Table<TData>
 }
