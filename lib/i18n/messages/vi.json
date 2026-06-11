@@ -1,6 +1,7 @@
 {
   "auth": {
     "signIn": {
+      "label": "Đăng nhập",
       "title": "Đăng nhập",
       "description": "Nhập thông tin tài khoản của bạn để tiếp tục.",
       "email": "Email",
@@ -9,7 +10,23 @@
       "passwordPlaceholder": "Nhập mật khẩu",
       "submit": "Đăng nhập",
       "signUpPrompt": "Chưa có tài khoản? Đăng ký"
+    },
+    "signUp": {
+      "label": "Đăng ký"
+    },
+    "signOut": {
+      "submit": "Đăng xuất"
     }
+  },
+  "account": {
+    "account": "Tài khoản",
+    "language": "Ngôn ngữ",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "language": {
+    "english": "Tiếng Anh",
+    "vietnamese": "Tiếng Việt"
   },
   "error": {
     "somethingWentWrong": "Đã xảy ra lỗi"

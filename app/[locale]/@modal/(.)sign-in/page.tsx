@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import SignInProvider from '@/features/auth/components/sign-in-provider'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { useRouter } from '@/lib/i18n/navigation'
+import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { LockPasswordIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useRef, useState } from 'react'
@@ -12,8 +12,12 @@ const EXIT_ANIMATION_MS = 220
 
 export default function SignInModalPage() {
   const router = useRouter()
+  const pathname = usePathname()
   const { t } = useTranslation()
-  const [isOpen, setIsOpen] = useState(true)
+  const [isUserClosing, setIsUserClosing] = useState(false)
+
+  const isOnSignInRoute = pathname.startsWith('/sign-in')
+  const isOpen = isOnSignInRoute && !isUserClosing
 
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -25,14 +29,13 @@ export default function SignInModalPage() {
     }
   }, [])
 
-  const handleOpenChange = (isOpen: boolean) => {
-    setIsOpen(isOpen)
+  const handleOpenChange = (open: boolean) => {
+    if (open || closeTimeoutRef.current) return
 
-    if (!isOpen && !closeTimeoutRef.current) {
-      closeTimeoutRef.current = setTimeout(() => {
-        router.back()
-      }, EXIT_ANIMATION_MS)
-    }
+    setIsUserClosing(true)
+    closeTimeoutRef.current = setTimeout(() => {
+      router.back()
+    }, EXIT_ANIMATION_MS)
   }
 
   return (

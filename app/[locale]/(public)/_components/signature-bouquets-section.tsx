@@ -5,15 +5,15 @@ import Image from 'next/image'
 import { SparkleDivider } from './sparkle-dividier'
 
 const SIGNATURE_FLOWERS = [
-  'Peony — Paeonia lactiflora',
-  'Orchid — Phalaenopsis Amabilis',
-  'Calla Lily — Zantedeschia aethiopica',
-  'Lily of the Valley — Convallaria Majalis',
-  'Bird of Paradise — Strelitzia Reginae',
-  'Hyacinth — Hyacinthus Orientalis',
-  'Tulip (Premium Varieties) — Tulipa gesneriana',
-  'Garden Rose (David Austin) — Rosa × Hybrida',
-  'Anemone — Anemone Coronaria'
+  'Mẫu Đơn — Paeonia lactiflora',
+  'Hồ Điệp — Phalaenopsis Amabilis',
+  'Hoa Loa Kèn — Zantedeschia aethiopica',
+  'Linh Lan — Convallaria Majalis',
+  'Thiên Điểu — Strelitzia Reginae',
+  'Dạ Lan Hương — Hyacinthus Orientalis',
+  'Tulip (Giống Cao Cấp) — Tulipa gesneriana',
+  'Hồng Vườn (David Austin) — Rosa × Hybrida',
+  'Phong Quỳ — Anemone Coronaria'
 ]
 
 const SIGNATURE_BOUQUETS = [

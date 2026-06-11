@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { FormProvider, SubmitHandler } from 'react-hook-form'
@@ -10,10 +11,10 @@ import SignInForm from './sign-in-form'
 
 export default function SignInProvider() {
   const { t } = useTranslation()
-  const { methods } = useSignIn()
+  const { methods, signIn, isSigningIn } = useSignIn()
 
   const onSubmit: SubmitHandler<SignInFormValues> = (body) => {
-    console.log(body)
+    signIn({ body })
   }
 
   return (
@@ -23,7 +24,11 @@ export default function SignInProvider() {
           <SignInForm />
 
           <div className='space-y-1'>
-            <Button className='w-full'>{t('auth.signIn.submit')}</Button>
+            <Button className='w-full' disabled={isSigningIn}>
+              {isSigningIn ? <Spinner /> : null}
+              {t('auth.signIn.submit')}
+            </Button>
+
             <Link href='/sign-up' className='block text-center text-sm text-muted-foreground'>
               <Button variant='link'>{t('auth.signIn.signUpPrompt')}</Button>
             </Link>
