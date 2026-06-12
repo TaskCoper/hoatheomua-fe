@@ -12,12 +12,13 @@
       "signUpPrompt": "Chưa có tài khoản? Đăng ký"
     },
     "signUp": {
+      "label": "Đăng ký",
       "title": "Đăng ký",
       "description": "Tạo tài khoản để bắt đầu.",
       "firstName": "Tên",
-      "firstNamePlaceholder": "Nhập tên của bạn",
+      "firstNamePlaceholder": "An",
       "lastName": "Họ",
-      "lastNamePlaceholder": "Nhập họ của bạn",
+      "lastNamePlaceholder": "Nguyễn",
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Mật khẩu",
@@ -26,6 +27,9 @@
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
       "submit": "Đăng ký",
       "signUpPrompt": "Đã có tài khoản? Đăng nhập"
+    },
+    "signOut": {
+      "submit": "Đăng xuất"
     }
   },
   "account": {

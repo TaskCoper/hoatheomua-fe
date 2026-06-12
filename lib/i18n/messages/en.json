@@ -12,12 +12,13 @@
       "signUpPrompt": "Don't have an account? Sign up"
     },
     "signUp": {
+      "label": "Sign up",
       "title": "Sign up",
       "description": "Create your account to get started.",
       "firstName": "First name",
-      "firstNamePlaceholder": "Enter your first name",
+      "firstNamePlaceholder": "John",
       "lastName": "Last name",
-      "lastNamePlaceholder": "Enter your last name",
+      "lastNamePlaceholder": "Doe",
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Password",
@@ -26,6 +27,9 @@
       "confirmPasswordPlaceholder": "Re-enter your password",
       "submit": "Sign up",
       "signUpPrompt": "Already have an account? Sign in"
+    },
+    "signOut": {
+      "submit": "Sign out"
     }
   },
   "account": {
