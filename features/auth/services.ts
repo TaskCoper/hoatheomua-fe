@@ -16,6 +16,12 @@ class AuthService {
     return data.value
   }
 
+  signUp = async ({ body }: { body: SignUpFormValues }) => {
+    const { data } = await api.post<BaseResponse<string>>(`${this.baseUrl}/register`, body)
+
+    return data.value
+  }
+
   signIn = async ({ body }: { body: SignInFormValues }) => {
     const { data } = await api.post<BaseResponse<string>>(`${this.baseUrl}/sign-in`, body)
 

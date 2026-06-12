@@ -27,8 +27,6 @@ export const createSignInSchema = (t: TranslationFunction) =>
     })
     .strict()
 
-export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>
-
 export const createSignUpSchema = (t: TranslationFunction) =>
   z
     .object({
@@ -36,43 +34,35 @@ export const createSignUpSchema = (t: TranslationFunction) =>
         .string()
         .trim()
         .min(1, {
-          error: t('common.validation.required', {
-            field: t('auth.signUp.firstName')
-          })
-        })
-        .min(2, {
           error: t('common.validation.minLength', {
             field: t('auth.signUp.firstName'),
-            min: 2
+            min: 1
           })
         })
-        .max(50, {
+        .max(100, {
           error: t('common.validation.maxLength', {
             field: t('auth.signUp.firstName'),
-            max: 50
+            max: 100
           })
         }),
       lastName: z
         .string()
         .trim()
         .min(1, {
-          error: t('common.validation.required', {
-            field: t('auth.signUp.lastName')
-          })
-        })
-        .min(2, {
           error: t('common.validation.minLength', {
             field: t('auth.signUp.lastName'),
-            min: 2
+            min: 1
           })
         })
-        .max(50, {
+        .max(100, {
           error: t('common.validation.maxLength', {
             field: t('auth.signUp.lastName'),
-            max: 50
+            max: 100
           })
         }),
       email: z
+        .string()
+        .trim()
         .email({
           error: t('common.validation.email')
         })
@@ -80,11 +70,6 @@ export const createSignUpSchema = (t: TranslationFunction) =>
       password: z
         .string()
         .trim()
-        .min(1, {
-          error: t('common.validation.required', {
-            field: t('auth.signUp.password')
-          })
-        })
         .min(6, {
           error: t('common.validation.minLength', {
             field: t('auth.signUp.password'),
@@ -97,15 +82,16 @@ export const createSignUpSchema = (t: TranslationFunction) =>
             max: 128
           })
         })
-        .regex(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/, {
+        .refine((value) => /[A-Z]/.test(value) && /\d/.test(value) && /[^A-Za-z0-9]/.test(value), {
           error: t('common.validation.passwordStrength')
         }),
       confirmPassword: z
         .string()
         .trim()
         .min(1, {
-          error: t('common.validation.required', {
-            field: t('auth.signUp.confirmPassword')
+          error: t('common.validation.minLength', {
+            field: t('auth.signUp.confirmPassword'),
+            min: 1
           })
         })
     })
@@ -115,4 +101,5 @@ export const createSignUpSchema = (t: TranslationFunction) =>
     })
     .strict()
 
+export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>
 export type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>
