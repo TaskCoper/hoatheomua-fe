@@ -7,7 +7,7 @@ class AuthService {
 
   getMe = async () => {
     const { data } = await api.get<BaseResponse<Me>>(`${this.baseUrl}/me`)
-    return data.value ?? null
+    return data.value
   }
 
   signUp = async ({ body }: { body: SignUpFormValues }) => {

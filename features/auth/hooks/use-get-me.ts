@@ -3,7 +3,7 @@ import authService from '../services'
 
 export const useGetMe = () => {
   const {
-    data: me = null,
+    data: me,
     isLoading: isGettingMe,
     isError
   } = useQuery({
