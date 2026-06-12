@@ -26,10 +26,32 @@
       "confirmPassword": "Confirm password",
       "confirmPasswordPlaceholder": "Re-enter your password",
       "submit": "Sign up",
-      "signUpPrompt": "Already have an account? Sign in"
+      "success": "Successfully register",
+      "signUpPrompt": "Already have an account? Sign in",
+      "emailDescription": "Please check your email for verification."
     },
     "signOut": {
       "submit": "Sign out"
+    },
+    "verifyEmailPending": {
+      "changedMind": "Changed your mind?",
+      "goBack": "Go back",
+      "title": "Check your email",
+      "verifyTitle": "Verifying your account",
+      "sentTo": "We are currently verifying your account. Please wait a moment.",
+      "fallbackEmail": "your email address",
+      "instruction": "Please open your inbox and select the link to verify your account.",
+      "resend": "Resend verification link",
+      "spamHint": "Didn't see the email? ",
+      "changeEmail": "Use a different email",
+      "quoteLabel": "HOA THEO MÙA",
+      "quote": "Where seasonal flowers\nspeak love softly",
+      "footer": "© 2026 Hoa Theo Mùa",
+      "success": "Successfully verified",
+      "verifying": "Verifying",
+      "preInstruct": "We have sent email to ",
+      "postInstruct": "to confirm the validity of our email address. After receiving the email follow the link provided to complete you registration",
+      "tokenNoteFound": "Token not found"
     }
   },
   "account": {

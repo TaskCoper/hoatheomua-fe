@@ -25,12 +25,12 @@ export default function SignUpForm() {
 
   return (
     <FieldGroup className='gap-2'>
-      <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+      <div className='grid gap-4 sm:grid-cols-2'>
         <Controller
           name='firstName'
           control={control}
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className='min-w-0 gap-1'>
+            <Field data-invalid={fieldState.invalid} className='gap-1'>
               <FieldLabel htmlFor={field.name}>{t('auth.signUp.firstName')}</FieldLabel>
               <Input
                 {...field}
@@ -50,7 +50,7 @@ export default function SignUpForm() {
           name='lastName'
           control={control}
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className='min-w-0 gap-1'>
+            <Field data-invalid={fieldState.invalid} className='gap-1'>
               <FieldLabel htmlFor={field.name}>{t('auth.signUp.lastName')}</FieldLabel>
               <Input
                 {...field}

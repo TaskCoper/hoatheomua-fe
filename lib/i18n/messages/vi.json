@@ -26,10 +26,32 @@
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
       "submit": "Đăng ký",
-      "signUpPrompt": "Đã có tài khoản? Đăng nhập"
+      "success": "Đăng kí thành công",
+      "signUpPrompt": "Đã có tài khoản? Đăng nhập",
+      "emailDescription": "Vui lòng kiểm tra email để xác thực tài khoản."
     },
     "signOut": {
       "submit": "Đăng xuất"
+    },
+    "verifyEmailPending": {
+      "changedMind": "Đổi ý rồi?",
+      "goBack": "Quay lại",
+      "title": "Kiểm tra email của bạn",
+      "verifyTitle": "Đang xác thực tài khoản",
+      "sentTo": "Chúng tôi hiện đang xác thực tài khoản bạn vui lòng chờ trong giây lát",
+      "fallbackEmail": "email của bạn",
+      "instruction": "Vui lòng mở hộp thư và nhấn vào liên kết để xác thực tài khoản của bạn.",
+      "resend": "Gửi lại liên kết xác thực",
+      "spamHint": "Không thấy email? ",
+      "changeEmail": "Dùng email khác",
+      "quoteLabel": "HOA THEO MÙA",
+      "quote": "Nơi những đóa hoa\nkể thay lời yêu thương",
+      "footer": "© 2026 Hoa Theo Mùa",
+      "success": "Xác thực thành công",
+      "verifying": "Đang xác thực...",
+      "preInstruct": "Chúng tôi đã gửi email đến ",
+      "postInstruct": " để xác nhận tính hợp lệ của địa chỉ email của bạn. Sau khi nhận được email, vui lòng nhấn vào liên kết được cung cấp để hoàn tất đăng ký.",
+      "tokenNoteFound": "Không tìm thấy token"
     }
   },
   "account": {

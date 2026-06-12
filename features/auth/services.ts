@@ -27,6 +27,19 @@ class AuthService {
 
     return data.value
   }
+
+  // TODO: valiadate email = zod
+  resendEmail = async ({ body }: { body: { email: string } }) => {
+    const { data } = await api.post<BaseResponse<string>>(`${this.baseUrl}/re-send-mail`, body)
+
+    return data.value
+  }
+
+  verifyEmail = async ({ body }: { body: { token: string } }) => {
+    const { data } = await api.post<BaseResponse<string>>(`${this.baseUrl}/verify-email`, body)
+
+    return data.value
+  }
 }
 
 const authService = new AuthService()
