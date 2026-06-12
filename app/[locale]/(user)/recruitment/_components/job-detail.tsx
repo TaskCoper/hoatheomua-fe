@@ -20,7 +20,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import type { ReactNode } from 'react'
 
-import FloatingPetals from '../../_components/floating-petals'
+import FloatingPetals from '@/app/[locale]/(public)/_components/floating-petals'
 import type { Job } from '../types'
 
 type JobDetailProps = {
@@ -43,7 +43,10 @@ export default function JobDetail({ job }: JobDetailProps) {
           style={{ backgroundImage: `url(${job.image})` }}
           aria-hidden='true'
         />
-        <div className='absolute inset-0 z-10 bg-gradient-to-t from-card via-card/10 to-transparent' aria-hidden='true' />
+        <div
+          className='absolute inset-0 z-10 bg-gradient-to-t from-card via-card/10 to-transparent'
+          aria-hidden='true'
+        />
         <div className='pointer-events-none absolute inset-0 z-20 overflow-hidden' aria-hidden='true'>
           <FloatingPetals />
         </div>
