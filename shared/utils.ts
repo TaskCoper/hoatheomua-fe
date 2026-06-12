@@ -1,6 +1,8 @@
 import { GetPresignedUrlParams } from '@/hooks/use-get-presigned-url'
+import { BasePaginationResponse } from '@/lib/axios'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -33,3 +35,26 @@ export const getAvatarFallback = (fullName: string) =>
     .split(' ')
     .map((n) => n[0])
     .join('')
+
+const defaultPaginationResponse: BasePaginationResponse<unknown> = {
+  value: {
+    items: [],
+    pageIndex: DEFAULT_PAGE_INDEX,
+    pageSize: DEFAULT_PAGE_SIZE,
+    totalCount: 0,
+    hasNextPage: false,
+    hasPreviousPage: false
+  },
+  error: {
+    code: '',
+    message: ''
+  },
+  isSuccess: true,
+  isFailed: false,
+  traceId: '',
+  timestampUtc: new Date().toISOString()
+}
+
+export function getDefaultPaginationResponse<T>(): BasePaginationResponse<T> {
+  return defaultPaginationResponse as BasePaginationResponse<T>
+}

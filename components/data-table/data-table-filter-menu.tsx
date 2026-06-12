@@ -25,6 +25,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import type { Column, Table } from '@tanstack/react-table'
 import { useQueryState } from 'nuqs'
 import * as React from 'react'
+import { DataTableIconView } from './data-table-icon'
 
 const DEBOUNCE_MS = 300
 const THROTTLE_MS = 50
@@ -263,7 +264,7 @@ export function DataTableFilterMenu<TData>({
                           })
                         }}
                       >
-                        {column.columnDef.meta?.icon && <column.columnDef.meta.icon />}
+                        {column.columnDef.meta?.icon && <DataTableIconView icon={column.columnDef.meta.icon} />}
                         <span className='truncate'>{column.columnDef.meta?.label ?? column.id}</span>
                       </CommandItem>
                     ))}
@@ -344,7 +345,7 @@ function DataTableFilterItem<TData>({
               size='sm'
               className='rounded-none rounded-l-md border border-r-0 font-normal dark:bg-input/30'
             >
-              {columnMeta?.icon && <columnMeta.icon className='text-muted-foreground' />}
+              {columnMeta?.icon && <DataTableIconView icon={columnMeta.icon} className='text-muted-foreground' />}
               {columnMeta?.label ?? column.id}
             </Button>
           </PopoverTrigger>
@@ -369,7 +370,7 @@ function DataTableFilterItem<TData>({
                         setShowFieldSelector(false)
                       }}
                     >
-                      {column.columnDef.meta?.icon && <column.columnDef.meta.icon />}
+                      {column.columnDef.meta?.icon && <DataTableIconView icon={column.columnDef.meta.icon} />}
                       <span className='truncate'>{column.columnDef.meta?.label ?? column.id}</span>
                       <HugeiconsIcon
                         icon={CheckIcon}
@@ -471,7 +472,7 @@ function FilterValueSelector<TData>({
         <CommandGroup>
           {column.columnDef.meta?.options?.map((option) => (
             <CommandItem key={option.value} value={option.value} onSelect={() => onSelect(option.value)}>
-              {option.icon && <option.icon />}
+              {option.icon && <DataTableIconView icon={option.icon} />}
               <span className='truncate'>{option.label}</span>
               {option.count && <span className='ml-auto font-mono text-xs'>{option.count}</span>}
             </CommandItem>
@@ -636,7 +637,7 @@ function onFilterInputRender<TData>({
                     {selectedOptions.map((selectedOption) =>
                       selectedOption.icon ? (
                         <div key={selectedOption.value} className='rounded-full border bg-background p-0.5'>
-                          <selectedOption.icon className='size-3.5' />
+                          <DataTableIconView icon={selectedOption.icon} className='size-3.5' />
                         </div>
                       ) : null
                     )}
@@ -670,7 +671,7 @@ function onFilterInputRender<TData>({
                         onFilterUpdate(filter.filterId, { value })
                       }}
                     >
-                      {option.icon && <option.icon />}
+                      {option.icon && <DataTableIconView icon={option.icon} />}
                       <span className='truncate'>{option.label}</span>
                       {filter.variant === 'multiSelect' && (
                         <HugeiconsIcon

@@ -45,6 +45,29 @@
   "error": {
     "somethingWentWrong": "Đã xảy ra lỗi"
   },
+  "admin": {
+    "sidebar": {
+      "system": "Hệ thống"
+    },
+    "news": {
+      "title": "Quản lý tin tức",
+      "description": "Quản lý các bài viết tin tức trên hệ thống",
+      "nav": {
+        "title": "Tin tức",
+        "list": "Danh sách tin tức"
+      },
+      "status": {
+        "draft": "Nháp",
+        "published": "Đã xuất bản"
+      },
+      "columns": {
+        "title": "Tiêu đề",
+        "titlePlaceholder": "Nhập tiêu đề để tìm kiếm...",
+        "selectAll": "Chọn tất cả tin tức",
+        "selectRow": "Chọn dòng tin tức"
+      }
+    }
+  },
   "common": {
     "ui": {
       "more": "Thêm",

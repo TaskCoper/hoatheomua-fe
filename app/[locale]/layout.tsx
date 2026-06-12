@@ -6,6 +6,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 import '../globals.css'
 
@@ -49,13 +50,15 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
-        <NextIntlClientProvider>
-          <ReactQueryProvider>
-            {children}
-            {modal}
-            <Toaster position='top-center' duration={2000} />
-          </ReactQueryProvider>
-        </NextIntlClientProvider>
+        <NuqsAdapter>
+          <NextIntlClientProvider>
+            <ReactQueryProvider>
+              {children}
+              {modal}
+              <Toaster position='top-center' duration={2000} />
+            </ReactQueryProvider>
+          </NextIntlClientProvider>
+        </NuqsAdapter>
       </body>
     </html>
   )

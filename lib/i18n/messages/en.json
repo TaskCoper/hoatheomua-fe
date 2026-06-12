@@ -45,6 +45,29 @@
   "error": {
     "somethingWentWrong": "Something went wrong"
   },
+  "admin": {
+    "sidebar": {
+      "system": "System"
+    },
+    "news": {
+      "title": "News management",
+      "description": "Manage news articles in the system",
+      "nav": {
+        "title": "News",
+        "list": "News list"
+      },
+      "status": {
+        "draft": "Draft",
+        "published": "Published"
+      },
+      "columns": {
+        "title": "Title",
+        "titlePlaceholder": "Enter a title to search...",
+        "selectAll": "Select all news",
+        "selectRow": "Select news row"
+      }
+    }
+  },
   "common": {
     "ui": {
       "more": "More",

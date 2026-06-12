@@ -2,7 +2,10 @@
 import type { DataTableConfig } from '@/lib/data-table/data-table'
 import type { FilterItemSchema } from '@/lib/data-table/parsers'
 import type { I18nKey } from '@/lib/i18n/types'
+import type { IconSvgElement } from '@hugeicons/react'
 import type { ColumnSort, Row, RowData } from '@tanstack/react-table'
+
+export type DataTableIcon = React.ComponentType<React.SVGProps<SVGSVGElement>> | IconSvgElement
 
 declare module '@tanstack/react-table' {
   // biome-ignore lint/correctness/noUnusedVariables: TData is used in the TableMeta interface
@@ -18,7 +21,7 @@ declare module '@tanstack/react-table' {
     options?: Option[]
     range?: [number, number]
     unit?: string
-    icon?: React.FC<React.SVGProps<SVGSVGElement>>
+    icon?: DataTableIcon
   }
 }
 
@@ -34,7 +37,7 @@ export interface Option {
   label: string | React.ReactNode
   value: string
   count?: number | string
-  icon?: React.FC<React.SVGProps<SVGSVGElement>>
+  icon?: DataTableIcon
 }
 
 export type FilterOperator = DataTableConfig['operators'][number]

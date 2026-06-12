@@ -18,6 +18,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Separator } from '../ui/separator'
 import { DataTableFilterTrigger } from './data-table-filter-trigger'
+import { DataTableIconView } from './data-table-icon'
 
 interface DataTableRadioFilterProps<TData, TValue> {
   column?: Column<TData, TValue>
@@ -89,7 +90,7 @@ export default function DataTableRadioFilter<TData, TValue>({
                 {options.map((option) => (
                   <CommandItem key={option.value} onSelect={() => onItemSelect(option)}>
                     <RadioGroupItem value={option.value} className='pointer-events-none shrink-0' />
-                    {option.icon && <option.icon />}
+                    {option.icon && <DataTableIconView icon={option.icon} />}
                     <span className='truncate'>{option.label}</span>
                     {option.count !== undefined && <span className='ml-auto font-mono text-xs'>{option.count}</span>}
                   </CommandItem>

@@ -10,6 +10,7 @@ import type { Column, Table } from '@tanstack/react-table'
 import * as React from 'react'
 import { DataTableDateFilter } from './data-table-date-filter'
 import { DataTableFacetedFilter } from './data-table-faceted-filter'
+import { DataTableIconView } from './data-table-icon'
 import DataTableRadioFilter from './data-table-radio-filter'
 import { DataTableSliderFilter } from './data-table-slider-filter'
 import { DataTableViewOptions } from './data-table-view-options'
@@ -141,10 +142,7 @@ function DataTableToolbarFilter<TData>({ column, optionsOverride }: DataTableToo
         return (
           <div className='relative'>
             <div className='text-muted-foreground pointer-events-none absolute inset-y-0 left-0 flex items-center justify-center pl-3 peer-disabled:opacity-50'>
-              {columnMeta.icon &&
-                React.createElement(columnMeta.icon, {
-                  className: 'size-4'
-                })}
+              {columnMeta.icon && <DataTableIconView icon={columnMeta.icon} className='size-4' />}
               <span className='sr-only'>{label}</span>
             </div>
 

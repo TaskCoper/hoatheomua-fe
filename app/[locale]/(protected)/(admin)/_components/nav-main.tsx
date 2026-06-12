@@ -11,49 +11,62 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem
 } from '@/components/ui/sidebar'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { Link } from '@/lib/i18n/navigation'
+import type { I18nKey } from '@/lib/i18n/types'
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import Link from 'next/link'
 
 export function NavMain({
   items
 }: {
   items: {
-    title: string
+    title: I18nKey
     url: string
     icon?: React.ReactNode
     isActive?: boolean
+    isOpen?: boolean
     items?: {
-      title: string
+      title: I18nKey
       url: string
+      isActive?: boolean
     }[]
   }[]
 }) {
+  const { t } = useTranslation()
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Hệ thống</SidebarGroupLabel>
+      <SidebarGroupLabel>{t('admin.sidebar.system')}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive} className='group/collapsible'>
+          <Collapsible
+            key={item.title}
+            asChild
+            defaultOpen={item.isOpen || item.isActive}
+            className='group/collapsible'
+          >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon}
-                  <span>{item.title}</span>
-                  <HugeiconsIcon
-                    icon={ArrowRight01Icon}
-                    strokeWidth={2}
-                    className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90'
-                  />
+                <SidebarMenuButton asChild tooltip={t(item.title)} isActive={item.isActive}>
+                  <Link href={item.url}>
+                    {item.icon}
+                    <span>{t(item.title)}</span>
+                    <HugeiconsIcon
+                      icon={ArrowRight01Icon}
+                      strokeWidth={2}
+                      className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90'
+                    />
+                  </Link>
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link href={subItem.url}>
-                          <span>{subItem.title}</span>
+                      <SidebarMenuSubButton asChild isActive={subItem.isActive}>
+                        <Link href={subItem.url} aria-current={subItem.isActive ? 'page' : undefined}>
+                          <span>{t(subItem.title)}</span>
                         </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
