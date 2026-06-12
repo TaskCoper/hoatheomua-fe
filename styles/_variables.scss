@@ -164,6 +164,13 @@
   ::before,
   ::after {
     box-sizing: border-box;
+  }
+
+  /* Scoped transitions for tiptap editor only */
+  .ProseMirror,
+  .ProseMirror *,
+  .ProseMirror ::before,
+  .ProseMirror ::after {
     transition: none var(--tt-transition-duration-default) var(--tt-transition-easing-default);
   }
 }
