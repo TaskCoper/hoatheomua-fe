@@ -44,7 +44,7 @@ const NAV_ITEMS = [
   {
     id: 250,
     label: 'Tuyển dụng',
-    href: '/careers'
+    href: '/recruitment'
   },
   {
     id: 300,
