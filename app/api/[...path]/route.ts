@@ -16,7 +16,11 @@ async function proxy(req: Request, ctx: { params: Promise<{ path: string[] }> })
 
   const forwardHeaders = new Headers()
   req.headers.forEach((value, key) => {
-    if (!HOP_BY_HOP.has(key.toLowerCase())) forwardHeaders.set(key, value)
+    const lowerKey = key.toLowerCase()
+
+    if (!HOP_BY_HOP.has(lowerKey) && lowerKey !== 'accept-encoding') {
+      forwardHeaders.set(key, value)
+    }
   })
 
   const hasBody = req.method !== 'GET' && req.method !== 'HEAD'
