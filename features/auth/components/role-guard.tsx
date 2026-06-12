@@ -8,28 +8,32 @@ import AuthGuardLoading from './auth-guard-loading'
 
 interface RoleGuardProps {
   allowedRoles: Role[]
+  allowAnonymous?: boolean
   children: React.ReactNode
 }
 
-export default function RoleGuard({ allowedRoles, children }: RoleGuardProps) {
+export default function RoleGuard({ allowedRoles, allowAnonymous = false, children }: RoleGuardProps) {
   const router = useRouter()
   const { me, isGettingMe } = useGetMe()
   const userType = getUserType(me)
 
   const isWrongRole = !isGettingMe && !!me && (userType === null || !allowedRoles.includes(userType))
+  const isMissingAuth = !isGettingMe && !me && !allowAnonymous
 
   useEffect(() => {
-    if (isGettingMe || !isWrongRole) return
+    if (isGettingMe) return
 
-    if (userType === null) {
+    if (isMissingAuth) {
       router.replace('/sign-in')
       return
     }
 
-    router.replace(getRoleHomePath(userType))
-  }, [isGettingMe, isWrongRole, userType, router])
+    if (isWrongRole && userType !== null) {
+      router.replace(getRoleHomePath(userType))
+    }
+  }, [isGettingMe, isMissingAuth, isWrongRole, userType, router])
 
-  if (isGettingMe || isWrongRole) {
+  if (isGettingMe || isWrongRole || isMissingAuth) {
     return <AuthGuardLoading />
   }
 
