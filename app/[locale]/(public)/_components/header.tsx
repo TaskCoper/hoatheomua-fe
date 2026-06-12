@@ -53,12 +53,19 @@ export default function Header() {
   const { t } = useTranslation()
   const pathname = usePathname()
 
+  const normalizePathname = (path: string) => {
+    const localePrefix = /^\/(vi|en)(?=\/|$)/
+    return path.replace(localePrefix, '') || '/'
+  }
+
   const isActive = (href: string) => {
+    const pathToCheck = normalizePathname(pathname)
+
     if (href === '/') {
-      return pathname === '/'
+      return pathToCheck === '/'
     }
 
-    return pathname === href || pathname.startsWith(`${href}/`)
+    return pathToCheck === href || pathToCheck.startsWith(`${href}/`)
   }
 
   return (
