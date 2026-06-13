@@ -228,6 +228,97 @@
       "empty": "Your cover letter preview will appear here."
     }
   },
+  "recruitment": {
+    "filter": {
+      "positionPlaceholder": "Search by position",
+      "search": "Search jobs",
+      "branch": {
+        "placeholder": "All branches",
+        "options": {
+          "hoChiMinh": "Ho Chi Minh",
+          "haNoi": "Hanoi",
+          "daNang": "Da Nang"
+        }
+      },
+      "employmentType": {
+        "placeholder": "All work types",
+        "options": {
+          "fullTime": "Full-time",
+          "partTime": "Part-time",
+          "freelance": "Freelance"
+        }
+      },
+      "salary": {
+        "placeholder": "All salary ranges",
+        "options": {
+          "range8To12": "8 - 12 million",
+          "range12To18": "12 - 18 million",
+          "above18": "Above 18 million"
+        }
+      }
+    },
+    "sidebar": {
+      "newsletter": {
+        "title": "Get recruitment updates",
+        "description": "Do not miss the right opportunity for you.",
+        "emailPlaceholder": "Enter your email",
+        "submit": "Subscribe"
+      },
+      "groups": {
+        "jobType": {
+          "title": "Job type",
+          "fullTime": "Full-time",
+          "partTime": "Part-time",
+          "internship": "Internship",
+          "freelance": "Freelance"
+        },
+        "level": {
+          "title": "Level",
+          "intern": "Intern",
+          "staff": "Staff",
+          "specialist": "Specialist",
+          "manager": "Manager"
+        },
+        "location": {
+          "title": "Location",
+          "hoChiMinhCity": "Ho Chi Minh City",
+          "haNoi": "Hanoi",
+          "daNang": "Da Nang"
+        }
+      },
+      "quote": "\u201cEvery bloom tells a story. Every person is a piece of something beautiful.\u201d"
+    },
+    "pagination": {
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {page}"
+    },
+    "jobCard": {
+      "viewDetails": "View details for {title}",
+      "save": "Save {title}",
+      "new": "New"
+    },
+    "jobDetail": {
+      "quickInfo": {
+        "experience": "Experience",
+        "level": "Level",
+        "employmentType": "Work type",
+        "salary": "Salary"
+      },
+      "actions": {
+        "save": "Save job",
+        "share": "Share job",
+        "apply": "Apply now"
+      },
+      "posted": "Posted {time}",
+      "sections": {
+        "overview": "Overview",
+        "responsibilities": "Job description",
+        "requirements": "Requirements",
+        "benefits": "Benefits"
+      }
+    }
+  },
   "dataTable": {
     "table": {
       "noResults": "No results."

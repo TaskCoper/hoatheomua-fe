@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { ChevronLeftIcon, ChevronRightIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
@@ -12,6 +13,8 @@ type JobListProps = {
 }
 
 export default function JobList({ jobs, selectedJobId, onSelectJob }: JobListProps) {
+  const { t } = useTranslation()
+
   return (
     <section className='w-full min-w-0 space-y-4'>
       <div className='w-full space-y-4'>
@@ -26,7 +29,7 @@ export default function JobList({ jobs, selectedJobId, onSelectJob }: JobListPro
           variant='ghost'
           size='icon-sm'
           className='transform-gpu transition-all duration-500 ease-out hover:-translate-y-0.5 hover:bg-primary/5 hover:text-primary active:translate-y-0 active:scale-[0.98]'
-          aria-label='Trang trước'
+          aria-label={t('recruitment.pagination.previous')}
         >
           <HugeiconsIcon icon={ChevronLeftIcon} strokeWidth={1.8} className='size-4' />
         </Button>
@@ -41,7 +44,7 @@ export default function JobList({ jobs, selectedJobId, onSelectJob }: JobListPro
                 ? 'transform-gpu transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
                 : 'transform-gpu border-border/70 bg-card transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-primary/25 hover:bg-primary/5 hover:text-primary active:translate-y-0 active:scale-[0.98]'
             }
-            aria-label={`Trang ${page}`}
+            aria-label={t('recruitment.pagination.page', { page })}
             aria-current={page === 1 ? 'page' : undefined}
           >
             {page}
@@ -53,7 +56,7 @@ export default function JobList({ jobs, selectedJobId, onSelectJob }: JobListPro
           variant='outline'
           size='icon-sm'
           className='transform-gpu border-border/70 bg-card transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-primary/25 hover:bg-primary/5 hover:text-primary active:translate-y-0 active:scale-[0.98]'
-          aria-label='Trang 5'
+          aria-label={t('recruitment.pagination.page', { page: 5 })}
         >
           5
         </Button>
@@ -62,7 +65,7 @@ export default function JobList({ jobs, selectedJobId, onSelectJob }: JobListPro
           variant='ghost'
           size='icon-sm'
           className='transform-gpu transition-all duration-500 ease-out hover:-translate-y-0.5 hover:bg-primary/5 hover:text-primary active:translate-y-0 active:scale-[0.98]'
-          aria-label='Trang sau'
+          aria-label={t('recruitment.pagination.next')}
         >
           <HugeiconsIcon icon={ChevronRightIcon} strokeWidth={1.8} className='size-4' />
         </Button>

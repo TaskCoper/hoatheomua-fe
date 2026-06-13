@@ -18,7 +18,7 @@ export default function RecruitmentView() {
       <div className='w-full space-y-6'>
         <FilterSection />
 
-        <div className='grid w-full min-w-0 grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start xl:grid-cols-[250px_minmax(330px,0.85fr)_minmax(480px,1.35fr)]'>
+        <div className='grid w-full min-w-0 grid-cols-1 gap-5 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start xl:grid-cols-[250px_minmax(265px,0.68fr)_minmax(560px,1.52fr)]'>
           <RecruitmentSidebar />
           <JobList jobs={jobs} selectedJobId={selectedJobId} onSelectJob={setSelectedJobId} />
           {selectedJob ? (

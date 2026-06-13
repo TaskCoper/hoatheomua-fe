@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import {
   Award05Icon,
@@ -27,14 +29,16 @@ type JobDetailProps = {
   job: Job
 }
 
-const quickInfo = (job: Job) => [
-  { label: 'Kinh nghiệm', value: job.experience, icon: Award05Icon },
-  { label: 'Cấp bậc', value: job.level, icon: User02Icon },
-  { label: 'Hình thức', value: job.employmentType, icon: WorkIcon },
-  { label: 'Lương', value: job.salary, icon: Money03Icon }
+const quickInfo = (job: Job, t: TranslationFunction) => [
+  { label: t('recruitment.jobDetail.quickInfo.experience'), value: job.experience, icon: Award05Icon },
+  { label: t('recruitment.jobDetail.quickInfo.level'), value: job.level, icon: User02Icon },
+  { label: t('recruitment.jobDetail.quickInfo.employmentType'), value: job.employmentType, icon: WorkIcon },
+  { label: t('recruitment.jobDetail.quickInfo.salary'), value: job.salary, icon: Money03Icon }
 ]
 
 export default function JobDetail({ job }: JobDetailProps) {
+  const { t } = useTranslation()
+
   return (
     <Card className='w-full gap-0 overflow-hidden border border-primary/10 bg-card py-0 shadow-sm shadow-primary/5 xl:sticky xl:top-6'>
       <div className='relative min-h-52 overflow-hidden bg-secondary/25'>
@@ -56,7 +60,7 @@ export default function JobDetail({ job }: JobDetailProps) {
             variant='outline'
             size='icon-lg'
             className='transform-gpu border-primary/10 bg-background/90 text-primary shadow-sm transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-primary/25 hover:bg-primary/10 hover:text-primary active:translate-y-0 active:scale-95'
-            aria-label='Lưu tin tuyển dụng'
+            aria-label={t('recruitment.jobDetail.actions.save')}
           >
             <HugeiconsIcon icon={Bookmark02Icon} strokeWidth={1.8} className='size-4' />
           </Button>
@@ -65,7 +69,7 @@ export default function JobDetail({ job }: JobDetailProps) {
             variant='outline'
             size='icon-lg'
             className='transform-gpu border-primary/10 bg-background/90 text-primary shadow-sm transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-primary/25 hover:bg-primary/10 hover:text-primary active:translate-y-0 active:scale-95'
-            aria-label='Chia sẻ tin tuyển dụng'
+            aria-label={t('recruitment.jobDetail.actions.share')}
           >
             <HugeiconsIcon icon={JobShareIcon} strokeWidth={1.8} className='size-4' />
           </Button>
@@ -95,7 +99,7 @@ export default function JobDetail({ job }: JobDetailProps) {
           </div>
 
           <div className='relative z-40 text-left text-sm text-muted-foreground sm:text-right'>
-            <p>Đăng tuyển {job.postedAt}</p>
+            <p>{t('recruitment.jobDetail.posted', { time: job.postedAt })}</p>
             <p className='mt-1'>{job.views}</p>
           </div>
         </div>
@@ -103,7 +107,7 @@ export default function JobDetail({ job }: JobDetailProps) {
 
       <CardContent className='px-5 pt-5 sm:px-7'>
         <div className='grid gap-2 rounded-3xl border border-border bg-background p-3 sm:grid-cols-2 2xl:grid-cols-4'>
-          {quickInfo(job).map((item) => (
+          {quickInfo(job, t).map((item) => (
             <Badge
               key={item.label}
               variant='secondary'
@@ -121,16 +125,16 @@ export default function JobDetail({ job }: JobDetailProps) {
         </div>
 
         <div className='mt-6 text-sm leading-7 text-foreground'>
-          <DetailSection title='Tổng quan'>
+          <DetailSection title={t('recruitment.jobDetail.sections.overview')}>
             <p className='text-muted-foreground'>{job.summary}</p>
           </DetailSection>
 
           <DecorativeSeparator className='my-6' />
-          <DetailSection title='Mô tả công việc' items={job.responsibilities} />
+          <DetailSection title={t('recruitment.jobDetail.sections.responsibilities')} items={job.responsibilities} />
           <DecorativeSeparator className='my-6' />
-          <DetailSection title='Yêu cầu' items={job.requirements} />
+          <DetailSection title={t('recruitment.jobDetail.sections.requirements')} items={job.requirements} />
           <DecorativeSeparator className='my-6' />
-          <DetailSection title='Quyền lợi' items={job.benefits} />
+          <DetailSection title={t('recruitment.jobDetail.sections.benefits')} items={job.benefits} />
         </div>
       </CardContent>
 
@@ -141,7 +145,7 @@ export default function JobDetail({ job }: JobDetailProps) {
           className='h-12 transform-gpu px-8 transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
         >
           <HugeiconsIcon icon={SentIcon} strokeWidth={1.8} className='size-4' />
-          Ứng tuyển ngay
+          {t('recruitment.jobDetail.actions.apply')}
         </Button>
         <Button
           type='button'
@@ -150,7 +154,7 @@ export default function JobDetail({ job }: JobDetailProps) {
           className='h-12 transform-gpu border-primary/25 bg-background px-8 text-primary transition-all duration-500 ease-out hover:-translate-y-0.5 hover:bg-primary/10 hover:text-primary active:translate-y-0 active:scale-[0.98]'
         >
           <HugeiconsIcon icon={Bookmark02Icon} strokeWidth={1.8} className='size-4' />
-          Lưu tin tuyển dụng
+          {t('recruitment.jobDetail.actions.save')}
         </Button>
       </CardFooter>
     </Card>
