@@ -18,6 +18,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import type { Column } from '@tanstack/react-table'
 import * as React from 'react'
 import { DataTableFilterTrigger } from './data-table-filter-trigger'
+import { DataTableIconView } from './data-table-icon'
 
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>
@@ -120,7 +121,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                       checked={isSelected}
                       className='pointer-events-none data-[state=checked]:text-primary-foreground'
                     />
-                    {option.icon && <option.icon />}
+                    {option.icon && <DataTableIconView icon={option.icon} />}
                     <span className='truncate'>{option.label}</span>
                     <span className='ml-auto font-mono text-xs'>{option.count}</span>
                   </CommandItem>

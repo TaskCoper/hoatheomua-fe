@@ -4,22 +4,15 @@ import ReactQueryProvider from '@/lib/react-query'
 import type { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 import '../globals.css'
 
-const beVietnamPro = Be_Vietnam_Pro({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-sans'
-})
-
-const playfairDisplay = Playfair_Display({
-  weight: ['400', '500', '600', '700', '800', '900'],
-  subsets: ['latin'],
-  variable: '--font-title'
-})
+const fontVariables = {
+  '--font-sans': 'ui-sans-serif, system-ui, sans-serif',
+  '--font-title': 'Georgia, Cambria, Times New Roman, serif'
+} as React.CSSProperties & Record<string, string>
 
 export const metadata: Metadata = {
   title: 'Hoa Theo Mùa',
@@ -47,15 +40,17 @@ export default async function RootLayout({
   setRequestLocale(locale)
 
   return (
-    <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
+    <html lang={locale} className='font-sans h-full antialiased' style={fontVariables}>
       <body className='min-h-full flex flex-col'>
-        <NextIntlClientProvider>
-          <ReactQueryProvider>
-            {children}
-            {modal}
-            <Toaster position='top-center' duration={2000} />
-          </ReactQueryProvider>
-        </NextIntlClientProvider>
+        <NuqsAdapter>
+          <NextIntlClientProvider>
+            <ReactQueryProvider>
+              {children}
+              {modal}
+              <Toaster position='top-center' duration={2000} />
+            </ReactQueryProvider>
+          </NextIntlClientProvider>
+        </NuqsAdapter>
       </body>
     </html>
   )
