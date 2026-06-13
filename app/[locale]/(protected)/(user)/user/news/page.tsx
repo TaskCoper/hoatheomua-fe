@@ -39,7 +39,7 @@ function OverlayNewsCard({
 }) {
   return (
     <Link
-      href={`/news/${item.slug}`}
+      href={`/user/news/${item.slug}`}
       className={`news-card-link group relative isolate flex overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm transition hover:border-primary/50 hover:shadow-lg ${className}`}
     >
       <Image
@@ -68,7 +68,7 @@ function OverlayNewsCard({
 function StandardNewsCard({ item, image, locale }: { item: NewsItem; image: StaticImageData; locale: string }) {
   return (
     <Link
-      href={`/news/${item.slug}`}
+      href={`/user/news/${item.slug}`}
       className='news-card-link group overflow-hidden rounded-2xl border border-border/50 bg-card/80 shadow-sm backdrop-blur transition hover:border-primary/50 hover:bg-card hover:shadow-lg'
     >
       <div className='relative aspect-[4/3] overflow-hidden bg-muted'>
@@ -193,7 +193,7 @@ export default async function NewsPage({ params }: { params: { locale: string } 
             <h2 className='text-3xl font-bold text-foreground'>Tiêu điểm trong tuần</h2>
 
             <Link
-              href={`/news/${wideStory.slug}`}
+              href={`/user/news/${wideStory.slug}`}
               className='news-card-link group grid overflow-hidden rounded-3xl border border-border/50 bg-card/80 shadow-sm backdrop-blur transition hover:border-primary/50 hover:bg-card hover:shadow-xl lg:grid-cols-[1.15fr_0.85fr]'
             >
               <div className='relative min-h-[280px] overflow-hidden bg-muted sm:min-h-[360px]'>

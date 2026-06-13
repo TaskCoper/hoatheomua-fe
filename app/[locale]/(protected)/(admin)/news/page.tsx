@@ -36,36 +36,25 @@ export default function NewsPage() {
     columns,
     pageCount: Math.ceil(news.value.totalCount / limit),
     initialState: {
-      sorting: (sorting ?? []) as ExtendedColumnSort<NewRow>[],
-      columnPinning: { right: ['actions'] },
-      columnVisibility: {
-        domainId: false,
-        memberIds: false
-      }
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: limit
+      },
+      sorting: sorting ? (sorting as ExtendedColumnSort<NewRow>[]) : undefined
     },
-    getRowId: ({ id }) => id,
-    shallow: false,
-    clearOnDefault: true,
-    queryKeys: {
-      page: 'news_page',
-      perPage: 'news_perPage',
-      sort: 'news_sort'
-    },
-    filterPrefix: 'news'
+    getRowId: (row) => row.id.toString()
   })
 
-  const isLoading = isGettingNews
-
   return (
-    <div className='p-4 space-y-6'>
+    <div className='flex flex-1 flex-col gap-4 p-4 pt-0'>
       <div>
         <p className='text-xl font-semibold'>{t('admin.news.title')}</p>
         <p className='text-sm text-muted-foreground'>{t('admin.news.description')}</p>
       </div>
 
-      <DataTable table={table} isLoading={isLoading}>
-        <DataTableToolbar table={table}></DataTableToolbar>
-      </DataTable>
+      <DataTableToolbar table={table} />
+
+      <DataTable table={table} isLoading={isGettingNews} />
     </div>
   )
 }
