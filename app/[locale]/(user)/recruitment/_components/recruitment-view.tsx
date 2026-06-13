@@ -14,7 +14,7 @@ export default function RecruitmentView() {
   const selectedJob = jobs.find((job) => job.id === selectedJobId) ?? jobs[0]
 
   return (
-    <section className='mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8'>
+    <section className='mx-auto w-full max-w-8xl px-4 pb-16 sm:px-6 lg:px-8'>
       <div className='w-full space-y-6'>
         <FilterSection />
 

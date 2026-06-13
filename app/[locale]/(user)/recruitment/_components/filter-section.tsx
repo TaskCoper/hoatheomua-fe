@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Briefcase01Icon, Building02Icon, Money03Icon, Search01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -32,22 +31,22 @@ const filters = [
 
 export default function FilterSection() {
   return (
-    <Card className='w-full gap-0 rounded-3xl border border-primary/10 bg-card/95 py-0 shadow-sm shadow-primary/5 transition-shadow delay-100 duration-500 ease-out hover:shadow-md hover:shadow-primary/5'>
-      <CardContent className='grid w-full grid-cols-1 gap-2 p-3 md:grid-cols-2 xl:grid-cols-[1.2fr_1fr_1fr_1fr_auto]'>
-        <div className='flex h-12 w-full min-w-0 items-center gap-2.5 rounded-2xl border border-border bg-background px-3 transition-all delay-75 duration-500 ease-out hover:border-primary/25 hover:bg-primary/5 focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-ring/15'>
+    <Card className='w-full gap-0 overflow-visible rounded-3xl border border-primary/10 bg-card/95 py-0 shadow-sm shadow-primary/5 transition-shadow delay-100 duration-500 ease-out hover:shadow-md hover:shadow-primary/5 lg:rounded-full'>
+      <CardContent className='grid w-full grid-cols-1 gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-[minmax(220px,1.25fr)_repeat(3,minmax(145px,1fr))_auto]'>
+        <div className='flex h-11 w-full min-w-0 items-center gap-2.5 rounded-2xl border border-border bg-background px-3 transition-all delay-75 duration-500 ease-out hover:border-primary/25 hover:bg-primary/5 focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-ring/15 lg:rounded-full'>
+          {' '}
           <span className='flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary'>
             <HugeiconsIcon icon={Search01Icon} strokeWidth={1.8} className='size-4' />
           </span>
-
           <div className='grid min-w-0 flex-1 gap-1'>
-            <Label htmlFor='recruitment-position' className='h-4 text-xs font-semibold leading-4 text-foreground'>
+            {/* <Label htmlFor='recruitment-position' className='h-4 text-xs font-semibold leading-4 text-foreground'>
               Vị trí
-            </Label>
+            </Label> */}
 
             <Input
               id='recruitment-position'
               placeholder='Tìm theo vị trí'
-              className='h-5 rounded-none border-0 bg-transparent p-0 text-sm leading-5 shadow-none placeholder:text-muted-foreground focus-visible:border-0 focus-visible:ring-0'
+              className='h-5 rounded-none border-0  bg-transparent p-0 text-sm leading-5 shadow-none placeholder:text-muted-foreground focus-visible:border-0 focus-visible:ring-0'
             />
           </div>
         </div>
@@ -55,16 +54,16 @@ export default function FilterSection() {
         {filters.map((filter) => (
           <div
             key={filter.label}
-            className='flex h-12 w-full min-w-0 items-center gap-2.5 overflow-hidden rounded-2xl border border-border bg-background px-3 transition-all delay-75 duration-500 ease-out hover:border-primary/25 hover:bg-primary/5 focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-ring/15'
+            className='flex h-11 w-full min-w-0 items-center gap-2.5 overflow-visible rounded-2xl border border-border bg-background px-3 transition-all delay-75 duration-500 ease-out hover:border-primary/25 hover:bg-primary/5 focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-ring/15 lg:rounded-full'
           >
             <span className='flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary'>
               <HugeiconsIcon icon={filter.icon} strokeWidth={1.8} className='size-4' />
             </span>
 
             <div className='grid min-w-0 max-w-full flex-1 gap-0.5 overflow-hidden'>
-              <Label htmlFor={filter.id} className='h-4 truncate text-xs font-semibold leading-4 text-foreground'>
+              {/* <Label htmlFor={filter.id} className='h-4 truncate text-xs font-semibold leading-4 text-foreground'>
                 {filter.label}
-              </Label>
+              </Label> */}
 
               <Select>
                 <SelectTrigger
@@ -88,7 +87,7 @@ export default function FilterSection() {
 
         <Button
           type='button'
-          className='h-12 w-full transform-gpu rounded-2xl px-5 text-sm transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] xl:w-auto xl:min-w-28'
+          className='h-11 w-full transform-gpu rounded-2xl px-5 text-sm transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] md:col-span-2 md:mx-auto md:w-48 lg:col-span-1 lg:w-auto lg:min-w-28 lg:rounded-full'
         >
           <HugeiconsIcon icon={Search01Icon} strokeWidth={1.8} className='size-4' />
           Tìm việc
