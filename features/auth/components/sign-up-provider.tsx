@@ -18,21 +18,19 @@ export default function SignUpProvider() {
   }
 
   return (
-    <>
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)} className='space-y-6'>
-          <SignUpForm />
-          <div className='space-y-1'>
-            <Button className='w-full' disabled={isSigningUp}>
-              {isSigningUp ? <Spinner /> : null}
-              {t('auth.signUp.submit')}
-            </Button>
-            <Link href='/sign-in' className='block text-center text-sm text-muted-foreground'>
-              <Button variant='link'>{t('auth.signUp.signUpPrompt')}</Button>
-            </Link>
-          </div>
-        </form>
-      </FormProvider>
-    </>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)} className='space-y-6'>
+        <SignUpForm />
+        <div className='space-y-1'>
+          <Button className='w-full' disabled={isSigningUp}>
+            {isSigningUp ? <Spinner /> : null}
+            {t('auth.signUp.submit')}
+          </Button>
+          <Link href='/sign-in' className='block text-center text-sm text-muted-foreground'>
+            <Button variant='link'>{t('auth.signUp.signUpPrompt')}</Button>
+          </Link>
+        </div>
+      </form>
+    </FormProvider>
   )
 }

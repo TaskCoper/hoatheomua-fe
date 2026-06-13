@@ -50,7 +50,7 @@ export const useUploadFile = (
       return `${config.baseFileUrl}/${key}`
     },
     onError: (error) => {
-      toast(t('error.somethingWentWrong'), {
+      toast.error(t('error.somethingWentWrong'), {
         description: error.response?.data?.detail
       })
     },
