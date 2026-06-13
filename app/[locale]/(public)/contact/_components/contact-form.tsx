@@ -159,7 +159,7 @@ export default function ContactForm() {
       <form onSubmit={methods.handleSubmit(onSubmit)} className='w-full space-y-2.5'>
         <ContactFormFields />
 
-        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+        <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:max-lg:flex-col md:max-lg:items-stretch'>
           <Controller
             name='agreement'
             control={methods.control}
@@ -184,13 +184,13 @@ export default function ContactForm() {
             )}
           />
 
-          <div className='z-30 flex shrink-0 flex-col items-start gap-2 sm:items-end'>
+          <div className='z-30 flex shrink-0 flex-col items-start gap-2 sm:items-end md:max-lg:items-stretch'>
             {submitted && <p className='text-sm font-medium text-leaf'>{t('contact.form.submitted')}</p>}
             <Button
               type='submit'
               size='lg'
               disabled={methods.formState.isSubmitting}
-              className='group/button z-30 px-4 shadow-[0_0.45rem_1.2rem_rgb(81_108_108_/_10%)]'
+              className='group/button z-30 px-4 shadow-[0_0.45rem_1.2rem_rgb(81_108_108_/_10%)] md:max-lg:w-full'
             >
               {methods.formState.isSubmitting ? t('contact.form.submitting') : t('contact.form.submit')}
               <span className='ml-1 grid size-5.5 place-items-center rounded-full bg-primary-foreground text-primary transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover/button:translate-x-0.5 group-hover/button:-translate-y-0.5'>
