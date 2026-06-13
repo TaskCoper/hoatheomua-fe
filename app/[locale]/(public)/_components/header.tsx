@@ -33,7 +33,7 @@ const NAV_ITEMS = [
   {
     id: 200,
     label: 'Tin tức',
-    href: '/user/news'
+    href: '/news'
   },
   {
     id: 250,

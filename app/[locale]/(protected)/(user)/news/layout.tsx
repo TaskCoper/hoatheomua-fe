@@ -8,8 +8,8 @@ import RoleGuard from '@/features/auth/components/role-guard'
 import { ROLES } from '@/features/auth/utils'
 import pedalsRight from '@/public/images/pedals-right.png'
 import Image from 'next/image'
-import Footer from '../../(public)/_components/footer' // Đảm bảo đúng đường dẫn import
-import Header from '../../(public)/_components/header' // Đảm bảo đúng đường dẫn import
+import Footer from '../../../(public)/_components/footer' 
+import Header from '../../../(public)/_components/header' 
 
 export default function ProtectedUserLayout({ children }: { children: React.ReactNode }) {
   return (
