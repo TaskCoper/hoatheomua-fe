@@ -18,6 +18,7 @@ const contactLinks = [
     valueKey: 'contact.links.emailValue',
     href: 'mailto:hello@hoatheomua.vn'
   },
+  //hello
   {
     icon: PhoneCheckIcon,
     labelKey: 'contact.links.phone',
