@@ -1,14 +1,11 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
+import { createEmailSchema } from '@/shared/validations'
 import z from 'zod'
 
 export const createSignInSchema = (t: TranslationFunction) =>
   z
     .object({
-      email: z
-        .email({
-          error: t('common.validation.email')
-        })
-        .toLowerCase(),
+      email: createEmailSchema(t),
       password: z
         .string()
         .trim()

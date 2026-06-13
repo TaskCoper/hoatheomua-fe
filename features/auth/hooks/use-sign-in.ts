@@ -53,7 +53,7 @@ export const useSignIn = () => {
       router.replace(target)
     },
     onError: (error) => {
-      toast(t('error.somethingWentWrong'), {
+      toast.error(t('error.somethingWentWrong'), {
         description: error.response?.data?.detail
       })
     },

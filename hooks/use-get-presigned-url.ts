@@ -35,7 +35,7 @@ export const useGetPresignedUrl = () => {
       return data.value
     },
     onError: (error) => {
-      toast(t('error.somethingWentWrong'), {
+      toast.error(t('error.somethingWentWrong'), {
         description: error.response?.data?.detail
       })
     }

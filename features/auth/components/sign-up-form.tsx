@@ -6,7 +6,6 @@ import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-
 import { SignUpFormValues } from '../validations'
 
 export default function SignUpForm() {

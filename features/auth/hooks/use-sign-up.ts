@@ -16,19 +16,6 @@ const defaultValues: SignUpFormValues = {
   confirmPassword: ''
 }
 
-const getTokenFromVerifyMessage = (message: string) => {
-  const urlMatch = message.match(/https?:\/\/\S+/)
-
-  if (!urlMatch) return null
-
-  try {
-    const url = new URL(urlMatch[0])
-    return url.searchParams.get('token')
-  } catch {
-    return null
-  }
-}
-
 export const useSignUp = () => {
   const router = useRouter()
   const { t } = useTranslation()
@@ -42,24 +29,22 @@ export const useSignUp = () => {
 
   const { mutate: signUp, isPending: isSigningUp } = useMutation({
     mutationFn: authService.signUp,
-
     onSuccess: async (message, variables) => {
       const email = variables.body.email
 
-      toast.success(t('auth.signUp.success'), {
-        description: `${t('auth.signUp.emailDescription')} ${email}`
-      })
-
       const params = new URLSearchParams()
       params.set('email', email)
+
+      toast.success(message, {
+        description: `${t('auth.signUp.emailDescription')} ${email}`
+      })
 
       router.replace(`/verify-sent?${params.toString()}`)
     },
 
     onError: (error) => {
-      toast(t('error.somethingWentWrong'), {
-        description: error.response?.data?.detail,
-        descriptionClassName: '!text-[#314746]'
+      toast.error(t('error.somethingWentWrong'), {
+        description: error.response?.data?.detail
       })
     }
   })
