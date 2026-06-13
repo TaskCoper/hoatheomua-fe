@@ -45,7 +45,6 @@ interface NewsApiResponse {
   timestampUtc: string
 }
 
-// Interface mới cho API chi tiết
 interface NewsDetailApiResponse {
   value: NewsApiItem
   isSuccess: boolean
@@ -70,25 +69,40 @@ const mapNewsItem = (item: NewsApiItem): NewsItem => {
   const stripHtml = item.description?.replace(/<[^>]*>/g, '').trim() || ''
   const summary = stripHtml.substring(0, 160) + (stripHtml.length > 160 ? '...' : '')
 
-  // Xử lý đường dẫn ảnh từ API (nếu là đường dẫn tương đối thì nối với Base URL)
-  let imageUrl = item.pictureUrl
-  if (imageUrl && !imageUrl.startsWith('http') && API_BASE_URL) {
-    imageUrl = `${API_BASE_URL}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`
+  let imageUrl = item.pictureUrl || ''
+
+  // BỘ LỌC PHÒNG THỦ: Nếu trường pictureUrl trả về là dữ liệu test dạng "string" hoặc trống
+  if (!imageUrl || imageUrl.toLowerCase() === 'string') {
+    imageUrl = '' // Xoá sạch để ép giao diện dùng ảnh local fallback
+  } 
+  // 1. Kiểm tra nếu URL là một link tuyệt đối từ bên ngoài (ví dụ: unsplash)
+  else if (imageUrl.startsWith('http')) {
+    if (API_BASE_URL && !imageUrl.includes(API_BASE_URL)) {
+      imageUrl = '' // Không thuộc hệ thống thì cũng xoá để dùng ảnh local
+    }
+  } 
+  // 2. Nếu là đường dẫn tương đối từ API chuẩn của bạn (ví dụ: /uploads/abc.png)
+  else if (API_BASE_URL) {
+    // Check thêm trường hợp item.pictureUrl chỉ chứa đúng từ "string" sau dấu gạch chéo
+    if (imageUrl.replace(/^\/+/, '') === 'string') {
+      imageUrl = ''
+    } else {
+      imageUrl = `${API_BASE_URL}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`
+    }
   }
 
   return {
     id: item.id,
     slug: createSlug(item.title) || item.id,
     title: item.title,
-    summary: summary,
-    content: item.description, 
+    summary,
+    content: item.description,
     category: 'Tin tức',
     author: 'Hoa Theo Mùa',
     publishedAt: item.createdAt,
     readTime: `${Math.max(1, Math.ceil(stripHtml.split(/\s+/).filter(Boolean).length / 80))} phút đọc`,
     tags: item.categoryIds || [],
-    // Thêm trường này vào interface NewsItem nếu chưa có, hoặc tạm gán đè vào một biến mới
-    pictureUrl: imageUrl || '' 
+    pictureUrl: imageUrl // Đảm bảo luôn trả về URL chuẩn hoặc chuỗi rỗng
   }
 }
 
@@ -161,17 +175,18 @@ export async function fetchNewsItemById(id: string): Promise<NewsItem> {
 }
 
 export async function fetchNewsItem(slug: string): Promise<NewsItem> {
-  // Nếu là UUID (độ dài 36 ký tự đặc trưng), call thẳng API chi tiết luôn cho nhanh
+  if (!slug) {
+    throw new Error('Slug hoặc ID tin tức không được để trống')
+  }
+
   if (slug.length === 36 && slug.includes('-')) {
     return fetchNewsItemById(slug)
   }
   
-  // Ngược lại nếu là slug chữ, tìm kiếm trong list
   const news = await fetchNewsList()
   const article = news.find((item) => item.slug === slug)
 
   if (!article) {
-    // Thử check xem bản thân slug có phải là ID không
     try {
       return await fetchNewsItemById(slug)
     } catch {
@@ -179,7 +194,6 @@ export async function fetchNewsItem(slug: string): Promise<NewsItem> {
     }
   }
 
-  // Gọi lại API chi tiết để lấy full Content HTML thay vì chỉ lấy summary từ list
   return fetchNewsItemById(article.id)
 }
 

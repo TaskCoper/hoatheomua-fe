@@ -4,15 +4,14 @@ import type { Metadata } from 'next'
 import { Button } from '@/components/ui/button'
 import { fetchNewsItem, fetchNewsList, formatNewsDate } from '@/lib/news'
 import { FallingPetals } from '@/components/falling-petals'
-// import heroImage from '@/public/images/flower.png'
 import heroImage from '@/public/images/bg-news.png'
-// 1. Sửa hàm generateMetadata (Thêm await params)
+
 export async function generateMetadata({ 
   params 
 }: { 
   params: Promise<{ locale: string; slug: string }> 
 }): Promise<Metadata> {
-  const { slug } = await params // <-- Thêm dòng này để giải nén Promise
+  const { slug } = await params
   const article = await fetchNewsItem(slug)
 
   return {
@@ -21,14 +20,12 @@ export async function generateMetadata({
   }
 }
 
-// 2. Sửa hàm NewsDetailPage chính (Thêm await params)
 export default async function NewsDetailPage({ 
   params 
 }: { 
   params: Promise<{ locale: string; slug: string }> 
 }) {
-  const { slug, locale } = await params // <-- Thêm dòng này để giải nén Promise
-  
+  const { slug, locale } = await params
   const article = await fetchNewsItem(slug)
   const related = (await fetchNewsList()).filter((item) => item.slug !== slug).slice(0, 3)
 
@@ -60,9 +57,10 @@ export default async function NewsDetailPage({
         {/* Featured Image */}
         <div className='relative overflow-hidden rounded-3xl bg-muted h-96 sm:h-[500px]'>
           <Image
-            src={heroImage}
+            src={article.pictureUrl || heroImage}
             alt={article.title}
-            className='h-full w-full object-cover'
+            fill
+            className='object-cover'
             sizes='(min-width:1024px) 800px, 100vw'
             priority
           />
@@ -70,13 +68,12 @@ export default async function NewsDetailPage({
 
         {/* Main Content */}
         <article className='prose prose-sm max-w-none text-base leading-8 text-foreground dark:prose-invert prose-headings:text-foreground prose-p:text-foreground/90'>
-          
           {/* Summary / Sapo */}
           <div className='rounded-2xl border border-border/50 bg-primary/5 p-6 sm:p-8 italic text-lg not-prose mb-8'>
             <p className='text-foreground/90'>{article.summary}</p>
           </div>
 
-          {/* Render HTML Content */}
+          {/* Render Rich Text Content HTML */}
           <div 
             className='news-rich-text-content'
             dangerouslySetInnerHTML={{ __html: article.content }} 
@@ -107,9 +104,10 @@ export default async function NewsDetailPage({
               >
                 <div className='aspect-video relative overflow-hidden bg-muted'>
                   <Image
-                    src={heroImage}
+                    src={item.pictureUrl || heroImage}
                     alt={item.title}
-                    className='h-full w-full scale-100 object-cover transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
+                    fill
+                    className='scale-100 object-cover transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
                     sizes='(min-width:1024px) 350px, 100vw'
                   />
                 </div>

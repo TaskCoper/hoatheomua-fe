@@ -43,7 +43,7 @@ function OverlayNewsCard({
       className={`news-card-link group relative isolate flex overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-sm transition hover:border-primary/50 hover:shadow-lg ${className}`}
     >
       <Image
-        src={image}
+        src={item.pictureUrl || image}
         alt={item.title}
         fill
         className='scale-100 object-cover object-center transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
@@ -73,7 +73,7 @@ function StandardNewsCard({ item, image, locale }: { item: NewsItem; image: Stat
     >
       <div className='relative aspect-[4/3] overflow-hidden bg-muted'>
         <Image
-          src={image}
+          src={item.pictureUrl || image}
           alt={item.title}
           fill
           className='scale-100 object-cover object-center transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
@@ -95,7 +95,12 @@ function StandardNewsCard({ item, image, locale }: { item: NewsItem; image: Stat
   )
 }
 
-export default async function NewsPage({ params }: { params: { locale: string } }) {
+export default async function NewsPage({ 
+  params 
+}: { 
+  params: Promise<{ locale: string }> 
+}) {
+  const { locale } = await params
   const news = await fetchNewsList()
   const [featured, ...rest] = news
   const sideStories = [rest[0] ?? featured, rest[1] ?? featured].filter(Boolean)
@@ -148,19 +153,19 @@ export default async function NewsPage({ params }: { params: { locale: string } 
 
             <div className='grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.45fr)_minmax(0,0.9fr)] lg:items-stretch'>
               {sideStories[0] ? (
-                <StandardNewsCard item={sideStories[0]} image={getNewsImage(2)} locale={params.locale} />
+                <StandardNewsCard item={sideStories[0]} image={getNewsImage(2)} locale={locale} />
               ) : null}
 
               <OverlayNewsCard
                 item={featured}
                 image={getNewsImage(0)}
-                locale={params.locale}
+                locale={locale}
                 className='min-h-[430px] lg:min-h-[520px]'
                 titleClassName='text-3xl sm:text-4xl'
               />
 
               {sideStories[1] ? (
-                <StandardNewsCard item={sideStories[1]} image={getNewsImage(3)} locale={params.locale} />
+                <StandardNewsCard item={sideStories[1]} image={getNewsImage(3)} locale={locale} />
               ) : null}
             </div>
           </section>
@@ -180,7 +185,7 @@ export default async function NewsPage({ params }: { params: { locale: string } 
                 key={item.id}
                 item={item}
                 image={getNewsImage(index + 4)}
-                locale={params.locale}
+                locale={locale}
                 className='min-h-[320px]'
                 titleClassName='text-xl'
               />
@@ -198,7 +203,7 @@ export default async function NewsPage({ params }: { params: { locale: string } 
             >
               <div className='relative min-h-[280px] overflow-hidden bg-muted sm:min-h-[360px]'>
                 <Image
-                  src={getNewsImage(6)}
+                  src={wideStory.pictureUrl || getNewsImage(6)}
                   alt={wideStory.title}
                   fill
                   className='scale-100 object-cover object-center transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
@@ -211,7 +216,7 @@ export default async function NewsPage({ params }: { params: { locale: string } 
                     {wideStory.category}
                   </span>
                   <span className='text-sm text-muted-foreground'>
-                    {formatNewsDate(wideStory.publishedAt, params.locale)}
+                    {formatNewsDate(wideStory.publishedAt, locale)}
                   </span>
                 </div>
                 <h3 className='text-3xl font-bold leading-tight text-foreground transition group-hover:text-primary sm:text-4xl'>
@@ -234,7 +239,7 @@ export default async function NewsPage({ params }: { params: { locale: string } 
 
           <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4'>
             {compactStories.map((item, index) => (
-              <StandardNewsCard key={item.id} item={item} image={getNewsImage(index + 1)} locale={params.locale} />
+              <StandardNewsCard key={item.id} item={item} image={getNewsImage(index + 1)} locale={locale} />
             ))}
           </div>
         </section>
