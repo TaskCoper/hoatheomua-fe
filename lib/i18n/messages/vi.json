@@ -26,10 +26,32 @@
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
       "submit": "Đăng ký",
-      "signUpPrompt": "Đã có tài khoản? Đăng nhập"
+      "success": "Đăng kí thành công",
+      "signUpPrompt": "Đã có tài khoản? Đăng nhập",
+      "emailDescription": "Vui lòng kiểm tra email để xác thực tài khoản."
     },
     "signOut": {
       "submit": "Đăng xuất"
+    },
+    "verifyEmailPending": {
+      "changedMind": "Đổi ý rồi?",
+      "goBack": "Quay lại",
+      "title": "Kiểm tra email của bạn",
+      "verifyTitle": "Đang xác thực tài khoản",
+      "sentTo": "Chúng tôi hiện đang xác thực tài khoản bạn vui lòng chờ trong giây lát",
+      "fallbackEmail": "email của bạn",
+      "instruction": "Vui lòng mở hộp thư và nhấn vào liên kết để xác thực tài khoản của bạn.",
+      "resend": "Gửi lại liên kết xác thực",
+      "spamHint": "Không thấy email? ",
+      "changeEmail": "Dùng email khác",
+      "quoteLabel": "HOA THEO MÙA",
+      "quote": "Nơi những đóa hoa\nkể thay lời yêu thương",
+      "footer": "© 2026 Hoa Theo Mùa",
+      "success": "Xác thực thành công",
+      "verifying": "Đang xác thực...",
+      "preInstruct": "Chúng tôi đã gửi email đến ",
+      "postInstruct": " để xác nhận tính hợp lệ của địa chỉ email của bạn. Sau khi nhận được email, vui lòng nhấn vào liên kết được cung cấp để hoàn tất đăng ký.",
+      "tokenNoteFound": "Không tìm thấy token"
     }
   },
   "account": {
@@ -60,6 +82,7 @@
     },
     "validation": {
       "email": "Vui lòng nhập địa chỉ email hợp lệ.",
+      "required": "{field} là bắt buộc.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
       "maxLength": "{field} không được vượt quá {max} ký tự.",
       "phoneNumber": "Vui lòng nhập số điện thoại hợp lệ.",
@@ -203,6 +226,97 @@
     "preview": {
       "title": "Xem trước hồ sơ",
       "empty": "Nội dung thư ứng tuyển sẽ hiển thị tại đây."
+    }
+  },
+  "recruitment": {
+    "filter": {
+      "positionPlaceholder": "Tìm theo vị trí",
+      "search": "Tìm việc",
+      "branch": {
+        "placeholder": "Tất cả chi nhánh",
+        "options": {
+          "hoChiMinh": "Hồ Chí Minh",
+          "haNoi": "Hà Nội",
+          "daNang": "Đà Nẵng"
+        }
+      },
+      "employmentType": {
+        "placeholder": "Tất cả hình thức",
+        "options": {
+          "fullTime": "Toàn thời gian",
+          "partTime": "Bán thời gian",
+          "freelance": "Freelance"
+        }
+      },
+      "salary": {
+        "placeholder": "Tất cả mức lương",
+        "options": {
+          "range8To12": "8 - 12 triệu",
+          "range12To18": "12 - 18 triệu",
+          "above18": "Trên 18 triệu"
+        }
+      }
+    },
+    "sidebar": {
+      "newsletter": {
+        "title": "Nhận thông báo tuyển dụng",
+        "description": "Đừng bỏ lỡ cơ hội phù hợp với bạn.",
+        "emailPlaceholder": "Nhập email của bạn",
+        "submit": "Đăng ký nhận tin"
+      },
+      "groups": {
+        "jobType": {
+          "title": "Loại công việc",
+          "fullTime": "Toàn thời gian",
+          "partTime": "Bán thời gian",
+          "internship": "Thực tập",
+          "freelance": "Freelance"
+        },
+        "level": {
+          "title": "Cấp bậc",
+          "intern": "Thực tập sinh",
+          "staff": "Nhân viên",
+          "specialist": "Chuyên viên",
+          "manager": "Quản lý"
+        },
+        "location": {
+          "title": "Địa điểm",
+          "hoChiMinhCity": "TP. Hồ Chí Minh",
+          "haNoi": "Hà Nội",
+          "daNang": "Đà Nẵng"
+        }
+      },
+      "quote": "“Mỗi đóa hoa là một câu chuyện. Mỗi con người là một mảnh ghép làm nên điều đẹp đẽ.”"
+    },
+    "pagination": {
+      "previous": "Trang trước",
+      "next": "Trang sau",
+      "page": "Trang {page}"
+    },
+    "jobCard": {
+      "viewDetails": "Xem chi tiết {title}",
+      "save": "Lưu {title}",
+      "new": "Mới"
+    },
+    "jobDetail": {
+      "quickInfo": {
+        "experience": "Kinh nghiệm",
+        "level": "Cấp bậc",
+        "employmentType": "Hình thức",
+        "salary": "Lương"
+      },
+      "actions": {
+        "save": "Lưu tin tuyển dụng",
+        "share": "Chia sẻ tin tuyển dụng",
+        "apply": "Ứng tuyển ngay"
+      },
+      "posted": "Đăng tuyển {time}",
+      "sections": {
+        "overview": "Tổng quan",
+        "responsibilities": "Mô tả công việc",
+        "requirements": "Yêu cầu",
+        "benefits": "Quyền lợi"
+      }
     }
   },
   "dataTable": {

@@ -7,7 +7,6 @@ class AuthService {
 
   getMe = async () => {
     const { data } = await api.get<BaseResponse<Me>>(`${this.baseUrl}/me`)
-
     return data.value
   }
 
@@ -25,6 +24,19 @@ class AuthService {
 
   signOut = async () => {
     const { data } = await api.post<BaseResponse<string>>(`${this.baseUrl}/sign-out`)
+
+    return data.value
+  }
+
+  // TODO: valiadate email = zod
+  resendEmail = async ({ body }: { body: { email: string } }) => {
+    const { data } = await api.post<BaseResponse<string>>(`${this.baseUrl}/re-send-mail`, body)
+
+    return data.value
+  }
+
+  verifyEmail = async ({ body }: { body: { token: string } }) => {
+    const { data } = await api.post<BaseResponse<string>>(`${this.baseUrl}/verify-email`, body)
 
     return data.value
   }

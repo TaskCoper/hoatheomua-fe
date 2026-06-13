@@ -25,45 +25,47 @@ export default function SignUpForm() {
 
   return (
     <FieldGroup className='gap-2'>
-      <Controller
-        name='firstName'
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid} className='gap-1'>
-            <FieldLabel htmlFor={field.name}>{t('auth.signUp.firstName')}</FieldLabel>
-            <Input
-              {...field}
-              id={field.name}
-              aria-invalid={fieldState.invalid}
-              placeholder={t('auth.signUp.firstNamePlaceholder')}
-              autoComplete='given-name'
-            />
-            <div className='min-h-4'>
-              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-            </div>
-          </Field>
-        )}
-      />
+      <div className='grid gap-4 sm:grid-cols-2'>
+        <Controller
+          name='firstName'
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className='gap-1'>
+              <FieldLabel htmlFor={field.name}>{t('auth.signUp.firstName')}</FieldLabel>
+              <Input
+                {...field}
+                id={field.name}
+                aria-invalid={fieldState.invalid}
+                placeholder={t('auth.signUp.firstNamePlaceholder')}
+                autoComplete='given-name'
+              />
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
+            </Field>
+          )}
+        />
 
-      <Controller
-        name='lastName'
-        control={control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid} className='gap-1'>
-            <FieldLabel htmlFor={field.name}>{t('auth.signUp.lastName')}</FieldLabel>
-            <Input
-              {...field}
-              id={field.name}
-              aria-invalid={fieldState.invalid}
-              placeholder={t('auth.signUp.lastNamePlaceholder')}
-              autoComplete='family-name'
-            />
-            <div className='min-h-4'>
-              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-            </div>
-          </Field>
-        )}
-      />
+        <Controller
+          name='lastName'
+          control={control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className='gap-1'>
+              <FieldLabel htmlFor={field.name}>{t('auth.signUp.lastName')}</FieldLabel>
+              <Input
+                {...field}
+                id={field.name}
+                aria-invalid={fieldState.invalid}
+                placeholder={t('auth.signUp.lastNamePlaceholder')}
+                autoComplete='family-name'
+              />
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
+            </Field>
+          )}
+        />
+      </div>
 
       <Controller
         name='email'
