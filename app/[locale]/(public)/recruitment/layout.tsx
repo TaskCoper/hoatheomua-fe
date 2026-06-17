@@ -1,4 +1,4 @@
-import Header from '../../(public)/_components/header'
+import Header from '../_components/header'
 
 export default function RecruitmentLayout({ children }: { children: React.ReactNode }) {
   return (

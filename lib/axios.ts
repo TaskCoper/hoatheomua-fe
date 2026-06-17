@@ -1,3 +1,4 @@
+import { isPublicRoutePath } from '@/shared/constants'
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 
 interface ApiResponse {
@@ -35,8 +36,6 @@ export interface ErrorResponse {
   timestampUtc: string
 }
 
-const PUBLIC_ROUTE_PATHS = new Set(['/', '/sign-in', '/sign-up', '/verify', '/verify-sent'])
-
 const SUPPORTED_LOCALES = ['vi', 'en'] as const
 const DEFAULT_LOCALE = 'vi'
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
@@ -45,20 +44,11 @@ const isSupportedLocale = (value: string): value is SupportedLocale => {
   return SUPPORTED_LOCALES.includes(value as SupportedLocale)
 }
 
-const normalizePathname = (pathname: string) => {
-  if (pathname === '/') {
-    return pathname
-  }
-
-  return pathname.replace(/\/+$/, '')
-}
-
-const isPublicRoutePath = (pathname: string) => {
+const isCurrentPublicRoutePath = (pathname: string) => {
   const [, maybeLocale, ...segments] = pathname.split('/')
   const pathnameWithoutLocale = isSupportedLocale(maybeLocale) ? `/${segments.join('/')}` : pathname
-  const normalizedPathname = normalizePathname(pathnameWithoutLocale)
 
-  return PUBLIC_ROUTE_PATHS.has(normalizedPathname)
+  return isPublicRoutePath(pathnameWithoutLocale)
 }
 
 const getCurrentLanguage = () => {
@@ -140,7 +130,7 @@ const refreshAccessToken = async (): Promise<boolean> => {
     // If refresh token is invalid
     if (error.response?.data?.messageCode === 'EXPIRED_REFRESH_TOKEN') {
       // TODO: clear all zustand persisted states here
-      const isOnPublicRoute = isPublicRoutePath(window.location.pathname)
+      const isOnPublicRoute = isCurrentPublicRoutePath(window.location.pathname)
 
       // Avoid hard-reload loops when a protected call is made from public pages.
       if (!isOnPublicRoute) {
