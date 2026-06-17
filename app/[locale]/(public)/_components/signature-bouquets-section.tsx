@@ -1,6 +1,9 @@
+'use client'
+
 import flowerImage from '@/public/images/flower.png'
 import { ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { SparkleDivider } from './sparkle-dividier'
 
@@ -25,10 +28,47 @@ const SIGNATURE_BOUQUETS = [
   { id: 6, name: 'Hoa Dại', price: '550.000đ/Bó', imageClassName: 'scale-100 rotate-[-8deg]' }
 ]
 
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 36 },
+  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 18 } }
+}
+
+const listStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } }
+}
+
+const listItem: Variants = {
+  hidden: { opacity: 0, x: -24 },
+  visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 200, damping: 20 } }
+}
+
+const cardStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } }
+}
+
+const cardItem: Variants = {
+  hidden: { opacity: 0, y: 50, scale: 0.88, rotate: -2 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotate: 0,
+    transition: { type: 'spring', stiffness: 150, damping: 16 }
+  }
+}
+
 export default function SignatureBouquetsSection() {
   return (
     <>
-      <div className='my-4 sm:my-6 md:my-8 lg:my-10 space-y-2 overflow-hidden px-4'>
+      <motion.div
+        initial='hidden'
+        whileInView='visible'
+        viewport={{ once: true, margin: '-80px' }}
+        variants={fadeUp}
+        className='my-4 sm:my-6 md:my-8 lg:my-10 space-y-2 overflow-hidden px-4'
+      >
         <div className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'>
           <div className='flex items-center justify-start sm:justify-center gap-3'>
             <SparkleDivider
@@ -49,22 +89,32 @@ export default function SignatureBouquetsSection() {
             />
           </div>
 
-          <p className='leading-relaxed mx-auto max-w-full sm:max-w-140 md:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground/80'>
+          <p className='leading-relaxed mx-auto max-w-full sm:max-w-140 md:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
             Được cắm thủ công tỉ mỉ bởi những nghệ nhân chuyên nghiệp với các loài hoa tươi mới nhất, mỗi bó hoa của
             chúng tôi đều mang đến vẻ đẹp, hương thơm và ấn tượng khó quên cho mọi dịp.
           </p>
         </div>
-      </div>
+      </motion.div>
 
       <section className='relative left-1/2 -translate-x-1/2 bg-background'>
         <div className='mx-auto grid w-full max-w-7xl gap-4 px-4 lg:grid-cols-12'>
-          <div className='flex flex-col gap-2 items-center lg:items-start text-sm text-muted-foreground lg:col-span-5'>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-60px' }}
+            variants={listStagger}
+            className='flex flex-col gap-2 items-center lg:items-start text-sm text-muted-foreground lg:col-span-5'
+          >
             {SIGNATURE_FLOWERS.map((flower, index) => {
               const isActive = index === 2
 
               return (
-                <button
+                <motion.button
                   key={flower}
+                  variants={listItem}
+                  whileHover={{ x: 6, scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 18 }}
                   type='button'
                   className={[
                     'block w-full sm:w-fit rounded-xl px-3 py-2 text-center lg:text-left text-xs sm:text-sm transition-colors',
@@ -74,17 +124,29 @@ export default function SignatureBouquetsSection() {
                   ].join(' ')}
                 >
                   {flower}
-                </button>
+                </motion.button>
               )
             })}
-          </div>
+          </motion.div>
 
-          <div className='grid gap-4 sm:gap-6 md:gap-8 lg:gap-10 grid-cols-2 lg:col-span-7 xl:grid-cols-3'>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-60px' }}
+            variants={cardStagger}
+            className='grid gap-4 sm:gap-6 md:gap-8 lg:gap-10 grid-cols-2 lg:col-span-7 xl:grid-cols-3'
+          >
             {SIGNATURE_BOUQUETS.map((bouquet, index) => {
               const isActive = index === 0
 
               return (
-                <article key={bouquet.id} className={['relative h-60', isActive ? 'rounded-[1.75rem]' : ''].join(' ')}>
+                <motion.article
+                  key={bouquet.id}
+                  variants={cardItem}
+                  whileHover={{ y: -12, scale: 1.035 }}
+                  transition={{ type: 'spring', stiffness: 240, damping: 18 }}
+                  className={['group relative h-60', isActive ? 'rounded-[1.75rem]' : ''].join(' ')}
+                >
                   {isActive ? (
                     <div
                       aria-hidden='true'
@@ -99,12 +161,25 @@ export default function SignatureBouquetsSection() {
                     ].join(' ')}
                   >
                     <div className='flex flex-1 items-center justify-center'>
-                      <Image
-                        src={flowerImage}
-                        alt=''
-                        className={`h-32 w-auto object-contain ${bouquet.imageClassName}`}
-                        loading='lazy'
-                      />
+                      <motion.div
+                        animate={{ y: [0, -6, 0], rotate: [0, -2, 0, 2, 0] }}
+                        whileHover={{ scale: 1.12, rotate: -6 }}
+                        transition={{
+                          y: { duration: 3.5 + (index % 3) * 0.4, repeat: Infinity, ease: 'easeInOut' },
+                          rotate: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
+                          scale: { type: 'spring', stiffness: 240, damping: 16 }
+                        }}
+                        className='flex items-center justify-center'
+                      >
+                        <Image
+                          src={flowerImage}
+                          alt={bouquet.name}
+                          className={`h-32 w-auto object-contain ${bouquet.imageClassName}`}
+                          sizes='8rem'
+                          loading='lazy'
+                          quality={70}
+                        />
+                      </motion.div>
                     </div>
 
                     <div className='flex items-end justify-between gap-4'>
@@ -113,19 +188,22 @@ export default function SignatureBouquetsSection() {
                         <p className='text-xs font-medium text-foreground'>{bouquet.price}</p>
                       </div>
 
-                      <button
+                      <motion.button
                         type='button'
+                        whileHover={{ scale: 1.15, rotate: -12 }}
+                        whileTap={{ scale: 0.92 }}
+                        transition={{ type: 'spring', stiffness: 380, damping: 12 }}
                         className='grid size-8 shrink-0 place-items-center rounded-full border border-foreground bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground'
                         aria-label={`Thêm ${bouquet.name} vào giỏ`}
                       >
                         <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
-                </article>
+                </motion.article>
               )
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
     </>

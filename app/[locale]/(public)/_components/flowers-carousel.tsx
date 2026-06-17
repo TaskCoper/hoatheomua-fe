@@ -83,7 +83,7 @@ export default function FlowersCarousel() {
                   isActive ? 'relative z-20' : isCornerItem ? 'relative z-10' : ''
                 ].join(' ')}
                 onClick={() => emblaApi?.scrollTo(index)}
-                aria-label={item.label}
+                aria-label={`${item.label} — ${item.price}`}
               >
                 <div
                   className='flex flex-col items-center text-center'
@@ -113,14 +113,16 @@ export default function FlowersCarousel() {
                     <Image
                       src={item.image}
                       alt=''
+                      aria-hidden='true'
                       className='pointer-events-none col-start-1 row-start-1 object-contain'
                       style={{
                         width: imageSize,
                         height: imageSize,
                         transition: `width 550ms ${EASE}, height 550ms ${EASE}`
                       }}
-                      priority={index < 3}
-                      loading={index < 3 ? 'eager' : 'lazy'}
+                      sizes='(min-width: 1024px) 320px, (min-width: 768px) 240px, (min-width: 640px) 180px, 160px'
+                      loading='lazy'
+                      quality={55}
                     />
                   </div>
 

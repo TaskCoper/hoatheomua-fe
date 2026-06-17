@@ -1,12 +1,15 @@
+'use client'
+
 import petal1 from '@/public/images/petal-1.png'
 import petal2 from '@/public/images/petal-2.png'
 import petal3 from '@/public/images/petal-3.png'
 import type { StaticImageData } from 'next/image'
 import Image from 'next/image'
-import type { CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 
 const PETAL_IMAGES = [petal1, petal2, petal3]
-const PETAL_COUNT = 50
+const PETAL_COUNT = 24
+const RENDER_DELAY_MS = 2500
 
 const seededRandom = (seed: number) => {
   const value = Math.sin(seed * 999) * 10000
@@ -58,13 +61,42 @@ const FLOATING_PETALS: Array<{
 })
 
 export default function FloatingPetals() {
+  const [shouldRender, setShouldRender] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
+    const schedule = (cb: () => void) => {
+      const ric = (
+        window as typeof window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }
+      ).requestIdleCallback
+      if (ric) {
+        ric(cb, { timeout: RENDER_DELAY_MS + 500 })
+      } else {
+        window.setTimeout(cb, RENDER_DELAY_MS)
+      }
+    }
+
+    const timer = window.setTimeout(() => schedule(() => setShouldRender(true)), RENDER_DELAY_MS)
+
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  if (!shouldRender) return null
+
   return (
-    <div className='pointer-events-none absolute inset-0 z-20' aria-hidden='true'>
+    <div className='pointer-events-none fixed inset-0 z-20 overflow-hidden' aria-hidden='true'>
       {FLOATING_PETALS.map((petal) => (
         <Image
           key={petal.id}
           src={petal.src}
           alt=''
+          loading='lazy'
+          fetchPriority='low'
+          sizes='160px'
+          quality={50}
           className='page-petal-drop absolute h-auto select-none'
           style={
             {

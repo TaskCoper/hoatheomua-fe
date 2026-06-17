@@ -83,11 +83,15 @@ export default function Header() {
           aria-label='Điều hướng chính'
           className='relative isolate justify-self-center rounded-full bg-primary p-1 shadow-md hidden lg:block'
         >
-          <Image src={vine} alt='Cành nho' className='pointer-events-none absolute -left-20 -top-8 z-0 h-14 w-auto' />
           <Image
             src={vine}
             alt='Cành nho'
-            className='pointer-events-none absolute -right-20 -top-8 z-0 h-14 w-auto -scale-x-100'
+            className='pointer-events-none absolute hidden xl:block -left-20 -top-8 z-0 h-14 w-auto'
+          />
+          <Image
+            src={vine}
+            alt='Cành nho'
+            className='pointer-events-none absolute hidden xl:block -right-20 -top-8 z-0 h-14 w-auto -scale-x-100'
           />
 
           <ul className='relative z-10 flex items-center gap-4'>
@@ -116,7 +120,7 @@ export default function Header() {
           </ul>
         </nav>
 
-        <div className='hidden items-center gap-2 lg:flex lg:justify-self-end'>
+        <div className='hidden items-center gap-2 lg:flex lg:justify-self-end z-10'>
           {isGettingMe ? (
             <Skeleton className='h-9 w-32 rounded-full' />
           ) : isAuthenticated ? (
