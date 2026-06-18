@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import flowerImage from '@/public/images/flower.png'
 import { ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -8,25 +9,25 @@ import Image from 'next/image'
 import { SparkleDivider } from './sparkle-dividier'
 
 const SIGNATURE_FLOWERS = [
-  'Mẫu Đơn — Paeonia lactiflora',
-  'Hồ Điệp — Phalaenopsis Amabilis',
-  'Hoa Loa Kèn — Zantedeschia aethiopica',
-  'Linh Lan — Convallaria Majalis',
-  'Thiên Điểu — Strelitzia Reginae',
-  'Dạ Lan Hương — Hyacinthus Orientalis',
-  'Tulip (Giống Cao Cấp) — Tulipa gesneriana',
-  'Hồng Vườn (David Austin) — Rosa × Hybrida',
-  'Phong Quỳ — Anemone Coronaria'
-]
+  'home.signatureBouquets.flowers.peony',
+  'home.signatureBouquets.flowers.phalaenopsis',
+  'home.signatureBouquets.flowers.calla',
+  'home.signatureBouquets.flowers.lilyOfTheValley',
+  'home.signatureBouquets.flowers.birdOfParadise',
+  'home.signatureBouquets.flowers.hyacinth',
+  'home.signatureBouquets.flowers.tulip',
+  'home.signatureBouquets.flowers.gardenRose',
+  'home.signatureBouquets.flowers.anemone'
+] as const
 
 const SIGNATURE_BOUQUETS = [
-  { id: 1, name: 'Hồng Cổ Điển', price: '550.000đ/Bó', imageClassName: 'scale-105 rotate-[-6deg]' },
-  { id: 2, name: 'Hồng Phấn', price: '550.000đ/Bó', imageClassName: 'scale-110 rotate-[8deg]' },
-  { id: 3, name: 'Đào Bung Nở', price: '550.000đ/Bó', imageClassName: 'scale-95 rotate-[2deg]' },
-  { id: 4, name: 'Berry Ngọt Ngào', price: '550.000đ/Bó', imageClassName: 'scale-100 rotate-[-2deg]' },
-  { id: 5, name: 'Hồng Pastel', price: '550.000đ/Bó', imageClassName: 'scale-105 rotate-[5deg]' },
-  { id: 6, name: 'Hoa Dại', price: '550.000đ/Bó', imageClassName: 'scale-100 rotate-[-8deg]' }
-]
+  { id: 1, nameKey: 'home.signatureBouquets.bouquets.classicRose', imageClassName: 'scale-105 rotate-[-6deg]' },
+  { id: 2, nameKey: 'home.signatureBouquets.bouquets.pinkRose', imageClassName: 'scale-110 rotate-[8deg]' },
+  { id: 3, nameKey: 'home.signatureBouquets.bouquets.peachBloom', imageClassName: 'scale-95 rotate-[2deg]' },
+  { id: 4, nameKey: 'home.signatureBouquets.bouquets.sweetBerry', imageClassName: 'scale-100 rotate-[-2deg]' },
+  { id: 5, nameKey: 'home.signatureBouquets.bouquets.pastelRose', imageClassName: 'scale-105 rotate-[5deg]' },
+  { id: 6, nameKey: 'home.signatureBouquets.bouquets.wildflower', imageClassName: 'scale-100 rotate-[-8deg]' }
+] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -60,6 +61,8 @@ const cardItem: Variants = {
 }
 
 export default function SignatureBouquetsSection() {
+  const { t } = useTranslation()
+
   return (
     <>
       <motion.div
@@ -78,7 +81,7 @@ export default function SignatureBouquetsSection() {
             />
 
             <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-              Bó Hoa Đặc Trưng
+              {t('home.signatureBouquets.title')}
             </h1>
 
             <SparkleDivider
@@ -90,8 +93,7 @@ export default function SignatureBouquetsSection() {
           </div>
 
           <p className='leading-relaxed mx-auto max-w-full sm:max-w-140 md:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-            Được cắm thủ công tỉ mỉ bởi những nghệ nhân chuyên nghiệp với các loài hoa tươi mới nhất, mỗi bó hoa của
-            chúng tôi đều mang đến vẻ đẹp, hương thơm và ấn tượng khó quên cho mọi dịp.
+            {t('home.signatureBouquets.description')}
           </p>
         </div>
       </motion.div>
@@ -105,12 +107,12 @@ export default function SignatureBouquetsSection() {
             variants={listStagger}
             className='flex flex-col gap-2 items-center lg:items-start text-sm text-muted-foreground lg:col-span-5'
           >
-            {SIGNATURE_FLOWERS.map((flower, index) => {
+            {SIGNATURE_FLOWERS.map((flowerKey, index) => {
               const isActive = index === 2
 
               return (
                 <motion.button
-                  key={flower}
+                  key={flowerKey}
                   variants={listItem}
                   whileHover={{ x: 6, scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
@@ -123,7 +125,7 @@ export default function SignatureBouquetsSection() {
                       : 'hover:text-primary'
                   ].join(' ')}
                 >
-                  {flower}
+                  {t(flowerKey)}
                 </motion.button>
               )
             })}
@@ -138,6 +140,7 @@ export default function SignatureBouquetsSection() {
           >
             {SIGNATURE_BOUQUETS.map((bouquet, index) => {
               const isActive = index === 0
+              const bouquetName = t(bouquet.nameKey)
 
               return (
                 <motion.article
@@ -173,7 +176,7 @@ export default function SignatureBouquetsSection() {
                       >
                         <Image
                           src={flowerImage}
-                          alt={bouquet.name}
+                          alt={bouquetName}
                           className={`h-32 w-auto object-contain ${bouquet.imageClassName}`}
                           sizes='8rem'
                           loading='lazy'
@@ -184,8 +187,8 @@ export default function SignatureBouquetsSection() {
 
                     <div className='flex items-end justify-between gap-4'>
                       <div className='min-w-0'>
-                        <h2 className='truncate text-base font-bold leading-tight text-foreground'>{bouquet.name}</h2>
-                        <p className='text-xs font-medium text-foreground'>{bouquet.price}</p>
+                        <h2 className='truncate text-base font-bold leading-tight text-foreground'>{bouquetName}</h2>
+                        <p className='text-xs font-medium text-foreground'>{t('home.signatureBouquets.price')}</p>
                       </div>
 
                       <motion.button
@@ -194,7 +197,7 @@ export default function SignatureBouquetsSection() {
                         whileTap={{ scale: 0.92 }}
                         transition={{ type: 'spring', stiffness: 380, damping: 12 }}
                         className='grid size-8 shrink-0 place-items-center rounded-full border border-foreground bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground'
-                        aria-label={`Thêm ${bouquet.name} vào giỏ`}
+                        aria-label={t('home.signatureBouquets.addToCart', { name: bouquetName })}
                       >
                         <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
                       </motion.button>

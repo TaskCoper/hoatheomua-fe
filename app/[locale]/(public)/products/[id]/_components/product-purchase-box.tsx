@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { useGetMe } from '@/features/auth/hooks/use-get-me'
 import type { ProductUnit } from '@/features/products/types'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { buildLineId, MAX_QUANTITY, useCartStore } from '@/stores/cart.store'
 import { FlashIcon, MinusSignIcon, PlusSignIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
@@ -35,6 +36,7 @@ export default function ProductPurchaseBox({
   oldPrice: number
   units: ProductUnit[]
 }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -66,7 +68,9 @@ export default function ProductPurchaseBox({
     [productId, variantId, selectedOptions]
   )
 
-  const inCartQuantity = useCartStore((state) => state.items.find((item) => item.lineId === targetLineId)?.quantity ?? 0)
+  const inCartQuantity = useCartStore(
+    (state) => state.items.find((item) => item.lineId === targetLineId)?.quantity ?? 0
+  )
 
   const remainingStock = Math.max(0, Math.min(available, MAX_QUANTITY) - inCartQuantity)
   const canAdd = remainingStock > 0
@@ -95,14 +99,16 @@ export default function ProductPurchaseBox({
       selectedOptions
     })
 
-    toast.success('Đã thêm vào giỏ hàng', { description: productName })
+    toast.success(t('products.detail.purchase.addedToCart'), { description: productName })
   }
 
   return (
     <div className='space-y-5 rounded-3xl bg-card px-4 py-5 shadow-[0_0.8rem_2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'>
       {hasVariants ? (
         <div className='space-y-2'>
-          <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>Đóng gói</p>
+          <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+            {t('products.detail.purchase.packaging')}
+          </p>
           <div className='flex flex-wrap gap-2'>
             {variantOptions.map((unit) => {
               const isActive = unit.id === activeUnitId
@@ -132,7 +138,7 @@ export default function ProductPurchaseBox({
 
       <div className='grid gap-4'>
         <div className='space-y-2'>
-          <p className='text-sm font-semibold text-muted-foreground'>Số lượng</p>
+          <p className='text-sm font-semibold text-muted-foreground'>{t('products.detail.purchase.quantity')}</p>
 
           <div className='inline-flex items-center gap-1 rounded-full bg-secondary/20 p-1 ring-1 ring-foreground/10'>
             <Button
@@ -141,7 +147,7 @@ export default function ProductPurchaseBox({
               variant='ghost'
               className='rounded-full'
               onClick={decrement}
-              aria-label='Giảm số lượng'
+              aria-label={t('products.detail.purchase.decreaseQuantity')}
               disabled={!inStock || effectiveQuantity <= 1}
             >
               <HugeiconsIcon icon={MinusSignIcon} className='size-3.5' />
@@ -153,7 +159,7 @@ export default function ProductPurchaseBox({
               variant='ghost'
               className='rounded-full'
               onClick={increment}
-              aria-label='Tăng số lượng'
+              aria-label={t('products.detail.purchase.increaseQuantity')}
               disabled={!canAdd || effectiveQuantity >= remainingStock}
             >
               <HugeiconsIcon icon={PlusSignIcon} className='size-3.5' />
@@ -162,17 +168,17 @@ export default function ProductPurchaseBox({
 
           {inStock && inCartQuantity > 0 && canAdd ? (
             <p className='text-xs text-muted-foreground'>
-              Đã có {inCartQuantity} trong giỏ · còn lại {remainingStock}
+              {t('products.detail.purchase.inCartInfo', { inCart: inCartQuantity, remaining: remainingStock })}
             </p>
           ) : null}
           {inStock && !canAdd ? (
-            <p className='text-xs text-rose-500'>Đã đạt giới hạn tồn kho trong giỏ</p>
+            <p className='text-xs text-rose-500'>{t('products.detail.purchase.stockLimit')}</p>
           ) : null}
-          {!inStock ? <p className='text-xs text-rose-500'>Hết hàng</p> : null}
+          {!inStock ? <p className='text-xs text-rose-500'>{t('products.detail.purchase.outOfStock')}</p> : null}
         </div>
 
         <div className='space-y-1'>
-          <p className='text-sm font-semibold text-muted-foreground'>Giá</p>
+          <p className='text-sm font-semibold text-muted-foreground'>{t('products.detail.purchase.priceLabel')}</p>
           <div className='flex items-baseline gap-2'>
             <motion.span
               key={currentRetail}
@@ -188,7 +194,9 @@ export default function ProductPurchaseBox({
             ) : null}
           </div>
           {hasDiscount ? (
-            <p className='text-xs font-semibold text-rose-500'>Tiết kiệm {discountPercent}%</p>
+            <p className='text-xs font-semibold text-rose-500'>
+              {t('products.detail.purchase.savings', { percent: discountPercent })}
+            </p>
           ) : null}
         </div>
       </div>
@@ -208,7 +216,7 @@ export default function ProductPurchaseBox({
             onClick={handleAddToCart}
           >
             <HugeiconsIcon icon={ShoppingBasket02Icon} />
-            Thêm vào giỏ
+            {t('products.detail.purchase.addToCart')}
           </Button>
         </motion.div>
 
@@ -220,7 +228,7 @@ export default function ProductPurchaseBox({
         >
           <Button type='button' size='lg' variant='secondary' className='w-full' disabled={!inStock}>
             <HugeiconsIcon icon={FlashIcon} />
-            Mua ngay
+            {t('products.detail.purchase.buyNow')}
           </Button>
         </motion.div>
       </div>

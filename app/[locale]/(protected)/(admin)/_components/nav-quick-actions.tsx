@@ -7,9 +7,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem
 } from '@/components/ui/sidebar'
+import { Link } from '@/lib/i18n/navigation'
 import { MoreHorizontalCircle01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import Link from 'next/link'
 
 export function NavQuickActions({
   projects

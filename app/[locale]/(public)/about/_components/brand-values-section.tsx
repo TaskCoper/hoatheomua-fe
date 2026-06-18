@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import leftBranch from '@/public/images/left-branch.png'
 import { Diamond01Icon, Flag03Icon, HappyIcon, Leaf01Icon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -11,43 +12,36 @@ const BRAND_VALUES = [
   {
     number: '01',
     icon: HappyIcon,
-    title: 'Enjoy Cuộc Sống',
-    description:
-      'Hoa Theo Mùa không chỉ mang hoa mà còn gửi gắm những giá trị tích cực để bạn cảm nhận vẻ đẹp và lắng nghe sự bình yên trong tâm hồn. Tận hưởng từng bông hoa là cách để bạn trân trọng cuộc sống và tìm thấy niềm vui riêng.'
+    titleKey: 'about.values.items.enjoy.title',
+    descriptionKey: 'about.values.items.enjoy.description'
   },
   {
     number: '02',
     icon: Leaf01Icon,
-    title: 'Thân Thiện Môi Trường',
-    description:
-      'Chúng tôi dùng chất liệu tự nhiên như rổ mây, giỏ tre, giấy kraft… giúp giảm thiểu nhựa và tạo nên sản phẩm vừa đẹp, vừa giữ gìn môi trường.'
+    titleKey: 'about.values.items.eco.title',
+    descriptionKey: 'about.values.items.eco.description'
   },
   {
     number: '03',
     icon: SparklesIcon,
-    title: 'Tinh Tế',
-    description:
-      'Hoa Theo Mùa hiểu và tôn vinh vẻ đẹp của hoa dành cho tâm hồn người phụ nữ. Chăm chút từng chi tiết, mang đến cảm giác đồng điệu và yêu thương.'
+    titleKey: 'about.values.items.elegant.title',
+    descriptionKey: 'about.values.items.elegant.description'
   },
   {
     number: '04',
     icon: Diamond01Icon,
-    title: 'Đơn Giản',
-    description:
-      'Lấy cảm hứng từ vẻ đẹp tự nhiên — chất liệu mộc mạc, sắc màu nhẹ nhàng, tôn vinh vẻ đẹp chân thật của hoa.'
+    titleKey: 'about.values.items.simple.title',
+    descriptionKey: 'about.values.items.simple.description'
   },
   {
     number: '05',
     icon: Flag03Icon,
-    title: 'Trân Trọng Giá Trị Việt',
-    description:
-      'Chúng tôi trân trọng và tôn vinh vẻ đẹp Việt: từ những mùa hoa, làng nghề, đến các sản phẩm sáng tạo mang dấu ấn văn hóa Việt Nam.'
+    titleKey: 'about.values.items.vietnamese.title',
+    descriptionKey: 'about.values.items.vietnamese.description'
   }
-]
+] as const
 
 const [featuredValue, ...restValues] = BRAND_VALUES
-
-const EASE = [0.22, 0.61, 0.36, 1] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -70,6 +64,8 @@ const cardItem: Variants = {
 }
 
 export default function BrandValuesSection() {
+  const { t } = useTranslation()
+
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
       <motion.div
@@ -87,7 +83,7 @@ export default function BrandValuesSection() {
           />
 
           <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-            Giá Trị Chúng Tôi Hướng Đến
+            {t('about.values.title')}
           </h1>
 
           <SparkleDivider
@@ -99,14 +95,13 @@ export default function BrandValuesSection() {
         </div>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          Từ những mong muốn mang đến cảm xúc bình yên ấy, Hoa Theo Mùa đã đúc kết nên năm giá trị cốt lõi — những điều
-          tốt đẹp được gửi trao trong từng sản phẩm đến tay khách hàng.
+          {t('about.values.description')}
         </p>
       </motion.div>
 
       <Image
         src={leftBranch}
-        alt='Cành lá trang trí'
+        alt={t('about.values.branchAlt')}
         className='wind-wiggle-left absolute -left-8 top-0 h-56 w-auto opacity-30 hidden lg:block pointer-events-none'
         aria-hidden='true'
       />
@@ -121,7 +116,6 @@ export default function BrandValuesSection() {
           transition={{ type: 'spring', stiffness: 220, damping: 18 }}
           className='group relative flex h-full self-stretch flex-col gap-3 overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground shadow-[0_0.8rem_2rem_rgb(81_108_108/16%)] sm:p-6 lg:col-span-5'
         >
-          {/* Image 3 — seamless botanical tile over the solid sage card; absent file = no overlay. */}
           <span
             aria-hidden='true'
             className='pointer-events-none absolute inset-0 opacity-10'
@@ -161,12 +155,14 @@ export default function BrandValuesSection() {
 
           <div className='relative space-y-1.5'>
             <p className='text-[0.625rem] font-bold uppercase tracking-widest text-primary-foreground/70'>
-              Giá Trị Cốt Lõi
+              {t('about.values.coreLabel')}
             </p>
             <h2 className='font-title text-xl font-bold leading-tight sm:text-2xl lg:text-3xl'>
-              {featuredValue.title}
+              {t(featuredValue.titleKey)}
             </h2>
-            <p className='text-xs leading-relaxed text-primary-foreground/90 sm:text-sm'>{featuredValue.description}</p>
+            <p className='text-xs leading-relaxed text-primary-foreground/90 sm:text-sm'>
+              {t(featuredValue.descriptionKey)}
+            </p>
           </div>
         </motion.article>
 
@@ -203,8 +199,10 @@ export default function BrandValuesSection() {
               </motion.div>
 
               <div className='relative space-y-1'>
-                <h2 className='font-title text-base font-bold leading-tight text-primary lg:text-lg'>{value.title}</h2>
-                <p className='text-xs leading-relaxed text-foreground'>{value.description}</p>
+                <h2 className='font-title text-base font-bold leading-tight text-primary lg:text-lg'>
+                  {t(value.titleKey)}
+                </h2>
+                <p className='text-xs leading-relaxed text-foreground'>{t(value.descriptionKey)}</p>
               </div>
             </motion.article>
           ))}

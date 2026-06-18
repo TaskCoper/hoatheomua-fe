@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Product } from '@/features/products/types'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { FavouriteIcon, FlowerIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -28,6 +29,7 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
 const formatVnd = (value: number) => vndFormatter.format(value)
 
 export default function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
+  const { t } = useTranslation()
   const retail = product.prices?.retail ?? 0
   const oldPrice = product.prices?.old ?? 0
   const hasDiscount = oldPrice > retail
@@ -111,7 +113,7 @@ export default function ProductCard({ product, eager = false }: { product: Produ
             variant='outline'
             size='icon-sm'
             className='rounded-full bg-card/95 text-foreground shadow-sm hover:text-rose-500'
-            aria-label={`Thêm ${product.name} vào yêu thích`}
+            aria-label={t('products.card.addToFavorites', { name: product.name })}
             onClick={(event) => event.preventDefault()}
           >
             <HugeiconsIcon icon={FavouriteIcon} className='size-4' />
@@ -129,7 +131,7 @@ export default function ProductCard({ product, eager = false }: { product: Produ
             {hasDiscount ? (
               <p className='text-[0.625rem] text-muted-foreground line-through'>{formatVnd(oldPrice)}</p>
             ) : (
-              <p className='text-xs font-medium text-muted-foreground'>Giá từ</p>
+              <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>
             )}
             <p className='font-title text-sm font-bold text-primary sm:text-base'>{formatVnd(retail)}</p>
           </div>
@@ -143,7 +145,7 @@ export default function ProductCard({ product, eager = false }: { product: Produ
               type='button'
               size='icon'
               className='rounded-full hover:bg-foreground'
-              aria-label={`Thêm ${product.name} vào giỏ`}
+              aria-label={t('products.card.addToCart', { name: product.name })}
             >
               <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
             </Button>

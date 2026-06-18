@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import flower from '@/public/images/flower.png'
 import { Calendar03Icon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -7,13 +8,7 @@ import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import DecorImage from './decor-image'
 
-const STORY_PARAGRAPHS = [
-  'Đối với những người từng lưu chân ở Hà Nội thì ký ức về những mùa hoa có lẽ là một trong những điều sâu sắc nhất.',
-  'Cảm xúc bâng khuâng, bồi hồi khi thả hồn vào những gánh hàng hoa rong ruổi khắp các ngõ phố… những ngày giao mùa bao giờ cũng làm ta xao xuyến đến lạ!',
-  'Và cũng với cảm xúc ấy trong một lần ngân nga theo giai điệu bài hát "Hà Nội 12 mùa hoa", tâm thức của tôi nhận ra điều gì đó thuộc về mình một cách rất tự nhiên.'
-]
-
-const EASE = [0.22, 0.61, 0.36, 1] as const
+const STORY_PARAGRAPH_KEYS = ['about.hero.story1', 'about.hero.story2', 'about.hero.story3'] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -66,6 +61,8 @@ const stampPop: Variants = {
 }
 
 export default function AboutHeroSection() {
+  const { t } = useTranslation()
+
   return (
     <motion.section
       initial='hidden'
@@ -86,14 +83,12 @@ export default function AboutHeroSection() {
         className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
       >
         <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-          Câu Chuyện Của Chúng Tôi
+          {t('about.hero.title')}
         </h1>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          Câu chuyện của Hoa Theo Mùa là câu chuyện về{' '}
-          <span className='font-semibold text-primary'>CEO Lê Thị Hoa Đào</span> — về những cảm xúc của hoa, của những
-          ký ức và của sự đồng cảm từ tâm hồn người phụ nữ mong muốn mang đến những giá trị bình yên, nuôi dưỡng sự tích
-          cực qua từng lời kể tâm tình.
+          {t('about.hero.intro')} <span className='font-semibold text-primary'>{t('about.hero.ceoName')}</span>{' '}
+          {t('about.hero.introAfter')}
         </p>
       </motion.div>
 
@@ -123,7 +118,7 @@ export default function AboutHeroSection() {
               >
                 <Image
                   src={flower}
-                  alt='Bó hoa Hoa Theo Mùa'
+                  alt={t('about.hero.imageAlt')}
                   className='h-48 w-auto object-contain sm:h-60 lg:h-68'
                   sizes='(min-width: 1024px) 17rem, (min-width: 640px) 15rem, 12rem'
                   priority
@@ -139,7 +134,9 @@ export default function AboutHeroSection() {
                 className='absolute -top-2 right-2 hidden rounded-xl bg-card px-2.5 py-1.5 text-center shadow-md ring-1 ring-foreground/5 sm:block'
               >
                 <p className='font-title text-base font-bold text-primary leading-none'>12</p>
-                <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>Mùa Hoa</p>
+                <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>
+                  {t('about.hero.twelveLabel')}
+                </p>
               </motion.div>
 
               <motion.div
@@ -149,7 +146,9 @@ export default function AboutHeroSection() {
                 className='absolute top-1/2 -left-3 hidden -translate-y-1/2 rounded-xl bg-card px-2.5 py-1.5 text-center shadow-md ring-1 ring-foreground/5 lg:block'
               >
                 <p className='font-title text-sm font-bold text-leaf leading-none'>100%</p>
-                <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>Tự Nhiên</p>
+                <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>
+                  {t('about.hero.naturalLabel')}
+                </p>
               </motion.div>
             </motion.div>
 
@@ -168,7 +167,7 @@ export default function AboutHeroSection() {
                 <HugeiconsIcon icon={Calendar03Icon} className='size-3.5' />
               </motion.span>
               <span className='whitespace-nowrap text-[0.625rem] font-semibold leading-4 sm:text-xs'>
-                Thành lập 12/11/2020
+                {t('about.hero.founded')}
               </span>
             </motion.div>
           </div>
@@ -179,7 +178,7 @@ export default function AboutHeroSection() {
             variants={fadeUp}
             className='font-title text-xl font-bold leading-tight text-primary sm:text-2xl lg:text-3xl'
           >
-            &ldquo;Hà Nội 12 Mùa Hoa&rdquo;
+            &ldquo;{t('about.hero.subtitle')}&rdquo;
           </motion.h2>
 
           <motion.div
@@ -196,9 +195,9 @@ export default function AboutHeroSection() {
               <HugeiconsIcon icon={QuoteUpIcon} className='size-7 text-secondary fill-secondary' aria-hidden='true' />
             </motion.div>
 
-            {STORY_PARAGRAPHS.map((paragraph) => (
-              <p key={paragraph} className='text-xs leading-relaxed text-foreground italic'>
-                {paragraph}
+            {STORY_PARAGRAPH_KEYS.map((paragraphKey) => (
+              <p key={paragraphKey} className='text-xs leading-relaxed text-foreground italic'>
+                {t(paragraphKey)}
               </p>
             ))}
 
@@ -211,22 +210,20 @@ export default function AboutHeroSection() {
                 LĐ
                 <DecorImage
                   src='/images/about/founder-le-thi-hoa-dao.png'
-                  alt='Chân dung CEO Lê Thị Hoa Đào'
+                  alt={t('about.hero.founderAvatarAlt')}
                   sizes='2.25rem'
                   className='object-cover'
                 />
               </motion.div>
               <div className='-space-y-0.5'>
-                <p className='text-xs font-bold text-primary sm:text-sm'>Lê Thị Hoa Đào</p>
-                <p className='text-[0.625rem] text-muted-foreground'>Nhà sáng lập & CEO — Hoa Theo Mùa</p>
+                <p className='text-xs font-bold text-primary sm:text-sm'>{t('about.hero.founderName')}</p>
+                <p className='text-[0.625rem] text-muted-foreground'>{t('about.hero.founderRole')}</p>
               </div>
             </div>
           </motion.div>
 
           <motion.p variants={fadeUp} className='text-xs leading-relaxed text-foreground'>
-            Từ những mong muốn mang đến những giá trị cảm xúc, những bình yên tìm về ấy mà Hoa Theo Mùa đã đúc kết nên
-            các giá trị riêng của thương hiệu — những điều tốt đẹp muốn dành đến cho khách hàng để gửi trao trong từng
-            sản phẩm.
+            {t('about.hero.closing')}
           </motion.p>
         </motion.div>
       </div>

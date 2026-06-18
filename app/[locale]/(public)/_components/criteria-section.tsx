@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import leftBranch from '@/public/images/left-branch.png'
 import rightBranch from '@/public/images/right-branch.png'
 import { Award05Icon, DeliveryTruck01Icon, EcoEnergyIcon, Flower2Icon, PartyIcon } from '@hugeicons/core-free-icons'
@@ -11,34 +12,34 @@ const CRITERIAS = [
   {
     id: 1,
     icon: Flower2Icon,
-    label: 'Hoa Tươi Mỗi Ngày',
-    description: 'Tuyển chọn mỗi ngày, giao tươi nguyên'
+    titleKey: 'home.criteria.fresh.title',
+    descriptionKey: 'home.criteria.fresh.description'
   },
   {
     id: 100,
     icon: DeliveryTruck01Icon,
-    label: 'Giao Hàng Trong Ngày',
-    description: 'Giao ngay hôm nay, đảm bảo đúng hẹn'
+    titleKey: 'home.criteria.delivery.title',
+    descriptionKey: 'home.criteria.delivery.description'
   },
   {
     id: 200,
     icon: Award05Icon,
-    label: 'Nghệ Nhân Tin Cậy',
-    description: 'Cắm hoa bởi nghệ nhân chuyên nghiệp'
+    titleKey: 'home.criteria.artisan.title',
+    descriptionKey: 'home.criteria.artisan.description'
   },
   {
     id: 300,
     icon: PartyIcon,
-    label: 'Mọi Dịp Lễ',
-    description: 'Từ sinh nhật đến tiệc cưới'
+    titleKey: 'home.criteria.occasion.title',
+    descriptionKey: 'home.criteria.occasion.description'
   },
   {
     id: 400,
     icon: EcoEnergyIcon,
-    label: 'Đóng Gói Thân Thiện',
-    description: 'Trân trọng từng chi tiết với thiên nhiên'
+    titleKey: 'home.criteria.ecoPack.title',
+    descriptionKey: 'home.criteria.ecoPack.description'
   }
-]
+] as const
 
 const cardStagger: Variants = {
   hidden: {},
@@ -57,11 +58,13 @@ const cardItem: Variants = {
 }
 
 export default function CriteriaSection() {
+  const { t } = useTranslation()
+
   return (
     <div className='w-full bg-secondary flex items-center relative py-4 lg:py-10'>
       <Image
         src={leftBranch}
-        alt='Cành lá trang trí'
+        alt={t('home.criteria.branchAlt')}
         className='wind-wiggle-left h-3/4 w-auto absolute -left-4 top-1/2 -translate-y-1/2 opacity-70 hidden lg:block pointer-events-none'
         aria-hidden='true'
       />
@@ -96,9 +99,9 @@ export default function CriteriaSection() {
 
             <div className='-space-y-0.5'>
               <p className='font-semibold text-foreground text-xs sm:text-sm lg:text-base line-clamp-1'>
-                {criteria.label}
+                {t(criteria.titleKey)}
               </p>
-              <p className='text-[0.625rem] text-foreground line-clamp-1'>{criteria.description}</p>
+              <p className='text-[0.625rem] text-foreground line-clamp-1'>{t(criteria.descriptionKey)}</p>
             </div>
           </motion.div>
         ))}
@@ -106,7 +109,7 @@ export default function CriteriaSection() {
 
       <Image
         src={rightBranch}
-        alt='Cành lá trang trí'
+        alt={t('home.criteria.branchAlt')}
         className='wind-wiggle-right h-3/4 w-auto absolute -right-4 top-1/2 -translate-y-1/2 opacity-70 hidden lg:block pointer-events-none'
         aria-hidden='true'
       />

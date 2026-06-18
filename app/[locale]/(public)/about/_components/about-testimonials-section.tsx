@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { QuoteUpIcon, StarIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -9,33 +10,32 @@ import DecorImage from './decor-image'
 const TESTIMONIALS = [
   {
     id: 1,
-    name: 'Chị Mỹ Duyên',
-    role: 'Khách hàng thân thiết',
-    initials: 'MD',
+    nameKey: 'about.testimonials.items.myDuyen.name',
+    roleKey: 'about.testimonials.items.myDuyen.role',
+    initialsKey: 'about.testimonials.items.myDuyen.initials',
+    quoteKey: 'about.testimonials.items.myDuyen.quote',
     avatar: '/images/about/avatar-1.png',
-    featured: true,
-    quote:
-      'Mình rất hài lòng với dịch vụ của Hoa Theo Mùa. Mẫu mã ở đây rất đa dạng, phù hợp cho nhiều dịp khác nhau. Nhân viên tư vấn nhiệt tình, luôn sẵn sàng hỗ trợ để mình chọn được bó hoa ưng ý nhất. Hoa đẹp, thiết kế tinh tế, chắc chắn sẽ còn ủng hộ Hoa Theo Mùa nhiều lần nữa!'
+    featured: true
   },
   {
     id: 2,
-    name: 'Anh Văn Việt',
-    role: 'Người được tặng hoa',
-    initials: 'VV',
+    nameKey: 'about.testimonials.items.vanViet.name',
+    roleKey: 'about.testimonials.items.vanViet.role',
+    initialsKey: 'about.testimonials.items.vanViet.initials',
+    quoteKey: 'about.testimonials.items.vanViet.quote',
     avatar: '/images/about/avatar-2.png',
-    quote:
-      'Bạn mình từng mua hoa tốt nghiệp tại Hoa Theo Mùa để tặng mình, và mình thật sự rất thích! Hoa tươi, thiết kế đẹp mắt, khiến buổi lễ tốt nghiệp của mình thêm phần ý nghĩa. Cảm ơn shop đã mang đến sản phẩm chất lượng và nhiều cảm xúc.'
+    featured: false
   },
   {
     id: 3,
-    name: 'Chị Thanh Mai',
-    role: 'Khách hàng doanh nghiệp',
-    initials: 'TM',
+    nameKey: 'about.testimonials.items.thanhMai.name',
+    roleKey: 'about.testimonials.items.thanhMai.role',
+    initialsKey: 'about.testimonials.items.thanhMai.initials',
+    quoteKey: 'about.testimonials.items.thanhMai.quote',
     avatar: '/images/about/avatar-3.png',
-    quote:
-      'Hoa Theo Mùa là lựa chọn của công ty mình cho các dịp đối tác và sự kiện quan trọng. Hoa luôn tươi, thiết kế tinh tế, và đặc biệt đội ngũ rất chuyên nghiệp trong việc tư vấn cũng như giao nhận đúng giờ.'
+    featured: false
   }
-]
+] as const
 
 const featuredTestimonial = TESTIMONIALS.find((testimonial) => testimonial.featured) ?? TESTIMONIALS[0]
 const otherTestimonials = TESTIMONIALS.filter((testimonial) => testimonial.id !== featuredTestimonial.id)
@@ -71,6 +71,9 @@ const starPop: Variants = {
 }
 
 export default function AboutTestimonialsSection() {
+  const { t } = useTranslation()
+  const featuredName = t(featuredTestimonial.nameKey)
+
   return (
     <section className='mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
       <motion.div
@@ -88,7 +91,7 @@ export default function AboutTestimonialsSection() {
           />
 
           <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-            Khách Hàng Nói Gì
+            {t('about.testimonials.title')}
           </h1>
 
           <SparkleDivider
@@ -100,8 +103,7 @@ export default function AboutTestimonialsSection() {
         </div>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          Niềm vui lớn nhất của Hoa Theo Mùa là những lời chia sẻ chân thành từ khách hàng — họ chính là người tiếp lửa
-          cho hành trình lan toả vẻ đẹp Việt.
+          {t('about.testimonials.description')}
         </p>
       </motion.div>
 
@@ -134,7 +136,7 @@ export default function AboutTestimonialsSection() {
                 transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
                 className='size-1.5 rounded-full bg-primary'
               />
-              <span className='text-[0.625rem] font-semibold'>Đánh Giá Nổi Bật</span>
+              <span className='text-[0.625rem] font-semibold'>{t('about.testimonials.featuredLabel')}</span>
             </motion.span>
 
             <div className='flex items-center gap-0.5'>
@@ -155,7 +157,7 @@ export default function AboutTestimonialsSection() {
           </div>
 
           <p className='relative flex-1 text-xs leading-relaxed text-foreground sm:text-sm lg:text-base'>
-            &ldquo;{featuredTestimonial.quote}&rdquo;
+            &ldquo;{t(featuredTestimonial.quoteKey)}&rdquo;
           </p>
 
           <div className='relative flex items-center gap-2.5 border-t border-secondary/60 pt-3'>
@@ -164,17 +166,12 @@ export default function AboutTestimonialsSection() {
               transition={{ type: 'spring', stiffness: 380, damping: 12 }}
               className='relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-primary font-title text-sm font-bold text-primary-foreground sm:size-12'
             >
-              {featuredTestimonial.initials}
-              <DecorImage
-                src={featuredTestimonial.avatar}
-                alt={featuredTestimonial.name}
-                sizes='3rem'
-                className='object-cover'
-              />
+              {t(featuredTestimonial.initialsKey)}
+              <DecorImage src={featuredTestimonial.avatar} alt={featuredName} sizes='3rem' className='object-cover' />
             </motion.div>
             <div className='-space-y-0.5'>
-              <p className='text-xs font-bold text-primary sm:text-sm'>{featuredTestimonial.name}</p>
-              <p className='text-[0.625rem] text-muted-foreground'>{featuredTestimonial.role}</p>
+              <p className='text-xs font-bold text-primary sm:text-sm'>{featuredName}</p>
+              <p className='text-[0.625rem] text-muted-foreground'>{t(featuredTestimonial.roleKey)}</p>
             </div>
           </div>
         </motion.article>
@@ -186,61 +183,59 @@ export default function AboutTestimonialsSection() {
           variants={sideStagger}
           className='grid grid-cols-1 gap-3 sm:gap-4 lg:col-span-5'
         >
-          {otherTestimonials.map((testimonial) => (
-            <motion.article
-              key={testimonial.id}
-              variants={sideItem}
-              whileHover={{ y: -8, scale: 1.025 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 16 }}
-              className='relative flex flex-col gap-2 rounded-3xl bg-card p-4 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1rem_2.5rem_rgb(81_108_108/16%)] sm:p-5'
-            >
-              <motion.div
-                animate={{ rotate: [0, -6, 0, 4, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className='absolute right-3 top-3'
+          {otherTestimonials.map((testimonial) => {
+            const name = t(testimonial.nameKey)
+            return (
+              <motion.article
+                key={testimonial.id}
+                variants={sideItem}
+                whileHover={{ y: -8, scale: 1.025 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 16 }}
+                className='relative flex flex-col gap-2 rounded-3xl bg-card p-4 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1rem_2.5rem_rgb(81_108_108/16%)] sm:p-5'
               >
-                <HugeiconsIcon icon={QuoteUpIcon} className='size-7 text-secondary/60' aria-hidden='true' />
-              </motion.div>
-
-              <div className='flex items-center gap-0.5'>
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <motion.span
-                    key={index}
-                    custom={index}
-                    initial='hidden'
-                    whileInView='visible'
-                    viewport={{ once: true }}
-                    variants={starPop}
-                    className='inline-flex'
-                  >
-                    <HugeiconsIcon icon={StarIcon} className='size-3 fill-orange-400 text-orange-400' />
-                  </motion.span>
-                ))}
-              </div>
-
-              <p className='relative flex-1 text-xs leading-relaxed text-foreground/90'>{testimonial.quote}</p>
-
-              <div className='flex items-center gap-2.5 border-t border-secondary/60 pt-2.5'>
                 <motion.div
-                  whileHover={{ rotate: -16, scale: 1.18 }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 12 }}
-                  className='relative grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-primary font-title text-xs font-bold text-primary-foreground'
+                  animate={{ rotate: [0, -6, 0, 4, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                  className='absolute right-3 top-3'
                 >
-                  {testimonial.initials}
-                  <DecorImage
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    sizes='2.25rem'
-                    className='object-cover'
-                  />
+                  <HugeiconsIcon icon={QuoteUpIcon} className='size-7 text-secondary/60' aria-hidden='true' />
                 </motion.div>
-                <div className='-space-y-0.5'>
-                  <p className='text-xs font-bold text-primary'>{testimonial.name}</p>
-                  <p className='text-[0.625rem] text-muted-foreground'>{testimonial.role}</p>
+
+                <div className='flex items-center gap-0.5'>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <motion.span
+                      key={index}
+                      custom={index}
+                      initial='hidden'
+                      whileInView='visible'
+                      viewport={{ once: true }}
+                      variants={starPop}
+                      className='inline-flex'
+                    >
+                      <HugeiconsIcon icon={StarIcon} className='size-3 fill-orange-400 text-orange-400' />
+                    </motion.span>
+                  ))}
                 </div>
-              </div>
-            </motion.article>
-          ))}
+
+                <p className='relative flex-1 text-xs leading-relaxed text-foreground/90'>{t(testimonial.quoteKey)}</p>
+
+                <div className='flex items-center gap-2.5 border-t border-secondary/60 pt-2.5'>
+                  <motion.div
+                    whileHover={{ rotate: -16, scale: 1.18 }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 12 }}
+                    className='relative grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-primary font-title text-xs font-bold text-primary-foreground'
+                  >
+                    {t(testimonial.initialsKey)}
+                    <DecorImage src={testimonial.avatar} alt={name} sizes='2.25rem' className='object-cover' />
+                  </motion.div>
+                  <div className='-space-y-0.5'>
+                    <p className='text-xs font-bold text-primary'>{name}</p>
+                    <p className='text-[0.625rem] text-muted-foreground'>{t(testimonial.roleKey)}</p>
+                  </div>
+                </div>
+              </motion.article>
+            )
+          })}
         </motion.div>
       </div>
     </section>

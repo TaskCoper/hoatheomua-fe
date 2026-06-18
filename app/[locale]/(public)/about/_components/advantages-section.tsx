@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import {
   CustomerService01Icon,
   DeliveryTruck01Icon,
@@ -18,52 +19,52 @@ const ADVANTAGES = [
   {
     id: 1,
     icon: DiscountTag02Icon,
-    title: 'Lợi Thế Về Giá',
-    description: 'Đa dạng phân khúc giá từ thấp, trung bình tới cao — phù hợp với mọi khách hàng, đặc biệt nhóm trẻ.'
+    titleKey: 'about.advantages.items.price.title',
+    descriptionKey: 'about.advantages.items.price.description'
   },
   {
     id: 2,
     icon: Flower2Icon,
-    title: 'Lợi Thế Sản Phẩm',
-    description: 'Mẫu mã đa dạng, nguyên vật liệu thân thiện với môi trường, tôn vinh làng nghề và văn hoá Việt.'
+    titleKey: 'about.advantages.items.product.title',
+    descriptionKey: 'about.advantages.items.product.description'
   },
   {
     id: 3,
     icon: HandHeartIcon,
-    title: 'Giá Trị Cảm Xúc',
-    description: 'Mang đến những giá trị bình yên, nuôi dưỡng sự tích cực được trao gửi qua mỗi sản phẩm.'
+    titleKey: 'about.advantages.items.emotional.title',
+    descriptionKey: 'about.advantages.items.emotional.description'
   },
   {
     id: 4,
     icon: DeliveryTruck01Icon,
-    title: 'Chất Lượng Giao Hàng',
-    description: 'Giao nhanh chóng, đảm bảo trạng thái tốt nhất của sản phẩm khi đến tay khách hàng.'
+    titleKey: 'about.advantages.items.delivery.title',
+    descriptionKey: 'about.advantages.items.delivery.description'
   },
   {
     id: 5,
     icon: CustomerService01Icon,
-    title: 'Dịch Vụ Tận Tâm',
-    description: 'Đặt trải nghiệm dịch vụ và sự hài lòng của khách hàng lên hàng đầu trong từng tương tác.'
+    titleKey: 'about.advantages.items.service.title',
+    descriptionKey: 'about.advantages.items.service.description'
   },
   {
     id: 6,
     icon: EcoLab01Icon,
-    title: 'Giá Trị Cộng Đồng',
-    description: 'Sử dụng nguyên vật liệu từ thiên nhiên, thân thiện môi trường, đóng góp giá trị bền vững.'
+    titleKey: 'about.advantages.items.community.title',
+    descriptionKey: 'about.advantages.items.community.description'
   },
   {
     id: 7,
     icon: HonorIcon,
-    title: 'Giá Trị Văn Hoá',
-    description: 'Tôn vinh sản phẩm, tinh thần và văn hoá Việt qua từng bó hoa được trao đi.'
+    titleKey: 'about.advantages.items.culture.title',
+    descriptionKey: 'about.advantages.items.culture.description'
   },
   {
     id: 8,
     icon: GiftIcon,
-    title: 'Ưu Đãi Hấp Dẫn',
-    description: 'Freeship 7km, giao nhanh 2h, off 10% phụ kiện cắm hoa, tặng thiệp thiết kế cho đơn từ 399K.'
+    titleKey: 'about.advantages.items.promotion.title',
+    descriptionKey: 'about.advantages.items.promotion.description'
   }
-]
+] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -87,12 +88,19 @@ const cardItem: Variants = {
 }
 
 export default function AdvantagesSection() {
+  const { t } = useTranslation()
+
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 overflow-hidden bg-secondary py-6 sm:py-8 lg:py-10'>
       <span
         aria-hidden='true'
         className='pointer-events-none absolute inset-0 opacity-30'
-        style={{ backgroundImage: "url('/images/about/pattern.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+        style={{
+          backgroundImage: "url('/images/about/pattern.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
       />
       <motion.div
         initial='hidden'
@@ -101,11 +109,12 @@ export default function AdvantagesSection() {
         variants={fadeUp}
         className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2 px-4 relative'
       >
-        <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>Ưu Điểm Nổi Bật</h1>
+        <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
+          {t('about.advantages.title')}
+        </h1>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-secondary-foreground/80'>
-          Tám lý do giúp Hoa Theo Mùa trở thành điểm đến tin cậy của khách hàng yêu hoa khắp Sài Gòn — và cả những vùng
-          miền xa hơn.
+          {t('about.advantages.description')}
         </p>
       </motion.div>
 
@@ -122,7 +131,7 @@ export default function AdvantagesSection() {
           </span>
           <DecorImage
             src='/images/about/studio-flatlay.png'
-            alt='Bàn làm việc của người cắm hoa Hoa Theo Mùa'
+            alt={t('about.advantages.imageAlt')}
             sizes='(min-width: 1280px) 80rem, 100vw'
             quality={70}
             className='object-cover'
@@ -169,9 +178,9 @@ export default function AdvantagesSection() {
 
             <div className='space-y-0.5'>
               <h2 className='font-title text-sm font-bold leading-tight text-primary sm:text-base'>
-                {advantage.title}
+                {t(advantage.titleKey)}
               </h2>
-              <p className='text-xs leading-relaxed text-foreground'>{advantage.description}</p>
+              <p className='text-xs leading-relaxed text-foreground'>{t(advantage.descriptionKey)}</p>
             </div>
           </motion.article>
         ))}

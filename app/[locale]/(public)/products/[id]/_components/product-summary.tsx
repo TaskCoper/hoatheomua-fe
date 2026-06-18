@@ -1,12 +1,15 @@
+'use client'
+
 import { Badge } from '@/components/ui/badge'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DeliveryTruck01Icon, Flower2Icon, HandHeartIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
 const TRUST_BADGES = [
-  { icon: Flower2Icon, label: 'Hoa nhập trong ngày' },
-  { icon: HandHeartIcon, label: 'Cắm thủ công' },
-  { icon: DeliveryTruck01Icon, label: 'Giao 2 giờ' }
-]
+  { icon: Flower2Icon, labelKey: 'products.summary.trustBadges.fresh' },
+  { icon: HandHeartIcon, labelKey: 'products.summary.trustBadges.handmade' },
+  { icon: DeliveryTruck01Icon, labelKey: 'products.summary.trustBadges.delivery' }
+] as const
 
 export default function ProductSummary({
   name,
@@ -19,17 +22,21 @@ export default function ProductSummary({
   type: string | null
   available: number
 }) {
+  const { t } = useTranslation()
   const inStock = available > 0
   const specs: { label: string; value: string }[] = []
 
   if (brand) {
-    specs.push({ label: 'Thương hiệu', value: brand })
+    specs.push({ label: t('products.summary.specs.brand'), value: brand })
   }
   if (type) {
-    specs.push({ label: 'Loại', value: type })
+    specs.push({ label: t('products.summary.specs.type'), value: type })
   }
 
-  specs.push({ label: 'Tình trạng', value: inStock ? 'Còn hàng' : 'Hết hàng' })
+  specs.push({
+    label: t('products.summary.specs.status'),
+    value: inStock ? t('products.summary.specs.inStock') : t('products.summary.specs.outOfStock')
+  })
 
   return (
     <div className='space-y-4'>
@@ -38,12 +45,12 @@ export default function ProductSummary({
       <div className='flex flex-wrap gap-2'>
         {TRUST_BADGES.map((item) => (
           <Badge
-            key={item.label}
+            key={item.labelKey}
             variant='secondary'
             className='gap-1.5 bg-secondary/40 px-2 py-1 text-[0.7rem] font-semibold text-primary ring-1 ring-foreground/5 hover:bg-secondary/40'
           >
             <HugeiconsIcon icon={item.icon} className='size-3.5' />
-            {item.label}
+            {t(item.labelKey)}
           </Badge>
         ))}
       </div>

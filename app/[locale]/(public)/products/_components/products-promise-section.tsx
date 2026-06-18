@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import saleBanner from '@/public/images/sale-banner.png'
 import { DeliveryTruck01Icon, Flower2Icon, MessageMultiple02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -9,20 +10,20 @@ import Image from 'next/image'
 const PROMISES = [
   {
     icon: Flower2Icon,
-    title: 'Hoa nhập trong ngày',
-    description: 'Cam kết 100% hoa tươi, được tuyển chọn từ vườn và nhập khẩu mỗi sáng.'
+    titleKey: 'products.promise.items.fresh.title',
+    descriptionKey: 'products.promise.items.fresh.description'
   },
   {
     icon: DeliveryTruck01Icon,
-    title: 'Giao tận tay 2 giờ',
-    description: 'Giao siêu tốc trong vòng 2 giờ tại TP. HCM — đúng hẹn, đẹp như ảnh.'
+    titleKey: 'products.promise.items.delivery.title',
+    descriptionKey: 'products.promise.items.delivery.description'
   },
   {
     icon: MessageMultiple02Icon,
-    title: 'Tư vấn miễn phí',
-    description: 'Đội ngũ nghệ nhân sẵn sàng tư vấn lựa hoa phù hợp với ngân sách và dịp.'
+    titleKey: 'products.promise.items.support.title',
+    descriptionKey: 'products.promise.items.support.description'
   }
-]
+] as const
 
 const bannerReveal: Variants = {
   hidden: { opacity: 0, y: 36, scale: 0.96 },
@@ -40,6 +41,8 @@ const cardItem: Variants = {
 }
 
 export default function ProductsPromiseSection() {
+  const { t } = useTranslation()
+
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4 pb-12'>
       <motion.div
@@ -53,7 +56,7 @@ export default function ProductsPromiseSection() {
       >
         <Image
           src={saleBanner}
-          alt='Ưu đãi hoa tươi Hoa Theo Mùa'
+          alt={t('products.promise.bannerAlt')}
           className='w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-primary/5'
           sizes='(min-width: 1280px) 1200px, 100vw'
           loading='lazy'
@@ -70,7 +73,7 @@ export default function ProductsPromiseSection() {
       >
         {PROMISES.map((promise) => (
           <motion.article
-            key={promise.title}
+            key={promise.titleKey}
             variants={cardItem}
             whileHover={{ y: -8, scale: 1.025 }}
             transition={{ type: 'spring', stiffness: 260, damping: 16 }}
@@ -89,8 +92,10 @@ export default function ProductsPromiseSection() {
             </motion.div>
 
             <div className='space-y-1'>
-              <h3 className='font-title text-base font-bold leading-tight text-primary lg:text-lg'>{promise.title}</h3>
-              <p className='text-xs leading-relaxed text-foreground'>{promise.description}</p>
+              <h3 className='font-title text-base font-bold leading-tight text-primary lg:text-lg'>
+                {t(promise.titleKey)}
+              </h3>
+              <p className='text-xs leading-relaxed text-foreground'>{t(promise.descriptionKey)}</p>
             </div>
           </motion.article>
         ))}

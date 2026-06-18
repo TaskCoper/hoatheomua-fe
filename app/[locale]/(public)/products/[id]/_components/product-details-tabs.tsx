@@ -2,6 +2,7 @@
 
 import SanitizedHtml from '@/components/sanitized-html'
 import type { ProductShipping } from '@/features/products/types'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DropletIcon, Scissor01Icon, Sun03Icon, ThermometerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
@@ -9,34 +10,37 @@ import { useMemo, useState } from 'react'
 
 type TabKey = 'description' | 'specs' | 'care'
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: 'description', label: 'Mô tả' },
-  { key: 'specs', label: 'Chi tiết' },
-  { key: 'care', label: 'Bảo quản' }
+const TABS: {
+  key: TabKey
+  labelKey: 'products.detail.tabs.description' | 'products.detail.tabs.specs' | 'products.detail.tabs.care'
+}[] = [
+  { key: 'description', labelKey: 'products.detail.tabs.description' },
+  { key: 'specs', labelKey: 'products.detail.tabs.specs' },
+  { key: 'care', labelKey: 'products.detail.tabs.care' }
 ]
 
 const CARE_TIPS = [
   {
     icon: Scissor01Icon,
-    title: 'Cắt cành tươi',
-    description: 'Cắt chéo gốc mỗi 1–2 ngày để hoa hấp thụ nước tốt hơn, giúp giữ độ tươi lâu.'
+    titleKey: 'products.detail.tabs.careTips.cut.title',
+    descriptionKey: 'products.detail.tabs.careTips.cut.description'
   },
   {
     icon: DropletIcon,
-    title: 'Nước sạch hằng ngày',
-    description: 'Thay nước sạch và rửa bình mỗi ngày, ngắt bỏ lá ngập nước để tránh vi khuẩn.'
+    titleKey: 'products.detail.tabs.careTips.water.title',
+    descriptionKey: 'products.detail.tabs.careTips.water.description'
   },
   {
     icon: Sun03Icon,
-    title: 'Tránh ánh nắng trực tiếp',
-    description: 'Đặt bó hoa ở nơi thoáng mát, tránh ánh nắng gắt, gió mạnh và trái cây chín.'
+    titleKey: 'products.detail.tabs.careTips.shade.title',
+    descriptionKey: 'products.detail.tabs.careTips.shade.description'
   },
   {
     icon: ThermometerIcon,
-    title: 'Nhiệt độ phòng dễ chịu',
-    description: 'Nhiệt độ lý tưởng 18–22°C — phòng máy lạnh nhẹ sẽ giúp hoa giữ form đẹp hơn.'
+    titleKey: 'products.detail.tabs.careTips.temperature.title',
+    descriptionKey: 'products.detail.tabs.careTips.temperature.description'
   }
-]
+] as const
 
 type SpecRow = { label: string; value: string }
 
@@ -72,27 +76,32 @@ export default function ProductDetailsTabs({
   country: string | null
   shipping: ProductShipping | null
 }) {
+  const { t } = useTranslation()
   const [active, setActive] = useState<TabKey>('description')
 
   const specs = useMemo<SpecRow[]>(() => {
     const rows: SpecRow[] = []
-    if (code) rows.push({ label: 'Mã sản phẩm', value: code })
-    if (brand) rows.push({ label: 'Thương hiệu', value: brand })
-    if (category) rows.push({ label: 'Danh mục', value: category })
-    if (type) rows.push({ label: 'Loại', value: type })
-    if (country) rows.push({ label: 'Xuất xứ', value: country })
+    if (code) rows.push({ label: t('products.detail.tabs.specRows.code'), value: code })
+    if (brand) rows.push({ label: t('products.detail.tabs.specRows.brand'), value: brand })
+    if (category) rows.push({ label: t('products.detail.tabs.specRows.category'), value: category })
+    if (type) rows.push({ label: t('products.detail.tabs.specRows.type'), value: type })
+    if (country) rows.push({ label: t('products.detail.tabs.specRows.country'), value: country })
     const dim = formatDimension(shipping)
-    if (dim) rows.push({ label: 'Kích thước', value: dim })
+    if (dim) rows.push({ label: t('products.detail.tabs.specRows.dimensions'), value: dim })
     const weight = formatWeight(shipping?.weight)
-    if (weight) rows.push({ label: 'Khối lượng', value: weight })
+    if (weight) rows.push({ label: t('products.detail.tabs.specRows.weight'), value: weight })
     return rows
-  }, [code, brand, category, type, country, shipping])
+  }, [code, brand, category, type, country, shipping, t])
 
   const hasDescription = description.length > 0 || content.length > 0
 
   return (
     <div className='mt-8'>
-      <div role='tablist' aria-label='Thông tin sản phẩm' className='flex flex-wrap gap-1 border-b border-border'>
+      <div
+        role='tablist'
+        aria-label={t('products.detail.tabs.ariaLabel')}
+        className='flex flex-wrap gap-1 border-b border-border'
+      >
         {TABS.map((tab) => {
           const isActive = active === tab.key
 
@@ -106,7 +115,7 @@ export default function ProductDetailsTabs({
               className='relative px-4 py-3 text-sm font-semibold transition-colors'
               style={{ color: isActive ? 'var(--primary)' : 'var(--muted-foreground)' }}
             >
-              {tab.label}
+              {t(tab.labelKey)}
               {isActive ? (
                 <motion.span
                   layoutId='product-tab-underline'
@@ -127,9 +136,7 @@ export default function ProductDetailsTabs({
               {content ? <SanitizedHtml html={content} /> : null}
             </div>
           ) : (
-            <p className='text-sm text-muted-foreground'>
-              Sản phẩm chưa có mô tả chi tiết. Liên hệ Hoa Theo Mùa để được tư vấn riêng.
-            </p>
+            <p className='text-sm text-muted-foreground'>{t('products.detail.tabs.noDescription')}</p>
           )
         ) : null}
 
@@ -149,20 +156,20 @@ export default function ProductDetailsTabs({
               ))}
             </dl>
           ) : (
-            <p className='text-sm text-muted-foreground'>Đang cập nhật thông số chi tiết cho sản phẩm này.</p>
+            <p className='text-sm text-muted-foreground'>{t('products.detail.tabs.noSpecs')}</p>
           )
         ) : null}
 
         {active === 'care' ? (
           <div className='grid gap-3'>
             {CARE_TIPS.map((tip) => (
-              <div key={tip.title} className='flex gap-2 rounded-2xl bg-card p-2 ring-1 ring-foreground/5'>
+              <div key={tip.titleKey} className='flex gap-2 rounded-2xl bg-card p-2 ring-1 ring-foreground/5'>
                 <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-secondary/60 text-primary ring-1 ring-primary/10'>
                   <HugeiconsIcon icon={tip.icon} className='size-5' />
                 </span>
                 <div>
-                  <p className='font-title text-sm font-bold text-primary'>{tip.title}</p>
-                  <p className='text-xs text-foreground'>{tip.description}</p>
+                  <p className='font-title text-sm font-bold text-primary'>{t(tip.titleKey)}</p>
+                  <p className='text-xs text-foreground'>{t(tip.descriptionKey)}</p>
                 </div>
               </div>
             ))}
