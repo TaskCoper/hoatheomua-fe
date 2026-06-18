@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
@@ -17,6 +18,7 @@ export default function ProductGallery({
   discountPercent: number
   categoryName: string | null
 }) {
+  const { t } = useTranslation()
   const images = useMemo(() => {
     const all = [avatar, ...(others ?? [])].filter((url): url is string => Boolean(url))
     return Array.from(new Set(all))
@@ -43,7 +45,7 @@ export default function ProductGallery({
                   key={image}
                   type='button'
                   onClick={() => setActiveIndex(index)}
-                  aria-label={`Xem ảnh ${index + 1}`}
+                  aria-label={t('products.detail.gallery.viewImage', { index: index + 1 })}
                   aria-pressed={isActive}
                   className={cn(
                     'relative size-16 sm:size-24 xl:size-20 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl opacity-50 transition-opacity duration-300 hover:opacity-100',
@@ -52,7 +54,7 @@ export default function ProductGallery({
                 >
                   <Image
                     src={image}
-                    alt={`${name} - ảnh ${index + 1}`}
+                    alt={t('products.detail.gallery.thumbAlt', { name, index: index + 1 })}
                     fill
                     sizes='(min-width: 1280px) 5rem, (min-width: 640px) 6rem, 4rem'
                     quality={55}

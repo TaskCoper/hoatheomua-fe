@@ -1,29 +1,30 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import logo from '@/public/images/logo.png'
 import { Facebook01Icon, InstagramIcon, Mail01Icon, MessageMultiple01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 
 const POLICIES = [
-  'Điều khoản sử dụng',
-  'Chính sách đổi trả',
-  'Đặt hàng & thanh toán',
-  'Chính sách bảo mật thông tin',
-  'Chính sách giao nhận & kiểm tra hàng'
-]
+  'footer.policies.terms',
+  'footer.policies.returns',
+  'footer.policies.ordering',
+  'footer.policies.privacy',
+  'footer.policies.delivery'
+] as const
 
 const FEATURED_PRODUCTS = [
-  'Hoa sinh nhật',
-  'Hoa khai trương',
-  'Hoa 8/3',
-  'Hoa 20/10',
-  'Hoa 20/11',
-  'Hoa Noel',
-  'Hoa mừng ngày 27/2',
-  'Hoa chúc mừng doanh nhân',
-  'Lan hồ điệp đẹp'
-]
+  'footer.featured.birthday',
+  'footer.featured.opening',
+  'footer.featured.march8',
+  'footer.featured.oct20',
+  'footer.featured.nov20',
+  'footer.featured.noel',
+  'footer.featured.feb27',
+  'footer.featured.business',
+  'footer.featured.orchid'
+] as const
 
 const SOCIALS = [
   { icon: Facebook01Icon, label: 'Facebook', href: '#' },
@@ -33,45 +34,45 @@ const SOCIALS = [
 ]
 
 export default function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className='bg-background space-y-6 sm:space-y-8'>
       <div className='mx-auto w-full max-w-7xl px-4 pt-6 sm:pt-8 lg:pt-10 xl:px-0'>
         <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6'>
           <div className='space-y-2 lg:col-span-4'>
-            <Image src={logo} alt='Logo' className='h-24 w-auto sm:h-28 lg:h-32' />
-            <p className='text-base sm:text-lg font-bold'>CÔNG TY TNHH HOA THEO MÙA</p>
+            <Image src={logo} alt={t('footer.logoAlt')} className='h-24 w-auto sm:h-28 lg:h-32' />
+            <p className='text-base sm:text-lg font-bold'>{t('footer.company')}</p>
             <div className='space-y-2 text-xs sm:text-sm leading-relaxed text-foreground'>
               <p>
-                <span className='font-semibold'>Hoa Theo Mùa</span> - Hệ thống hoa tươi online tại TP. Hồ Chí Minh
-                chuyên cung cấp các dịch vụ hoa tươi & giao hoa tận nơi siêu nhanh trong 2 giờ.
+                <span className='font-semibold'>{t('footer.brand')}</span> - {t('footer.description')}
               </p>
               <p>
-                <span className='font-semibold'>Địa chỉ:</span> Số 13A Đào Duy Anh, Phường 9, Q, Phú Nhuận, Thành phố Hồ
-                Chí Minh
+                <span className='font-semibold'>{t('footer.addressLabel')}</span> {t('footer.address')}
               </p>
               <p>
-                <span className='font-semibold'>Hotline:</span> 0983024353 – 0931734353
+                <span className='font-semibold'>{t('footer.hotlineLabel')}</span> {t('footer.hotline')}
               </p>
               <p>
-                <span className='font-semibold'>Giám đốc:</span> Lê Thị Hoa Đào
+                <span className='font-semibold'>{t('footer.directorLabel')}</span> {t('footer.director')}
               </p>
               <p>
-                <span className='font-semibold'>Website:</span> hoatheomua.net
+                <span className='font-semibold'>{t('footer.websiteLabel')}</span> {t('footer.website')}
               </p>
               <p>
-                <span className='font-semibold'>GPKD:</span> 0316581199 Cấp ngày 12/11/2020
+                <span className='font-semibold'>{t('footer.businessIdLabel')}</span> {t('footer.businessId')}
               </p>
             </div>
           </div>
 
           <div className='space-y-2 lg:col-span-3'>
-            <h2 className='text-sm sm:text-base font-bold text-primary'>CHÍNH SÁCH</h2>
+            <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.policiesHeading')}</h2>
             <ul className='space-y-2 text-xs sm:text-sm text-foreground'>
-              {POLICIES.map((policy) => (
-                <li key={policy} className='flex items-center gap-2'>
+              {POLICIES.map((key) => (
+                <li key={key} className='flex items-center gap-2'>
                   <span className='inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
                   <a href='#' className='transition-colors hover:text-primary'>
-                    {policy}
+                    {t(key)}
                   </a>
                 </li>
               ))}
@@ -79,13 +80,13 @@ export default function Footer() {
           </div>
 
           <div className='space-y-2 lg:col-span-2'>
-            <h2 className='text-sm sm:text-base font-bold text-primary'>SẢN PHẨM NỔI BẬT</h2>
+            <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.featuredHeading')}</h2>
             <ul className='space-y-2 text-xs sm:text-sm text-foreground'>
-              {FEATURED_PRODUCTS.map((product) => (
-                <li key={product} className='flex items-center gap-2'>
+              {FEATURED_PRODUCTS.map((key) => (
+                <li key={key} className='flex items-center gap-2'>
                   <span className='inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
                   <a href='#' className='transition-colors hover:text-primary'>
-                    {product}
+                    {t(key)}
                   </a>
                 </li>
               ))}
@@ -93,11 +94,11 @@ export default function Footer() {
           </div>
 
           <div className='space-y-2 lg:col-span-3'>
-            <h2 className='text-sm sm:text-base font-bold text-primary'>BẢN ĐỒ</h2>
+            <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.mapHeading')}</h2>
             <div className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md'>
               <iframe
                 src='https://www.google.com/maps?q=13A+Dao+Duy+Anh,+Phu+Nhuan,+Ho+Chi+Minh&output=embed'
-                title='Vị trí Hoa Theo Mùa'
+                title={t('footer.mapTitle')}
                 className='h-40 w-full sm:h-48 lg:h-44'
                 loading='lazy'
                 referrerPolicy='no-referrer-when-downgrade'
@@ -121,8 +122,7 @@ export default function Footer() {
 
       <div className='bg-primary py-2 text-background sm:py-3'>
         <p className='mx-auto w-full max-w-7xl px-4 text-center text-xs leading-relaxed sm:text-sm lg:text-left xl:px-0'>
-          Bản quyền © hình ảnh thuộc về HOA THEO MÙA ® - Các hành vi sử dụng hình ảnh khi chưa được sự đồng ý cho phép
-          đều là hành vi xâm phạm quyền sở hữu trí tuệ.
+          {t('footer.copyright')}
         </p>
       </div>
     </footer>

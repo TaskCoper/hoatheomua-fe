@@ -2,6 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import flower from '@/public/images/flower.png'
 import { CherryIcon, DeliveryTruck01Icon, Flower2Icon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
@@ -11,10 +12,10 @@ import Image from 'next/image'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
 
 const HIGHLIGHTS = [
-  { icon: Flower2Icon, label: '12 mùa hoa' },
-  { icon: DeliveryTruck01Icon, label: 'Giao trong 2 giờ' },
-  { icon: CherryIcon, label: '100% hoa tươi' }
-]
+  { icon: Flower2Icon, labelKey: 'products.hero.highlights.seasons' },
+  { icon: DeliveryTruck01Icon, labelKey: 'products.hero.highlights.fastDelivery' },
+  { icon: CherryIcon, labelKey: 'products.hero.highlights.fresh' }
+] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -42,6 +43,8 @@ const chipPop: Variants = {
 }
 
 export default function ProductsHeroSection() {
+  const { t } = useTranslation()
+
   return (
     <motion.section
       initial='hidden'
@@ -61,7 +64,7 @@ export default function ProductsHeroSection() {
           />
 
           <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-            Bộ Sưu Tập Hoa Tươi
+            {t('products.hero.title')}
           </h1>
 
           <SparkleDivider
@@ -73,8 +76,7 @@ export default function ProductsHeroSection() {
         </div>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          Từng bó hoa được tuyển chọn theo mùa, cắm thủ công bởi nghệ nhân Hoa Theo Mùa và giao tận tay bạn trong vòng 2
-          giờ tại TP. Hồ Chí Minh — gửi trao trọn vẹn cảm xúc cho người bạn yêu thương.
+          {t('products.hero.description')}
         </p>
       </motion.div>
 
@@ -83,7 +85,7 @@ export default function ProductsHeroSection() {
           <motion.div variants={fadeUp} className='flex flex-wrap gap-2'>
             {HIGHLIGHTS.map((item) => (
               <motion.span
-                key={item.label}
+                key={item.labelKey}
                 variants={chipPop}
                 whileHover={{ y: -3, scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 14 }}
@@ -94,7 +96,7 @@ export default function ProductsHeroSection() {
                   className='gap-1.5 px-3 py-1.5 text-xs font-semibold text-primary shadow-[0_0.45rem_1.2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'
                 >
                   <HugeiconsIcon icon={item.icon} className='size-3.5' />
-                  {item.label}
+                  {t(item.labelKey)}
                 </Badge>
               </motion.span>
             ))}
@@ -104,13 +106,11 @@ export default function ProductsHeroSection() {
             variants={fadeUp}
             className='font-title text-2xl font-bold leading-tight text-primary sm:text-3xl lg:text-4xl'
           >
-            Mỗi bó hoa - một câu chuyện rất riêng cho người bạn thương.
+            {t('products.hero.headline')}
           </motion.h2>
 
           <motion.p variants={fadeUp} className='text-xs leading-relaxed text-foreground sm:text-sm'>
-            Khám phá hơn 50+ thiết kế hoa tươi theo mùa, từ bó hoa sinh nhật, hoa khai trương, hoa cưới đến lan hồ điệp
-            cao cấp. Cam kết hoa nhập trong ngày, đóng gói tinh tế và giao đúng hẹn — sẵn sàng cho mọi khoảnh khắc đặc
-            biệt.
+            {t('products.hero.body')}
           </motion.p>
 
           <motion.div variants={fadeUp} className='flex flex-wrap items-center gap-3'>
@@ -122,7 +122,7 @@ export default function ProductsHeroSection() {
               <Button asChild size='lg'>
                 <Link href='/products'>
                   <HugeiconsIcon icon={ShoppingBag01Icon} className='size-4' />
-                  Xem tất cả sản phẩm
+                  {t('products.hero.shopAll')}
                 </Link>
               </Button>
             </motion.div>
@@ -133,7 +133,7 @@ export default function ProductsHeroSection() {
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
             >
               <Button asChild size='lg' variant='outline'>
-                <a href='#occasion'>Chọn theo dịp</a>
+                <a href='#occasion'>{t('products.hero.shopByOccasion')}</a>
               </Button>
             </motion.div>
           </motion.div>
@@ -163,7 +163,7 @@ export default function ProductsHeroSection() {
             >
               <Image
                 src={flower}
-                alt='Bó hoa tươi Hoa Theo Mùa'
+                alt={t('products.hero.imageAlt')}
                 className='h-48 w-auto object-contain sm:h-60 lg:h-68'
                 sizes='(min-width: 1024px) 17rem, (min-width: 640px) 15rem, 12rem'
                 priority
@@ -179,7 +179,9 @@ export default function ProductsHeroSection() {
               style={{ rotate: '6deg' }}
             >
               <p className='font-title text-base font-bold text-primary leading-none'>50+</p>
-              <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>Thiết kế</p>
+              <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>
+                {t('products.hero.designsLabel')}
+              </p>
             </motion.div>
 
             <motion.div
@@ -189,7 +191,9 @@ export default function ProductsHeroSection() {
               style={{ rotate: '-6deg' }}
             >
               <p className='font-title text-sm font-bold text-leaf leading-none'>2H</p>
-              <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>Giao nhanh</p>
+              <p className='text-[0.5rem] font-semibold uppercase tracking-widest text-muted-foreground'>
+                {t('products.hero.fastDeliveryLabel')}
+              </p>
             </motion.div>
           </motion.div>
         </motion.div>

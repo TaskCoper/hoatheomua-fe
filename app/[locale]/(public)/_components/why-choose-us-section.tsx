@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import banner from '@/public/images/banner.png'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
@@ -8,33 +9,29 @@ import { SparkleDivider } from './sparkle-dividier'
 const WHY_CHOOSE_FEATURES = [
   {
     number: '01',
-    title: 'Sản Phẩm Tươi',
-    description:
-      'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững.',
+    titleKey: 'home.whyChooseUs.features.fresh.title',
+    descriptionKey: 'home.whyChooseUs.features.fresh.description',
     className: 'lg:left-16 lg:top-18 xl:left-24 xl:top-22'
   },
   {
     number: '02',
-    title: '100% Tự Nhiên',
-    description:
-      'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững.',
+    titleKey: 'home.whyChooseUs.features.natural.title',
+    descriptionKey: 'home.whyChooseUs.features.natural.description',
     className: 'lg:-right-2 lg:top-18 xl:right-20 xl:top-22 2xl:right-18 2xl:top-22'
   },
   {
     number: '03',
-    title: 'Chăm Sóc Tận Tâm',
-    description:
-      'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế.',
+    titleKey: 'home.whyChooseUs.features.care.title',
+    descriptionKey: 'home.whyChooseUs.features.care.description',
     className: 'lg:left-28 lg:bottom-18 xl:left-50 xl:bottom-22 2xl:left-52 2xl:bottom-22'
   },
   {
     number: '04',
-    title: 'Hoàn Tiền Đảm Bảo',
-    description:
-      'Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế.',
+    titleKey: 'home.whyChooseUs.features.refund.title',
+    descriptionKey: 'home.whyChooseUs.features.refund.description',
     className: 'lg:right-10 lg:bottom-18 xl:right-20 xl:bottom-22 2xl:right-28 2xl:bottom-22'
   }
-]
+] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -57,6 +54,8 @@ const cardItem: Variants = {
 }
 
 export default function WhyChooseUsSection() {
+  const { t } = useTranslation()
+
   return (
     <div className='space-y-2 overflow-hidden px-4'>
       <motion.div
@@ -74,7 +73,7 @@ export default function WhyChooseUsSection() {
           />
 
           <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-            Tại Sao Chọn Chúng Tôi
+            {t('home.whyChooseUs.title')}
           </h1>
 
           <SparkleDivider
@@ -86,8 +85,7 @@ export default function WhyChooseUsSection() {
         </div>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-140 md:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          Chúng tôi tin rằng hoa cần đến tay bạn tươi mới và rực rỡ như khoảnh khắc vừa được hái. Từ việc tuyển chọn
-          từng bông hoa, đóng gói cẩn thận đến giao hàng đúng hẹn, mỗi bước đều được thực hiện bằng cả sự tận tâm.
+          {t('home.whyChooseUs.description')}
         </p>
       </motion.div>
 
@@ -108,7 +106,7 @@ export default function WhyChooseUsSection() {
           >
             <Image
               src={banner}
-              alt='Bó hoa tươi Hoa Theo Mùa'
+              alt={t('home.whyChooseUs.bannerAlt')}
               className='mx-auto h-64 w-auto max-w-none object-contain lg:h-160 xl:h-176 2xl:h-192'
               sizes='(min-width: 1280px) 44rem, (min-width: 1024px) 40rem, 16rem'
               loading='lazy'
@@ -140,9 +138,9 @@ export default function WhyChooseUsSection() {
                 {feature.number}
               </motion.span>
               <h2 className='font-title text-lg font-bold leading-tight text-primary lg:text-2xl 2xl:text-3xl'>
-                {feature.title}
+                {t(feature.titleKey)}
               </h2>
-              <p className='mt-1 text-xs leading-relaxed text-foreground xl:text-sm'>{feature.description}</p>
+              <p className='mt-1 text-xs leading-relaxed text-foreground xl:text-sm'>{t(feature.descriptionKey)}</p>
             </motion.div>
           ))}
         </motion.div>

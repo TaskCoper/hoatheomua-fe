@@ -1,46 +1,43 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import type { Metadata } from 'next'
-import { Button } from '@/components/ui/button'
-import { fetchNewsItem, fetchNewsList, formatNewsDate } from '@/lib/news'
 import { FallingPetals } from '@/components/falling-petals'
+import { Button } from '@/components/ui/button'
+import { Link } from '@/lib/i18n/navigation'
+import { fetchNewsItem, fetchNewsList, formatNewsDate } from '@/lib/news'
 import heroImage from '@/public/images/bg-news.png'
+import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+import Image from 'next/image'
 
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: Promise<{ locale: string; slug: string }> 
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
   const article = await fetchNewsItem(slug)
+  const t = await getTranslations()
 
   return {
-    title: `${article.title} - Hoa Theo Mùa`,
+    title: `${article.title}${t('news.titleSuffix')}`,
     description: article.summary
   }
 }
 
-export default async function NewsDetailPage({ 
-  params 
-}: { 
-  params: Promise<{ locale: string; slug: string }> 
-}) {
+export default async function NewsDetailPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { slug, locale } = await params
   const article = await fetchNewsItem(slug)
   const related = (await fetchNewsList()).filter((item) => item.slug !== slug).slice(0, 3)
+  const t = await getTranslations()
 
   return (
     <div className='relative w-full overflow-hidden'>
       <FallingPetals />
-      
+
       <div className='mx-auto w-full max-w-5xl px-4 pb-12 pt-8 space-y-8'>
         {/* Header */}
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
           <div className='space-y-3'>
             <p className='text-sm font-bold uppercase tracking-wider text-primary'>{article.category}</p>
-            <h1 className='text-4xl font-bold leading-tight text-foreground sm:text-5xl'>
-              {article.title}
-            </h1>
+            <h1 className='text-4xl font-bold leading-tight text-foreground sm:text-5xl'>{article.title}</h1>
             <div className='flex flex-wrap items-center gap-4 text-sm text-muted-foreground pt-2'>
               <span>{formatNewsDate(article.publishedAt, locale)}</span>
               <span>•</span>
@@ -50,7 +47,7 @@ export default async function NewsDetailPage({
             </div>
           </div>
           <Button variant='outline' asChild className='w-fit'>
-            <Link href='/news'>← Trở về tin tức</Link>
+            <Link href='/news'>{t('news.backToNews')}</Link>
           </Button>
         </div>
 
@@ -74,10 +71,7 @@ export default async function NewsDetailPage({
           </div>
 
           {/* Render Rich Text Content HTML */}
-          <div 
-            className='news-rich-text-content'
-            dangerouslySetInnerHTML={{ __html: article.content }} 
-          />
+          <div className='news-rich-text-content' dangerouslySetInnerHTML={{ __html: article.content }} />
 
           {/* Tags */}
           <div className='flex flex-wrap gap-2 pt-6 mt-8 border-t border-border not-prose'>
@@ -94,7 +88,7 @@ export default async function NewsDetailPage({
 
         {/* Related Articles */}
         <section className='pt-8 border-t border-border'>
-          <h2 className='text-2xl font-bold text-foreground mb-6'>Bài viết liên quan</h2>
+          <h2 className='text-2xl font-bold text-foreground mb-6'>{t('news.relatedHeading')}</h2>
           <div className='grid gap-6 sm:grid-cols-3'>
             {related.map((item) => (
               <Link

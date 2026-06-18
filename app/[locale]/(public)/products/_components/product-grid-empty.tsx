@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -10,6 +11,8 @@ const fadeUp: Variants = {
 }
 
 export default function ProductGridEmpty() {
+  const { t } = useTranslation()
+
   return (
     <motion.div
       initial='hidden'
@@ -21,10 +24,8 @@ export default function ProductGridEmpty() {
       <div className='flex size-14 items-center justify-center rounded-full bg-card text-primary shadow-sm'>
         <HugeiconsIcon icon={FlowerIcon} className='size-7' />
       </div>
-      <p className='font-title text-lg font-semibold text-primary'>Chưa có sản phẩm</p>
-      <p className='max-w-md text-sm text-muted-foreground'>
-        Bộ sưu tập đang được nghệ nhân chuẩn bị. Hãy quay lại sau để khám phá những bó hoa tươi mới nhất.
-      </p>
+      <p className='font-title text-lg font-semibold text-primary'>{t('products.grid.empty.title')}</p>
+      <p className='max-w-md text-sm text-muted-foreground'>{t('products.grid.empty.description')}</p>
     </motion.div>
   )
 }

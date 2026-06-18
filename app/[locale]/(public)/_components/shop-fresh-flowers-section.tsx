@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { motion, type Variants } from 'motion/react'
 import FlowersCarousel from './flowers-carousel'
 import { SparkleDivider } from './sparkle-dividier'
@@ -10,6 +11,8 @@ const fadeUp: Variants = {
 }
 
 export default function ShopFreshFlowersSection() {
+  const { t } = useTranslation()
+
   return (
     <div className='mt-4 sm:mt-6 md:mt-8 lg:mt-10 overflow-hidden px-4'>
       <motion.div
@@ -26,7 +29,9 @@ export default function ShopFreshFlowersSection() {
             color='#516c6c'
           />
 
-          <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>Mua Hoa Tươi</h1>
+          <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
+            {t('home.shopFresh.title')}
+          </h1>
 
           <SparkleDivider
             className='min-w-0 max-w-96 flex-1 hidden sm:flex'
@@ -37,8 +42,7 @@ export default function ShopFreshFlowersSection() {
         </div>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-140 md:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          Khám phá bộ sưu tập hoa tươi được tuyển chọn kỹ lưỡng, sắp đặt tinh tế bởi những nghệ nhân chuyên nghiệp, mang
-          đến vẻ đẹp, hương thơm và sự thanh lịch trường tồn ngay tận cửa nhà bạn.
+          {t('home.shopFresh.description')}
         </p>
       </motion.div>
 

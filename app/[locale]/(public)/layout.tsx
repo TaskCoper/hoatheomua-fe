@@ -11,7 +11,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <div className='flex min-h-full flex-1 flex-col bg-background relative'>
         <Image
           src={pedalsRight}
-          alt='Cánh hoa phải'
+          alt=''
+          aria-hidden='true'
           className='wind-wiggle-right absolute -right-1.5 top-0 h-52 w-auto hidden lg:block'
         />
 

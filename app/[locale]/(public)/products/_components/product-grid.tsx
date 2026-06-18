@@ -11,6 +11,7 @@ import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
 import productService from '@/features/products/services'
 import type { Product } from '@/features/products/types'
 import type { BaseResponse } from '@/lib/axios'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { motion, type Variants } from 'motion/react'
 import { useState } from 'react'
@@ -40,6 +41,7 @@ export default function ProductGrid({
   initialNextCursor: number
   pageSize?: number
 }) {
+  const { t } = useTranslation()
   const [cursorStack, setCursorStack] = useState([0])
   const currentCursor = cursorStack.at(-1) ?? 0
   const isFirstPage = currentCursor === 0
@@ -108,7 +110,7 @@ export default function ProductGrid({
           <PaginationItem>
             <PaginationPrevious
               href='#all-products'
-              text='Trước'
+              text={t('products.grid.previous')}
               aria-disabled={!hasPreviousPage || isFetching}
               className={!hasPreviousPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
               onClick={handlePreviousPage}
@@ -122,7 +124,7 @@ export default function ProductGrid({
           <PaginationItem>
             <PaginationNext
               href='#all-products'
-              text='Sau'
+              text={t('products.grid.next')}
               aria-disabled={!hasNextPage || isFetching}
               className={!hasNextPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
               onClick={handleNextPage}
