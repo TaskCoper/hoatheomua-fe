@@ -8,7 +8,13 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
 import vine from '@/public/images/vine.png'
-import { LoginCircle01Icon, Menu01Icon, Search01Icon, ShoppingBasket03Icon } from '@hugeicons/core-free-icons'
+import {
+  LoginCircle01Icon,
+  Menu01Icon,
+  PackageIcon,
+  Search01Icon,
+  ShoppingBasket03Icon
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -132,8 +138,23 @@ export default function Header() {
                 size='icon-sm'
                 className='border-none ring ring-primary ring-inset'
                 aria-label='Mở giỏ hàng'
+                asChild
               >
-                <HugeiconsIcon icon={ShoppingBasket03Icon} />
+                <Link href='/cart'>
+                  <HugeiconsIcon icon={ShoppingBasket03Icon} />
+                </Link>
+              </Button>
+
+              <Button
+                variant='outline'
+                size='icon-sm'
+                className='flex-1 border-none ring ring-primary ring-inset'
+                aria-label='Mở giỏ hàng'
+                asChild
+              >
+                <Link href='/orders'>
+                  <HugeiconsIcon icon={PackageIcon} />
+                </Link>
               </Button>
             </>
           ) : (
@@ -208,8 +229,23 @@ export default function Header() {
                   size='icon-sm'
                   className='flex-1 border-none ring ring-primary ring-inset'
                   aria-label='Mở giỏ hàng'
+                  asChild
                 >
-                  <HugeiconsIcon icon={ShoppingBasket03Icon} />
+                  <Link href='/cart'>
+                    <HugeiconsIcon icon={ShoppingBasket03Icon} />
+                  </Link>
+                </Button>
+
+                <Button
+                  variant='outline'
+                  size='icon-sm'
+                  className='flex-1 border-none ring ring-primary ring-inset'
+                  aria-label='Mở giỏ hàng'
+                  asChild
+                >
+                  <Link href='/orders'>
+                    <HugeiconsIcon icon={PackageIcon} />
+                  </Link>
                 </Button>
 
                 <Button

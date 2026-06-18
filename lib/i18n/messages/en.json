@@ -110,7 +110,8 @@
       "maxLength": "{field} must be no more than {max} characters.",
       "phoneNumber": "Please enter a valid phone number.",
       "passwordStrength": "Password must contain at least 1 letter, 1 number, and 1 special character.",
-      "passwordMismatch": "Confirm password does not match."
+      "passwordMismatch": "Confirm password does not match.",
+      "fixErrors": "Please review the highlighted fields."
     },
     "sortable": {
       "dragStart": "Picked up {item}, item {position} of {total}.",
@@ -456,6 +457,117 @@
         "selectDateRange": "Select date range for {field}",
         "selectDate": "Select date for {field}",
         "slider": "{title} range"
+      }
+    }
+  },
+  "cart": {
+    "title": "Shopping cart",
+    "loading": "Loading cart…",
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "Browse products and add them to your cart to get started.",
+      "continueShopping": "Continue shopping"
+    },
+    "actions": {
+      "clear": "Clear cart",
+      "remove": "Remove",
+      "checkout": "Checkout",
+      "useMax": "Use max ({stock})",
+      "increase": "Increase quantity",
+      "decrease": "Decrease quantity",
+      "selectAll": "Select all",
+      "selectLine": "Select this item"
+    },
+    "fallbackName": "Product #{productId}",
+    "price": "Price: {price}",
+    "loadingPrice": "Loading price…",
+    "unavailable": {
+      "missing": "This product is no longer available.",
+      "inactive": "This product is currently inactive.",
+      "outOfStock": "This product is out of stock."
+    },
+    "overStock": "Only {stock} left in stock. Please reduce the quantity.",
+    "inStock": "{stock} in stock",
+    "lineSubtotal": "Subtotal",
+    "unitLabel": "Variant: {unit}",
+    "summary": {
+      "title": "Order summary",
+      "selected": "{count} selected of {total}",
+      "subtotal": "Subtotal",
+      "shippingNote": "Shipping fees and discounts are calculated at checkout.",
+      "empty": "Select items to checkout."
+    }
+  },
+  "orders": {
+    "checkout": {
+      "title": "Checkout",
+      "description": "Fill in your delivery details to complete the order.",
+      "submit": "Place order",
+      "cancel": "Cancel",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Recipient's full name",
+      "phone": "Phone number",
+      "phonePlaceholder": "Enter phone number",
+      "addressLine": "Address",
+      "addressLinePlaceholder": "Street, building, …",
+      "city": "Province / City",
+      "cityPlaceholder": "Select province / city",
+      "citySearchPlaceholder": "Search province / city",
+      "ward": "Ward",
+      "wardPlaceholder": "Select ward",
+      "wardSearchPlaceholder": "Search ward",
+      "remarks": "Notes",
+      "remarksPlaceholder": "Notes for the seller (optional)",
+      "comboboxEmpty": "No results",
+      "emptyCart": "Your cart is empty.",
+      "reviewTitle": "Review your order",
+      "reviewDescription": "Check your items and pick a delivery option before placing the order.",
+      "productsHeading": "Products",
+      "lineCount": "{count} items",
+      "lineQty": "x{qty} · {price}",
+      "shippingHeading": "Shipping option",
+      "shippingEmpty": "No shipping services available for this address.",
+      "shippingMeta": "{km} km · {min} min",
+      "bestPrice": "Best price",
+      "subtotal": "Subtotal",
+      "shippingFee": "Shipping fee",
+      "total": "Total",
+      "back": "Back to edit",
+      "confirm": "Confirm order",
+      "confirmedToast": "Order confirmed",
+      "estimateError": "Could not estimate the order.",
+      "createError": "Could not place the order."
+    },
+    "list": {
+      "title": "My orders",
+      "loading": "Loading orders…",
+      "empty": {
+        "title": "You have no orders yet",
+        "description": "Once you place an order, it will appear here."
+      },
+      "count": "{count} orders",
+      "orderId": "Order ID",
+      "trackNumber": "Tracking number",
+      "createdAt": "Placed at",
+      "trackNhanh": "Track on Nhanh",
+      "trackAhamove": "Track on Ahamove",
+      "status": {
+        "Pending": "Pending",
+        "Paid": "Paid"
+      },
+      "qr": {
+        "title": "Pay this order",
+        "description": "Scan the QR code below to complete the payment.",
+        "loading": "Loading QR code…",
+        "empty": "This order doesn't have a payment QR yet.",
+        "imageAlt": "Payment QR code",
+        "openHint": "Tap to view the payment QR code",
+        "detailsTitle": "Payment details",
+        "bank": "Bank",
+        "account": "Account",
+        "amount": "Amount",
+        "content": "Content",
+        "waiting": "Waiting for payment confirmation…"
       }
     }
   }

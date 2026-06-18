@@ -8,6 +8,29 @@ import { cn } from '@/shared/utils'
 import { Cancel01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
+type DialogPosition =
+  | 'center'
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'center-left'
+  | 'center-right'
+
+const positionClasses: Record<DialogPosition, string> = {
+  center: 'top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+  'top-left': 'top-6 left-6 translate-x-0 translate-y-0 origin-top-left',
+  'top-center': 'top-6 left-[50%] translate-x-[-50%] translate-y-0 origin-top',
+  'top-right': 'top-6 right-6 translate-x-0 translate-y-0 origin-top-right',
+  'bottom-left': 'bottom-4 left-4 translate-x-0 translate-y-0 origin-bottom-left',
+  'bottom-center': 'bottom-4 left-[50%] translate-x-[-50%] translate-y-0 origin-bottom',
+  'bottom-right': 'bottom-4 right-4 translate-x-0 translate-y-0 origin-bottom-right',
+  'center-left': 'top-[50%] left-4 translate-x-0 translate-y-[-50%] origin-left',
+  'center-right': 'top-[50%] right-4 translate-x-0 translate-y-[-50%] origin-right'
+}
+
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot='dialog' {...props} />
 }
@@ -41,9 +64,11 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  position = 'center',
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  position?: DialogPosition
 }) {
   return (
     <DialogPortal>
@@ -52,6 +77,7 @@ function DialogContent({
         data-slot='dialog-content'
         className={cn(
           'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-4xl bg-popover p-6 text-sm text-popover-foreground shadow-xl ring-1 ring-foreground/5 duration-100 outline-none sm:max-w-md dark:ring-foreground/10 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+          positionClasses[position],
           className
         )}
         {...props}
