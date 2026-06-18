@@ -1,0 +1,31 @@
+.tiptap.ProseMirror {
+  --blockquote-bg-color: var(--tt-gray-light-200);
+
+  .dark & {
+    --blockquote-bg-color: var(--tt-gray-dark-700);
+  }
+}
+
+.tiptap.ProseMirror {
+  blockquote {
+    position: relative;
+    padding-left: 0.875rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    p {
+      font-size: inherit;
+      margin: 0;
+    }
+
+    &::before {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background-color: var(--blockquote-bg-color);
+      content: '';
+    }
+  }
+}

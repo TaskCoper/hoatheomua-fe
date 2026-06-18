@@ -1,0 +1,32 @@
+.tiptap.ProseMirror {
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  > img:not([data-type='emoji'] img) {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--tt-radius-lg, 0.25rem);
+    outline: 2px solid transparent;
+  }
+
+  img:not([data-type='emoji'] img).ProseMirror-selectednode {
+    outline-color: var(--tt-brand-color-500);
+  }
+
+  .tiptap-thread:has(> img) {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    img {
+      border-radius: 4px;
+      outline: 2px solid transparent;
+    }
+  }
+
+  .tiptap-thread img {
+    margin: 0;
+  }
+}

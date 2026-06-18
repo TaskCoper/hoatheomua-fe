@@ -39,6 +39,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import type { Column, ColumnMeta, Table } from '@tanstack/react-table'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 import * as React from 'react'
+import { DataTableIconView } from './data-table-icon'
 
 const DEBOUNCE_MS = 300
 const THROTTLE_MS = 50
@@ -604,7 +605,7 @@ function onFilterInputRender<TData>({
               <FacetedGroup>
                 {columnMeta?.options?.map((option) => (
                   <FacetedItem key={option.value} value={option.value}>
-                    {option.icon && <option.icon />}
+                    {option.icon && <DataTableIconView icon={option.icon} />}
                     <span>{option.label}</span>
                     {option.count && <span className='ml-auto font-mono text-xs'>{option.count}</span>}
                   </FacetedItem>
