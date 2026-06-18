@@ -42,6 +42,7 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
               />
 
               <ProductPurchaseBox
+                productId={product.id}
                 productName={product.name}
                 available={product.inventory.available}
                 retail={retail}

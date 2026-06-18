@@ -110,7 +110,8 @@
       "maxLength": "{field} không được vượt quá {max} ký tự.",
       "phoneNumber": "Vui lòng nhập số điện thoại hợp lệ.",
       "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái, 1 chữ số và 1 ký tự đặc biệt.",
-      "passwordMismatch": "Mật khẩu xác nhận không khớp."
+      "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+      "fixErrors": "Vui lòng kiểm tra lại các trường thông tin."
     },
     "sortable": {
       "dragStart": "Đã nhấc {item}, mục {position} trên {total}.",
@@ -456,6 +457,117 @@
         "selectDateRange": "Chọn khoảng ngày cho {field}",
         "selectDate": "Chọn ngày cho {field}",
         "slider": "Khoảng giá trị {title}"
+      }
+    }
+  },
+  "cart": {
+    "title": "Giỏ hàng",
+    "loading": "Đang tải giỏ hàng…",
+    "empty": {
+      "title": "Giỏ hàng của bạn đang trống",
+      "description": "Hãy duyệt sản phẩm và thêm vào giỏ để bắt đầu.",
+      "continueShopping": "Tiếp tục mua sắm"
+    },
+    "actions": {
+      "clear": "Xóa giỏ hàng",
+      "remove": "Xóa",
+      "checkout": "Thanh toán",
+      "useMax": "Dùng tối đa ({stock})",
+      "increase": "Tăng số lượng",
+      "decrease": "Giảm số lượng",
+      "selectAll": "Chọn tất cả",
+      "selectLine": "Chọn sản phẩm này"
+    },
+    "fallbackName": "Sản phẩm #{productId}",
+    "price": "Giá: {price}",
+    "loadingPrice": "Đang tải giá…",
+    "unavailable": {
+      "missing": "Sản phẩm này không còn tồn tại.",
+      "inactive": "Sản phẩm này hiện không hoạt động.",
+      "outOfStock": "Sản phẩm này đã hết hàng."
+    },
+    "overStock": "Chỉ còn {stock} trong kho. Vui lòng giảm số lượng.",
+    "inStock": "Còn {stock} trong kho",
+    "lineSubtotal": "Tạm tính",
+    "unitLabel": "Phân loại: {unit}",
+    "summary": {
+      "title": "Tóm tắt đơn hàng",
+      "selected": "Đã chọn {count} / {total}",
+      "subtotal": "Tạm tính",
+      "shippingNote": "Phí vận chuyển và khuyến mãi sẽ được tính khi thanh toán.",
+      "empty": "Chọn sản phẩm để thanh toán."
+    }
+  },
+  "orders": {
+    "checkout": {
+      "title": "Thanh toán",
+      "description": "Vui lòng điền thông tin giao hàng để hoàn tất đơn của bạn.",
+      "submit": "Đặt hàng",
+      "cancel": "Hủy",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên người nhận",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "Nhập số điện thoại",
+      "addressLine": "Địa chỉ",
+      "addressLinePlaceholder": "Số nhà, tên đường",
+      "city": "Tỉnh / Thành phố",
+      "cityPlaceholder": "Chọn tỉnh / thành",
+      "citySearchPlaceholder": "Tìm tỉnh / thành",
+      "ward": "Phường / Xã",
+      "wardPlaceholder": "Chọn phường / xã",
+      "wardSearchPlaceholder": "Tìm phường / xã",
+      "remarks": "Ghi chú",
+      "remarksPlaceholder": "Ghi chú cho người bán (tuỳ chọn)",
+      "comboboxEmpty": "Không có kết quả",
+      "emptyCart": "Giỏ hàng của bạn đang trống.",
+      "reviewTitle": "Xác nhận đơn hàng",
+      "reviewDescription": "Kiểm tra sản phẩm và chọn phương thức giao hàng trước khi đặt.",
+      "productsHeading": "Sản phẩm",
+      "lineCount": "{count} sản phẩm",
+      "lineQty": "x{qty} · {price}",
+      "shippingHeading": "Phương thức giao hàng",
+      "shippingEmpty": "Hiện chưa có dịch vụ giao hàng phù hợp.",
+      "shippingMeta": "{km} km · {min} phút",
+      "bestPrice": "Tiết kiệm nhất",
+      "subtotal": "Tạm tính",
+      "shippingFee": "Phí vận chuyển",
+      "total": "Tổng cộng",
+      "back": "Quay lại chỉnh sửa",
+      "confirm": "Xác nhận đặt hàng",
+      "confirmedToast": "Đã xác nhận đơn hàng",
+      "estimateError": "Không thể ước tính đơn hàng.",
+      "createError": "Không thể tạo đơn hàng."
+    },
+    "list": {
+      "title": "Đơn hàng của tôi",
+      "loading": "Đang tải đơn hàng…",
+      "empty": {
+        "title": "Bạn chưa có đơn hàng nào",
+        "description": "Khi bạn đặt hàng, đơn hàng sẽ hiển thị tại đây."
+      },
+      "count": "{count} đơn hàng",
+      "orderId": "Mã đơn",
+      "trackNumber": "Mã vận đơn",
+      "createdAt": "Đặt lúc",
+      "trackNhanh": "Theo dõi Nhanh",
+      "trackAhamove": "Theo dõi Ahamove",
+      "status": {
+        "Pending": "Chờ xác nhận",
+        "Paid": "Đã thanh toán"
+      },
+      "qr": {
+        "title": "Thanh toán đơn hàng",
+        "description": "Quét mã QR bên dưới để hoàn tất thanh toán.",
+        "loading": "Đang tải mã QR…",
+        "empty": "Đơn hàng này chưa có mã thanh toán.",
+        "imageAlt": "Mã QR thanh toán",
+        "openHint": "Nhấn để xem mã QR thanh toán",
+        "detailsTitle": "Thông tin chuyển khoản",
+        "bank": "Ngân hàng",
+        "account": "Tài khoản",
+        "amount": "Số tiền",
+        "content": "Nội dung",
+        "waiting": "Đang chờ xác nhận thanh toán…"
       }
     }
   }
