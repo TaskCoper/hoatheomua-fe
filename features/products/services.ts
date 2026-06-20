@@ -5,7 +5,17 @@ import { Product, ProductDetail } from './types'
 class ProductService {
   private readonly baseUrl = 'v1/products'
 
-  getProducts = async ({ ids, status, size, sort, next }: GetProductsParams) => {
+  getProducts = async ({
+    ids = [],
+    status = [],
+    categoryIds = [],
+    name = '',
+    price,
+    size = 50,
+    sort = { id: 'asc' },
+    next
+  }: GetProductsParams) => {
+    const trimmedName = name.trim()
     const { data } = await api.post<
       BaseResponse<{
         code: number
@@ -18,13 +28,16 @@ class ProductService {
       }>
     >(`${this.baseUrl}/nhanh-vn/list`, {
       filters: {
-        ids,
-        status
+        ...(ids.length > 0 ? { id: ids } : {}),
+        ...(status.length > 0 ? { status } : {}),
+        ...(categoryIds.length > 0 ? { categoryIds } : {}),
+        ...(trimmedName.length > 0 ? { name: trimmedName } : {}),
+        ...(price && price.length === 2 ? { price } : {})
       },
       paginator: {
         size,
         sort,
-        next
+        ...(next ? { next } : {})
       }
     })
 

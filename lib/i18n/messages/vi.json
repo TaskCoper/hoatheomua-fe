@@ -697,7 +697,7 @@
       }
     },
     "whyChooseUs": {
-      "title": "Tại Sao Chọn Chúng Tôi",
+      "title": "Giá Trị Cốt Lõi",
       "description": "Chúng tôi tin rằng hoa cần đến tay bạn tươi mới và rực rỡ như khoảnh khắc vừa được hái. Từ việc tuyển chọn từng bông hoa, đóng gói cẩn thận đến giao hàng đúng hẹn, mỗi bước đều được thực hiện bằng cả sự tận tâm.",
       "bannerAlt": "Bó hoa tươi Hoa Theo Mùa",
       "features": {
@@ -963,6 +963,37 @@
     "catalog": {
       "title": "Tuyển Chọn Hôm Nay",
       "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc."
+    },
+    "filter": {
+      "all": "Tất cả",
+      "title": "Bộ lọc",
+      "search": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo tên…",
+      "categoriesHeading": "Danh mục",
+      "priceHeading": "Khoảng giá",
+      "priceValue": "{min} – {max}",
+      "priceAll": "Tất cả giá",
+      "reset": "Đặt lại bộ lọc",
+      "categories": {
+        "eventFlowers": "Hoa Sự Kiện",
+        "daily": "Hoa Daily",
+        "signature": "Signature",
+        "flowerVases": "Bình Cắm Hoa",
+        "saleOffVases": "Bình Gốm Sale-off",
+        "bauTrucVases": "Bình Gốm Bàu Trúc",
+        "glassVases": "Bình Thủy Tinh",
+        "batTrangVases": "Bình Gốm Bát Tràng",
+        "basketFlowers": "Hoa Giỏ",
+        "bouquets": "Hoa Bó",
+        "orchids": "Lan Hồ Điệp"
+      },
+      "priceRanges": {
+        "r0to200": "Dưới 200K",
+        "r200to500": "200K – 500K",
+        "r500to1000": "500K – 1Tr",
+        "r1000to2000": "1Tr – 2Tr",
+        "r2000to5000": "2Tr – 5Tr"
+      }
     },
     "promise": {
       "bannerAlt": "Ưu đãi hoa tươi Hoa Theo Mùa",

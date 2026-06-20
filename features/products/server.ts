@@ -1,3 +1,4 @@
+import { DEFAULT_PRODUCT_CATEGORY_IDS, DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import type { Product, ProductDetail } from '@/features/products/types'
 import type { BaseResponse } from '@/lib/axios'
 
@@ -16,6 +17,8 @@ export interface ProductListPayload {
 export interface FetchProductsParams {
   ids?: number[]
   status?: number[]
+  categoryIds?: number[]
+  price?: number[]
   size?: number
   sort?: Record<string, 'asc' | 'desc'>
   next?: Record<string, number>
@@ -73,12 +76,13 @@ export const fetchProductsList = (params: FetchProductsParams = {}, options?: Fe
     {
       filters: {
         ids: params.ids ?? [],
-        status: params.status ?? []
+        status: params.status ?? [],
+        categoryIds: params.categoryIds ?? DEFAULT_PRODUCT_CATEGORY_IDS
       },
       paginator: {
         size: params.size ?? 12,
-        sort: params.sort ?? { id: 'desc' },
-        next: params.next ?? { id: 0 }
+        sort: params.sort ?? DEFAULT_PRODUCT_SORT,
+        ...(params.next ? { next: params.next } : {})
       }
     },
     options

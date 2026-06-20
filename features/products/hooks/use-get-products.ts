@@ -4,6 +4,9 @@ import productService from '../services'
 export interface GetProductsParams {
   ids?: number[]
   status?: number[]
+  categoryIds?: number[]
+  name?: string
+  price?: number[]
   size?: number
   sort?: Record<string, 'asc' | 'desc'>
   next?: Record<string, number>
@@ -12,29 +15,46 @@ export interface GetProductsParams {
 export const buildGetProductsKey = ({
   ids = [],
   status = [],
-  size = 12,
+  categoryIds = [],
+  name = '',
+  price,
+  size = 50,
   sort = { id: 'desc' },
-  next = { id: 0 }
-}: GetProductsParams = {}) => ['products', { ids, status, size, sort, next }] as const
+  next
+}: GetProductsParams = {}) =>
+  [
+    'products',
+    {
+      ids,
+      status,
+      categoryIds,
+      name,
+      ...(price && price.length > 0 ? { price } : {}),
+      size,
+      sort,
+      ...(next ? { next } : {})
+    }
+  ] as const
 
 export const useGetProducts = ({
   ids = [],
   status = [],
-  size = 12,
+  categoryIds = [],
+  name = '',
+  price,
+  size = 50,
   sort = {
     id: 'desc'
   },
-  next = {
-    id: 0
-  }
+  next
 }: GetProductsParams = {}) => {
   const {
     data: products,
     isFetching: isFetchingProducts,
     isLoading: isLoadingProducts
   } = useQuery({
-    queryKey: buildGetProductsKey({ ids, status, size, sort, next }),
-    queryFn: () => productService.getProducts({ ids, status, size, sort, next }),
+    queryKey: buildGetProductsKey({ ids, status, categoryIds, name, price, size, sort, next }),
+    queryFn: () => productService.getProducts({ ids, status, categoryIds, name, price, size, sort, next }),
     placeholderData: keepPreviousData
   })
 

@@ -1,5 +1,6 @@
 'use client'
 
+import type { Product } from '@/features/products/types'
 import bannerOne from '@/public/images/banner-one.png'
 import saleBanner from '@/public/images/sale-banner.png'
 import { motion, type Variants } from 'motion/react'
@@ -19,7 +20,13 @@ const bannerReveal: Variants = {
   visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 120, damping: 18 } }
 }
 
-export default function HomeContent() {
+export default function HomeContent({
+  signatureBouquets,
+  signatureBouquetsNextCursor
+}: {
+  signatureBouquets: Product[]
+  signatureBouquetsNextCursor: number
+}) {
   return (
     <div className='relative overflow-hidden'>
       <HeroSection />
@@ -47,7 +54,7 @@ export default function HomeContent() {
         />
       </motion.div>
 
-      <SignatureBouquetsSection />
+      <SignatureBouquetsSection initialItems={signatureBouquets} initialNextCursor={signatureBouquetsNextCursor} />
 
       <motion.div
         initial='hidden'

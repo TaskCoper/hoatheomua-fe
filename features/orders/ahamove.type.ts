@@ -52,7 +52,7 @@ export interface ProductNhanh {
   priceVatMode: number
   importPriceVatMode: number
 
-  categoryId: number | null
+  categoryIds: number | null
   internalCategoryId: number | null
 
   prices: ProductNhanhPrices

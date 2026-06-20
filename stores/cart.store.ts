@@ -66,9 +66,7 @@ function normalizeSelectedOptions(value: unknown): CartSelectedOptions {
 
 export function buildLineId(productId: number, variantId: number | null, selectedOptions: CartSelectedOptions): string {
   const normalizedOptions = normalizeSelectedOptions(selectedOptions)
-  const optionsKey = Object.keys(normalizedOptions).length
-    ? JSON.stringify(Object.entries(normalizedOptions))
-    : ''
+  const optionsKey = Object.keys(normalizedOptions).length ? JSON.stringify(Object.entries(normalizedOptions)) : ''
   return `p:${productId}|v:${variantId ?? 'none'}|o:${optionsKey}`
 }
 
@@ -89,9 +87,7 @@ export function sanitizeItems(input: unknown): CartItem[] {
     if (!Number.isFinite(productId)) continue
 
     const variantId =
-      typeof candidate.variantId === 'number' && Number.isFinite(candidate.variantId)
-        ? candidate.variantId
-        : null
+      typeof candidate.variantId === 'number' && Number.isFinite(candidate.variantId) ? candidate.variantId : null
 
     const selectedOptions = normalizeSelectedOptions(candidate.selectedOptions)
     const quantity = sanitizeQuantity(candidate.quantity)
@@ -104,12 +100,9 @@ export function sanitizeItems(input: unknown): CartItem[] {
     if (seen.has(lineId)) continue
     seen.add(lineId)
 
-    const addedAt =
-      typeof candidate.addedAt === 'string' && candidate.addedAt.length > 0 ? candidate.addedAt : nowIso()
+    const addedAt = typeof candidate.addedAt === 'string' && candidate.addedAt.length > 0 ? candidate.addedAt : nowIso()
     const updatedAt =
-      typeof candidate.updatedAt === 'string' && candidate.updatedAt.length > 0
-        ? candidate.updatedAt
-        : addedAt
+      typeof candidate.updatedAt === 'string' && candidate.updatedAt.length > 0 ? candidate.updatedAt : addedAt
 
     result.push({
       lineId,
@@ -216,9 +209,7 @@ export const useCartStore = create<CartState>()(
 
         set({
           items: get().items.map((item) =>
-            item.lineId === lineId
-              ? { ...item, quantity: sanitizeQuantity(nextQuantity), updatedAt: timestamp }
-              : item
+            item.lineId === lineId ? { ...item, quantity: sanitizeQuantity(nextQuantity), updatedAt: timestamp } : item
           )
         })
       },

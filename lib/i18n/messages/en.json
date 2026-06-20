@@ -697,7 +697,7 @@
       }
     },
     "whyChooseUs": {
-      "title": "Why Choose Us",
+      "title": "Core Values",
       "description": "We believe flowers should reach you as fresh and vibrant as the moment they were picked. From hand-picking each stem to careful packaging and on-time delivery, every step is performed with devotion.",
       "bannerAlt": "Fresh bouquet by Hoa Theo Mua",
       "features": {
@@ -963,6 +963,37 @@
     "catalog": {
       "title": "Today's Selection",
       "description": "Same-day-imported flowers hand-arranged by artisans — a collection curated from color to emotion for every moment."
+    },
+    "filter": {
+      "all": "All",
+      "title": "Filters",
+      "search": "Search",
+      "searchPlaceholder": "Search by name…",
+      "categoriesHeading": "Categories",
+      "priceHeading": "Price range",
+      "priceValue": "{min} – {max}",
+      "priceAll": "All prices",
+      "reset": "Reset filters",
+      "categories": {
+        "eventFlowers": "Event Flowers",
+        "daily": "Daily Flowers",
+        "signature": "Signature",
+        "flowerVases": "Flower Vases",
+        "saleOffVases": "Sale-off Vases",
+        "bauTrucVases": "Bau Truc Ceramics",
+        "glassVases": "Glass Vases",
+        "batTrangVases": "Bat Trang Ceramics",
+        "basketFlowers": "Basket Flowers",
+        "bouquets": "Bouquets",
+        "orchids": "Phalaenopsis Orchids"
+      },
+      "priceRanges": {
+        "r0to200": "Under 200K",
+        "r200to500": "200K – 500K",
+        "r500to1000": "500K – 1M",
+        "r1000to2000": "1M – 2M",
+        "r2000to5000": "2M – 5M"
+      }
     },
     "promise": {
       "bannerAlt": "Hoa Theo Mua fresh flower promotion",

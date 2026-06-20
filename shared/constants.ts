@@ -10,6 +10,7 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/verify',
   '/verify-sent',
   '/news',
+  '/news/[id]',
   '/products',
   '/products/[id]',
   '/about',
