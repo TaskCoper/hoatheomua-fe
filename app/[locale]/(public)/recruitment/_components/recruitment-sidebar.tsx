@@ -1,85 +1,81 @@
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import flowerImage from '@/public/images/flower.png'
 import pedalsRight from '@/public/images/pedals-right.png'
-import { ArrowUp01Icon, FavouriteIcon, Mail01Icon, QuoteUpIcon } from '@hugeicons/core-free-icons'
+import { ArrowUp01Icon, FavouriteIcon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
+
+import type { RecruitmentFilters } from '../types'
 
 const groups = [
   {
     titleKey: 'recruitment.sidebar.groups.jobType.title',
     items: [
-      { labelKey: 'recruitment.sidebar.groups.jobType.fullTime', count: 18, checked: true },
-      { labelKey: 'recruitment.sidebar.groups.jobType.partTime', count: 6, checked: false },
-      { labelKey: 'recruitment.sidebar.groups.jobType.internship', count: 5, checked: false },
-      { labelKey: 'recruitment.sidebar.groups.jobType.freelance', count: 3, checked: false }
-    ]
-  },
-  {
-    titleKey: 'recruitment.sidebar.groups.level.title',
-    items: [
-      { labelKey: 'recruitment.sidebar.groups.level.intern', count: 6, checked: false },
-      { labelKey: 'recruitment.sidebar.groups.level.staff', count: 15, checked: true },
-      { labelKey: 'recruitment.sidebar.groups.level.specialist', count: 7, checked: false },
-      { labelKey: 'recruitment.sidebar.groups.level.manager', count: 3, checked: false }
+      {
+        labelKey: 'recruitment.sidebar.groups.jobType.fullTime',
+        filterKey: 'employmentType',
+        value: 'fullTime'
+      },
+      {
+        labelKey: 'recruitment.sidebar.groups.jobType.partTime',
+        filterKey: 'employmentType',
+        value: 'partTime'
+      }
     ]
   },
   {
     titleKey: 'recruitment.sidebar.groups.location.title',
     items: [
-      { labelKey: 'recruitment.sidebar.groups.location.hoChiMinhCity', count: 16, checked: true },
-      { labelKey: 'recruitment.sidebar.groups.location.haNoi', count: 8, checked: false },
-      { labelKey: 'recruitment.sidebar.groups.location.daNang', count: 3, checked: false }
+      {
+        labelKey: 'recruitment.sidebar.groups.location.hoChiMinhCity',
+        filterKey: 'location',
+        value: 'TP.HCM'
+      },
+      {
+        labelKey: 'recruitment.sidebar.groups.location.haNoi',
+        filterKey: 'location',
+        value: 'Hà Nội'
+      },
+      {
+        labelKey: 'recruitment.sidebar.groups.location.daNang',
+        filterKey: 'location',
+        value: 'Đà Nẵng'
+      }
     ]
   }
 ] as const
 
-export default function RecruitmentSidebar() {
+type RecruitmentSidebarProps = {
+  filters: RecruitmentFilters
+  onFilterChange: (filters: Partial<RecruitmentFilters>) => void
+}
+
+export default function RecruitmentSidebar({ filters, onFilterChange }: RecruitmentSidebarProps) {
   const { t } = useTranslation()
+
+  const isFilterChecked = (item: (typeof groups)[number]['items'][number]) => {
+    if (!('filterKey' in item)) return false
+    if (item.filterKey === 'employmentType') return filters.employmentType === item.value
+    return filters.location === item.value
+  }
+
+  const handleFilterChange = (item: (typeof groups)[number]['items'][number], checked: boolean) => {
+    if (!('filterKey' in item)) return
+
+    if (item.filterKey === 'employmentType') {
+      onFilterChange({ employmentType: checked ? item.value : undefined })
+      return
+    }
+
+    onFilterChange({ location: checked ? item.value : undefined })
+  }
 
   return (
     <aside className='w-full space-y-4 xl:sticky xl:top-6'>
-      <Card className='w-full gap-3 border border-primary/10 bg-card py-4 shadow-sm shadow-primary/5 transition-shadow delay-100 duration-500 ease-out hover:shadow-md hover:shadow-primary/5'>
-        <CardHeader className='grid-cols-[auto_1fr] items-start gap-2 px-4'>
-          {/* <div className='grid size-12 shrink-0 place-items-center rounded-3xl bg-secondary/30 text-primary'>
-            <HugeiconsIcon icon={Mail01Icon} strokeWidth={1.8} className='size-5' />
-          </div> */}
-          <div className='space-y-1'>
-            <CardTitle className='text-base font-semibold leading-snug text-primary'>
-              {t('recruitment.sidebar.newsletter.title')}
-            </CardTitle>
-            <CardDescription className='text-xs leading-5 text-muted-foreground'>
-              {t('recruitment.sidebar.newsletter.description')}
-            </CardDescription>
-          </div>
-        </CardHeader>
-
-        <CardContent className='w-full space-y-2.5 px-4'>
-          <div className='space-y-2'>
-            <Input
-              id='recruitment-email'
-              type='email'
-              placeholder={t('recruitment.sidebar.newsletter.emailPlaceholder')}
-              className='h-10 border border-border bg-background px-3.5 text-sm transition-colors delay-75 duration-500 ease-out hover:border-primary/25 focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring/15'
-            />
-          </div>
-          <Button
-            type='button'
-            className='h-10 w-full transform-gpu px-4 text-sm transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
-          >
-            <HugeiconsIcon icon={Mail01Icon} strokeWidth={1.8} className='size-4' />
-            {t('recruitment.sidebar.newsletter.submit')}
-          </Button>
-        </CardContent>
-      </Card>
-
       <Card className='w-full gap-0 border border-primary/10 bg-card py-5 shadow-sm shadow-primary/5 transition-shadow delay-100 duration-500 ease-out hover:shadow-md hover:shadow-primary/5'>
         <CardContent className='w-full px-5'>
           {groups.map((group, groupIndex) => (
@@ -100,14 +96,13 @@ export default function RecruitmentSidebar() {
                       htmlFor={checkboxId}
                       className='group -mx-2 flex cursor-pointer items-center gap-3 rounded-2xl px-2 py-1 text-sm font-normal leading-5 text-foreground transition-colors delay-75 duration-500 ease-out hover:bg-primary/5 focus-within:bg-primary/5'
                     >
-                      <Checkbox id={checkboxId} defaultChecked={item.checked} aria-label={t(item.labelKey)} />
+                      <Checkbox
+                        id={checkboxId}
+                        checked={isFilterChecked(item)}
+                        onCheckedChange={(checked) => handleFilterChange(item, checked === true)}
+                        aria-label={t(item.labelKey)}
+                      />
                       <span className='min-w-0 flex-1'>{t(item.labelKey)}</span>
-                      <Badge
-                        variant='secondary'
-                        className='h-6 min-w-7 justify-center bg-secondary/30 text-muted-foreground transition-colors delay-75 duration-500 ease-out group-hover:bg-secondary/40'
-                      >
-                        {item.count}
-                      </Badge>
                     </Label>
                   )
                 })}
@@ -141,9 +136,7 @@ export default function RecruitmentSidebar() {
           aria-hidden='true'
         />
         <CardContent className='relative z-10 w-full px-6'>
-          <p className='font-title text-base italic leading-7 text-primary'>
-            {t('recruitment.sidebar.quote')}
-          </p>
+          <p className='font-title text-base italic leading-7 text-primary'>{t('recruitment.sidebar.quote')}</p>
           <div className='mx-auto mt-5 flex size-9 items-center justify-center rounded-full border border-primary/20 bg-background/60 text-primary'>
             <HugeiconsIcon icon={FavouriteIcon} strokeWidth={1.8} className='size-4' aria-hidden='true' />
           </div>
