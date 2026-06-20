@@ -282,6 +282,7 @@
       "salary": {
         "placeholder": "All salary ranges",
         "options": {
+          "below8": "Under 8 million",
           "range8To12": "8 - 12 million",
           "range12To18": "12 - 18 million",
           "above18": "Above 18 million"
@@ -334,6 +335,9 @@
         "experience": "Experience",
         "level": "Level",
         "employmentType": "Work type",
+        "openings": "Openings",
+        "openingsValue": "{count} openings",
+        "location": "Location",
         "salary": "Salary"
       },
       "actions": {
@@ -347,6 +351,20 @@
         "responsibilities": "Job description",
         "requirements": "Requirements",
         "benefits": "Benefits"
+      }
+    },
+    "applyDialog": {
+      "title": "Apply for this role",
+      "description": "{title}",
+      "cancel": "Cancel",
+      "submit": "Submit application",
+      "addAttachment": "Add",
+      "attachmentPlaceholder": "CV or portfolio URL",
+      "removeAttachment": "Remove attachment",
+      "fields": {
+        "roleTitle": "Role title",
+        "coverLetter": "Cover letter",
+        "attachments": "Attachments"
       }
     }
   },

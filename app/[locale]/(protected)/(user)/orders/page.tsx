@@ -96,10 +96,7 @@ export default function OrdersPage() {
 
   return (
     <section className='relative px-4 pt-4 pb-12 sm:pt-6 md:pt-8 lg:pt-10'>
-      <OrdersHeading
-        title={t('orders.list.title')}
-        subtitle={t('orders.list.count', { count: totalCount })}
-      />
+      <OrdersHeading title={t('orders.list.title')} subtitle={t('orders.list.count', { count: totalCount })} />
 
       <motion.ul
         initial='hidden'
@@ -201,7 +198,8 @@ function OrderRow({ order, t, formatDateTime, onOpenQr }: OrderRowProps) {
       aria-label={isPending ? t('orders.list.qr.title') : undefined}
       className={cn(
         'group relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-card p-4 outline-none shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow sm:flex-row sm:items-center sm:p-5',
-        isPending && 'cursor-pointer hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-visible:ring-2 focus-visible:ring-ring/40'
+        isPending &&
+          'cursor-pointer hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-visible:ring-2 focus-visible:ring-ring/40'
       )}
     >
       <motion.div
@@ -225,9 +223,7 @@ function OrderRow({ order, t, formatDateTime, onOpenQr }: OrderRowProps) {
             variant='outline'
             className={cn(
               'gap-1 rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider',
-              isPaid
-                ? 'border-leaf/30 bg-leaf/10 text-leaf'
-                : 'border-warning/40 bg-warning/10 text-warning'
+              isPaid ? 'border-leaf/30 bg-leaf/10 text-leaf' : 'border-warning/40 bg-warning/10 text-warning'
             )}
           >
             <HugeiconsIcon
@@ -244,6 +240,14 @@ function OrderRow({ order, t, formatDateTime, onOpenQr }: OrderRowProps) {
             <dt className='shrink-0 font-medium'>{t('orders.list.createdAt')}:</dt>
             <dd className='truncate font-medium text-foreground/90'>
               {order.createAt ? formatDateTime(order.createAt, 'dateTimeShort') : '—'}
+            </dd>
+          </div>
+          <div className='flex items-center gap-1 text-xs text-muted-foreground'>
+            <dt className='shrink-0 font-medium'>{t('orders.checkout.orderTime')}:</dt>
+            <dd className='truncate font-medium text-foreground/90'>
+              {order.orderTime > 0
+                ? formatDateTime(order.orderTime * 1000, 'dateTimeShort')
+                : t('orders.checkout.deliverNow')}
             </dd>
           </div>
         </dl>
