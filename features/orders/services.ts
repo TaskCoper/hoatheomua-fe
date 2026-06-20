@@ -83,12 +83,12 @@ class OrderService {
   }
 
   getOrderShippingLocations = async (body: GetOrderShippingLocationsBody) => {
-    const { data } = await api.post<{ code: number; data: ShippingLocation[] }>(
+    const { data } = await api.post<BaseResponse<{ code: number; data: ShippingLocation[] }>>(
       `${this.baseUrl}/shipping-location`,
       body
     )
 
-    return data.data
+    return data.value.data
   }
 
   getLatLngFromAddress = async ({ address }: { address?: string }) => {

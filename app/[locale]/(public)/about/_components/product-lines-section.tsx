@@ -13,7 +13,6 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
-import DecorImage from './decor-image'
 
 const PRODUCT_COLLECTIONS = [
   {
@@ -22,7 +21,7 @@ const PRODUCT_COLLECTIONS = [
     nameKey: 'about.productLines.items.womensDay.name',
     descriptionKey: 'about.productLines.items.womensDay.description',
     image: image2,
-    accent: 'bg-rose-100/80',
+    accent: 'bg-pink-200/15',
     bg: '/images/about/bg-product-womens-day.png'
   },
   {
@@ -31,7 +30,7 @@ const PRODUCT_COLLECTIONS = [
     nameKey: 'about.productLines.items.vietnameseWomensDay.name',
     descriptionKey: 'about.productLines.items.vietnameseWomensDay.description',
     image: image3,
-    accent: 'bg-amber-100/80',
+    accent: 'bg-pink-200/15',
     bg: '/images/about/bg-product-vietnamese-womens-day.png'
   },
   {
@@ -40,7 +39,7 @@ const PRODUCT_COLLECTIONS = [
     nameKey: 'about.productLines.items.teachersDay.name',
     descriptionKey: 'about.productLines.items.teachersDay.description',
     image: image10,
-    accent: 'bg-secondary/60',
+    accent: 'bg-pink-200/15',
     bg: '/images/about/bg-product-teachers-day.png'
   },
   {
@@ -49,7 +48,7 @@ const PRODUCT_COLLECTIONS = [
     nameKey: 'about.productLines.items.seasonalBouquet.name',
     descriptionKey: 'about.productLines.items.seasonalBouquet.description',
     image: image5,
-    accent: 'bg-lime-100/70',
+    accent: 'bg-pink-200/15',
     bg: '/images/about/bg-product-seasonal.png'
   },
   {
@@ -58,7 +57,7 @@ const PRODUCT_COLLECTIONS = [
     nameKey: 'about.productLines.items.tetOrchid.name',
     descriptionKey: 'about.productLines.items.tetOrchid.description',
     image: image6,
-    accent: 'bg-yellow-100/75',
+    accent: 'bg-pink-200/15',
     bg: '/images/about/bg-product-tet.png'
   },
   {
@@ -67,7 +66,7 @@ const PRODUCT_COLLECTIONS = [
     nameKey: 'about.productLines.items.birthdayGift.name',
     descriptionKey: 'about.productLines.items.birthdayGift.description',
     image: image7,
-    accent: 'bg-sky-100/70',
+    accent: 'bg-pink-200/15',
     bg: '/images/about/bg-product-birthday.png'
   }
 ] as const
@@ -157,18 +156,18 @@ export default function ProductLinesSection() {
               <div
                 className={`relative isolate flex h-44 items-center justify-center overflow-hidden sm:h-36 md:h-40 lg:h-44 ${line.accent}`}
               >
-                <DecorImage
+                {/* <DecorImage
                   src={line.bg}
                   sizes='(min-width: 640px) 33vw, 100vw'
                   quality={70}
                   className='-z-10 object-cover'
-                />
-                <motion.div
+                /> */}
+                {/* <motion.div
                   aria-hidden='true'
                   animate={{ rotate: 360 }}
                   transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
                   className='absolute inset-3 rounded-2xl border border-dashed border-primary/15 sm:inset-2 lg:inset-3'
-                />
+                /> */}
                 <motion.div
                   animate={{ y: [0, -6, 0], rotate: [0, -2, 0, 2, 0] }}
                   whileHover={{ scale: 1.15, rotate: -6 }}

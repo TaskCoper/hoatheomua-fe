@@ -68,7 +68,9 @@ export default function ProductPurchaseBox({
     [productId, variantId, selectedOptions]
   )
 
-  const inCartQuantity = useCartStore((state) => state.items.find((item) => item.lineId === targetLineId)?.quantity ?? 0)
+  const inCartQuantity = useCartStore(
+    (state) => state.items.find((item) => item.lineId === targetLineId)?.quantity ?? 0
+  )
 
   const remainingStock = Math.max(0, Math.min(available, MAX_QUANTITY) - inCartQuantity)
   const canAdd = remainingStock > 0
@@ -104,7 +106,9 @@ export default function ProductPurchaseBox({
     <div className='space-y-5 rounded-3xl bg-card px-4 py-5 shadow-[0_0.8rem_2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'>
       {hasVariants ? (
         <div className='space-y-2'>
-          <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('products.detail.purchase.packaging')}</p>
+          <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+            {t('products.detail.purchase.packaging')}
+          </p>
           <div className='flex flex-wrap gap-2'>
             {variantOptions.map((unit) => {
               const isActive = unit.id === activeUnitId

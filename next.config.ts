@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'pos.nvncdn.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'hoatheomua.net'
       }
     ],
     formats: ['image/avif', 'image/webp'],

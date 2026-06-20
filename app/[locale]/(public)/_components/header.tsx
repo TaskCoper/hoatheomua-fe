@@ -32,6 +32,7 @@ import NavUser from './nav-user'
 const NAV_ITEMS = [
   { id: 1, labelKey: 'header.nav.home', href: '/' },
   { id: 50, labelKey: 'header.nav.products', href: '/products' },
+  { id: 75, labelKey: 'header.nav.b2b', href: '/b2b' },
   { id: 100, labelKey: 'header.nav.about', href: '/about' },
   { id: 200, labelKey: 'header.nav.news', href: '/news' },
   { id: 250, labelKey: 'header.nav.recruitment', href: '/recruitment' },
@@ -90,7 +91,7 @@ export default function Header() {
             className='pointer-events-none absolute hidden xl:block -right-20 -top-8 z-0 h-14 w-auto -scale-x-100'
           />
 
-          <ul className='relative z-10 flex items-center gap-4'>
+          <ul className='relative z-10 flex items-center gap-2'>
             {NAV_ITEMS.map((item) => {
               const active = isActive(item.href)
 
@@ -304,7 +305,9 @@ function LanguageSwitcher({ className }: { className?: string }) {
         <Button
           variant='outline'
           size='sm'
-          className={['h-8 min-w-14 border-none px-2 ring ring-primary ring-inset', className].filter(Boolean).join(' ')}
+          className={['h-8 min-w-14 border-none px-2 ring ring-primary ring-inset', className]
+            .filter(Boolean)
+            .join(' ')}
           aria-label={t('account.language')}
         >
           <HugeiconsIcon icon={GlobalIcon} />

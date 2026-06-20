@@ -27,7 +27,8 @@ export const createCheckoutSchema = (t: TranslationFunction) => {
     wardCode: z.number().refine((v) => v !== -1, { error: requiredFor(t('orders.checkout.ward')) }),
     latitude: z.number(),
     longitude: z.number(),
-    mapId: z.string()
+    mapId: z.string(),
+    orderTime: z.string().nullable()
   })
 }
 

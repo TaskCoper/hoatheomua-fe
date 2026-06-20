@@ -95,10 +95,13 @@
       "more": "More",
       "uploading": "Uploading...",
       "pleaseWait": "Please wait",
-      "uploadSuccess": "Upload successful"
+      "uploadSuccess": "Upload successful",
+      "optional": "optional",
+      "selectDate": "Select a date"
     },
     "button": {
-      "clearAll": "Clear all"
+      "clearAll": "Clear all",
+      "clear": "Clear"
     },
     "error": {
       "uploadNoUrlReturned": "Upload failed: no URL returned"
@@ -187,6 +190,10 @@
     "codeBlock": {
       "label": "Code block"
     }
+  },
+  "floatingContact": {
+    "zalo": "Chat on Zalo",
+    "messenger": "Chat on Messenger"
   },
   "contact": {
     "eyebrow": "Seasonal flower studio",
@@ -518,10 +525,15 @@
       "wardSearchPlaceholder": "Search ward",
       "remarks": "Notes",
       "remarksPlaceholder": "Notes for the seller (optional)",
+      "orderTime": "Delivery date",
+      "orderTimePlaceholder": "Pick a date for later delivery",
       "comboboxEmpty": "No results",
       "emptyCart": "Your cart is empty.",
       "reviewTitle": "Review your order",
       "reviewDescription": "Check your items and pick a delivery option before placing the order.",
+      "recipientHeading": "Delivery details",
+      "deliverNow": "Deliver as soon as possible",
+      "noRemarks": "No notes",
       "productsHeading": "Products",
       "lineCount": "{count} items",
       "lineQty": "x{qty} · {price}",
@@ -610,6 +622,7 @@
     "nav": {
       "home": "Home",
       "products": "Products",
+      "b2b": "For Business",
       "about": "About",
       "news": "News",
       "recruitment": "Careers",
@@ -1057,7 +1070,9 @@
     "detail": {
       "gallery": {
         "viewImage": "View image {index}",
-        "thumbAlt": "{name} - image {index}"
+        "thumbAlt": "{name} - image {index}",
+        "openLightbox": "Open image gallery",
+        "emptyState": "No product image"
       },
       "purchase": {
         "packaging": "Packaging",
@@ -1108,6 +1123,180 @@
           }
         }
       }
+    }
+  },
+  "b2b": {
+    "hero": {
+      "eyebrow": "Hoa Theo Mùa for Business",
+      "title": "Floral Partnerships For Modern Businesses",
+      "subtitle": "From boardrooms to ballrooms — we design blooming experiences for hotels, offices and brands across Vietnam.",
+      "primaryCta": "Request a quote",
+      "secondaryCta": "Talk to our team",
+      "imageAlt": "Premium corporate floral arrangement",
+      "stats": {
+        "clients": {
+          "value": "200+",
+          "label": "Corporate clients"
+        },
+        "hotels": {
+          "value": "12+",
+          "label": "Five-star hotels"
+        },
+        "events": {
+          "value": "1,500+",
+          "label": "Events delivered"
+        },
+        "cities": {
+          "value": "3",
+          "label": "Cities served"
+        },
+        "support": {
+          "value": "24/7",
+          "label": "Support"
+        }
+      }
+    },
+    "services": {
+      "title": "Services Built For Business",
+      "description": "Whether you need a single boardroom centerpiece or a year-long hospitality program, every service is tailored to your brand and venue.",
+      "explore": "Discuss this service",
+      "items": {
+        "corporateEvents": {
+          "tag": "Events",
+          "name": "Corporate Events",
+          "description": "Conferences, galas, product launches and award nights — full floral direction from stage to lobby."
+        },
+        "officeSubscription": {
+          "tag": "Subscription",
+          "name": "Office Subscriptions",
+          "description": "Weekly or bi-weekly fresh-flower rotations that keep reception desks and meeting rooms alive."
+        },
+        "hospitality": {
+          "tag": "Hospitality",
+          "name": "Hotel & Restaurant Styling",
+          "description": "Lobby arrangements, dining centerpieces and seasonal styling for hotels, restaurants and lounges."
+        },
+        "weddings": {
+          "tag": "Private events",
+          "name": "Weddings & Private Events",
+          "description": "End-to-end design for ceremonies, receptions and milestone celebrations at premium venues."
+        },
+        "gifting": {
+          "tag": "Gifting",
+          "name": "Corporate Gifting",
+          "description": "Curated client and employee gifts delivered at scale — from Tết hampers to Women's Day bouquets."
+        },
+        "grandOpening": {
+          "tag": "Activation",
+          "name": "Brand Activations & Openings",
+          "description": "Showroom launches, ribbon arrangements and on-brand installations that turn heads on day one."
+        }
+      }
+    },
+    "packages": {
+      "title": "Partnership Packages",
+      "description": "Three starting points for partners who want predictable floral programs — every plan is fully customizable.",
+      "popular": "Most popular",
+      "fromLabel": "From",
+      "cta": "Get this package",
+      "monthlySuffix": "/month",
+      "customLabel": "Custom",
+      "items": {
+        "boutique": {
+          "name": "Boutique",
+          "tagline": "For boutique offices and growing brands",
+          "price": "8,000,000đ",
+          "features": {
+            "rotation": "Bi-weekly fresh-flower rotation",
+            "arrangements": "1 medium arrangement per drop",
+            "location": "Service for 1 location",
+            "manager": "Dedicated account manager",
+            "support": "Business-hours support"
+          }
+        },
+        "atelier": {
+          "name": "Atelier",
+          "tagline": "For multi-location teams and lifestyle brands",
+          "price": "25,000,000đ",
+          "features": {
+            "rotation": "Weekly fresh-flower rotation",
+            "arrangements": "3 medium–large arrangements per drop",
+            "location": "Service for up to 3 locations",
+            "seasonal": "Seasonal upgrade for holidays",
+            "priority": "Priority on-call support"
+          }
+        },
+        "signature": {
+          "name": "Signature",
+          "tagline": "For hotels, hospitality groups and flagship venues",
+          "price": "Custom",
+          "features": {
+            "rotation": "Daily or weekly rotation",
+            "installations": "Signature installations & feature pieces",
+            "onSite": "On-site florist team for events",
+            "branding": "Brand-color & seasonal customization",
+            "support": "Dedicated WhatsApp / Zalo line"
+          }
+        }
+      }
+    },
+    "advantages": {
+      "title": "Why Partners Choose Hoa Theo Mùa",
+      "description": "We pair the craftsmanship of a boutique florist with the operational reliability your business needs.",
+      "items": {
+        "account": {
+          "title": "Dedicated Account Manager",
+          "description": "One florist who knows your brand, your calendar and your venue — every brief flows through them."
+        },
+        "delivery": {
+          "title": "Citywide Same-Day Delivery",
+          "description": "HCM, Hà Nội and Đà Nẵng — covered with refrigerated vehicles and on-time SLAs."
+        },
+        "natural": {
+          "title": "100% Natural Sourcing",
+          "description": "Stems hand-picked daily from trusted farms — only blooms that meet our quality bar leave the studio."
+        },
+        "scale": {
+          "title": "Scalable Production",
+          "description": "Hundreds of arrangements per week without compromising the finish — ready for product launches and gala nights."
+        }
+      }
+    },
+    "process": {
+      "title": "How We Work Together",
+      "description": "A simple four-step flow that keeps your event on-brand, on-time and on-budget.",
+      "steps": {
+        "brief": {
+          "label": "Step 01",
+          "title": "Brief",
+          "description": "We meet you (or your event team) to understand the venue, the audience and the feeling you want guests to leave with."
+        },
+        "proposal": {
+          "label": "Step 02",
+          "title": "Proposal",
+          "description": "Curated mood boards, flower palette and a transparent quote — usually within 48 hours."
+        },
+        "production": {
+          "label": "Step 03",
+          "title": "Production",
+          "description": "Stems arrive at our studio, get conditioned overnight and are arranged by our florists the morning of delivery."
+        },
+        "delivery": {
+          "label": "Step 04",
+          "title": "Delivery & Set-up",
+          "description": "Refrigerated transport, on-site installation, and a final walk-through before guests arrive."
+        }
+      }
+    },
+    "cta": {
+      "title": "Let's create something blooming together",
+      "description": "Tell us about your project — we'll get back within 4 working hours with first ideas and a clear next step.",
+      "callLabel": "Hotline",
+      "callValue": "0983 024 353",
+      "emailLabel": "Partnerships",
+      "emailValue": "b2b@hoatheomua.net",
+      "primary": "Send a brief",
+      "secondary": "Browse our products"
     }
   }
 }
