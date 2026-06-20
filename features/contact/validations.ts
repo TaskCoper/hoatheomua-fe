@@ -57,11 +57,14 @@ export const createContactSchema = (t: TranslationFunction) =>
         .regex(PHONE_NUMBER_REGEX, {
           error: t('common.validation.phoneNumber')
         }),
-      topic: z.string().trim().min(1, {
-        error: t('common.validation.required', {
-          field: t('contact.form.topic')
-        })
-      }),
+      topic: z
+        .string()
+        .trim()
+        .min(1, {
+          error: t('common.validation.required', {
+            field: t('contact.form.topic')
+          })
+        }),
       message: z
         .string()
         .trim()
@@ -75,10 +78,7 @@ export const createContactSchema = (t: TranslationFunction) =>
             field: t('contact.form.message'),
             max: 1000
           })
-        }),
-      agreement: z.boolean().refine((value) => value, {
-        error: t('contact.form.agreementRequired')
-      })
+        })
     })
     .strict()
 

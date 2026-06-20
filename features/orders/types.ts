@@ -17,6 +17,7 @@ export type OrderStatusLabel = (typeof OrderStatusLabel)[keyof typeof OrderStatu
 export interface Order {
   orderId: string
   status: OrderStatus
+  orderTime: number
   trackNumber: string
   nhanhOrderId: string | null
   nhanhTrackingUrl: string | null
