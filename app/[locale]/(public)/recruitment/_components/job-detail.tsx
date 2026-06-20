@@ -18,11 +18,10 @@ type JobDetailProps = {
 }
 
 export default function JobDetail({ job }: JobDetailProps) {
-  const { t, locale } = useTranslation()
+  const { t } = useTranslation()
   const salary = formatJobSalary(job)
   const avatarFallback = getJobAvatarFallback(job.title)
   const employmentTypeLabel = getJobEmploymentTypeLabel(job.employmentType, t)
-  const isEnglish = locale === 'en'
   const description = job.description?.trim()
 
   const quickInfo = [
@@ -32,8 +31,8 @@ export default function JobDetail({ job }: JobDetailProps) {
       icon: WorkIcon
     },
     {
-      label: isEnglish ? 'Openings' : 'Số lượng',
-      value: isEnglish ? `${job.openings} openings` : `${job.openings} vị trí`,
+      label: t('recruitment.jobDetail.quickInfo.openings'),
+      value: t('recruitment.jobDetail.quickInfo.openingsValue', { count: job.openings }),
       icon: User02Icon
     },
     {
@@ -42,7 +41,7 @@ export default function JobDetail({ job }: JobDetailProps) {
       icon: Money03Icon
     },
     {
-      label: isEnglish ? 'Location' : 'Địa điểm',
+      label: t('recruitment.jobDetail.quickInfo.location'),
       value: job.location,
       icon: Location01Icon
     }
@@ -103,7 +102,7 @@ export default function JobDetail({ job }: JobDetailProps) {
         {description ? (
           <section className='mt-5 rounded-3xl border border-primary/10 bg-background px-4 py-5 sm:px-5'>
             <h2 className='mb-4 text-base font-semibold text-primary'>
-              {isEnglish ? 'Job description' : 'Mô tả công việc'}
+              {t('recruitment.jobDetail.sections.responsibilities')}
             </h2>
             <SanitizedHtml
               html={description}

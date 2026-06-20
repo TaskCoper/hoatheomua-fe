@@ -38,7 +38,7 @@ const filters = [
     id: 'recruitment-salary',
     placeholderKey: 'recruitment.filter.salary.placeholder',
     values: [
-      { value: 'below-8', label: { vi: 'Dưới 8 triệu', en: 'Under 8 million' } },
+      { value: 'below-8', labelKey: 'recruitment.filter.salary.options.below8' },
       { value: '8-12', labelKey: 'recruitment.filter.salary.options.range8To12' },
       { value: '12-18', labelKey: 'recruitment.filter.salary.options.range12To18' },
       { value: 'above-18', labelKey: 'recruitment.filter.salary.options.above18' }
@@ -56,7 +56,7 @@ type FilterSectionProps = {
 }
 
 export default function FilterSection({ filters: selectedFilters, onFilterChange, onSearchTitle }: FilterSectionProps) {
-  const { t, locale } = useTranslation()
+  const { t } = useTranslation()
   const [draftTitle, setDraftTitle] = useState(selectedFilters.title)
   const [debouncedTitle] = useDebounce(draftTitle, 500)
 
@@ -68,10 +68,7 @@ export default function FilterSection({ filters: selectedFilters, onFilterChange
     onSearchTitle(nextTitle)
   }, [debouncedTitle, onSearchTitle, selectedFilters.title])
 
-  const getOptionLabel = (option: (typeof filters)[number]['values'][number]) => {
-    if ('label' in option) return option.label[locale]
-    return t(option.labelKey)
-  }
+  const getOptionLabel = (option: (typeof filters)[number]['values'][number]) => t(option.labelKey)
 
   const getSelectValue = (key: FilterKey) => {
     if (key === 'employmentType') return selectedFilters.employmentType ?? 'all'

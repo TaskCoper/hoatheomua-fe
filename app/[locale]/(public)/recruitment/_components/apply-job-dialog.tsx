@@ -43,8 +43,7 @@ const toRequestBody = (values: CreateRecruitmentRequest): SendRecruitmentRequest
 })
 
 export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
-  const { locale } = useTranslation()
-  const isEnglish = locale === 'en'
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { methods, sendRequest, isSendingRequest } = useCreateRecruitmentRequest()
 
@@ -79,19 +78,19 @@ export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className='max-h-[calc(100vh-2rem)] overflow-y-auto sm:max-w-2xl' position='center'>
         <DialogHeader className='pr-10'>
-          <DialogTitle>{isEnglish ? 'Apply for this role' : 'Ứng tuyển vị trí này'}</DialogTitle>
-          <DialogDescription>{isEnglish ? job.title : `Vị trí: ${job.title}`}</DialogDescription>
+          <DialogTitle>{t('recruitment.applyDialog.title')}</DialogTitle>
+          <DialogDescription>{t('recruitment.applyDialog.description', { title: job.title })}</DialogDescription>
         </DialogHeader>
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(handleSubmit)} className='space-y-5'>
             <input type='hidden' {...methods.register('jobDescriptionId')} />
 
-            <ApplyJobFields isEnglish={isEnglish} isSendingRequest={isSendingRequest} />
+            <ApplyJobFields isSendingRequest={isSendingRequest} />
 
             <DialogFooter className='gap-2 pt-1'>
               <Button type='button' variant='outline' disabled={isSendingRequest} onClick={() => setOpen(false)}>
-                {isEnglish ? 'Cancel' : 'Hủy'}
+                {t('recruitment.applyDialog.cancel')}
               </Button>
               <Button type='submit' disabled={isSendingRequest}>
                 {isSendingRequest ? (
@@ -99,7 +98,7 @@ export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
                 ) : (
                   <HugeiconsIcon icon={SentIcon} strokeWidth={1.8} className='size-4' />
                 )}
-                {isEnglish ? 'Submit application' : 'Gửi ứng tuyển'}
+                {t('recruitment.applyDialog.submit')}
               </Button>
             </DialogFooter>
           </form>
@@ -109,7 +108,8 @@ export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
   )
 }
 
-function ApplyJobFields({ isEnglish, isSendingRequest }: { isEnglish: boolean; isSendingRequest: boolean }) {
+function ApplyJobFields({ isSendingRequest }: { isSendingRequest: boolean }) {
+  const { t } = useTranslation()
   const { control } = useFormContext<CreateRecruitmentRequest>()
 
   return (
@@ -119,7 +119,7 @@ function ApplyJobFields({ isEnglish, isSendingRequest }: { isEnglish: boolean; i
         control={control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className='gap-1.5'>
-            <FieldLabel htmlFor={field.name}>{isEnglish ? 'Role title' : 'Vị trí ứng tuyển'}</FieldLabel>
+            <FieldLabel htmlFor={field.name}>{t('recruitment.applyDialog.fields.roleTitle')}</FieldLabel>
             <Input
               {...field}
               id={field.name}
@@ -139,7 +139,7 @@ function ApplyJobFields({ isEnglish, isSendingRequest }: { isEnglish: boolean; i
         control={control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className='gap-1.5'>
-            <FieldLabel>{isEnglish ? 'Cover letter' : 'Thư giới thiệu'}</FieldLabel>
+            <FieldLabel>{t('recruitment.applyDialog.fields.coverLetter')}</FieldLabel>
             <RichTextEditor
               compact
               content={field.value}
@@ -152,19 +152,20 @@ function ApplyJobFields({ isEnglish, isSendingRequest }: { isEnglish: boolean; i
         )}
       />
 
-      <AttachmentFields isEnglish={isEnglish} isSendingRequest={isSendingRequest} />
+      <AttachmentFields isSendingRequest={isSendingRequest} />
     </FieldGroup>
   )
 }
 
-function AttachmentFields({ isEnglish, isSendingRequest }: { isEnglish: boolean; isSendingRequest: boolean }) {
+function AttachmentFields({ isSendingRequest }: { isSendingRequest: boolean }) {
+  const { t } = useTranslation()
   const { control } = useFormContext<CreateRecruitmentRequest>()
   const { fields, append, remove } = useFieldArray({ control, name: 'attachments' })
 
   return (
     <Field className='gap-2'>
       <div className='flex flex-wrap items-center justify-between gap-3'>
-        <FieldLabel>{isEnglish ? 'Attachments' : 'Tệp đính kèm'}</FieldLabel>
+        <FieldLabel>{t('recruitment.applyDialog.fields.attachments')}</FieldLabel>
         <Button
           type='button'
           variant='outline'
@@ -174,7 +175,7 @@ function AttachmentFields({ isEnglish, isSendingRequest }: { isEnglish: boolean;
           className='h-8 gap-1.5 rounded-full px-3'
         >
           <HugeiconsIcon icon={AddCircleIcon} strokeWidth={1.8} className='size-4' />
-          {isEnglish ? 'Add' : 'Thêm'}
+          {t('recruitment.applyDialog.addAttachment')}
         </Button>
       </div>
 
@@ -191,7 +192,7 @@ function AttachmentFields({ isEnglish, isSendingRequest }: { isEnglish: boolean;
                     {...field}
                     disabled={isSendingRequest}
                     aria-invalid={fieldState.invalid}
-                    placeholder={isEnglish ? 'CV or portfolio URL' : 'URL CV hoặc portfolio'}
+                    placeholder={t('recruitment.applyDialog.attachmentPlaceholder')}
                     className='h-10 bg-input/40 px-3.5'
                   />
                   <Button
@@ -200,7 +201,7 @@ function AttachmentFields({ isEnglish, isSendingRequest }: { isEnglish: boolean;
                     size='icon-lg'
                     disabled={isSendingRequest || fields.length === 1}
                     onClick={() => remove(index)}
-                    aria-label={isEnglish ? 'Remove attachment' : 'Xóa tệp đính kèm'}
+                    aria-label={t('recruitment.applyDialog.removeAttachment')}
                     className='shrink-0 border-destructive/20 text-destructive hover:bg-destructive/10 hover:text-destructive'
                   >
                     <HugeiconsIcon icon={Delete02Icon} strokeWidth={1.8} className='size-4' />

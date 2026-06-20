@@ -275,6 +275,7 @@
       "salary": {
         "placeholder": "Tất cả mức lương",
         "options": {
+          "below8": "Dưới 8 triệu",
           "range8To12": "8 - 12 triệu",
           "range12To18": "12 - 18 triệu",
           "above18": "Trên 18 triệu"
@@ -327,6 +328,9 @@
         "experience": "Kinh nghiệm",
         "level": "Cấp bậc",
         "employmentType": "Hình thức",
+        "openings": "Số lượng",
+        "openingsValue": "{count} vị trí",
+        "location": "Địa điểm",
         "salary": "Lương"
       },
       "actions": {
@@ -340,6 +344,20 @@
         "responsibilities": "Mô tả công việc",
         "requirements": "Yêu cầu",
         "benefits": "Quyền lợi"
+      }
+    },
+    "applyDialog": {
+      "title": "Ứng tuyển vị trí này",
+      "description": "Vị trí: {title}",
+      "cancel": "Hủy",
+      "submit": "Gửi ứng tuyển",
+      "addAttachment": "Thêm",
+      "attachmentPlaceholder": "URL CV hoặc portfolio",
+      "removeAttachment": "Xóa tệp đính kèm",
+      "fields": {
+        "roleTitle": "Vị trí ứng tuyển",
+        "coverLetter": "Thư giới thiệu",
+        "attachments": "Tệp đính kèm"
       }
     }
   },
