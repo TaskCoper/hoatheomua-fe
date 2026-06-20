@@ -1,5 +1,6 @@
 'use client'
 
+import { DatePickerField } from '@/components/date-picker-field'
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import {
@@ -17,14 +18,19 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
+import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { type CartItem, useCartStore } from '@/stores/cart.store'
 import {
   ArrowDown01Icon,
   ArrowLeft02Icon,
+  Calendar03Icon,
   CheckmarkCircle02Icon,
-  DeliveryTruck02Icon
+  DeliveryTruck02Icon,
+  Location04Icon,
+  Note02Icon,
+  UserIcon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
@@ -98,6 +104,7 @@ export default function CheckoutDialog({ children, items, onConfirm }: CheckoutD
       fullName: values.fullName,
       phone: values.phone,
       remarks: values.remarks ?? '',
+      orderTime: values.orderTime ? Math.floor(new Date(values.orderTime).getTime() / 1000) : 0,
       items: checkoutItems.map((item) => ({
         itemId: String(item.productId),
         number: item.quantity
@@ -150,6 +157,7 @@ export default function CheckoutDialog({ children, items, onConfirm }: CheckoutD
               cartItems={checkoutItems}
               ahamove={estimatedOrder.ahamoveResult}
               products={estimatedOrder.productNhanhResult.data}
+              payload={lastPayload}
               isConfirming={isCreatingOrder}
               onBack={() => {
                 if (isCreatingOrder) return
@@ -376,6 +384,14 @@ function CheckoutFields() {
         />
       </div>
 
+      <DatePickerField<CheckoutFormValues>
+        name='orderTime'
+        label='orders.checkout.orderTime'
+        placeholder='orders.checkout.orderTimePlaceholder'
+        minDate={new Date(new Date().setHours(0, 0, 0, 0))}
+        maxDate={new Date(new Date(new Date().setHours(23, 59, 59, 999)).getTime() + 7 * 24 * 60 * 60 * 1000)}
+      />
+
       <Controller
         name='remarks'
         control={control}
@@ -404,6 +420,7 @@ interface EstimateResultPanelProps {
   cartItems: CartItem[]
   ahamove: AhamoveResult[]
   products: ProductNhanh[]
+  payload: CheckoutPayload | null
   isConfirming: boolean
   onBack: () => void
   onConfirm: (serviceId: string) => void
@@ -413,11 +430,13 @@ function EstimateResultPanel({
   cartItems,
   ahamove,
   products,
+  payload,
   isConfirming,
   onBack,
   onConfirm
 }: EstimateResultPanelProps) {
   const { t } = useTranslation()
+  const { formatDate } = useDateFormat()
 
   const sortedAhamove = useMemo(
     () => [...ahamove].sort((a, b) => (a.data?.total_fee ?? 0) - (b.data?.total_fee ?? 0)),
@@ -454,8 +473,71 @@ function EstimateResultPanel({
   const shippingFee = selectedService?.data?.total_fee ?? 0
   const grandTotal = productsSubtotal + shippingFee
 
+  const orderTimeLabel =
+    payload && payload.orderTime > 0
+      ? formatDate(new Date(payload.orderTime * 1000), 'dateTimeMedium')
+      : t('orders.checkout.deliverNow')
+  const remarksLabel = payload?.remarks?.trim() ? payload.remarks : t('orders.checkout.noRemarks')
+
   return (
     <div className='flex flex-col gap-4'>
+      {payload ? (
+        <section className='rounded-3xl bg-card p-4 ring-1 ring-foreground/5'>
+          <header className='mb-3 flex items-center gap-2'>
+            <span className='inline-flex size-7 items-center justify-center rounded-full bg-primary/10 text-primary'>
+              <HugeiconsIcon icon={Location04Icon} strokeWidth={2} className='size-4' />
+            </span>
+            <h3 className='font-heading text-sm font-semibold'>{t('orders.checkout.recipientHeading')}</h3>
+          </header>
+          <dl className='grid grid-cols-1 gap-3 text-sm sm:grid-cols-2'>
+            <div className='flex items-start gap-2'>
+              <HugeiconsIcon icon={UserIcon} strokeWidth={2} className='mt-0.5 size-4 shrink-0 text-muted-foreground' />
+              <div className='min-w-0'>
+                <dt className='text-xs text-muted-foreground'>{t('orders.checkout.fullName')}</dt>
+                <dd className='truncate font-medium'>
+                  {payload.fullName} · {payload.phone}
+                </dd>
+              </div>
+            </div>
+            <div className='flex items-start gap-2'>
+              <HugeiconsIcon
+                icon={Location04Icon}
+                strokeWidth={2}
+                className='mt-0.5 size-4 shrink-0 text-muted-foreground'
+              />
+              <div className='min-w-0'>
+                <dt className='text-xs text-muted-foreground'>{t('orders.checkout.addressLine')}</dt>
+                <dd className='font-medium'>{payload.address}</dd>
+              </div>
+            </div>
+            <div className='flex items-start gap-2'>
+              <HugeiconsIcon
+                icon={Calendar03Icon}
+                strokeWidth={2}
+                className='mt-0.5 size-4 shrink-0 text-muted-foreground'
+              />
+              <div className='min-w-0'>
+                <dt className='text-xs text-muted-foreground'>{t('orders.checkout.orderTime')}</dt>
+                <dd className='font-medium'>{orderTimeLabel}</dd>
+              </div>
+            </div>
+            <div className='flex items-start gap-2'>
+              <HugeiconsIcon
+                icon={Note02Icon}
+                strokeWidth={2}
+                className='mt-0.5 size-4 shrink-0 text-muted-foreground'
+              />
+              <div className='min-w-0'>
+                <dt className='text-xs text-muted-foreground'>{t('orders.checkout.remarks')}</dt>
+                <dd className={cn('font-medium', !payload.remarks?.trim() && 'text-muted-foreground italic')}>
+                  {remarksLabel}
+                </dd>
+              </div>
+            </div>
+          </dl>
+        </section>
+      ) : null}
+
       <section className='rounded-3xl bg-card p-4 ring-1 ring-foreground/5'>
         <header className='mb-3 flex items-center justify-between'>
           <h3 className='font-heading text-sm font-semibold'>{t('orders.checkout.productsHeading')}</h3>

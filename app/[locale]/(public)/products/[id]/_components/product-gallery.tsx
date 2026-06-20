@@ -4,6 +4,14 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
+import Lightbox from 'yet-another-react-lightbox'
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
+import Slideshow from 'yet-another-react-lightbox/plugins/slideshow'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
+import 'yet-another-react-lightbox/styles.css'
 
 export default function ProductGallery({
   name,
@@ -25,8 +33,29 @@ export default function ProductGallery({
   }, [avatar, others])
 
   const [activeIndex, setActiveIndex] = useState(0)
-  const activeImage = images[activeIndex] ?? null
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const safeIndex = activeIndex < images.length ? activeIndex : 0
+  const activeImage = images[safeIndex] ?? null
   const hasThumbnails = images.length > 1
+
+  const slides = useMemo(
+    () =>
+      images.map((src, index) => ({
+        src,
+        alt: t('products.detail.gallery.thumbAlt', { name, index: index + 1 }),
+        width: 1600,
+        height: 1600
+      })),
+    [images, name, t]
+  )
+
+  if (!activeImage) {
+    return (
+      <div className='flex aspect-square w-full items-center justify-center rounded-2xl border border-dashed border-foreground/15 bg-muted text-sm text-muted-foreground sm:rounded-4xl'>
+        {t('products.detail.gallery.emptyState')}
+      </div>
+    )
+  }
 
   return (
     <div className='space-y-4 xl:space-y-3'>
@@ -39,7 +68,7 @@ export default function ProductGallery({
             )}
           >
             {images.map((image, index) => {
-              const isActive = image === activeImage
+              const isActive = index === safeIndex
               return (
                 <button
                   key={image}
@@ -66,31 +95,48 @@ export default function ProductGallery({
           </div>
         ) : null}
 
-        {activeImage ? (
-          <div className='relative order-1 aspect-square w-full overflow-hidden rounded-2xl sm:rounded-4xl xl:order-2 xl:flex-1 xl:rounded-3xl'>
-            <Image
-              src={activeImage}
-              alt={name}
-              fill
-              priority
-              fetchPriority='high'
-              sizes='(min-width: 1280px) 40rem, (min-width: 1024px) 32rem, 100vw'
-              quality={70}
-              className='object-cover'
-            />
-            {discountPercent > 0 ? (
-              <span className='absolute left-3 top-3 inline-flex rounded-full bg-rose-500 px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-white shadow-sm'>
-                -{discountPercent}%
-              </span>
-            ) : null}
-            {categoryName ? (
-              <span className='absolute right-3 top-3 inline-flex rounded-full bg-card/95 px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-primary shadow-sm ring-1 ring-foreground/5'>
-                {categoryName}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
+        <button
+          type='button'
+          onClick={() => setIsLightboxOpen(true)}
+          aria-label={t('products.detail.gallery.openLightbox')}
+          className='group relative order-1 aspect-square w-full overflow-hidden rounded-2xl sm:rounded-4xl xl:order-2 xl:flex-1 xl:rounded-3xl cursor-zoom-in'
+        >
+          <Image
+            src={activeImage}
+            alt={name}
+            fill
+            priority
+            fetchPriority='high'
+            sizes='(min-width: 1280px) 40rem, (min-width: 1024px) 32rem, 100vw'
+            quality={70}
+            className='object-cover transition-transform duration-300 group-hover:scale-105'
+          />
+          {discountPercent > 0 ? (
+            <span className='absolute left-3 top-3 inline-flex rounded-full bg-rose-500 px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-white shadow-sm'>
+              -{discountPercent}%
+            </span>
+          ) : null}
+          {categoryName ? (
+            <span className='absolute right-3 top-3 inline-flex rounded-full bg-card/95 px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider text-primary shadow-sm ring-1 ring-foreground/5'>
+              {categoryName}
+            </span>
+          ) : null}
+        </button>
       </div>
+
+      <Lightbox
+        open={isLightboxOpen}
+        close={() => setIsLightboxOpen(false)}
+        index={safeIndex}
+        on={{
+          view: ({ index }) => setActiveIndex(index)
+        }}
+        slides={slides}
+        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+        carousel={{ finite: images.length <= 1 }}
+        thumbnails={{ position: 'bottom', showToggle: true }}
+        zoom={{ maxZoomPixelRatio: 3, scrollToZoom: true }}
+      />
     </div>
   )
 }

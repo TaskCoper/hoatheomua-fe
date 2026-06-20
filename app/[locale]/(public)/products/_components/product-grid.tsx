@@ -7,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination'
+import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
 import productService from '@/features/products/services'
 import type { Product } from '@/features/products/types'
@@ -35,22 +36,45 @@ const PRODUCTS_PAGE_SIZE = 12
 export default function ProductGrid({
   initialItems,
   initialNextCursor,
+  categoryIds,
+  name = '',
+  price,
   pageSize = PRODUCTS_PAGE_SIZE
 }: {
   initialItems: Product[]
   initialNextCursor: number
+  categoryIds: number[]
+  name?: string
+  price?: number[]
   pageSize?: number
 }) {
   const { t } = useTranslation()
   const [cursorStack, setCursorStack] = useState([0])
   const currentCursor = cursorStack.at(-1) ?? 0
   const isFirstPage = currentCursor === 0
+  const nextParam = isFirstPage ? undefined : { id: currentCursor }
+  const hasInitialData = isFirstPage && initialItems.length > 0
 
   const { data, isFetching, isLoading } = useQuery<ProductListResponse>({
-    queryKey: buildGetProductsKey({ size: pageSize, next: { id: currentCursor } }),
-    queryFn: () => productService.getProducts({ size: pageSize, next: { id: currentCursor } }),
+    queryKey: buildGetProductsKey({
+      size: pageSize,
+      categoryIds,
+      name,
+      price,
+      sort: DEFAULT_PRODUCT_SORT,
+      next: nextParam
+    }),
+    queryFn: () =>
+      productService.getProducts({
+        size: pageSize,
+        categoryIds,
+        name,
+        price,
+        sort: DEFAULT_PRODUCT_SORT,
+        next: nextParam
+      }),
     placeholderData: keepPreviousData,
-    initialData: isFirstPage
+    initialData: hasInitialData
       ? ({
           isSuccess: true,
           isFailed: false,
@@ -64,11 +88,11 @@ export default function ProductGrid({
           }
         } as ProductListResponse)
       : undefined,
-    staleTime: isFirstPage ? 60_000 : 0
+    staleTime: hasInitialData ? 60_000 : 0
   })
 
   const items = data?.value?.data ?? []
-  const nextCursor = data?.value?.paginator.next.id ?? 0
+  const nextCursor = data?.value?.paginator.next?.id ?? 0
   const hasPreviousPage = cursorStack.length > 1
   const hasNextPage = items.length === pageSize && nextCursor > 0 && nextCursor !== currentCursor
 
@@ -95,10 +119,11 @@ export default function ProductGrid({
   return (
     <>
       <motion.div
+        key={items[0]?.id ?? 'empty'}
         initial='hidden'
         animate='visible'
         variants={cardStagger}
-        className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5'
+        className='mx-auto grid w-full max-w-7xl grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5'
       >
         {items.map((product, index) => (
           <ProductCard key={product.id} product={product} eager={isFirstPage && index < 4} />

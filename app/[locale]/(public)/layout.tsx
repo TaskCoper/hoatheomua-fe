@@ -2,6 +2,7 @@ import RoleGuard from '@/features/auth/components/role-guard'
 import { ROLES } from '@/features/auth/utils'
 import pedalsRight from '@/public/images/pedals-right.png'
 import Image from 'next/image'
+import FloatingContact from './_components/floating-contact'
 import Footer from './_components/footer'
 import Header from './_components/header'
 
@@ -21,6 +22,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <main className='flex-1'>{children}</main>
 
         <Footer />
+
+        <FloatingContact />
       </div>
     </RoleGuard>
   )

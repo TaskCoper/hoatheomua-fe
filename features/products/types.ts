@@ -4,7 +4,7 @@
 export interface Product extends ProductBase {
   priceVatMode: number
   importPriceVatMode: number
-  categoryId: number
+  categoryIds: number
   internalCategoryId: number
   brandId: number
   type: number
@@ -16,7 +16,7 @@ export interface Product extends ProductBase {
  */
 export interface ProductDetail extends ProductBase {
   category: ProductCategory | null
-  categoryId: number
+  categoryIds: number
   internalCategory: ProductCategory | null
   vat: number
   brand: ProductBrand | null

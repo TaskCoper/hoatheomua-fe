@@ -1,20 +1,9 @@
 import { cookies } from 'next/headers'
+import { type NewsItem } from './news-shared'
+
+export { formatNewsDate, type NewsItem } from './news-shared'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '')
-
-export interface NewsItem {
-  id: string
-  slug: string
-  title: string
-  summary: string
-  content: string
-  category: string
-  author: string
-  publishedAt: string
-  readTime: string
-  tags: string[]
-  pictureUrl: string
-}
 
 interface NewsApiItem {
   id: string
@@ -197,10 +186,3 @@ export async function fetchNewsItem(slug: string): Promise<NewsItem> {
   return fetchNewsItemById(article.id)
 }
 
-export function formatNewsDate(date: string, locale: string) {
-  return new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'vi-VN', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }).format(new Date(date))
-}

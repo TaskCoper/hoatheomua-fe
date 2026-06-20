@@ -1,8 +1,19 @@
+import { fetchProductsList } from '@/features/products/server'
+import type { Product } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
 import HomeContent from './_components/home-content'
 
-const HOME_META: Record<Locale, { title: string; description: string; keywords: string[]; ogLocale: string; ogAlt: string }> = {
+const REVALIDATE_SECONDS = 600
+const SIGNATURE_BOUQUETS_SIZE = 6
+const SIGNATURE_BOUQUETS_CATEGORY_ID = [58901]
+
+export const revalidate = 600
+
+const HOME_META: Record<
+  Locale,
+  { title: string; description: string; keywords: string[]; ogLocale: string; ogAlt: string }
+> = {
   vi: {
     title: 'Hoa Theo Mùa — Hoa tươi cao cấp, giao tận nơi trong 2 giờ tại TP.HCM',
     description:
@@ -153,14 +164,28 @@ const homeJsonLd = {
   ]
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  let signatureBouquets: Product[] = []
+  let signatureBouquetsNextCursor = 0
+
+  try {
+    const response = await fetchProductsList(
+      {
+        size: SIGNATURE_BOUQUETS_SIZE,
+        categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID
+      },
+      { revalidate: REVALIDATE_SECONDS }
+    )
+    signatureBouquets = response.value?.data ?? []
+    signatureBouquetsNextCursor = response.value?.paginator.next.id ?? 0
+  } catch {
+    // Render the page with an empty signature list on fetch failure.
+  }
+
   return (
     <>
-      <script
-        type='application/ld+json'
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
-      />
-      <HomeContent />
+      <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
+      <HomeContent signatureBouquets={signatureBouquets} signatureBouquetsNextCursor={signatureBouquetsNextCursor} />
     </>
   )
 }

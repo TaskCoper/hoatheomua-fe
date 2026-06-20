@@ -165,10 +165,8 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   let initialNextCursor = 0
 
   try {
-    const response = await fetchProductsList(
-      { size: PRODUCTS_PAGE_SIZE, next: { id: 0 } },
-      { revalidate: REVALIDATE_SECONDS }
-    )
+    const response = await fetchProductsList({ size: PRODUCTS_PAGE_SIZE }, { revalidate: REVALIDATE_SECONDS })
+
     initialItems = response.value?.data ?? []
     initialNextCursor = response.value?.paginator.next.id ?? 0
   } catch {

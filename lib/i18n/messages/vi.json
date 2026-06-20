@@ -95,10 +95,13 @@
       "more": "Thêm",
       "uploading": "Đang tải lên...",
       "pleaseWait": "Vui lòng chờ",
-      "uploadSuccess": "Tải lên thành công"
+      "uploadSuccess": "Tải lên thành công",
+      "optional": "tuỳ chọn",
+      "selectDate": "Chọn ngày"
     },
     "button": {
-      "clearAll": "Xóa tất cả"
+      "clearAll": "Xóa tất cả",
+      "clear": "Xoá"
     },
     "error": {
       "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về"
@@ -187,6 +190,10 @@
     "codeBlock": {
       "label": "Khối mã"
     }
+  },
+  "floatingContact": {
+    "zalo": "Nhắn tin Zalo",
+    "messenger": "Nhắn tin Messenger"
   },
   "contact": {
     "eyebrow": "Tiệm hoa theo mùa",
@@ -518,10 +525,15 @@
       "wardSearchPlaceholder": "Tìm phường / xã",
       "remarks": "Ghi chú",
       "remarksPlaceholder": "Ghi chú cho người bán (tuỳ chọn)",
+      "orderTime": "Ngày giao hàng",
+      "orderTimePlaceholder": "Chọn ngày giao sau",
       "comboboxEmpty": "Không có kết quả",
       "emptyCart": "Giỏ hàng của bạn đang trống.",
       "reviewTitle": "Xác nhận đơn hàng",
       "reviewDescription": "Kiểm tra sản phẩm và chọn phương thức giao hàng trước khi đặt.",
+      "recipientHeading": "Thông tin giao hàng",
+      "deliverNow": "Giao càng sớm càng tốt",
+      "noRemarks": "Không có ghi chú",
       "productsHeading": "Sản phẩm",
       "lineCount": "{count} sản phẩm",
       "lineQty": "x{qty} · {price}",
@@ -610,6 +622,7 @@
     "nav": {
       "home": "Trang chủ",
       "products": "Sản phẩm",
+      "b2b": "Doanh nghiệp",
       "about": "Giới thiệu",
       "news": "Tin tức",
       "recruitment": "Tuyển dụng",
@@ -697,7 +710,7 @@
       }
     },
     "whyChooseUs": {
-      "title": "Tại Sao Chọn Chúng Tôi",
+      "title": "Giá Trị Cốt Lõi",
       "description": "Chúng tôi tin rằng hoa cần đến tay bạn tươi mới và rực rỡ như khoảnh khắc vừa được hái. Từ việc tuyển chọn từng bông hoa, đóng gói cẩn thận đến giao hàng đúng hẹn, mỗi bước đều được thực hiện bằng cả sự tận tâm.",
       "bannerAlt": "Bó hoa tươi Hoa Theo Mùa",
       "features": {
@@ -964,6 +977,37 @@
       "title": "Tuyển Chọn Hôm Nay",
       "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc."
     },
+    "filter": {
+      "all": "Tất cả",
+      "title": "Bộ lọc",
+      "search": "Tìm kiếm",
+      "searchPlaceholder": "Tìm theo tên…",
+      "categoriesHeading": "Danh mục",
+      "priceHeading": "Khoảng giá",
+      "priceValue": "{min} – {max}",
+      "priceAll": "Tất cả giá",
+      "reset": "Đặt lại bộ lọc",
+      "categories": {
+        "eventFlowers": "Hoa Sự Kiện",
+        "daily": "Hoa Daily",
+        "signature": "Signature",
+        "flowerVases": "Bình Cắm Hoa",
+        "saleOffVases": "Bình Gốm Sale-off",
+        "bauTrucVases": "Bình Gốm Bàu Trúc",
+        "glassVases": "Bình Thủy Tinh",
+        "batTrangVases": "Bình Gốm Bát Tràng",
+        "basketFlowers": "Hoa Giỏ",
+        "bouquets": "Hoa Bó",
+        "orchids": "Lan Hồ Điệp"
+      },
+      "priceRanges": {
+        "r0to200": "Dưới 200K",
+        "r200to500": "200K – 500K",
+        "r500to1000": "500K – 1Tr",
+        "r1000to2000": "1Tr – 2Tr",
+        "r2000to5000": "2Tr – 5Tr"
+      }
+    },
     "promise": {
       "bannerAlt": "Ưu đãi hoa tươi Hoa Theo Mùa",
       "items": {
@@ -1026,7 +1070,9 @@
     "detail": {
       "gallery": {
         "viewImage": "Xem ảnh {index}",
-        "thumbAlt": "{name} - ảnh {index}"
+        "thumbAlt": "{name} - ảnh {index}",
+        "openLightbox": "Mở thư viện ảnh",
+        "emptyState": "Chưa có hình ảnh sản phẩm"
       },
       "purchase": {
         "packaging": "Đóng gói",
@@ -1077,6 +1123,180 @@
           }
         }
       }
+    }
+  },
+  "b2b": {
+    "hero": {
+      "eyebrow": "Hoa Theo Mùa cho Doanh nghiệp",
+      "title": "Đối Tác Hoa Cho Doanh Nghiệp Hiện Đại",
+      "subtitle": "Từ phòng họp đến đại sảnh — chúng tôi kiến tạo trải nghiệm hoa cho khách sạn, văn phòng và thương hiệu trên toàn Việt Nam.",
+      "primaryCta": "Nhận báo giá",
+      "secondaryCta": "Trao đổi cùng đội ngũ",
+      "imageAlt": "Tác phẩm hoa cao cấp cho doanh nghiệp",
+      "stats": {
+        "clients": {
+          "value": "200+",
+          "label": "Khách hàng doanh nghiệp"
+        },
+        "hotels": {
+          "value": "12+",
+          "label": "Khách sạn 5 sao"
+        },
+        "events": {
+          "value": "1.500+",
+          "label": "Sự kiện đã thực hiện"
+        },
+        "cities": {
+          "value": "3",
+          "label": "Thành phố phục vụ"
+        },
+        "support": {
+          "value": "24/7",
+          "label": "Hỗ trợ"
+        }
+      }
+    },
+    "services": {
+      "title": "Dịch Vụ Dành Riêng Cho Doanh Nghiệp",
+      "description": "Dù bạn cần một bình hoa cho phòng họp hay một chương trình hoa trọn năm cho khách sạn, mọi dịch vụ đều được may đo theo thương hiệu và không gian của bạn.",
+      "explore": "Trao đổi dịch vụ này",
+      "items": {
+        "corporateEvents": {
+          "tag": "Sự kiện",
+          "name": "Hoa Cho Sự Kiện Doanh Nghiệp",
+          "description": "Hội nghị, gala, lễ ra mắt sản phẩm và đêm trao giải — định hướng hoa trọn gói từ sân khấu đến sảnh lễ tân."
+        },
+        "officeSubscription": {
+          "tag": "Định kỳ",
+          "name": "Gói Hoa Văn Phòng",
+          "description": "Luân chuyển hoa tươi hằng tuần hoặc hai tuần một lần — giữ quầy lễ tân và phòng họp luôn rực rỡ."
+        },
+        "hospitality": {
+          "tag": "Khách sạn — F&B",
+          "name": "Trang Trí Khách Sạn & Nhà Hàng",
+          "description": "Bình hoa sảnh, bàn ăn và trang trí theo mùa cho khách sạn, nhà hàng và lounge cao cấp."
+        },
+        "weddings": {
+          "tag": "Sự kiện riêng",
+          "name": "Đám Cưới & Sự Kiện Riêng",
+          "description": "Thiết kế trọn gói cho lễ cưới, tiệc chiêu đãi và những cột mốc đáng nhớ tại các venue cao cấp."
+        },
+        "gifting": {
+          "tag": "Quà tặng",
+          "name": "Quà Tặng Doanh Nghiệp",
+          "description": "Quà tặng khách hàng và nhân viên được tuyển chọn kỹ — từ giỏ Tết đến bó hoa 8/3 và 20/10."
+        },
+        "grandOpening": {
+          "tag": "Khai trương",
+          "name": "Khai Trương & Kích Hoạt Thương Hiệu",
+          "description": "Khai trương showroom, hoa cắt băng và bục tác phẩm in-brand — gây ấn tượng ngay ngày đầu."
+        }
+      }
+    },
+    "packages": {
+      "title": "Gói Hợp Tác Dài Hạn",
+      "description": "Ba điểm khởi đầu cho đối tác muốn một chương trình hoa định kỳ — mọi gói đều có thể tùy biến hoàn toàn.",
+      "popular": "Được chọn nhiều nhất",
+      "fromLabel": "Từ",
+      "cta": "Chọn gói này",
+      "monthlySuffix": "/tháng",
+      "customLabel": "Theo yêu cầu",
+      "items": {
+        "boutique": {
+          "name": "Boutique",
+          "tagline": "Cho văn phòng boutique và thương hiệu đang phát triển",
+          "price": "8.000.000đ",
+          "features": {
+            "rotation": "Luân chuyển hoa tươi 2 tuần / lần",
+            "arrangements": "1 bình hoa cỡ vừa mỗi đợt",
+            "location": "Phục vụ 1 địa điểm",
+            "manager": "Quản lý tài khoản riêng",
+            "support": "Hỗ trợ trong giờ hành chính"
+          }
+        },
+        "atelier": {
+          "name": "Atelier",
+          "tagline": "Cho doanh nghiệp đa địa điểm và thương hiệu lifestyle",
+          "price": "25.000.000đ",
+          "features": {
+            "rotation": "Luân chuyển hoa tươi hằng tuần",
+            "arrangements": "3 bình hoa cỡ vừa – lớn mỗi đợt",
+            "location": "Phục vụ tối đa 3 địa điểm",
+            "seasonal": "Nâng cấp theo mùa và dịp lễ",
+            "priority": "Hỗ trợ ưu tiên qua hotline"
+          }
+        },
+        "signature": {
+          "name": "Signature",
+          "tagline": "Cho khách sạn, tập đoàn hospitality và venue flagship",
+          "price": "Theo yêu cầu",
+          "features": {
+            "rotation": "Luân chuyển hằng ngày hoặc hằng tuần",
+            "installations": "Tác phẩm signature và điểm nhấn riêng",
+            "onSite": "Đội ngũ florist on-site cho sự kiện",
+            "branding": "Tùy biến theo màu thương hiệu và theo mùa",
+            "support": "Đường dây WhatsApp / Zalo riêng"
+          }
+        }
+      }
+    },
+    "advantages": {
+      "title": "Vì Sao Đối Tác Chọn Hoa Theo Mùa",
+      "description": "Sự tinh tế của một boutique florist kết hợp với độ tin cậy vận hành mà doanh nghiệp cần.",
+      "items": {
+        "account": {
+          "title": "Quản Lý Tài Khoản Riêng",
+          "description": "Một florist hiểu rõ thương hiệu, lịch sự kiện và không gian của bạn — mọi yêu cầu đều đi qua người này."
+        },
+        "delivery": {
+          "title": "Giao Trong Ngày Toàn Thành Phố",
+          "description": "TP.HCM, Hà Nội và Đà Nẵng — xe chuyên dụng, có lạnh, cam kết đúng giờ."
+        },
+        "natural": {
+          "title": "Nguyên Liệu 100% Tự Nhiên",
+          "description": "Hoa chọn tay mỗi sáng từ những vườn đáng tin cậy — chỉ những bông đạt chuẩn mới rời studio."
+        },
+        "scale": {
+          "title": "Sản Xuất Quy Mô Lớn",
+          "description": "Hàng trăm tác phẩm mỗi tuần mà vẫn giữ trọn độ hoàn thiện — sẵn sàng cho lễ ra mắt và gala."
+        }
+      }
+    },
+    "process": {
+      "title": "Quy Trình Hợp Tác",
+      "description": "Bốn bước đơn giản giúp sự kiện của bạn đúng tinh thần thương hiệu, đúng tiến độ và đúng ngân sách.",
+      "steps": {
+        "brief": {
+          "label": "Bước 01",
+          "title": "Tiếp nhận yêu cầu",
+          "description": "Chúng tôi gặp bạn (hoặc đội sự kiện) để hiểu venue, đối tượng khách mời và cảm xúc bạn muốn để lại."
+        },
+        "proposal": {
+          "label": "Bước 02",
+          "title": "Đề xuất ý tưởng",
+          "description": "Mood board, bảng hoa và báo giá minh bạch — thường trong vòng 48 giờ."
+        },
+        "production": {
+          "label": "Bước 03",
+          "title": "Sản xuất",
+          "description": "Hoa về studio, dưỡng qua đêm và được các florist sắp tay vào sáng ngày giao."
+        },
+        "delivery": {
+          "label": "Bước 04",
+          "title": "Giao & Setup",
+          "description": "Xe lạnh chuyên dụng, dựng tại chỗ và kiểm tra lần cuối trước khi khách mời tới."
+        }
+      }
+    },
+    "cta": {
+      "title": "Cùng kiến tạo một điều gì đó nở rộ",
+      "description": "Kể chúng tôi nghe về dự án của bạn — chúng tôi sẽ phản hồi trong vòng 4 giờ làm việc với ý tưởng đầu tiên và bước tiếp theo rõ ràng.",
+      "callLabel": "Hotline",
+      "callValue": "0983 024 353",
+      "emailLabel": "Hợp tác",
+      "emailValue": "b2b@hoatheomua.net",
+      "primary": "Gửi brief",
+      "secondary": "Xem sản phẩm của chúng tôi"
     }
   }
 }

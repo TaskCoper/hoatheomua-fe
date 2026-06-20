@@ -17,7 +17,8 @@ const defaultValues: CheckoutFormValues = {
   wardCode: -1,
   latitude: 0,
   longitude: 0,
-  mapId: ''
+  mapId: '',
+  orderTime: null
 }
 
 export const useEstimateOrder = () => {

@@ -44,6 +44,8 @@ export interface CheckoutPayload {
   fullName: string
   phone: string
   remarks: string
+  /** Unix timestamp in SECONDS for scheduled delivery. `0` means deliver now. */
+  orderTime: number
   items: { itemId: string; number: number }[]
 }
 
