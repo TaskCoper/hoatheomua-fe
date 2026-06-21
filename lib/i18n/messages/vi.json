@@ -193,7 +193,9 @@
   },
   "floatingContact": {
     "zalo": "Nhắn tin Zalo",
-    "messenger": "Nhắn tin Messenger"
+    "messenger": "Nhắn tin Messenger",
+    "musicOn": "Tắt nhạc nền",
+    "musicOff": "Bật nhạc nền"
   },
   "contact": {
     "eyebrow": "Tiệm hoa theo mùa",
