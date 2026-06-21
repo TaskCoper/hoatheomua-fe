@@ -10,7 +10,10 @@ import { useMemo, useState } from 'react'
 
 type TabKey = 'description' | 'specs' | 'care'
 
-const TABS: { key: TabKey; labelKey: 'products.detail.tabs.description' | 'products.detail.tabs.specs' | 'products.detail.tabs.care' }[] = [
+const TABS: {
+  key: TabKey
+  labelKey: 'products.detail.tabs.description' | 'products.detail.tabs.specs' | 'products.detail.tabs.care'
+}[] = [
   { key: 'description', labelKey: 'products.detail.tabs.description' },
   { key: 'specs', labelKey: 'products.detail.tabs.specs' },
   { key: 'care', labelKey: 'products.detail.tabs.care' }
@@ -94,7 +97,11 @@ export default function ProductDetailsTabs({
 
   return (
     <div className='mt-8'>
-      <div role='tablist' aria-label={t('products.detail.tabs.ariaLabel')} className='flex flex-wrap gap-1 border-b border-border'>
+      <div
+        role='tablist'
+        aria-label={t('products.detail.tabs.ariaLabel')}
+        className='flex flex-wrap gap-1 border-b border-border'
+      >
         {TABS.map((tab) => {
           const isActive = active === tab.key
 

@@ -46,10 +46,7 @@ export default function TestimonialSection() {
       </motion.div>
 
       <div className='mx-auto w-full max-w-7xl space-y-4 px-4 py-4 relative'>
-        <motion.h1
-          variants={fadeUp}
-          className='text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'
-        >
+        <motion.h1 variants={fadeUp} className='text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
           {t('home.testimonial.title')}
         </motion.h1>
 

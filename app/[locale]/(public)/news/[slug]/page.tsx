@@ -31,7 +31,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ loc
   return (
     <div className='relative w-full overflow-hidden'>
       <FallingPetals />
-
       <div className='mx-auto w-full max-w-5xl px-4 pb-12 pt-8 space-y-8'>
         {/* Header */}
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>

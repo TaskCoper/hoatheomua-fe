@@ -167,12 +167,7 @@ export default function AboutTestimonialsSection() {
               className='relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-primary font-title text-sm font-bold text-primary-foreground sm:size-12'
             >
               {t(featuredTestimonial.initialsKey)}
-              <DecorImage
-                src={featuredTestimonial.avatar}
-                alt={featuredName}
-                sizes='3rem'
-                className='object-cover'
-              />
+              <DecorImage src={featuredTestimonial.avatar} alt={featuredName} sizes='3rem' className='object-cover' />
             </motion.div>
             <div className='-space-y-0.5'>
               <p className='text-xs font-bold text-primary sm:text-sm'>{featuredName}</p>
