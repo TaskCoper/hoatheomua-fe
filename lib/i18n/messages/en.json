@@ -193,7 +193,9 @@
   },
   "floatingContact": {
     "zalo": "Chat on Zalo",
-    "messenger": "Chat on Messenger"
+    "messenger": "Chat on Messenger",
+    "musicOn": "Mute background music",
+    "musicOff": "Play background music"
   },
   "contact": {
     "eyebrow": "Seasonal flower studio",
