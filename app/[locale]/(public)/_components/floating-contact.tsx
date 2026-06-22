@@ -34,72 +34,53 @@ export default function FloatingContact() {
 
     let unmuted = false
 
-    const tryUnmute = () => {
-      if (unmuted) return
-      audio.muted = false
-      audio.volume = 1
-      audio
-        .play()
-        .then(() => {
-          if (!audio.muted) {
-            unmuted = true
-            setIsPlaying(true)
-            cleanup()
-          }
-        })
-        .catch(() => undefined)
-    }
-
-    const playMuted = () => {
-      audio.muted = true
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => undefined)
-    }
-
-    const onVisibility = () => {
-      if (!document.hidden) tryUnmute()
-    }
-
-    const events = [
-      'pointerdown',
-      'pointermove',
-      'pointerover',
-      'mousemove',
-      'mouseover',
-      'mouseenter',
-      'keydown',
-      'touchstart',
-      'touchmove',
-      'scroll',
-      'wheel',
-      'click',
-      'focus'
-    ]
-
-    const cleanup = () => {
-      events.forEach((evt) => window.removeEventListener(evt, tryUnmute, true))
-      document.removeEventListener('visibilitychange', onVisibility)
-      document.removeEventListener('mouseover', tryUnmute, true)
-    }
-
     audio.muted = false
     audio.volume = 1
     audio
       .play()
       .then(() => {
-        if (audio.muted) playMuted()
-        else {
+        if (audio.muted) {
+          audio.muted = true
+          audio.play().catch(() => undefined)
+        } else {
           unmuted = true
           setIsPlaying(true)
         }
       })
-      .catch(() => playMuted())
+      .catch(() => {
+        audio.muted = true
+        audio.play().catch(() => undefined)
+      })
 
-    events.forEach((evt) => window.addEventListener(evt, tryUnmute, { capture: true, passive: true }))
-    document.addEventListener('visibilitychange', onVisibility)
-    document.addEventListener('mouseover', tryUnmute, { capture: true, passive: true })
+    const activate = () => {
+      if (unmuted) return
+      audio.muted = false
+      audio.volume = 1
+      const p = audio.play()
+      const finalize = () => {
+        if (!audio.muted) {
+          unmuted = true
+          setIsPlaying(true)
+          cleanup()
+        }
+      }
+      if (p && typeof p.then === 'function') p.then(finalize).catch(() => undefined)
+      else finalize()
+    }
+
+    const gestureEvents = ['pointerdown', 'mousedown', 'click', 'keydown', 'touchstart', 'touchend'] as const
+
+    const cleanup = () => {
+      gestureEvents.forEach((evt) => {
+        window.removeEventListener(evt, activate, true)
+        document.removeEventListener(evt, activate, true)
+      })
+    }
+
+    gestureEvents.forEach((evt) => {
+      window.addEventListener(evt, activate, { capture: true, passive: true })
+      document.addEventListener(evt, activate, { capture: true, passive: true })
+    })
 
     return cleanup
   }, [])
@@ -124,7 +105,7 @@ export default function FloatingContact() {
 
   return (
     <div className='pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6'>
-      <audio ref={audioRef} src={MUSIC_SRC} loop autoPlay playsInline preload='auto' aria-hidden='true' />
+      <audio ref={audioRef} src={MUSIC_SRC} loop playsInline preload='auto' aria-hidden='true' />
 
       <button
         type='button'
