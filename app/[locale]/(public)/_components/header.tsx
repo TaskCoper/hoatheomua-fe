@@ -19,6 +19,7 @@ import vine from '@/public/images/vine.png'
 import {
   GlobalIcon,
   LoginCircle01Icon,
+  MailValidation01Icon,
   Menu01Icon,
   PackageIcon,
   Search01Icon,
@@ -45,7 +46,7 @@ const LOCALE_OPTIONS = [
 ] as const
 
 export default function Header() {
-  const { isAuthenticated, me, isGettingMe } = useGetMe()
+  const { isAuthenticated, me, isGettingMe, isVerificationRequired } = useGetMe()
 
   const { t } = useTranslation()
   const pathname = usePathname()
@@ -124,29 +125,40 @@ export default function Header() {
             <>
               <NavUser user={me} />
 
-              <Button
-                variant='outline'
-                size='icon-sm'
-                className='border-none ring ring-primary ring-inset'
-                aria-label={t('header.aria.openCart')}
-                asChild
-              >
-                <Link href='/cart'>
-                  <HugeiconsIcon icon={ShoppingBasket03Icon} />
-                </Link>
-              </Button>
+              {isVerificationRequired ? (
+                <Button asChild>
+                  <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
+                    {t('auth.verifyEmail.title')}
+                    <HugeiconsIcon icon={MailValidation01Icon} />
+                  </Link>
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant='outline'
+                    size='icon-sm'
+                    className='border-none ring ring-primary ring-inset'
+                    aria-label={t('header.aria.openCart')}
+                    asChild
+                  >
+                    <Link href='/cart'>
+                      <HugeiconsIcon icon={ShoppingBasket03Icon} />
+                    </Link>
+                  </Button>
 
-              <Button
-                variant='outline'
-                size='icon-sm'
-                className='flex-1 border-none ring ring-primary ring-inset'
-                aria-label={t('header.aria.openOrders')}
-                asChild
-              >
-                <Link href='/orders'>
-                  <HugeiconsIcon icon={PackageIcon} />
-                </Link>
-              </Button>
+                  <Button
+                    variant='outline'
+                    size='icon-sm'
+                    className='flex-1 border-none ring ring-primary ring-inset'
+                    aria-label={t('header.aria.openOrders')}
+                    asChild
+                  >
+                    <Link href='/orders'>
+                      <HugeiconsIcon icon={PackageIcon} />
+                    </Link>
+                  </Button>
+                </>
+              )}
             </>
           ) : (
             <>
@@ -221,40 +233,51 @@ export default function Header() {
                     <NavUser user={me} />
                   </div>
 
-                  <div className='flex items-center gap-2'>
-                    <Button
-                      variant='outline'
-                      size='icon-sm'
-                      className='flex-1 border-none ring ring-primary ring-inset'
-                      aria-label={t('header.aria.openCart')}
-                      asChild
-                    >
-                      <Link href='/cart'>
-                        <HugeiconsIcon icon={ShoppingBasket03Icon} />
-                      </Link>
-                    </Button>
+                  {isVerificationRequired ? (
+                    <SheetClose asChild>
+                      <Button asChild className='w-full'>
+                        <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
+                          {t('auth.verifyEmail.title')}
+                          <HugeiconsIcon icon={MailValidation01Icon} />
+                        </Link>
+                      </Button>
+                    </SheetClose>
+                  ) : (
+                    <div className='flex items-center gap-2'>
+                      <Button
+                        variant='outline'
+                        size='icon-sm'
+                        className='flex-1 border-none ring ring-primary ring-inset'
+                        aria-label={t('header.aria.openCart')}
+                        asChild
+                      >
+                        <Link href='/cart'>
+                          <HugeiconsIcon icon={ShoppingBasket03Icon} />
+                        </Link>
+                      </Button>
 
-                    <Button
-                      variant='outline'
-                      size='icon-sm'
-                      className='flex-1 border-none ring ring-primary ring-inset'
-                      aria-label={t('header.aria.openOrders')}
-                      asChild
-                    >
-                      <Link href='/orders'>
-                        <HugeiconsIcon icon={PackageIcon} />
-                      </Link>
-                    </Button>
+                      <Button
+                        variant='outline'
+                        size='icon-sm'
+                        className='flex-1 border-none ring ring-primary ring-inset'
+                        aria-label={t('header.aria.openOrders')}
+                        asChild
+                      >
+                        <Link href='/orders'>
+                          <HugeiconsIcon icon={PackageIcon} />
+                        </Link>
+                      </Button>
 
-                    <Button
-                      variant='outline'
-                      size='icon-sm'
-                      className='flex-1 border-none ring ring-primary ring-inset'
-                      aria-label={t('header.aria.search')}
-                    >
-                      <HugeiconsIcon icon={Search01Icon} />
-                    </Button>
-                  </div>
+                      <Button
+                        variant='outline'
+                        size='icon-sm'
+                        className='flex-1 border-none ring ring-primary ring-inset'
+                        aria-label={t('header.aria.search')}
+                      >
+                        <HugeiconsIcon icon={Search01Icon} />
+                      </Button>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
