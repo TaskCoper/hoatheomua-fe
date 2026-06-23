@@ -10,7 +10,6 @@ import {
   PRICE_STEP,
   PRODUCT_CATEGORIES
 } from '@/features/products/constants'
-import type { Product } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
@@ -36,13 +35,7 @@ const formatVnd = (value: number) => vndFormatter.format(value)
 
 const FULL_RANGE: PriceRange = [PRICE_MIN, PRICE_MAX]
 
-export default function ProductsCatalogSection({
-  initialItems,
-  initialNextCursor
-}: {
-  initialItems: Product[]
-  initialNextCursor: number
-}) {
+export default function ProductsCatalogSection() {
   const { t } = useTranslation()
   const [selectedCategory, setSelectedCategory] = useState<SelectedCategory>('all')
   const [nameInput, setNameInput] = useState('')
@@ -65,7 +58,6 @@ export default function ProductsCatalogSection({
     [debouncedPrice, isFullPrice]
   )
 
-  const canUseSsrData = isAll && debouncedName.trim() === '' && isFullPrice
   const gridKey = `${selectedCategory}|${debouncedName.trim()}|${debouncedPrice[0]}-${debouncedPrice[1]}`
 
   const pillClass = (active: boolean) =>
@@ -232,14 +224,7 @@ export default function ProductsCatalogSection({
         </motion.aside>
 
         <div className='min-w-0'>
-          <ProductGrid
-            key={gridKey}
-            initialItems={canUseSsrData ? initialItems : []}
-            initialNextCursor={canUseSsrData ? initialNextCursor : 0}
-            categoryIds={categoryIds}
-            name={debouncedName}
-            price={priceParam}
-          />
+          <ProductGrid key={gridKey} categoryIds={categoryIds} name={debouncedName} price={priceParam} />
         </div>
       </div>
     </section>

@@ -36,7 +36,7 @@ async function postProductApi<T>(path: string, body: unknown, options: FetchOpti
     throw new Error('NEXT_PUBLIC_API_BASE_URL is not configured')
   }
 
-  const response = await fetch(`${API_BASE_URL}/api/${path}`, {
+  const response = await fetch(`${API_BASE_URL}/${path}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
-import RoleGuard from '@/features/auth/components/role-guard'
-import { ROLES } from '@/features/auth/utils'
+import RoleGuard from '@/guards/role-guard'
+import { ROLES } from '@/guards/utils'
 import pedalsRight from '@/public/images/pedals-right.png'
 import Image from 'next/image'
 import FloatingContact from './_components/floating-contact'
@@ -8,7 +8,7 @@ import Header from './_components/header'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <RoleGuard allowedRoles={[ROLES.User]} allowAnonymous>
+    <RoleGuard allowedRoles={[ROLES.Customer]} allowAnonymous>
       <div className='flex min-h-full flex-1 flex-col bg-background relative'>
         <Image
           src={pedalsRight}

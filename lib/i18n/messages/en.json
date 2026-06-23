@@ -33,6 +33,14 @@
     "signOut": {
       "submit": "Sign out"
     },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "description": "Enter the 6-digit code we sent to",
+      "submit": "Verify code",
+      "resend": "Resend code",
+      "success": "Successfully verified",
+      "codeLength": "Code must be 6 digits."
+    },
     "verifyEmailPending": {
       "changedMind": "Changed your mind?",
       "goBack": "Go back",
@@ -604,6 +612,7 @@
     }
   },
   "news": {
+    "notFoundTitle": "No news found",
     "metaTitle": "News - Hoa Theo Mua",
     "metaDescription": "News about fresh flowers, floral arrangement and trends for you.",
     "heroEyebrow": "Welcome",
@@ -1094,6 +1103,9 @@
         "openLightbox": "Open image gallery",
         "emptyState": "No product image"
       },
+      "variants": {
+        "label": "Variants"
+      },
       "purchase": {
         "packaging": "Packaging",
         "quantity": "Quantity",
@@ -1115,6 +1127,8 @@
         "care": "Care",
         "noDescription": "This product has no detailed description yet. Contact Hoa Theo Mua for personal advice.",
         "noSpecs": "Detailed specifications are being updated for this product.",
+        "viewMore": "View more",
+        "viewLess": "View less",
         "specRows": {
           "code": "Product code",
           "brand": "Brand",

@@ -25,14 +25,18 @@ export const buildGetProductsKey = ({
   [
     'products',
     {
-      ids,
-      status,
-      categoryIds,
-      name,
-      ...(price && price.length > 0 ? { price } : {}),
-      size,
-      sort,
-      ...(next ? { next } : {})
+      filters: {
+        ...(ids.length > 0 ? { id: ids } : {}),
+        ...(status.length > 0 ? { status } : {}),
+        ...(categoryIds.length > 0 ? { categoryIds } : {}),
+        ...(name.trim().length > 0 ? { name: name.trim() } : {}),
+        ...(price && price.length === 2 ? { price } : {})
+      },
+      paginator: {
+        size,
+        sort,
+        ...(next ? { next } : {})
+      }
     }
   ] as const
 

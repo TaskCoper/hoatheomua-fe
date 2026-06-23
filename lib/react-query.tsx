@@ -1,6 +1,7 @@
 'use client'
 
 import { environmentManager, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { AxiosError } from 'axios'
 import { ErrorResponse } from './axios'
 
@@ -19,9 +20,9 @@ function makeQueryClient() {
             if (
               // If access token is expired => axios interceptors
               // If access token is invalid => layout will handle it
-              error.response.data.messageCode === 'MISSING_ACCESS_TOKEN' ||
-              error.response.data.messageCode === 'EXPIRED_ACCESS_TOKEN' ||
-              error.response.data.messageCode === 'EXPIRED_REFRESH_TOKEN'
+              error.response.data.messageCode === 'MissingAccessToken' ||
+              error.response.data.messageCode === 'ExpiredAccessToken' ||
+              error.response.data.messageCode === 'InvalidAccessToken'
             ) {
               return false
             }
@@ -75,5 +76,10 @@ export default function ReactQueryProvider({ children }: { children: React.React
   //       render if it suspends and there is no boundary
   const queryClient = getQueryClient()
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  )
 }

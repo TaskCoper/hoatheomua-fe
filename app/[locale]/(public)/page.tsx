@@ -1,6 +1,8 @@
+import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
+import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
 import { fetchProductsList } from '@/features/products/server'
-import type { Product } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import HomeContent from './_components/home-content'
 
@@ -165,27 +167,27 @@ const homeJsonLd = {
 }
 
 export default async function HomePage() {
-  let signatureBouquets: Product[] = []
-  let signatureBouquetsNextCursor = 0
+  const queryClient = new QueryClient()
 
-  try {
-    const response = await fetchProductsList(
-      {
-        size: SIGNATURE_BOUQUETS_SIZE,
-        categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID
-      },
-      { revalidate: REVALIDATE_SECONDS }
-    )
-    signatureBouquets = response.value?.data ?? []
-    signatureBouquetsNextCursor = response.value?.paginator.next.id ?? 0
-  } catch {
-    // Render the page with an empty signature list on fetch failure.
-  }
+  await queryClient.prefetchQuery({
+    queryKey: buildGetProductsKey({
+      size: SIGNATURE_BOUQUETS_SIZE,
+      categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
+      sort: DEFAULT_PRODUCT_SORT
+    }),
+    queryFn: () =>
+      fetchProductsList(
+        { size: SIGNATURE_BOUQUETS_SIZE, categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID },
+        { revalidate: REVALIDATE_SECONDS }
+      )
+  })
 
   return (
     <>
       <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }} />
-      <HomeContent signatureBouquets={signatureBouquets} signatureBouquetsNextCursor={signatureBouquetsNextCursor} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <HomeContent />
+      </HydrationBoundary>
     </>
   )
 }

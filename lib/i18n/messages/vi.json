@@ -33,6 +33,14 @@
     "signOut": {
       "submit": "Đăng xuất"
     },
+    "verifyEmail": {
+      "title": "Xác thực email",
+      "description": "Nhập mã 6 chữ số chúng tôi đã gửi đến",
+      "submit": "Xác thực",
+      "resend": "Gửi lại mã",
+      "success": "Xác thực thành công",
+      "codeLength": "Mã xác thực phải gồm 6 chữ số."
+    },
     "verifyEmailPending": {
       "changedMind": "Đổi ý rồi?",
       "goBack": "Quay lại",
@@ -604,6 +612,7 @@
     }
   },
   "news": {
+    "notFoundTitle": "Không tìm thấy tin tức",
     "metaTitle": "Tin tức - Hoa Theo Mùa",
     "metaDescription": "Tin tức về hoa tươi, cắm hoa và xu hướng hoa dành cho bạn.",
     "heroEyebrow": "Chào mừng bạn",
@@ -1094,6 +1103,9 @@
         "openLightbox": "Mở thư viện ảnh",
         "emptyState": "Chưa có hình ảnh sản phẩm"
       },
+      "variants": {
+        "label": "Phân loại"
+      },
       "purchase": {
         "packaging": "Đóng gói",
         "quantity": "Số lượng",
@@ -1115,6 +1127,8 @@
         "care": "Bảo quản",
         "noDescription": "Sản phẩm chưa có mô tả chi tiết. Liên hệ Hoa Theo Mùa để được tư vấn riêng.",
         "noSpecs": "Đang cập nhật thông số chi tiết cho sản phẩm này.",
+        "viewMore": "Xem thêm",
+        "viewLess": "Thu gọn",
         "specRows": {
           "code": "Mã sản phẩm",
           "brand": "Thương hiệu",

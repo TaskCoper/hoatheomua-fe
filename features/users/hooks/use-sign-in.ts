@@ -7,7 +7,6 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import authService from '../services'
-import { getRoleHomePath, getUserType } from '../utils'
 import { createSignInSchema, SignInFormValues } from '../validations'
 
 const defaultValues: SignInFormValues = {
@@ -40,16 +39,12 @@ export const useSignIn = () => {
 
   const { mutate: signIn, isPending: isSigningIn } = useMutation({
     mutationFn: authService.signIn,
-    onSuccess: async (message) => {
-      toast.success(message)
-
+    onSuccess: async () => {
       const me = await authService.getMe()
       queryClient.setQueryData(['me'], me)
 
-      // if 'from' is missing or unsafe (open-redirect attempt, external URL, …), fall through to the role-based home
       const from = searchParams.get('from')
-      const roleHome = getRoleHomePath(getUserType(me))
-      const target = isSafeInternalPath(from) ? from : roleHome
+      const target = isSafeInternalPath(from) ? from : '/'
       router.replace(target)
     },
     onError: (error) => {

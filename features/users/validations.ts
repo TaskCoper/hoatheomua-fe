@@ -98,5 +98,25 @@ export const createSignUpSchema = (t: TranslationFunction) =>
     })
     .strict()
 
+export const createVerifyEmailSchema = (t: TranslationFunction) =>
+  z
+    .object({
+      email: z
+        .string()
+        .trim()
+        .email({
+          error: t('common.validation.email')
+        })
+        .toLowerCase(),
+      code: z
+        .string()
+        .trim()
+        .length(6, {
+          error: t('auth.verifyEmail.codeLength')
+        })
+    })
+    .strict()
+
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>
 export type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>
+export type VerifyEmailFormValues = z.infer<ReturnType<typeof createVerifyEmailSchema>>

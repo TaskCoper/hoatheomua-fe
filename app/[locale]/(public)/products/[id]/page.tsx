@@ -1,5 +1,8 @@
+import { buildGetProductKey } from '@/features/products/hooks/use-get-product'
 import { fetchProductDetailById, fetchTopProductIds } from '@/features/products/server'
+import type { ProductDetail } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { cache } from 'react'
@@ -50,19 +53,20 @@ export async function generateMetadata({
     }
   }
 
+  const productName = product.name ?? 'Hoa Theo Mùa'
   const path = locale === 'vi' ? `/products/${product.id}` : `/en/products/${product.id}`
-  const cleanDescription = stripHtml(product.description) || `${product.name} — Hoa Theo Mùa`
+  const cleanDescription = stripHtml(product.description) || `${productName} — Hoa Theo Mùa`
   const description = truncate(cleanDescription, META_DESCRIPTION_MAX_LENGTH)
-  const avatar = product.images.avatar ?? '/images/banner-one.png'
-  const ogImage = product.images.avatar
-    ? { url: avatar, alt: product.name }
-    : { url: avatar, width: 1200, height: 630, alt: product.name }
+  const avatar = product.images?.avatar ?? '/images/banner-one.png'
+  const ogImage = product.images?.avatar
+    ? { url: avatar, alt: productName }
+    : { url: avatar, width: 1200, height: 630, alt: productName }
 
   return {
-    title: product.name,
+    title: productName,
     description,
     keywords: [
-      product.name,
+      productName,
       product.category?.name,
       product.brand?.name,
       'hoa tươi',
@@ -81,7 +85,7 @@ export async function generateMetadata({
     openGraph: {
       type: 'website',
       siteName: 'Hoa Theo Mùa',
-      title: `${product.name} — Hoa Theo Mùa`,
+      title: `${productName} — Hoa Theo Mùa`,
       description,
       url: path,
       locale: locale === 'vi' ? 'vi_VN' : 'en_US',
@@ -90,7 +94,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${product.name} — Hoa Theo Mùa`,
+      title: `${productName} — Hoa Theo Mùa`,
       description,
       images: [avatar]
     },
@@ -105,22 +109,31 @@ const priceValidUntil = () => {
 
 export default async function ProductPage({ params }: { params: Promise<{ locale: Locale; id: string }> }) {
   const { locale, id } = await params
-  const product = await safeFetchProduct(id)
+  const queryClient = new QueryClient()
+  const queryKey = buildGetProductKey(id)
+
+  await queryClient.prefetchQuery({
+    queryKey,
+    queryFn: () => safeFetchProduct(id)
+  })
+
+  const product = queryClient.getQueryData<ProductDetail | null>(queryKey)
 
   if (!product) {
     notFound()
   }
 
-  const description = stripHtml(product.description) || `${product.name} — Hoa Theo Mùa`
-  const avatar = product.images.avatar ?? `${SITE_URL}/images/banner-one.png`
-  const allImages = [avatar, ...(product.images.others ?? [])].filter(
+  const productName = product.name ?? 'Hoa Theo Mùa'
+  const description = stripHtml(product.description) || `${productName} — Hoa Theo Mùa`
+  const avatar = product.images?.avatar ?? `${SITE_URL}/images/banner-one.png`
+  const allImages = [avatar, ...(product.images?.others ?? [])].filter(
     (url): url is string => Boolean(url) && url.startsWith('http')
   )
   const path = locale === 'vi' ? `/products/${product.id}` : `/en/products/${product.id}`
   const inLanguage = locale === 'vi' ? 'vi-VN' : 'en-US'
   const homeName = locale === 'vi' ? 'Trang chủ' : 'Home'
   const productsName = locale === 'vi' ? 'Sản phẩm' : 'Products'
-  const inStock = product.inventory.available > 0
+  const inStock = (product.inventory?.available ?? 0) > 0
 
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -129,7 +142,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
         '@type': 'Product',
         '@id': `${SITE_URL}${path}#product`,
         url: `${SITE_URL}${path}`,
-        name: product.name,
+        name: productName,
         description,
         image: allImages.length > 0 ? allImages : [avatar],
         sku: product.code || `htm-${product.id}`,
@@ -141,7 +154,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
           '@type': 'Offer',
           url: `${SITE_URL}${path}`,
           priceCurrency: 'VND',
-          price: product.prices.retail,
+          price: product.prices?.retail ?? 0,
           priceValidUntil: priceValidUntil(),
           availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
           itemCondition: 'https://schema.org/NewCondition',
@@ -162,7 +175,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
           {
             '@type': 'ListItem',
             position: 3,
-            name: product.name,
+            name: productName,
             item: `${SITE_URL}${path}`
           }
         ]
@@ -173,7 +186,9 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
   return (
     <>
       <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
-      <ProductDetailContent product={product} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <ProductDetailContent product={product} />
+      </HydrationBoundary>
     </>
   )
 }

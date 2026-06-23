@@ -1,7 +1,7 @@
 'use client'
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import SignUpProvider from '@/features/auth/components/sign-up-provider'
+import SignUpProvider from '@/features/users/components/sign-up-provider'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { LockPasswordIcon } from '@hugeicons/core-free-icons'

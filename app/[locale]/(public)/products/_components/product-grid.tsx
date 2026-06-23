@@ -34,15 +34,11 @@ const cardStagger: Variants = {
 const PRODUCTS_PAGE_SIZE = 12
 
 export default function ProductGrid({
-  initialItems,
-  initialNextCursor,
   categoryIds,
   name = '',
   price,
   pageSize = PRODUCTS_PAGE_SIZE
 }: {
-  initialItems: Product[]
-  initialNextCursor: number
   categoryIds: number[]
   name?: string
   price?: number[]
@@ -53,7 +49,6 @@ export default function ProductGrid({
   const currentCursor = cursorStack.at(-1) ?? 0
   const isFirstPage = currentCursor === 0
   const nextParam = isFirstPage ? undefined : { id: currentCursor }
-  const hasInitialData = isFirstPage && initialItems.length > 0
 
   const { data, isFetching, isLoading } = useQuery<ProductListResponse>({
     queryKey: buildGetProductsKey({
@@ -73,22 +68,7 @@ export default function ProductGrid({
         sort: DEFAULT_PRODUCT_SORT,
         next: nextParam
       }),
-    placeholderData: keepPreviousData,
-    initialData: hasInitialData
-      ? ({
-          isSuccess: true,
-          isFailed: false,
-          error: null,
-          traceId: '',
-          timestampUtc: '',
-          value: {
-            code: 0,
-            data: initialItems,
-            paginator: { next: { id: initialNextCursor } }
-          }
-        } as ProductListResponse)
-      : undefined,
-    staleTime: hasInitialData ? 60_000 : 0
+    placeholderData: keepPreviousData
   })
 
   const items = data?.value?.data ?? []

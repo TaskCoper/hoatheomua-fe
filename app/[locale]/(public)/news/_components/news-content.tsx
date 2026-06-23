@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useGetNewsInfinite } from '@/features/news/hooks/use-get-news-infinite'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { formatNewsDate, type NewsItem } from '@/lib/news-shared'
@@ -18,6 +19,7 @@ import { ArrowRight02Icon, Calendar03Icon, FlowerIcon, NewsIcon, SparklesIcon } 
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image, { type StaticImageData } from 'next/image'
+import { useEffect, useMemo, useRef } from 'react'
 import FloatingPetals from '../../_components/floating-petals'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
 
@@ -73,6 +75,8 @@ const stampPop: Variants = {
     transition: { type: 'spring', stiffness: 280, damping: 14, delay: 0.45 }
   }
 }
+
+const CURATED_RESERVED = 4
 
 const getNewsImage = (index: number) => NEWS_IMAGES[index % NEWS_IMAGES.length]
 
@@ -183,14 +187,51 @@ function StandardNewsCard({
   )
 }
 
-export default function NewsContent({ news, locale }: { news: NewsItem[]; locale: string }) {
-  const { t } = useTranslation()
+function NewsCardSkeleton() {
+  return (
+    <div className='flex h-full flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5'>
+      <div className='aspect-[4/3] animate-pulse bg-secondary/40' />
+      <div className='flex flex-1 flex-col gap-2 p-4 sm:p-5'>
+        <div className='h-3 w-24 animate-pulse rounded-full bg-secondary/50' />
+        <div className='h-4 w-3/4 animate-pulse rounded-full bg-secondary/60' />
+        <div className='h-3 w-full animate-pulse rounded-full bg-secondary/40' />
+        <div className='h-3 w-2/3 animate-pulse rounded-full bg-secondary/40' />
+      </div>
+    </div>
+  )
+}
 
-  const [featured, ...rest] = news
-  const sideStories = [rest[0] ?? featured, rest[1] ?? featured].filter(Boolean)
+export default function NewsContent({ locale }: { locale: string }) {
+  const { t } = useTranslation()
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetNewsInfinite()
+
+  const news = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data])
+
+  const featured = news[0]
+  const sideStories = [news[1], news[2]].filter(Boolean) as NewsItem[]
   const overlayStories = news.slice(0, 4)
   const wideStory = news[3] ?? featured
-  const compactStories = news.slice(1, 5)
+  const otherStories = news.slice(CURATED_RESERVED)
+
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const node = sentinelRef.current
+    if (!node) return
+    if (!hasNextPage || isFetchingNextPage) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          fetchNextPage()
+        }
+      },
+      { rootMargin: '200px' }
+    )
+
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   return (
     <div className='relative w-full overflow-hidden'>
@@ -376,64 +417,66 @@ export default function NewsContent({ news, locale }: { news: NewsItem[]; locale
         </section>
       ) : null}
 
-      <section className='relative mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
-        <motion.div
-          initial='hidden'
-          whileInView='visible'
-          viewport={{ once: true, margin: '-80px' }}
-          variants={fadeUp}
-          className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
-        >
-          <div className='flex items-center justify-start gap-3 sm:justify-center'>
-            <SparkleDivider
-              className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-              iconClassName='sm:size-5 md:size-6 lg:size-7'
-              color='#516c6c'
-            />
+      {overlayStories.length > 0 ? (
+        <section className='relative mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-80px' }}
+            variants={fadeUp}
+            className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
+          >
+            <div className='flex items-center justify-start gap-3 sm:justify-center'>
+              <SparkleDivider
+                className='hidden min-w-0 max-w-96 flex-1 sm:flex'
+                iconClassName='sm:size-5 md:size-6 lg:size-7'
+                color='#516c6c'
+              />
 
-            <h2 className='shrink-0 text-center font-title text-2xl font-bold md:text-3xl lg:text-4xl'>
-              {t('news.featuredHeading')}
-            </h2>
+              <h2 className='shrink-0 text-center font-title text-2xl font-bold md:text-3xl lg:text-4xl'>
+                {t('news.featuredHeading')}
+              </h2>
 
-            <SparkleDivider
-              className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-              iconClassName='sm:size-5 md:size-6 lg:size-7'
-              direction='rtl'
-              color='#516c6c'
-            />
-          </div>
+              <SparkleDivider
+                className='hidden min-w-0 max-w-96 flex-1 sm:flex'
+                iconClassName='sm:size-5 md:size-6 lg:size-7'
+                direction='rtl'
+                color='#516c6c'
+              />
+            </div>
 
-          <p className='mx-auto max-w-full text-left text-xs leading-relaxed text-foreground sm:max-w-200 sm:text-center sm:text-sm'>
-            {t('news.featuredDescription')}
-          </p>
-        </motion.div>
+            <p className='mx-auto max-w-full text-left text-xs leading-relaxed text-foreground sm:max-w-200 sm:text-center sm:text-sm'>
+              {t('news.featuredDescription')}
+            </p>
+          </motion.div>
 
-        <Image
-          src={rightBranch}
-          alt={t('news.heroImageAlt')}
-          className='wind-wiggle-right pointer-events-none absolute -right-8 bottom-12 hidden h-52 w-auto opacity-25 lg:block'
-          aria-hidden='true'
-        />
+          <Image
+            src={rightBranch}
+            alt={t('news.heroImageAlt')}
+            className='wind-wiggle-right pointer-events-none absolute -right-8 bottom-12 hidden h-52 w-auto opacity-25 lg:block'
+            aria-hidden='true'
+          />
 
-        <motion.div
-          initial='hidden'
-          whileInView='visible'
-          viewport={{ once: true, margin: '-60px' }}
-          variants={cardStagger}
-          className='mx-auto mt-6 grid w-full max-w-7xl gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4'
-        >
-          {overlayStories.map((item, index) => (
-            <OverlayNewsCard
-              key={item.id}
-              item={item}
-              image={getNewsImage(index + 4)}
-              locale={locale}
-              className='min-h-[340px]'
-              titleClassName='text-xl'
-            />
-          ))}
-        </motion.div>
-      </section>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-60px' }}
+            variants={cardStagger}
+            className='mx-auto mt-6 grid w-full max-w-7xl gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4'
+          >
+            {overlayStories.map((item, index) => (
+              <OverlayNewsCard
+                key={item.id}
+                item={item}
+                image={getNewsImage(index + 4)}
+                locale={locale}
+                className='min-h-[340px]'
+                titleClassName='text-xl'
+              />
+            ))}
+          </motion.div>
+        </section>
+      ) : null}
 
       {wideStory ? (
         <section className='relative mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
@@ -533,46 +576,53 @@ export default function NewsContent({ news, locale }: { news: NewsItem[]; locale
         </section>
       ) : null}
 
-      <section className='relative mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
-        <motion.div
-          initial='hidden'
-          whileInView='visible'
-          viewport={{ once: true, margin: '-80px' }}
-          variants={fadeUp}
-          className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
-        >
-          <div className='flex items-center justify-start gap-3 sm:justify-center'>
-            <SparkleDivider
-              className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-              iconClassName='sm:size-5 md:size-6 lg:size-7'
-              color='#516c6c'
-            />
+      {otherStories.length > 0 ? (
+        <section className='relative mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-80px' }}
+            variants={fadeUp}
+            className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
+          >
+            <div className='flex items-center justify-start gap-3 sm:justify-center'>
+              <SparkleDivider
+                className='hidden min-w-0 max-w-96 flex-1 sm:flex'
+                iconClassName='sm:size-5 md:size-6 lg:size-7'
+                color='#516c6c'
+              />
 
-            <h2 className='shrink-0 text-center font-title text-2xl font-bold md:text-3xl lg:text-4xl'>
-              {t('news.otherArticlesHeading')}
-            </h2>
+              <h2 className='shrink-0 text-center font-title text-2xl font-bold md:text-3xl lg:text-4xl'>
+                {t('news.otherArticlesHeading')}
+              </h2>
 
-            <SparkleDivider
-              className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-              iconClassName='sm:size-5 md:size-6 lg:size-7'
-              direction='rtl'
-              color='#516c6c'
-            />
-          </div>
-        </motion.div>
+              <SparkleDivider
+                className='hidden min-w-0 max-w-96 flex-1 sm:flex'
+                iconClassName='sm:size-5 md:size-6 lg:size-7'
+                direction='rtl'
+                color='#516c6c'
+              />
+            </div>
+          </motion.div>
 
-        <motion.div
-          initial='hidden'
-          whileInView='visible'
-          viewport={{ once: true, margin: '-60px' }}
-          variants={cardStagger}
-          className='mx-auto mt-6 grid w-full max-w-7xl gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4'
-        >
-          {compactStories.map((item, index) => (
-            <StandardNewsCard key={item.id} item={item} image={getNewsImage(index + 1)} locale={locale} />
-          ))}
-        </motion.div>
-      </section>
+          <motion.div
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-60px' }}
+            variants={cardStagger}
+            className='mx-auto mt-6 grid w-full max-w-7xl gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4'
+          >
+            {otherStories.map((item, index) => (
+              <StandardNewsCard key={item.id} item={item} image={getNewsImage(index + 1)} locale={locale} />
+            ))}
+            {isFetchingNextPage
+              ? Array.from({ length: 4 }).map((_, i) => <NewsCardSkeleton key={`skeleton-${i}`} />)
+              : null}
+          </motion.div>
+
+          <div ref={sentinelRef} aria-hidden='true' className='h-1 w-full' />
+        </section>
+      ) : null}
 
       <section className='mt-8 px-4 pb-12 sm:mt-10 md:mt-12 lg:mt-14 lg:pb-16'>
         <motion.div

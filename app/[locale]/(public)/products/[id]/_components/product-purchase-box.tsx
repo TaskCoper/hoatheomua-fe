@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { useGetMe } from '@/features/auth/hooks/use-get-me'
+import { useGetMe } from '@/features/users/hooks/use-get-me'
 import type { ProductUnit } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
@@ -23,6 +23,7 @@ const formatVnd = (value: number) => vndFormatter.format(value)
 
 export default function ProductPurchaseBox({
   productId,
+  variantId: variantIdOverride = null,
   productName,
   available,
   retail,
@@ -30,6 +31,7 @@ export default function ProductPurchaseBox({
   units
 }: {
   productId: number
+  variantId?: number | null
   productName: string
   available: number
   retail: number
@@ -55,7 +57,7 @@ export default function ProductPurchaseBox({
   const hasDiscount = currentOld > currentRetail
   const discountPercent = hasDiscount ? Math.round(((currentOld - currentRetail) / currentOld) * 100) : 0
 
-  const variantId = activeUnit?.id ?? null
+  const variantId = variantIdOverride ?? activeUnit?.id ?? null
   const unitName = activeUnit?.name ?? null
   const selectedOptions = useMemo<Record<string, string>>(() => {
     const opts: Record<string, string> = {}

@@ -1,12 +1,21 @@
 'use client'
 
 import SanitizedHtml from '@/components/sanitized-html'
+import { Button } from '@/components/ui/button'
 import type { ProductShipping } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { DropletIcon, Scissor01Icon, Sun03Icon, ThermometerIcon } from '@hugeicons/core-free-icons'
+import { cn } from '@/shared/utils'
+import {
+  ArrowDown01Icon,
+  ArrowUp01Icon,
+  DropletIcon,
+  Scissor01Icon,
+  Sun03Icon,
+  ThermometerIcon
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 type TabKey = 'description' | 'specs' | 'care'
 
@@ -78,6 +87,23 @@ export default function ProductDetailsTabs({
 }) {
   const { t } = useTranslation()
   const [active, setActive] = useState<TabKey>('description')
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
+  const [showDescriptionToggle, setShowDescriptionToggle] = useState(false)
+  const [descriptionElement, setDescriptionElement] = useState<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!descriptionElement) return
+
+    const checkHeight = () => {
+      setShowDescriptionToggle(descriptionElement.scrollHeight > 384)
+    }
+
+    checkHeight()
+
+    const observer = new ResizeObserver(checkHeight)
+    observer.observe(descriptionElement)
+    return () => observer.disconnect()
+  }, [descriptionElement, description, content, active])
 
   const specs = useMemo<SpecRow[]>(() => {
     const rows: SpecRow[] = []
@@ -131,9 +157,35 @@ export default function ProductDetailsTabs({
       <div role='tabpanel' className='pt-6'>
         {active === 'description' ? (
           hasDescription ? (
-            <div className='space-y-4'>
-              {description ? <SanitizedHtml html={description} /> : null}
-              {content ? <SanitizedHtml html={content} /> : null}
+            <div>
+              <div className='relative'>
+                <div
+                  ref={setDescriptionElement}
+                  className={cn(
+                    'space-y-4 overflow-hidden transition-[max-height] duration-300',
+                    !isDescriptionExpanded && showDescriptionToggle && 'max-h-96'
+                  )}
+                >
+                  {description ? <SanitizedHtml html={description} /> : null}
+                  {content ? <SanitizedHtml html={content} /> : null}
+                </div>
+                {showDescriptionToggle && !isDescriptionExpanded ? (
+                  <div className='pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-background to-transparent' />
+                ) : null}
+              </div>
+
+              {showDescriptionToggle ? (
+                <Button
+                  type='button'
+                  variant='outline'
+                  className='mt-3 w-full gap-2'
+                  onClick={() => setIsDescriptionExpanded((prev) => !prev)}
+                  aria-expanded={isDescriptionExpanded}
+                >
+                  <HugeiconsIcon icon={isDescriptionExpanded ? ArrowUp01Icon : ArrowDown01Icon} className='size-4' />
+                  {isDescriptionExpanded ? t('products.detail.tabs.viewLess') : t('products.detail.tabs.viewMore')}
+                </Button>
+              ) : null}
             </div>
           ) : (
             <p className='text-sm text-muted-foreground'>{t('products.detail.tabs.noDescription')}</p>

@@ -1,4 +1,4 @@
-import AuthGuard from '@/features/auth/components/auth-guard'
+import AuthGuard from '@/guards/auth-guard'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

@@ -1,6 +1,6 @@
 'use client'
 
-import SignInProvider from '@/features/auth/components/sign-in-provider'
+import SignInProvider from '@/features/users/components/sign-in-provider'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 
 export default function SignInPage() {
