@@ -7,7 +7,6 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/',
   '/sign-in',
   '/sign-up',
-  '/verify',
   '/verify-sent',
   '/news',
   '/news/[id]',

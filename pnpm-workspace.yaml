@@ -4,6 +4,9 @@ allowBuilds:
   msw: true
   sharp: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@tanstack/query-devtools@5.101.1'
+  - '@tanstack/react-query-devtools@5.101.1'
 onlyBuiltDependencies:
   - sharp
   - unrs-resolver

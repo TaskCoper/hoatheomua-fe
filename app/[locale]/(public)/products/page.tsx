@@ -1,6 +1,10 @@
-import { fetchProductsList } from '@/features/products/server'
+import { DEFAULT_PRODUCT_CATEGORY_IDS, DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
+import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
+import { fetchProductsList, type ProductListPayload } from '@/features/products/server'
 import type { Product } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
+import type { BaseResponse } from '@/lib/axios'
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import ProductsContent from './_components/products-content'
 
@@ -109,14 +113,39 @@ const buildProductsJsonLd = (locale: Locale, items: Product[]) => {
       ? {
           '@type': 'ItemList',
           '@id': `${SITE_URL}${path}#itemlist`,
-          itemListOrder: 'https://schema.org/ItemListOrderDescending',
           numberOfItems: items.length,
-          itemListElement: items.map((product, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            url: productUrl(locale, product.id),
-            name: product.name
-          }))
+          itemListElement: items.map((product, index) => {
+            const url = productUrl(locale, product.id)
+            const available = (product.inventory?.available ?? 0) > 0
+
+            return {
+              '@type': 'ListItem',
+              position: index + 1,
+              url,
+              item: {
+                '@type': 'Product',
+                '@id': `${url}#product`,
+                name: product.name,
+                url,
+                sku: String(product.id),
+                ...(product.images?.avatar ? { image: product.images.avatar } : {}),
+                ...(product.prices?.retail
+                  ? {
+                      offers: {
+                        '@type': 'Offer',
+                        url,
+                        priceCurrency: 'VND',
+                        price: product.prices.retail,
+                        availability: available
+                          ? 'https://schema.org/InStock'
+                          : 'https://schema.org/OutOfStock',
+                        itemCondition: 'https://schema.org/NewCondition'
+                      }
+                    }
+                  : {})
+              }
+            }
+          })
         }
       : null
 
@@ -160,26 +189,34 @@ const buildProductsJsonLd = (locale: Locale, items: Product[]) => {
 
 export default async function ProductsPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
+  const queryClient = new QueryClient()
 
-  let initialItems: Awaited<ReturnType<typeof fetchProductsList>>['value']['data'] = []
-  let initialNextCursor = 0
+  const queryKey = buildGetProductsKey({
+    size: PRODUCTS_PAGE_SIZE,
+    categoryIds: DEFAULT_PRODUCT_CATEGORY_IDS,
+    sort: DEFAULT_PRODUCT_SORT
+  })
 
-  try {
-    const response = await fetchProductsList({ size: PRODUCTS_PAGE_SIZE }, { revalidate: REVALIDATE_SECONDS })
+  await queryClient.prefetchQuery({
+    queryKey,
+    queryFn: () =>
+      fetchProductsList(
+        { size: PRODUCTS_PAGE_SIZE, categoryIds: DEFAULT_PRODUCT_CATEGORY_IDS },
+        { revalidate: REVALIDATE_SECONDS }
+      )
+  })
 
-    initialItems = response.value?.data ?? []
-    initialNextCursor = response.value?.paginator.next.id ?? 0
-  } catch {
-    // Render the page with an empty initial list; the client grid will surface
-    // the empty state and React Query will retry on mount.
-  }
+  const cached = queryClient.getQueryData<BaseResponse<ProductListPayload>>(queryKey)
+  const initialItems = cached?.value?.data ?? []
 
   const jsonLd = buildProductsJsonLd(locale, initialItems)
 
   return (
     <>
       <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <ProductsContent initialItems={initialItems} initialNextCursor={initialNextCursor} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <ProductsContent />
+      </HydrationBoundary>
     </>
   )
 }

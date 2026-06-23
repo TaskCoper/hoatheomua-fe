@@ -404,7 +404,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
   const { cartItem, product, isResolving, isUnavailable, unavailableReason, stock, isOverStock, isSelectable } = line
   const unitName = cartItem.selectedOptions?.unit
   const avatar = product?.images?.avatar ?? null
-  const hasDiscount = product ? product.prices.old > product.prices.retail : false
+  const retailPrice = product?.prices?.retail ?? 0
+  const oldPrice = product?.prices?.old ?? 0
+  const hasDiscount = product ? oldPrice > retailPrice : false
   const canUseMax = isOverStock && typeof stock === 'number' && stock > 0
 
   return (
@@ -433,7 +435,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             {avatar ? (
               <Image
                 src={avatar}
-                alt={product.name}
+                alt={product.name ?? ''}
                 fill
                 sizes='112px'
                 quality={65}
@@ -473,9 +475,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
 
           {product && !isResolving && (
             <div className='flex items-baseline gap-2'>
-              <span className='font-title text-base font-bold text-primary'>{formatVnd(product.prices.retail)}</span>
+              <span className='font-title text-base font-bold text-primary'>{formatVnd(retailPrice)}</span>
               {hasDiscount && (
-                <span className='text-xs text-muted-foreground line-through'>{formatVnd(product.prices.old)}</span>
+                <span className='text-xs text-muted-foreground line-through'>{formatVnd(oldPrice)}</span>
               )}
             </div>
           )}

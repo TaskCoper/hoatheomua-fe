@@ -1,9 +1,15 @@
-import { fetchNewsList } from '@/lib/news'
+import {
+  buildNewsInfiniteKey,
+  NEWS_INFINITE_DEFAULT_PAGE_SIZE
+} from '@/features/news/hooks/use-get-news-infinite'
 import type { Locale } from '@/lib/i18n/routing'
+import { fetchNewsPage, type NewsItem, type NewsPageResult } from '@/lib/news'
+import { dehydrate, HydrationBoundary, QueryClient, type InfiniteData } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import NewsContent from './_components/news-content'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.net'
+const DEFAULT_NEWS_OG_IMAGE = `${SITE_URL}/images/bg-news-1.png`
 
 const NEWS_META: Record<
   Locale,
@@ -91,7 +97,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 const newsUrl = (locale: Locale, slug: string) =>
   locale === 'vi' ? `${SITE_URL}/news/${slug}` : `${SITE_URL}/en/news/${slug}`
 
-const buildNewsJsonLd = (locale: Locale, items: Awaited<ReturnType<typeof fetchNewsList>>) => {
+const buildNewsJsonLd = (locale: Locale, items: NewsItem[]) => {
   const meta = NEWS_META[locale] ?? NEWS_META.vi
   const path = locale === 'vi' ? '/news' : '/en/news'
   const inLanguage = locale === 'vi' ? 'vi-VN' : 'en-US'
@@ -101,14 +107,31 @@ const buildNewsJsonLd = (locale: Locale, items: Awaited<ReturnType<typeof fetchN
       ? {
           '@type': 'ItemList',
           '@id': `${SITE_URL}${path}#itemlist`,
-          itemListOrder: 'https://schema.org/ItemListOrderDescending',
           numberOfItems: items.length,
-          itemListElement: items.map((article, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            url: newsUrl(locale, article.slug),
-            name: article.title
-          }))
+          itemListElement: items.map((article, index) => {
+            const url = newsUrl(locale, article.slug)
+            const image = article.pictureUrl || DEFAULT_NEWS_OG_IMAGE
+
+            return {
+              '@type': 'ListItem',
+              position: index + 1,
+              url,
+              item: {
+                '@type': 'NewsArticle',
+                '@id': `${url}#article`,
+                url,
+                mainEntityOfPage: url,
+                headline: article.title,
+                description: article.summary,
+                image,
+                datePublished: article.publishedAt,
+                inLanguage,
+                author: { '@type': 'Person', name: article.author },
+                publisher: { '@id': `${SITE_URL}/#organization` },
+                ...(article.tags && article.tags.length > 0 ? { keywords: article.tags.join(', ') } : {})
+              }
+            }
+          })
         }
       : null
 
@@ -124,7 +147,7 @@ const buildNewsJsonLd = (locale: Locale, items: Awaited<ReturnType<typeof fetchN
         inLanguage,
         isPartOf: { '@id': `${SITE_URL}/#website` },
         about: { '@id': `${SITE_URL}/#organization` },
-        primaryImageOfPage: { '@type': 'ImageObject', url: `${SITE_URL}/images/bg-news-1.png` },
+        primaryImageOfPage: { '@type': 'ImageObject', url: DEFAULT_NEWS_OG_IMAGE },
         ...(itemList ? { mainEntity: { '@id': `${SITE_URL}${path}#itemlist` } } : {})
       },
       {
@@ -152,13 +175,33 @@ const buildNewsJsonLd = (locale: Locale, items: Awaited<ReturnType<typeof fetchN
 
 export default async function NewsPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
-  const news = await fetchNewsList()
-  const jsonLd = buildNewsJsonLd(locale, news)
+  const queryClient = new QueryClient()
+  const queryKey = buildNewsInfiniteKey({ pageSize: NEWS_INFINITE_DEFAULT_PAGE_SIZE })
+
+  try {
+    await queryClient.prefetchInfiniteQuery({
+      queryKey,
+      queryFn: ({ pageParam }) => fetchNewsPage(pageParam as number, NEWS_INFINITE_DEFAULT_PAGE_SIZE),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage: NewsPageResult) =>
+        lastPage.hasNextPage ? lastPage.pageIndex + 1 : undefined,
+      pages: 1
+    })
+  } catch (error) {
+    console.error('[SSR] news list prefetch failed:', error)
+  }
+
+  const cached = queryClient.getQueryData<InfiniteData<NewsPageResult, number>>(queryKey)
+  const initialNews = cached?.pages.flatMap((page) => page.items) ?? []
+
+  const jsonLd = buildNewsJsonLd(locale, initialNews)
 
   return (
     <>
       <script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <NewsContent news={news} locale={locale} />
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <NewsContent locale={locale} />
+      </HydrationBoundary>
     </>
   )
 }

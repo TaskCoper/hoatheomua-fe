@@ -1,6 +1,6 @@
 'use client'
 
-import SignUpProvider from '@/features/auth/components/sign-up-provider'
+import SignUpProvider from '@/features/users/components/sign-up-provider'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 
 export default function SignUpPage() {

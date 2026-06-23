@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useGetMe } from '@/features/auth/hooks/use-get-me'
+import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'

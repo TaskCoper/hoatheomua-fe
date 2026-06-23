@@ -91,13 +91,7 @@ const cardItem: Variants = {
   }
 }
 
-export default function SignatureBouquetsSection({
-  initialItems,
-  initialNextCursor
-}: {
-  initialItems: Product[]
-  initialNextCursor: number
-}) {
+export default function SignatureBouquetsSection() {
   const { t } = useTranslation()
   const [cursorStack, setCursorStack] = useState([0])
   const currentCursor = cursorStack.at(-1) ?? 0
@@ -118,22 +112,7 @@ export default function SignatureBouquetsSection({
         sort: DEFAULT_PRODUCT_SORT,
         next: nextParam
       }),
-    placeholderData: keepPreviousData,
-    initialData: isFirstPage
-      ? ({
-          isSuccess: true,
-          isFailed: false,
-          error: null,
-          traceId: '',
-          timestampUtc: '',
-          value: {
-            code: 0,
-            data: initialItems,
-            paginator: { next: { id: initialNextCursor } }
-          }
-        } as ProductListResponse)
-      : undefined,
-    staleTime: isFirstPage ? 60_000 : 0
+    placeholderData: keepPreviousData
   })
 
   const products = data?.value?.data ?? []

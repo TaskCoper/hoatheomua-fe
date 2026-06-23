@@ -29,19 +29,10 @@ export const useSignUp = () => {
 
   const { mutate: signUp, isPending: isSigningUp } = useMutation({
     mutationFn: authService.signUp,
-    onSuccess: async (message, variables) => {
-      const email = variables.body.email
-
-      const params = new URLSearchParams()
-      params.set('email', email)
-
-      toast.success(message, {
-        description: `${t('auth.signUp.emailDescription')} ${email}`
-      })
-
+    onSuccess: (_response, variables) => {
+      const params = new URLSearchParams({ email: variables.body.email })
       router.replace(`/verify-sent?${params.toString()}`)
     },
-
     onError: (error) => {
       toast.error(t('error.somethingWentWrong'), {
         description: error.response?.data?.detail

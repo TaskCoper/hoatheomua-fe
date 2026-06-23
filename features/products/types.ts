@@ -12,22 +12,39 @@ export interface Product extends ProductBase {
 }
 
 /**
- * Product in detail API.
+ * Product in detail API. Mirrors backend `ResponseProductDetails.ProductDetailData`.
  */
-export interface ProductDetail extends ProductBase {
+export interface ProductDetail {
+  id: number
+  parentId: number
+  code: string | null
+  barcode: string | null
+  name: string | null
+  status: number
   category: ProductCategory | null
-  categoryIds: number
+  categoryId: number
   internalCategory: ProductCategory | null
+  prices: ProductPrices | null
   vat: number
-  brand: ProductBrand | null
-  type: ProductType
-  inventory: ProductDetailInventory
+  images: ProductImages | null
+  warranty: unknown
+  brand: ProductCommonInfo | null
+  brandId: number | null
+  type: ProductCommonInfo | null
+  shipping: ProductShipping | null
+  countryName: string | null
+  units: ProductDetailUnits | null
+  combos: ProductCombo[]
+  inventory: ProductDetailInventory | null
+  attributes: ProductDetailAttribute[]
+  updatedAt: number
+  createdAt: number
   description: string | null
   content: string | null
-  suppliers: ProductSupplier[]
-  videos: ProductVideo[]
+  suppliers: ProductDetailSupplier[]
+  videos: ProductDetailVideo[]
   branchPrices: ProductBranchPrice[]
-  childs: ProductChild[]
+  childs: ProductDetail[]
 }
 
 export interface ProductBase {
@@ -89,10 +106,19 @@ export interface ProductUnitPrice {
   wholesale: number
 }
 
+/**
+ * Units shape from product detail API. `list` is keyed by unit category
+ * (e.g. variant group), with each entry containing the actual units.
+ */
+export interface ProductDetailUnits {
+  name: string | null
+  list: Record<string, ProductUnit[]> | null
+}
+
 export interface ProductCombo {
   id: number
-  code: string
-  name: string
+  code: string | null
+  name: string | null
   quantity: number
 }
 
@@ -132,7 +158,8 @@ export interface ProductDepotInventory {
 }
 
 /**
- * Inventory shape from product detail API.
+ * Inventory shape from product detail API. `warranty` is flexible: backend may
+ * return either a primitive (e.g. `0`) or an object — kept loose to match.
  */
 export interface ProductDetailInventory {
   remain: number
@@ -140,7 +167,7 @@ export interface ProductDetailInventory {
   damaged: number
   holding: number
   transfering: number
-  warranty: number
+  warranty: number | ProductInventoryWarranty | null
   warrantyHolding: number
   holdingNew: number
   shippingExport: number
@@ -155,7 +182,7 @@ export interface ProductDetailDepotInventory {
   damaged: number
   holding: number
   transfering: number
-  warranty: number
+  warranty: number | ProductInventoryWarranty | null
   warrantyHolding: number
   holdingNew: number
   shippingExport: number
@@ -164,18 +191,16 @@ export interface ProductDetailDepotInventory {
 
 export interface ProductCategory {
   id: number
-  code: string
-  name: string
+  code: string | null
+  name: string | null
 }
 
-export interface ProductBrand {
+/**
+ * Shared id/name shape used by `brand`, `type`, and branch references.
+ */
+export interface ProductCommonInfo {
   id: number
-  name: string
-}
-
-export interface ProductType {
-  id: number
-  name: string
+  name: string | null
 }
 
 export interface ProductWarranty {
@@ -188,22 +213,25 @@ export interface ProductAttribute {
   [key: string]: unknown
 }
 
-export interface ProductSupplier {
-  // Unknown because sample is always []
-  [key: string]: unknown
+export interface ProductDetailAttribute {
+  id: number
+  name: string | null
+  value: string | null
 }
 
-export interface ProductVideo {
-  // Unknown because sample is always []
-  [key: string]: unknown
+export interface ProductDetailSupplier {
+  id: number
+  name: string | null
+  mobile: string | null
+}
+
+export interface ProductDetailVideo {
+  title: string | null
+  src: string | null
 }
 
 export interface ProductBranchPrice {
-  // Unknown because sample is always []
-  [key: string]: unknown
-}
-
-export interface ProductChild {
-  // Unknown because sample is always []
-  [key: string]: unknown
+  branch: ProductCommonInfo | null
+  price: number
+  wholesalePrice: number
 }

@@ -27,10 +27,13 @@ const PURIFY_CONFIG = {
   ALLOWED_TAGS: [
     'p',
     'br',
+    'hr',
     'strong',
     'em',
     'u',
     's',
+    'sub',
+    'sup',
     'code',
     'pre',
     'h1',
@@ -45,11 +48,37 @@ const PURIFY_CONFIG = {
     'blockquote',
     'a',
     'img',
-    'span'
+    'span',
+    'div',
+    'figure',
+    'figcaption',
+    'table',
+    'thead',
+    'tbody',
+    'tfoot',
+    'tr',
+    'th',
+    'td',
+    'caption',
+    'colgroup',
+    'col'
   ],
-  ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'width', 'height', 'class', 'data-type'],
-  FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed'],
-  FORBID_ATTR: ['onclick', 'onerror', 'onload']
+  ALLOWED_ATTR: [
+    'href',
+    'target',
+    'rel',
+    'src',
+    'alt',
+    'width',
+    'height',
+    'class',
+    'colspan',
+    'rowspan',
+    'align',
+    'data-type'
+  ],
+  FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'font'],
+  FORBID_ATTR: ['onclick', 'onerror', 'onload', 'style', 'color', 'bgcolor', 'face']
 }
 
 export default function SanitizedHtml({ html, className, as: Component = 'div' }: SanitizedHtmlProps) {
@@ -94,7 +123,7 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
       onClick={handleContainerClick}
       className={cn(
         'tiptap ProseMirror prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl overflow-auto',
-        'prose-pre:whitespace-pre-wrap prose-pre:break-words wrap-break-word',
+        'prose-pre:whitespace-pre-wrap prose-pre:wrap-break-word wrap-break-word',
         className
       )}
       dangerouslySetInnerHTML={{ __html: finalHtml }}

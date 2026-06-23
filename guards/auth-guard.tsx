@@ -1,10 +1,11 @@
 'use client'
 
-import { useGetMe } from '@/features/auth/hooks/use-get-me'
-import { getRoleHomePath, getUserType } from '@/features/auth/utils'
+import { useGetMe } from '@/features/users/hooks/use-get-me'
+import { useGetUserHomePath } from '@/hooks/use-get-user-home-path'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { useEffect, useRef } from 'react'
 import AuthGuardLoading from './auth-guard-loading'
+import { isRedirectLoop } from './redirect-loop'
 
 interface AuthGuardProps {
   requiresAuth: boolean
@@ -14,6 +15,7 @@ interface AuthGuardProps {
 export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const userHomePath = useGetUserHomePath()
 
   const { me, isGettingMe, isAuthenticated, isVerificationRequired } = useGetMe()
 
@@ -51,9 +53,19 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
     }
 
     if (shouldRedirectAuthedAway) {
-      router.replace(getRoleHomePath(getUserType(me)))
+      if (isRedirectLoop(pathname, userHomePath, 'AuthGuard (already authenticated)')) return
+      router.replace(userHomePath)
     }
-  }, [isGettingMe, shouldRedirectToVerify, shouldRedirectToSignIn, shouldRedirectAuthedAway, me, pathname, router])
+  }, [
+    isGettingMe,
+    shouldRedirectToVerify,
+    shouldRedirectToSignIn,
+    shouldRedirectAuthedAway,
+    me,
+    pathname,
+    router,
+    userHomePath
+  ])
 
   if (isGettingMe || shouldRedirectToVerify || shouldRedirectToSignIn || shouldRedirectAuthedAway || isModalOverlay) {
     return <AuthGuardLoading />

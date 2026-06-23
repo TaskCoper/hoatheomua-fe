@@ -1,4 +1,4 @@
-import AuthGuard from '@/features/auth/components/auth-guard'
+import AuthGuard from '@/guards/auth-guard'
 import downLeftCorner from '@/public/images/DownLeftCorner-removebg-preview.png'
 import downRightCorner from '@/public/images/DownRightCorner-removebg-preview.png'
 import upperLeftCorner from '@/public/images/UpperLeftCorner-removebg-preview.png'

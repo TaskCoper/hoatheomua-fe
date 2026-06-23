@@ -17,8 +17,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useSignOut } from '@/features/auth/hooks/use-sign-out'
-import { Me } from '@/features/auth/types'
+import { useSignOut } from '@/features/users/hooks/use-sign-out'
+import { Me } from '@/features/users/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
@@ -28,7 +28,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
 
 interface NavUserProps {
-  user?: Me
+  user?: Me | null
 }
 
 export default function NavUser({ user }: NavUserProps) {

@@ -75,10 +75,7 @@ export default async function RootLayout({
   setRequestLocale(locale)
 
   return (
-    <html
-      lang={locale}
-      className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}
-    >
+    <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
         <NuqsAdapter>
           <NextIntlClientProvider>
