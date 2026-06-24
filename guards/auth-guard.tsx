@@ -21,18 +21,23 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
 
   const isOnVerifyPage = pathname.startsWith('/verify')
   const isOnSignInPage = pathname.startsWith('/sign-in')
-
-  const isModalOverlay = requiresAuth && isOnSignInPage
+  const isOnForgotPasswordPage = pathname.startsWith('/forgot-password')
+  const isModalOverlay = requiresAuth && (isOnSignInPage || isOnForgotPasswordPage)
 
   const fromRef = useRef<string | null>(null)
   useEffect(() => {
-    if (!isOnSignInPage && !isOnVerifyPage) {
+    if (!isOnSignInPage && !isOnVerifyPage && !isOnForgotPasswordPage) {
       fromRef.current = pathname
     }
   }, [pathname, isOnSignInPage, isOnVerifyPage])
 
   const shouldRedirectToVerify = isVerificationRequired && !isOnVerifyPage && !isOnSignInPage
-  const shouldRedirectToSignIn = requiresAuth && !isVerificationRequired && (!isAuthenticated || !me) && !isOnSignInPage
+  const shouldRedirectToSignIn =
+    requiresAuth &&
+    !isVerificationRequired &&
+    (!isAuthenticated || !me) &&
+    !isOnSignInPage &&
+    !isOnForgotPasswordPage
   const shouldRedirectAuthedAway = !requiresAuth && isAuthenticated && !!me && !isVerificationRequired
 
   useEffect(() => {

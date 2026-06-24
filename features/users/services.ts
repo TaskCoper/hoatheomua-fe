@@ -1,6 +1,13 @@
 import { apiTaskcoper, BaseResponse } from '@/lib/axios'
 import { Me } from './types'
-import { SignInFormValues, SignUpFormValues, VerifyEmailFormValues } from './validations'
+import {
+  ForgotPasswordFormValues,
+  ResetPassWordFormValue,
+  SignInFormValues,
+  SignUpFormValues,
+  VerifyCodeFormValues,
+  VerifyEmailFormValues
+} from './validations'
 
 class UserService {
   private readonly baseUrl = 'users'
@@ -42,6 +49,24 @@ class UserService {
       body
     )
 
+    return data.value
+  }
+
+  forgotPassword = async ({ body }: { body: ForgotPasswordFormValues }) => {
+    const { data } = await apiTaskcoper.post<BaseResponse<string>>(`/v1/${this.baseUrl}/forgot_password`, body)
+
+    return data.value
+  }
+  resetPassword = async ({ body }: { body: ResetPassWordFormValue }) => {
+    const { data } = await apiTaskcoper.post<BaseResponse<string>>(`v1/${this.baseUrl}/change_password`, body)
+    return data.value
+  }
+
+  verifyForgotPasswordCode = async ({ body }: { body: VerifyCodeFormValues }) => {
+    const { data } = await apiTaskcoper.post<BaseResponse<string>>(
+      `v1/${this.baseUrl}/verify_change_password_code`,
+      body
+    )
     return data.value
   }
 }

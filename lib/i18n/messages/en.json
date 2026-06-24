@@ -7,7 +7,13 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Password",
+      "validation": {
+        "password": {
+          "minLength": "Password must be at least 8 characters."
+        }
+      },
       "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
       "submit": "Sign in",
       "signUpPrompt": "Don't have an account? Sign up"
     },
@@ -22,6 +28,12 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Password",
+      "validation": {
+        "password": {
+          "minLength": "Password must be at least 8 characters.",
+          "strong": "Password must include lowercase, uppercase, a number, and a special character."
+        }
+      },
       "passwordPlaceholder": "Enter your password",
       "confirmPassword": "Confirm password",
       "confirmPasswordPlaceholder": "Re-enter your password",
@@ -36,10 +48,22 @@
     "verifyEmail": {
       "title": "Verify your email",
       "description": "Enter the 6-digit code we sent to",
+      "sentTo": "Sent to",
       "submit": "Verify code",
       "resend": "Resend code",
+      "changeEmail": "Change email",
       "success": "Successfully verified",
       "codeLength": "Code must be 6 digits."
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "description": "Enter your email to receive a verification code.",
+      "submit": "Send code"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Create a new password for your account.",
+      "submit": "Reset password"
     },
     "verifyEmailPending": {
       "changedMind": "Changed your mind?",
@@ -115,6 +139,7 @@
       "uploadNoUrlReturned": "Upload failed: no URL returned"
     },
     "validation": {
+      "code": "Please enter a valid code.",
       "email": "Please enter a valid email address.",
       "required": "{field} is required.",
       "minLength": "{field} must be at least {min} characters.",
