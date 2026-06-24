@@ -48,7 +48,7 @@ const fetchNewsPageRaw = async (pageIndex: number, pageSize: number) => {
       Accept: '*/*',
       ...(cookieHeader ? { Cookie: cookieHeader } : {})
     },
-    cache: 'no-store'
+    // cache: 'no-store'
   })
 
   if (!response.ok) {
