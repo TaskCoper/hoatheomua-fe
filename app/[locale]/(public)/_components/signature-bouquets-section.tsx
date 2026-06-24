@@ -277,7 +277,10 @@ export default function SignatureBouquetsSection() {
                                 </h2>
                               </TooltipTrigger>
 
-                              <TooltipContent className='max-w-[220px] rounded-2xl border border-border/50 bg-card/95 px-3 py-2 text-xs font-medium text-foreground shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'>
+                              <TooltipContent
+                                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                                iconClassName=' bg-white fill-white'
+                              >
                                 {product.name}
                               </TooltipContent>
                             </Tooltip>

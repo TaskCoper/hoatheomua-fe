@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import flowerImage from '@/public/images/flower.png'
 import pedalsRight from '@/public/images/pedals-right.png'
-import { ArrowUp01Icon, FavouriteIcon, QuoteUpIcon } from '@hugeicons/core-free-icons'
+import { FavouriteIcon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 
@@ -83,7 +83,6 @@ export default function RecruitmentSidebar({ filters, onFilterChange }: Recruitm
               {groupIndex > 0 ? <DecorativeSidebarSeparator className='my-5' /> : null}
               <div className='mb-4 flex items-center justify-between gap-3'>
                 <h3 className='text-sm font-semibold text-primary'>{t(group.titleKey)}</h3>
-                <HugeiconsIcon icon={ArrowUp01Icon} strokeWidth={1.8} className='size-4 text-muted-foreground' />
               </div>
 
               <div className='space-y-3'>
