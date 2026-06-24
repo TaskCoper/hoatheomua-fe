@@ -22,62 +22,93 @@ const CONTACT_CHANNELS = [
 ] as const
 
 const MUSIC_SRC = '/music/bg-music.mp3'
-const MUSIC_PREF_KEY = 'bgMusicEnabled'
 
 export default function FloatingContact() {
   const { t } = useTranslation()
   const audioRef = useRef<HTMLAudioElement>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true)
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
-    const wantsOff = typeof window !== 'undefined' && window.localStorage.getItem(MUSIC_PREF_KEY) === 'false'
-    if (wantsOff) return
+    let unmuted = false
 
-    const tryPlayWithSound = () => {
+    audio.muted = false
+    audio.volume = 1
+    audio
+      .play()
+      .then(() => {
+        if (audio.muted) {
+          audio.muted = true
+          audio.play().catch(() => undefined)
+        } else {
+          unmuted = true
+          setIsPlaying(true)
+        }
+      })
+      .catch(() => {
+        audio.muted = true
+        audio.play().catch(() => undefined)
+      })
+
+    const activate = () => {
+      if (unmuted) return
       audio.muted = false
-      audio
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => undefined)
+      audio.volume = 1
+      const p = audio.play()
+      const finalize = () => {
+        if (!audio.muted) {
+          unmuted = true
+          setIsPlaying(true)
+          cleanup()
+        }
+      }
+      if (p && typeof p.then === 'function') p.then(finalize).catch(() => undefined)
+      else finalize()
     }
 
-    audio.play().catch(() => undefined)
+    const gestureEvents = [
+      'pointerdown',
+      'pointermove',
+      'mousedown',
+      'mousemove',
+      'click',
+      'wheel',
+      'scroll',
+      'keydown',
+      'touchstart',
+      'touchmove',
+      'touchend'
+    ] as const
 
-    const onInteract = () => {
-      tryPlayWithSound()
-      window.removeEventListener('pointerdown', onInteract)
-      window.removeEventListener('keydown', onInteract)
-      window.removeEventListener('touchstart', onInteract)
+    const cleanup = () => {
+      gestureEvents.forEach((evt) => {
+        window.removeEventListener(evt, activate, true)
+        document.removeEventListener(evt, activate, true)
+      })
     }
-    window.addEventListener('pointerdown', onInteract, { once: true })
-    window.addEventListener('keydown', onInteract, { once: true })
-    window.addEventListener('touchstart', onInteract, { once: true })
 
-    return () => {
-      window.removeEventListener('pointerdown', onInteract)
-      window.removeEventListener('keydown', onInteract)
-      window.removeEventListener('touchstart', onInteract)
-    }
+    gestureEvents.forEach((evt) => {
+      window.addEventListener(evt, activate, { capture: true, passive: true })
+      document.addEventListener(evt, activate, { capture: true, passive: true })
+    })
+
+    return cleanup
   }, [])
 
   const toggleMusic = () => {
     const audio = audioRef.current
     if (!audio) return
-    if (isPlaying) {
+    if (isPlaying && !audio.muted) {
       audio.pause()
       setIsPlaying(false)
-      window.localStorage.setItem(MUSIC_PREF_KEY, 'false')
     } else {
       audio.muted = false
+      audio.volume = 1
       audio
         .play()
-        .then(() => {
-          setIsPlaying(true)
-          window.localStorage.setItem(MUSIC_PREF_KEY, 'true')
-        })
+        .then(() => setIsPlaying(true))
         .catch(() => undefined)
     }
   }
@@ -86,7 +117,7 @@ export default function FloatingContact() {
 
   return (
     <div className='pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6'>
-      <audio ref={audioRef} src={MUSIC_SRC} loop muted autoPlay playsInline preload='auto' aria-hidden='true' />
+      <audio ref={audioRef} src={MUSIC_SRC} loop playsInline preload='auto' aria-hidden='true' />
 
       <button
         type='button'
