@@ -1,5 +1,6 @@
 'use client'
 
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import image10 from '@/public/images/10.png'
 import image2 from '@/public/images/2.png'
@@ -202,9 +203,25 @@ export default function ProductLinesSection() {
               </div>
 
               <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
-                <h2 className='font-title text-lg font-bold leading-tight text-primary sm:text-base md:text-lg lg:text-xl'>
+                {/* <h2 className='font-title text-lg font-bold leading-tight text-primary sm:text-base md:text-lg lg:text-xl'>
                   {name}
-                </h2>
+                </h2> */}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h2 className='font-title text-lg font-bold leading-tight text-primary sm:text-base md:text-lg lg:text-xl'>
+                        {name}
+                      </h2>
+                    </TooltipTrigger>
+
+                    <TooltipContent
+                      className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                      iconClassName=' bg-white fill-white'
+                    >
+                      {name}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <p className='flex-1 text-xs leading-relaxed text-foreground'>{t(line.descriptionKey)}</p>
 
                 <motion.button
