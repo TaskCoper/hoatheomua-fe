@@ -2,6 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { Product } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
@@ -122,9 +123,25 @@ export default function ProductCard({ product, eager = false }: { product: Produ
       </Link>
 
       <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
-        <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg truncate'>
+        {/* <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg truncate'>
           {product.name}
-        </h2>
+        </h2> */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg truncate'>
+                {product.name}
+              </h2>
+            </TooltipTrigger>
+
+            <TooltipContent
+              className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+              iconClassName=' bg-white fill-white'
+            >
+              {product.name}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <div className='mt-1 flex items-end justify-between gap-3'>
           <div className='-space-y-0.5'>
