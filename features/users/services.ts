@@ -57,6 +57,7 @@ class UserService {
 
     return data.value
   }
+
   resetPassword = async ({ body }: { body: ResetPassWordFormValue }) => {
     const { data } = await apiTaskcoper.post<BaseResponse<string>>(`v1/${this.baseUrl}/change_password`, body)
     return data.value

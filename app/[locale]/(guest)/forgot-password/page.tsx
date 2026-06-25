@@ -2,13 +2,11 @@
 
 import ForgotPasswordFlow from '@/features/users/components/forgot-password-flow'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { useRouter } from '@/lib/i18n/navigation'
 import { LockPasswordIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation()
-  const router = useRouter()
 
   return (
     <main className='mx-auto flex min-h-svh w-full max-w-sm flex-col justify-center px-4'>
@@ -21,7 +19,7 @@ export default function ForgotPasswordPage() {
           <p className='text-sm text-muted-foreground'>{t('auth.forgotPassword.description')}</p>
         </div>
 
-        <ForgotPasswordFlow onCompleted={() => router.push('/sign-in')} />
+        <ForgotPasswordFlow />
       </div>
     </main>
   )

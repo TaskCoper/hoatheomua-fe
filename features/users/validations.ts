@@ -102,11 +102,10 @@ export const createVerifyEmailSchema = (t: TranslationFunction) =>
   z
     .object({
       email: z
-        .string()
-        .trim()
         .email({
           error: t('common.validation.email')
         })
+        .trim()
         .toLowerCase(),
       code: z
         .string()
@@ -120,11 +119,10 @@ export const forgotPasswordFormValues = (t: TranslationFunction) =>
   z
     .object({
       email: z
-        .string()
-        .trim()
         .email({
           error: t('common.validation.email')
         })
+        .trim()
         .toLowerCase()
     })
     .strict()
@@ -143,6 +141,7 @@ export const resetPassWordFormValue = (t: TranslationFunction) => {
     })
     .strict()
 }
+
 export const verifyCodeSchema = (t: TranslationFunction) => {
   return z
     .object({
@@ -151,6 +150,7 @@ export const verifyCodeSchema = (t: TranslationFunction) => {
     })
     .strict()
 }
+
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>
 export type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>
 export type ForgotPasswordFormValues = z.infer<ReturnType<typeof forgotPasswordFormValues>>
