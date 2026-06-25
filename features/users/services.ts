@@ -1,5 +1,5 @@
 import { apiTaskcoper, BaseResponse } from '@/lib/axios'
-import { Me } from './types'
+import { Me, UserProfile } from './types'
 import { SignInFormValues, SignUpFormValues, VerifyEmailFormValues } from './validations'
 
 class UserService {
@@ -7,6 +7,11 @@ class UserService {
 
   getMe = async () => {
     const { data } = await apiTaskcoper.get<BaseResponse<Me>>(`v1/${this.baseUrl}/me`)
+    return data.value
+  }
+
+  getUserById = async (id: string) => {
+    const { data } = await apiTaskcoper.get<BaseResponse<UserProfile>>(`v1/${this.baseUrl}/${id}`)
     return data.value
   }
 

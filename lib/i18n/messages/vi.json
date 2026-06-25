@@ -1332,5 +1332,14 @@
       "primary": "Gửi brief",
       "secondary": "Xem sản phẩm của chúng tôi"
     }
+  },
+  "profile": {
+    "title": "Hồ sơ cá nhân",
+    "viewProfile": "Xem hồ sơ",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "address": "Địa chỉ",
+    "notProvided": "Chưa cập nhật",
+    "joinedOn": "Tham gia"
   }
 }

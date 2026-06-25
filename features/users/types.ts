@@ -9,3 +9,22 @@ export interface Me {
   role: string
   slug: string
 }
+
+export interface UserProfile {
+  id: string
+  slug: string
+  email: string
+  firstName: string
+  lastName: string
+  isEmailVerified: boolean
+  phoneNumber: string | null
+  timeZone: string
+  avatar: string | null
+  coverImageUrl: string | null
+  role: string
+  address: string | null
+  city: string | null
+  state: string | null
+  organizationId: string | null
+  createdOnUtc: string
+}

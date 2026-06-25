@@ -1332,5 +1332,14 @@
       "primary": "Send a brief",
       "secondary": "Browse our products"
     }
+  },
+  "profile": {
+    "title": "Profile",
+    "viewProfile": "View profile",
+    "email": "Email",
+    "phone": "Phone number",
+    "address": "Address",
+    "notProvided": "Not provided",
+    "joinedOn": "Joined"
   }
 }

@@ -17,6 +17,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useSignOut } from '@/features/users/hooks/use-sign-out'
 import { Me } from '@/features/users/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -97,7 +98,11 @@ export default function NavUser({ user }: NavUserProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className='px-2 py-1.5 cursor-pointer' onSelect={() => router.push(`/users/${user?.id}`)}>
+          <DropdownMenuItem
+            className='px-2 py-1.5 cursor-pointer'
+            disabled={!user?.isEmailVerified}
+            onSelect={() => router.push(`/users/${user?.id}`)}
+          >
             <HugeiconsIcon icon={UserCircle02Icon} className='shrink-0 size-4.5' />
             {t('account.account')}
           </DropdownMenuItem>
