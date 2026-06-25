@@ -120,7 +120,7 @@
       "minLength": "{field} must be at least {min} characters.",
       "maxLength": "{field} must be no more than {max} characters.",
       "phoneNumber": "Please enter a valid phone number.",
-      "passwordStrength": "Password must contain at least 1 letter, 1 number, and 1 special character.",
+      "passwordStrength": "Use at least 1 uppercase letter, 1 number, and 1 special character.",
       "passwordMismatch": "Confirm password does not match.",
       "fixErrors": "Please review the highlighted fields."
     },

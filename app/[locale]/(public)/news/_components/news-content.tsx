@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useGetNewsInfinite } from '@/features/news/hooks/use-get-news-infinite'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
@@ -124,9 +125,25 @@ function OverlayNewsCard({
             <span className='h-1 w-1 rounded-full bg-primary-foreground/60' />
             <span>{formatNewsDate(item.publishedAt, locale)}</span>
           </div>
-          <h3 className={`line-clamp-3 font-title font-bold leading-tight text-primary-foreground ${titleClassName}`}>
-            {item.title}
-          </h3>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <h3
+                  className={`line-clamp-3 font-title font-bold leading-tight text-primary-foreground ${titleClassName}`}
+                >
+                  {item.title}
+                </h3>
+              </TooltipTrigger>
+
+              <TooltipContent
+                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                iconClassName=' bg-white fill-white'
+              >
+                {item.title}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <p className='line-clamp-2 text-xs leading-6 text-primary-foreground/90 sm:text-sm'>{item.summary}</p>
         </div>
       </Link>
@@ -134,15 +151,7 @@ function OverlayNewsCard({
   )
 }
 
-function StandardNewsCard({
-  item,
-  image,
-  locale
-}: {
-  item: NewsItem
-  image: StaticImageData
-  locale: string
-}) {
+function StandardNewsCard({ item, image, locale }: { item: NewsItem; image: StaticImageData; locale: string }) {
   return (
     <motion.div
       variants={cardItem}
@@ -177,9 +186,23 @@ function StandardNewsCard({
           <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
             {formatNewsDate(item.publishedAt, locale)} · {item.readTime}
           </p>
-          <h3 className='line-clamp-2 font-title text-base font-bold leading-snug text-primary transition group-hover:text-foreground lg:text-lg'>
-            {item.title}
-          </h3>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <h3 className='line-clamp-2 font-title text-base font-bold leading-snug text-primary transition group-hover:text-foreground lg:text-lg'>
+                  {item.title}
+                </h3>
+              </TooltipTrigger>
+
+              <TooltipContent
+                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                iconClassName=' bg-white fill-white'
+              >
+                {item.title}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <p className='line-clamp-2 flex-1 text-xs leading-relaxed text-foreground'>{item.summary}</p>
         </div>
       </Link>
@@ -398,9 +421,7 @@ export default function NewsContent({ locale }: { locale: string }) {
             variants={cardStagger}
             className='mx-auto mt-6 grid w-full max-w-7xl gap-4 sm:gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.45fr)_minmax(0,0.9fr)] lg:items-stretch'
           >
-            {sideStories[0] ? (
-              <StandardNewsCard item={sideStories[0]} image={getNewsImage(2)} locale={locale} />
-            ) : null}
+            {sideStories[0] ? <StandardNewsCard item={sideStories[0]} image={getNewsImage(2)} locale={locale} /> : null}
 
             <OverlayNewsCard
               item={featured}
@@ -410,9 +431,7 @@ export default function NewsContent({ locale }: { locale: string }) {
               titleClassName='text-3xl sm:text-4xl'
             />
 
-            {sideStories[1] ? (
-              <StandardNewsCard item={sideStories[1]} image={getNewsImage(3)} locale={locale} />
-            ) : null}
+            {sideStories[1] ? <StandardNewsCard item={sideStories[1]} image={getNewsImage(3)} locale={locale} /> : null}
           </motion.div>
         </section>
       ) : null}

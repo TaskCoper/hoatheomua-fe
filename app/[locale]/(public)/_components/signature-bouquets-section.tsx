@@ -7,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
 import productService from '@/features/products/services'
@@ -267,8 +268,24 @@ export default function SignatureBouquetsSection() {
                       </div>
 
                       <div className='flex items-end justify-between gap-4'>
-                        <div className='min-w-0'>
-                          <h2 className='truncate text-base font-bold leading-tight text-foreground'>{product.name}</h2>
+                        <div className='min-w-0 flex-1'>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <h2 className='truncate text-base font-bold leading-tight text-foreground'>
+                                  {product.name}
+                                </h2>
+                              </TooltipTrigger>
+
+                              <TooltipContent
+                                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                                iconClassName=' bg-white fill-white'
+                              >
+                                {product.name}
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
                           <p className='text-xs font-medium text-foreground'>{formatVnd(retail)}</p>
                         </div>
 
