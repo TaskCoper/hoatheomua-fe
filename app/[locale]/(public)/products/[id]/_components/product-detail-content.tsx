@@ -59,11 +59,7 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
               />
 
               {hasChildren ? (
-                <ProductChildSelector
-                  childs={childs}
-                  activeChildId={activeChildId}
-                  onChange={setActiveChildId}
-                />
+                <ProductChildSelector childs={childs} activeChildId={activeChildId} onChange={setActiveChildId} />
               ) : null}
 
               <ProductPurchaseBox
