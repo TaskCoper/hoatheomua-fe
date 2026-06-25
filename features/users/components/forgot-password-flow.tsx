@@ -140,7 +140,7 @@ export default function ForgotPasswordFlow({ onCompleted }: ForgotPasswordFlowPr
       <div>
         {stage === 'email' ? (
           <FormProvider {...forgotPasswordMethods}>
-            <form onSubmit={forgotPasswordMethods.handleSubmit(onSubmitForgotPassword)} className='space-y-4'>
+            <form onSubmit={forgotPasswordMethods.handleSubmit(onSubmitForgotPassword)} className='space-y-2'>
               <Controller
                 name='email'
                 control={forgotPasswordMethods.control}
@@ -214,7 +214,7 @@ export default function ForgotPasswordFlow({ onCompleted }: ForgotPasswordFlowPr
                 />
               </div>
 
-              <div className='flex-col gap-2 sm:flex-row'>
+              <div className='space-y-2'>
                 <Button
                   type='button'
                   variant='outline'
@@ -243,7 +243,7 @@ export default function ForgotPasswordFlow({ onCompleted }: ForgotPasswordFlowPr
           <FormProvider {...resetPasswordMethods}>
             <form
               onSubmit={resetPasswordMethods.handleSubmit(onSubmitResetPassword, onInvalidResetPassword)}
-              className='space-y-4'
+              className='space-y-2'
             >
               <Controller
                 name='newPassword'
