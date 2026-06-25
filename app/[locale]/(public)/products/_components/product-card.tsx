@@ -123,9 +123,6 @@ export default function ProductCard({ product, eager = false }: { product: Produ
       </Link>
 
       <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
-        {/* <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg truncate'>
-          {product.name}
-        </h2> */}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>

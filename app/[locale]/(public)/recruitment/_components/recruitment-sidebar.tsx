@@ -8,7 +8,6 @@ import pedalsRight from '@/public/images/pedals-right.png'
 import { FavouriteIcon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-
 import type { RecruitmentFilters } from '../types'
 
 const groups = [

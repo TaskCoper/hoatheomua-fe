@@ -199,9 +199,6 @@ export default function ProductsOccasionsSection() {
               </div>
 
               <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
-                {/* <h2 className='font-title text-lg font-bold leading-tight text-primary sm:text-base md:text-lg lg:text-xl'>
-                  {name}
-                </h2> */}
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>

@@ -125,9 +125,7 @@ function OverlayNewsCard({
             <span className='h-1 w-1 rounded-full bg-primary-foreground/60' />
             <span>{formatNewsDate(item.publishedAt, locale)}</span>
           </div>
-          {/* <h3 className={`line-clamp-3 font-title font-bold leading-tight text-primary-foreground ${titleClassName}`}>
-            {item.title}
-          </h3> */}
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -188,9 +186,7 @@ function StandardNewsCard({ item, image, locale }: { item: NewsItem; image: Stat
           <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
             {formatNewsDate(item.publishedAt, locale)} · {item.readTime}
           </p>
-          {/* <h3 className='line-clamp-2 font-title text-base font-bold leading-snug text-primary transition group-hover:text-foreground lg:text-lg'>
-            {item.title}
-          </h3> */}
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
