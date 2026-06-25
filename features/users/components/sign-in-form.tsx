@@ -65,13 +65,16 @@ export default function SignInForm() {
                 )}
               </InputGroupAddon>
             </InputGroup>
-            <div className='flex justify-end'>
-              <Link href='/forgot-password' className='text-sm font-medium text-primary transition-opacity hover:opacity-80'>
+            <div className='flex justify-between'>
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
+              <Link
+                href='/forgot-password'
+                className='text-sm font-medium text-primary transition-opacity hover:opacity-80'
+              >
                 {t('auth.signIn.forgotPassword')}
               </Link>
-            </div>
-            <div className='min-h-4'>
-              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
             </div>
           </Field>
         )}
