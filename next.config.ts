@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'hoatheomua.net'
+      },
+      {
+        protocol: 'https',
+        hostname: 'taskcoper.hcm.ss.bfcplatform.vn'
       }
     ],
     formats: ['image/avif', 'image/webp'],

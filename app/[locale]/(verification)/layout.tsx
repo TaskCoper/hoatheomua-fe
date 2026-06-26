@@ -4,8 +4,13 @@ import downRightCorner from '@/public/images/DownRightCorner-removebg-preview.pn
 import upperLeftCorner from '@/public/images/UpperLeftCorner-removebg-preview.png'
 import upperRightCorner from '@/public/images/UpperRightCorner-removebg-preview.png'
 import { cn } from '@/shared/utils'
+import type { Metadata } from 'next'
 import Image, { type StaticImageData } from 'next/image'
 import FloatingPetals from '../(public)/_components/floating-petals'
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false }
+}
 
 type CornerImageProps = {
   src: StaticImageData

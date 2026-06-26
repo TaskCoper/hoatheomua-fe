@@ -1,9 +1,11 @@
 'use client'
 
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/shared/constants'
+import { useQueryStates } from 'nuqs'
 import { useMemo, useState } from 'react'
 
 import { useGetJobDescriptions } from '../hooks/use-get-job-descriptions'
+import { recruitmentSearchParsers } from '../_search-params'
 import type { RecruitmentFilters } from '../types'
 import FilterSection from './filter-section'
 import JobDetail from './job-detail'
@@ -20,14 +22,23 @@ const getSalaryParams = (salaryRange: RecruitmentFilters['salaryRange']) => {
 }
 
 export default function RecruitmentView() {
-  const [pageIndex, setPageIndex] = useState(DEFAULT_PAGE_INDEX)
+  const [search, setSearch] = useQueryStates(recruitmentSearchParsers)
   const [selectedJobId, setSelectedJobId] = useState('')
-  const [filters, setFilters] = useState<RecruitmentFilters>({ title: '' })
+
+  const filters: RecruitmentFilters = useMemo(
+    () => ({
+      title: search.q,
+      location: search.location ?? undefined,
+      employmentType: search.employmentType ?? undefined,
+      salaryRange: search.salaryRange ?? undefined
+    }),
+    [search.q, search.location, search.employmentType, search.salaryRange]
+  )
 
   const salaryParams = useMemo(() => getSalaryParams(filters.salaryRange), [filters.salaryRange])
 
   const { jobDescriptions, isLoadingJobDescription, isError } = useGetJobDescriptions({
-    pageIndex,
+    pageIndex: search.page,
     pageSize: DEFAULT_PAGE_SIZE,
     title: filters.title || undefined,
     location: filters.location,
@@ -41,12 +52,21 @@ export default function RecruitmentView() {
   const activeSelectedJobId = selectedJob?.id ?? ''
 
   const handleFilterChange = (nextFilters: Partial<RecruitmentFilters>) => {
-    setFilters((currentFilters) => ({ ...currentFilters, ...nextFilters }))
-    setPageIndex(DEFAULT_PAGE_INDEX)
+    setSearch({
+      ...(nextFilters.title !== undefined ? { q: nextFilters.title.length > 0 ? nextFilters.title : null } : {}),
+      ...('location' in nextFilters ? { location: nextFilters.location ?? null } : {}),
+      ...('employmentType' in nextFilters ? { employmentType: nextFilters.employmentType ?? null } : {}),
+      ...('salaryRange' in nextFilters ? { salaryRange: nextFilters.salaryRange ?? null } : {}),
+      page: DEFAULT_PAGE_INDEX
+    })
   }
 
   const handleSearchTitle = (title: string) => {
     handleFilterChange({ title })
+  }
+
+  const handlePageChange = (nextPage: number) => {
+    setSearch({ page: nextPage })
   }
 
   return (
@@ -67,7 +87,7 @@ export default function RecruitmentView() {
             totalCount={jobDescriptions.value.totalCount}
             hasNextPage={jobDescriptions.value.hasNextPage}
             hasPreviousPage={jobDescriptions.value.hasPreviousPage}
-            onPageChange={setPageIndex}
+            onPageChange={handlePageChange}
           />
           {selectedJob ? (
             <div className='w-full min-w-0 lg:col-start-2 xl:col-start-auto'>

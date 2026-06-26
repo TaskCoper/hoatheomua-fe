@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import orderService from '../services'
+import { getOrderStatusQuery } from '../queries'
 
 export const useGetOrderStatus = ({ orderId, enabled }: { orderId: string; enabled: boolean }) => {
   const { data: orderStatus, isLoading: isLoadingOrderStatus } = useQuery({
-    queryKey: ['order-status', orderId],
-    queryFn: () => orderService.getOrderStatus({ orderId }),
+    ...getOrderStatusQuery({ orderId }),
     refetchInterval: 5000,
     enabled
   })

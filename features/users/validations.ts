@@ -102,11 +102,10 @@ export const createVerifyEmailSchema = (t: TranslationFunction) =>
   z
     .object({
       email: z
-        .string()
-        .trim()
         .email({
           error: t('common.validation.email')
         })
+        .trim()
         .toLowerCase(),
       code: z
         .string()
@@ -116,7 +115,45 @@ export const createVerifyEmailSchema = (t: TranslationFunction) =>
         })
     })
     .strict()
+export const forgotPasswordFormValues = (t: TranslationFunction) =>
+  z
+    .object({
+      email: z
+        .email({
+          error: t('common.validation.email')
+        })
+        .trim()
+        .toLowerCase()
+    })
+    .strict()
+
+export const resetPassWordFormValue = (t: TranslationFunction) => {
+  return z
+    .object({
+      newPassword: z
+        .string()
+        .trim()
+        .min(8, t('auth.signUp.validation.password.minLength'))
+        .regex(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          t('auth.signUp.validation.password.strong')
+        )
+    })
+    .strict()
+}
+
+export const verifyCodeSchema = (t: TranslationFunction) => {
+  return z
+    .object({
+      email: z.email(t('common.validation.email')).trim(),
+      code: z.string().trim().min(6, t('common.validation.email'))
+    })
+    .strict()
+}
 
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>
 export type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>
+export type ForgotPasswordFormValues = z.infer<ReturnType<typeof forgotPasswordFormValues>>
+export type ResetPassWordFormValue = z.infer<ReturnType<typeof resetPassWordFormValue>>
 export type VerifyEmailFormValues = z.infer<ReturnType<typeof createVerifyEmailSchema>>
+export type VerifyCodeFormValues = z.infer<ReturnType<typeof verifyCodeSchema>>

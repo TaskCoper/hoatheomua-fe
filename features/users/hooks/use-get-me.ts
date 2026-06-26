@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { isAxiosError } from 'axios'
-import authService from '../services'
+import { getMeQuery } from '../queries'
 
 export const useGetMe = () => {
   const {
@@ -8,19 +7,7 @@ export const useGetMe = () => {
     isPending,
     isFetching
   } = useQuery({
-    queryKey: ['me'],
-    // Treat 401 as a successful "no session" result so React Query caches it
-    // and observer remounts don't keep refiring /me → /refresh_token.
-    queryFn: async () => {
-      try {
-        return await authService.getMe()
-      } catch (error) {
-        if (isAxiosError(error) && error.response?.status === 401) {
-          return null
-        }
-        throw error
-      }
-    },
+    ...getMeQuery(),
     retry: false,
     throwOnError: false
   })

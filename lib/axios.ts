@@ -44,6 +44,8 @@ const isSupportedLocale = (value: string): value is SupportedLocale => {
   return SUPPORTED_LOCALES.includes(value as SupportedLocale)
 }
 
+const isBrowser = () => typeof window !== 'undefined'
+
 const isCurrentPublicRoutePath = (pathname: string) => {
   const [, maybeLocale, ...segments] = pathname.split('/')
   const pathnameWithoutLocale = isSupportedLocale(maybeLocale) ? `/${segments.join('/')}` : pathname
@@ -51,7 +53,7 @@ const isCurrentPublicRoutePath = (pathname: string) => {
 }
 
 const getCurrentLanguage = () => {
-  if (typeof window === 'undefined') {
+  if (!isBrowser()) {
     return DEFAULT_LOCALE
   }
 
@@ -104,7 +106,11 @@ const refreshAccessToken = async (
   } catch (err) {
     const error = err as AxiosError<ErrorResponse>
 
-    if (error.response?.data?.messageCode && expiredRefreshTokenCodes.includes(error.response.data.messageCode)) {
+    if (
+      isBrowser() &&
+      error.response?.data?.messageCode &&
+      expiredRefreshTokenCodes.includes(error.response.data.messageCode)
+    ) {
       const isOnPublicRoute = isCurrentPublicRoutePath(window.location.pathname)
 
       if (!isOnPublicRoute) {
@@ -120,16 +126,18 @@ interface CreateApiClientOptions {
   refreshTokenPath: string
   expiredAccessTokenCodes: readonly string[]
   expiredRefreshTokenCodes: readonly string[]
+  serverBaseURL?: string
 }
 
 export const createApiClient = (
   baseURL: string,
-  { refreshTokenPath, expiredAccessTokenCodes, expiredRefreshTokenCodes }: CreateApiClientOptions
+  { refreshTokenPath, expiredAccessTokenCodes, expiredRefreshTokenCodes, serverBaseURL }: CreateApiClientOptions
 ): AxiosInstance => {
-  const refreshTokenUrl = `${baseURL}${refreshTokenPath}`
+  const resolvedBaseURL = isBrowser() ? baseURL : (serverBaseURL?.replace(/\/+$/, '') ?? baseURL)
+  const refreshTokenUrl = `${resolvedBaseURL}${refreshTokenPath}`
 
   const instance = axios.create({
-    baseURL,
+    baseURL: resolvedBaseURL,
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
@@ -157,8 +165,14 @@ export const createApiClient = (
   })
 
   instance.interceptors.request.use((config) => {
-    config.headers['Accept-Language'] = getCurrentLanguage()
-    config.headers['X-Timezone'] = getCurrentTimezone()
+    if (isBrowser()) {
+      if (!config.headers['Accept-Language']) {
+        config.headers['Accept-Language'] = getCurrentLanguage()
+      }
+      if (!config.headers['X-Timezone']) {
+        config.headers['X-Timezone'] = getCurrentTimezone()
+      }
+    }
     return config
   })
 
@@ -172,7 +186,10 @@ export const createApiClient = (
       const isExpiredAccessToken = status === 401 && !!messageCode && expiredAccessTokenCodes.includes(messageCode)
       const isRefreshRequest = originalRequest.url?.includes(refreshTokenPath)
 
-      if (!originalRequest || !isExpiredAccessToken || isRefreshRequest) {
+      // No silent refresh on the server: there are no cookies to update on the
+      // user's browser from here, and a redirect isn't possible. Let the caller
+      // (Server Component / *.server.ts fetcher) decide what to do with the 401.
+      if (!isBrowser() || !originalRequest || !isExpiredAccessToken || isRefreshRequest) {
         return Promise.reject(error)
       }
 
@@ -220,13 +237,17 @@ const AUTH_TOKEN_CODES = {
 
 const TASKCOPER_REFRESH_TOKEN_PATH = '/taskcoper/v1/users/refresh_token'
 
+export const localeHeaders = (locale: string) => ({ 'Accept-Language': locale })
+
 export const api = createApiClient('/api', {
   refreshTokenPath: TASKCOPER_REFRESH_TOKEN_PATH,
+  serverBaseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   ...AUTH_TOKEN_CODES
 })
 
 export const apiTaskcoper = createApiClient('/api/taskcoper', {
   refreshTokenPath: '/v1/users/refresh_token',
+  serverBaseURL: process.env.NEXT_PUBLIC_TASKCOPER_API_BASE_URL,
   ...AUTH_TOKEN_CODES
 })
 

@@ -7,7 +7,13 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Password",
+      "validation": {
+        "password": {
+          "minLength": "Password must be at least 8 characters."
+        }
+      },
       "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
       "submit": "Sign in",
       "signUpPrompt": "Don't have an account? Sign up"
     },
@@ -22,6 +28,12 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Password",
+      "validation": {
+        "password": {
+          "minLength": "Password must be at least 8 characters.",
+          "strong": "Password must include lowercase, uppercase, a number, and a special character."
+        }
+      },
       "passwordPlaceholder": "Enter your password",
       "confirmPassword": "Confirm password",
       "confirmPasswordPlaceholder": "Re-enter your password",
@@ -36,10 +48,22 @@
     "verifyEmail": {
       "title": "Verify your email",
       "description": "Enter the 6-digit code we sent to",
+      "sentTo": "Sent to",
       "submit": "Verify code",
       "resend": "Resend code",
+      "changeEmail": "Change email",
       "success": "Successfully verified",
       "codeLength": "Code must be 6 digits."
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "description": "Enter your email to receive a verification code.",
+      "submit": "Send code"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Create a new password for your account.",
+      "submit": "Reset password"
     },
     "verifyEmailPending": {
       "changedMind": "Changed your mind?",
@@ -112,15 +136,19 @@
       "clear": "Clear"
     },
     "error": {
-      "uploadNoUrlReturned": "Upload failed: no URL returned"
+      "uploadNoUrlReturned": "Upload failed: no URL returned",
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "tryAgain": "Try again"
     },
     "validation": {
+      "code": "Please enter a valid code.",
       "email": "Please enter a valid email address.",
       "required": "{field} is required.",
       "minLength": "{field} must be at least {min} characters.",
       "maxLength": "{field} must be no more than {max} characters.",
       "phoneNumber": "Please enter a valid phone number.",
-      "passwordStrength": "Password must contain at least 1 letter, 1 number, and 1 special character.",
+      "passwordStrength": "Use at least 1 uppercase letter, 1 number, and 1 special character.",
       "passwordMismatch": "Confirm password does not match.",
       "fixErrors": "Please review the highlighted fields."
     },
@@ -142,7 +170,8 @@
       "instructions": {
         "draggable": "Press space to pick up the item, then move it {direction}. Press space again to drop it, or escape to cancel."
       }
-    }
+    },
+    "loading": "Loading..."
   },
   "richTextEditor": {
     "placeholder": "Write something...",
@@ -328,7 +357,7 @@
           "daNang": "Da Nang"
         }
       },
-      "quote": "\u201cEvery bloom tells a story. Every person is a piece of something beautiful.\u201d"
+      "quote": "“Every bloom tells a story. Every person is a piece of something beautiful.”"
     },
     "pagination": {
       "previous": "Previous page",

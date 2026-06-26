@@ -7,7 +7,13 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Mật khẩu",
+      "validation": {
+        "password": {
+          "minLength": "Mật khẩu phải có ít nhất 8 ký tự."
+        }
+      },
       "passwordPlaceholder": "Nhập mật khẩu",
+      "forgotPassword": "Quên mật khẩu?",
       "submit": "Đăng nhập",
       "signUpPrompt": "Chưa có tài khoản? Đăng ký"
     },
@@ -22,6 +28,12 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Mật khẩu",
+      "validation": {
+        "password": {
+          "minLength": "Mật khẩu phải có ít nhất 8 ký tự.",
+          "strong": "Mật khẩu phải có chữ thường, chữ hoa, số và ký tự đặc biệt."
+        }
+      },
       "passwordPlaceholder": "Nhập mật khẩu",
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
@@ -36,10 +48,22 @@
     "verifyEmail": {
       "title": "Xác thực email",
       "description": "Nhập mã 6 chữ số chúng tôi đã gửi đến",
+      "sentTo": "Đã gửi đến",
       "submit": "Xác thực",
       "resend": "Gửi lại mã",
+      "changeEmail": "Đổi email",
       "success": "Xác thực thành công",
       "codeLength": "Mã xác thực phải gồm 6 chữ số."
+    },
+    "forgotPassword": {
+      "title": "Quên mật khẩu",
+      "description": "Nhập email để nhận mã xác thực.",
+      "submit": "Gửi mã"
+    },
+    "resetPassword": {
+      "title": "Đặt lại mật khẩu",
+      "description": "Tạo mật khẩu mới.",
+      "submit": "Đặt lại mật khẩu"
     },
     "verifyEmailPending": {
       "changedMind": "Đổi ý rồi?",
@@ -112,15 +136,19 @@
       "clear": "Xoá"
     },
     "error": {
-      "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về"
+      "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về",
+      "title": "Đã xảy ra lỗi",
+      "description": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.",
+      "tryAgain": "Thử lại"
     },
     "validation": {
+      "code": "Vui lòng nhập mã hợp lệ.",
       "email": "Vui lòng nhập địa chỉ email hợp lệ.",
       "required": "{field} là bắt buộc.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
       "maxLength": "{field} không được vượt quá {max} ký tự.",
       "phoneNumber": "Vui lòng nhập số điện thoại hợp lệ.",
-      "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái, 1 chữ số và 1 ký tự đặc biệt.",
+      "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái in hoa, 1 số và 1 ký tự đặc biệt.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",
       "fixErrors": "Vui lòng kiểm tra lại các trường thông tin."
     },
@@ -142,7 +170,8 @@
       "instructions": {
         "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {direction}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
       }
-    }
+    },
+    "loading": "Đang tải..."
   },
   "richTextEditor": {
     "placeholder": "Nhập nội dung...",
