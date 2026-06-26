@@ -13,9 +13,11 @@ import {
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
-import { useMemo, useState } from 'react'
+import { useQueryStates } from 'nuqs'
+import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
+import { productsSearchParsers } from '@/features/products/search-params'
 import ProductGrid from './product-grid'
 
 const fadeUp: Variants = {
@@ -23,7 +25,6 @@ const fadeUp: Variants = {
   visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 18 } }
 }
 
-type SelectedCategory = 'all' | number
 type PriceRange = [number, number]
 
 const vndFormatter = new Intl.NumberFormat('vi-VN', {
@@ -35,22 +36,41 @@ const formatVnd = (value: number) => vndFormatter.format(value)
 
 const FULL_RANGE: PriceRange = [PRICE_MIN, PRICE_MAX]
 
+const priceFromSearch = (pmin: number | null, pmax: number | null): PriceRange =>
+  pmin !== null && pmax !== null ? [pmin, pmax] : FULL_RANGE
+
 export default function ProductsCatalogSection() {
   const { t } = useTranslation()
-  const [selectedCategory, setSelectedCategory] = useState<SelectedCategory>('all')
-  const [nameInput, setNameInput] = useState('')
-  const [priceRange, setPriceRange] = useState<PriceRange>(FULL_RANGE)
+  const [search, setSearch] = useQueryStates(productsSearchParsers)
 
-  const [debouncedName] = useDebounce(nameInput, 300)
-  const [debouncedPrice] = useDebounce(priceRange, 300)
+  const [nameDraft, setNameDraft] = useState(search.q)
+  const [priceDraft, setPriceDraft] = useState<PriceRange>(() => priceFromSearch(search.pmin, search.pmax))
 
-  const isAll = selectedCategory === 'all'
+  const [debouncedName] = useDebounce(nameDraft, 300)
+  const [debouncedPrice] = useDebounce(priceDraft, 300)
+
+  // Sync debounced UI state into the URL (nuqs) so the server prefetch can read it.
+  useEffect(() => {
+    const next = debouncedName.trim()
+    if (next === search.q) return
+    setSearch({ q: next.length > 0 ? next : null })
+  }, [debouncedName, search.q, setSearch])
+
+  useEffect(() => {
+    const isFull = debouncedPrice[0] === PRICE_MIN && debouncedPrice[1] === PRICE_MAX
+    const nextPmin = isFull ? null : debouncedPrice[0]
+    const nextPmax = isFull ? null : debouncedPrice[1]
+    if (nextPmin === search.pmin && nextPmax === search.pmax) return
+    setSearch({ pmin: nextPmin, pmax: nextPmax })
+  }, [debouncedPrice, search.pmin, search.pmax, setSearch])
+
+  const isAll = search.category === null
   const isFullPrice = debouncedPrice[0] === PRICE_MIN && debouncedPrice[1] === PRICE_MAX
-  const hasFilters = !isAll || debouncedName.trim() !== '' || !isFullPrice
+  const hasFilters = !isAll || nameDraft.trim() !== '' || !isFullPrice
 
   const categoryIds = useMemo(
-    () => (isAll ? DEFAULT_PRODUCT_CATEGORY_IDS : [selectedCategory as number]),
-    [isAll, selectedCategory]
+    () => (isAll ? DEFAULT_PRODUCT_CATEGORY_IDS : [search.category as number]),
+    [isAll, search.category]
   )
 
   const priceParam = useMemo(
@@ -58,7 +78,7 @@ export default function ProductsCatalogSection() {
     [debouncedPrice, isFullPrice]
   )
 
-  const gridKey = `${selectedCategory}|${debouncedName.trim()}|${debouncedPrice[0]}-${debouncedPrice[1]}`
+  const gridKey = `${search.category ?? 'all'}|${debouncedName.trim()}|${debouncedPrice[0]}-${debouncedPrice[1]}`
 
   const pillClass = (active: boolean) =>
     cn(
@@ -69,13 +89,17 @@ export default function ProductsCatalogSection() {
     )
 
   const handleReset = () => {
-    setSelectedCategory('all')
-    setNameInput('')
-    setPriceRange(FULL_RANGE)
+    setSearch({ category: null, q: null, pmin: null, pmax: null })
+    setNameDraft('')
+    setPriceDraft(FULL_RANGE)
   }
 
   const handlePriceRangePreset = (min: number, max: number) => {
-    setPriceRange([min, max])
+    setPriceDraft([min, max])
+  }
+
+  const handleSelectCategory = (id: number | null) => {
+    setSearch({ category: id })
   }
 
   return (
@@ -140,8 +164,8 @@ export default function ProductsCatalogSection() {
             <Input
               id='product-search'
               type='search'
-              value={nameInput}
-              onChange={(event) => setNameInput(event.target.value)}
+              value={nameDraft}
+              onChange={(event) => setNameDraft(event.target.value)}
               placeholder={t('products.filter.searchPlaceholder')}
             />
           </div>
@@ -153,32 +177,32 @@ export default function ProductsCatalogSection() {
                 {isFullPrice
                   ? t('products.filter.priceAll')
                   : t('products.filter.priceValue', {
-                      min: formatVnd(priceRange[0]),
-                      max: formatVnd(priceRange[1])
+                      min: formatVnd(priceDraft[0]),
+                      max: formatVnd(priceDraft[1])
                     })}
               </span>
             </div>
             <Slider
-              value={priceRange}
+              value={priceDraft}
               min={PRICE_MIN}
               max={PRICE_MAX}
               step={PRICE_STEP}
               onValueChange={(next) => {
-                if (next.length === 2) setPriceRange([next[0], next[1]])
+                if (next.length === 2) setPriceDraft([next[0], next[1]])
               }}
               aria-label={t('products.filter.priceHeading')}
             />
             <div className='flex flex-wrap gap-2 pt-1'>
               <button
                 type='button'
-                onClick={() => setPriceRange(FULL_RANGE)}
+                onClick={() => setPriceDraft(FULL_RANGE)}
                 aria-pressed={isFullPrice}
                 className={pillClass(isFullPrice)}
               >
                 {t('products.filter.all')}
               </button>
               {PRICE_RANGES.map((range) => {
-                const active = priceRange[0] === range.min && priceRange[1] === range.max
+                const active = priceDraft[0] === range.min && priceDraft[1] === range.max
                 return (
                   <button
                     key={`${range.min}-${range.max}`}
@@ -199,19 +223,19 @@ export default function ProductsCatalogSection() {
             <div className='flex flex-wrap gap-2'>
               <button
                 type='button'
-                onClick={() => setSelectedCategory('all')}
+                onClick={() => handleSelectCategory(null)}
                 aria-pressed={isAll}
                 className={pillClass(isAll)}
               >
                 {t('products.filter.all')}
               </button>
               {PRODUCT_CATEGORIES.map((category) => {
-                const active = selectedCategory === category.id
+                const active = search.category === category.id
                 return (
                   <button
                     key={category.id}
                     type='button'
-                    onClick={() => setSelectedCategory(category.id)}
+                    onClick={() => handleSelectCategory(category.id)}
                     aria-pressed={active}
                     className={pillClass(active)}
                   >

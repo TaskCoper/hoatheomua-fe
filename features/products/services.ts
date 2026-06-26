@@ -1,62 +1,56 @@
-import api, { BaseResponse } from '@/lib/axios'
-import { GetProductsParams } from './hooks/use-get-products'
-import { Product, ProductDetail } from './types'
+import api, { localeHeaders } from '@/lib/axios'
+import { DEFAULT_PRODUCT_CATEGORY_IDS, DEFAULT_PRODUCT_SORT } from './constants'
+import type { ProductDetailResponse, ProductListResponse } from './types'
+
+export interface ProductListParams {
+  ids?: number[]
+  status?: number[]
+  categoryIds?: number[]
+  name?: string
+  price?: number[]
+  size?: number
+  sort?: Record<string, 'asc' | 'desc'>
+  next?: Record<string, number>
+}
+
+const buildListBody = (params: ProductListParams) => {
+  const trimmedName = params.name?.trim() ?? ''
+
+  return {
+    filters: {
+      ids: params.ids ?? [],
+      status: params.status ?? [],
+      categoryIds: params.categoryIds ?? DEFAULT_PRODUCT_CATEGORY_IDS,
+      ...(trimmedName.length > 0 ? { name: trimmedName } : {}),
+      ...(params.price && params.price.length === 2 ? { price: params.price } : {})
+    },
+    paginator: {
+      size: params.size ?? 12,
+      sort: params.sort ?? DEFAULT_PRODUCT_SORT,
+      ...(params.next ? { next: params.next } : {})
+    }
+  }
+}
 
 class ProductService {
-  private readonly baseUrl = 'v1/products'
+  private readonly baseUrl = 'products/nhanh-vn'
 
-  getProducts = async ({
-    ids = [],
-    status = [],
-    categoryIds = [],
-    name = '',
-    price,
-    size = 50,
-    sort = { id: 'asc' },
-    next
-  }: GetProductsParams) => {
-    const trimmedName = name.trim()
-    const { data } = await api.post<
-      BaseResponse<{
-        code: number
-        data: Product[]
-        paginator: {
-          next: {
-            id: number
-          }
-        }
-      }>
-    >(`${this.baseUrl}/nhanh-vn/list`, {
-      filters: {
-        ...(ids.length > 0 ? { id: ids } : {}),
-        ...(status.length > 0 ? { status } : {}),
-        ...(categoryIds.length > 0 ? { categoryIds } : {}),
-        ...(trimmedName.length > 0 ? { name: trimmedName } : {}),
-        ...(price && price.length === 2 ? { price } : {})
-      },
-      paginator: {
-        size,
-        sort,
-        ...(next ? { next } : {})
-      }
+  getProducts = async ({ locale, ...params }: ProductListParams & { locale: string }) => {
+    const { data } = await api.post<ProductListResponse>(`/v1/${this.baseUrl}/list`, buildListBody(params), {
+      headers: localeHeaders(locale)
     })
 
     return data
   }
 
-  getProduct = async ({ id }: { id?: string }) => {
-    const { data } = await api.post<
-      BaseResponse<{
-        code: number
-        data: ProductDetail
-      }>
-    >(`${this.baseUrl}/nhanh-vn/details`, {
-      filters: {
-        id
-      }
-    })
+  getProduct = async ({ id, locale }: { id: string; locale: string }) => {
+    const { data } = await api.post<ProductDetailResponse>(
+      `/v1/${this.baseUrl}/details`,
+      { filters: { id } },
+      { headers: localeHeaders(locale) }
+    )
 
-    return data.value.data
+    return data
   }
 }
 

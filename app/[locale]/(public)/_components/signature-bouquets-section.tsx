@@ -9,25 +9,15 @@ import {
 } from '@/components/ui/pagination'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
-import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
-import productService from '@/features/products/services'
-import type { Product } from '@/features/products/types'
-import type { BaseResponse } from '@/lib/axios'
+import { useGetProducts } from '@/features/products/hooks/use-get-products'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { FlowerIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { SparkleDivider } from './sparkle-dividier'
-
-type ProductListResponse = BaseResponse<{
-  code: number
-  data: Product[]
-  paginator: { next: { id: number } }
-}>
 
 const SIGNATURE_BOUQUETS_PAGE_SIZE = 6
 const SIGNATURE_BOUQUETS_CATEGORY_ID = [58901]
@@ -99,25 +89,15 @@ export default function SignatureBouquetsSection() {
   const isFirstPage = currentCursor === 0
   const nextParam = isFirstPage ? undefined : { id: currentCursor }
 
-  const { data, isFetching } = useQuery<ProductListResponse>({
-    queryKey: buildGetProductsKey({
-      size: SIGNATURE_BOUQUETS_PAGE_SIZE,
-      categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
-      sort: DEFAULT_PRODUCT_SORT,
-      next: nextParam
-    }),
-    queryFn: () =>
-      productService.getProducts({
-        size: SIGNATURE_BOUQUETS_PAGE_SIZE,
-        categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
-        sort: DEFAULT_PRODUCT_SORT,
-        next: nextParam
-      }),
-    placeholderData: keepPreviousData
+  const { products: response, isFetchingProducts: isFetching } = useGetProducts({
+    size: SIGNATURE_BOUQUETS_PAGE_SIZE,
+    categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
+    sort: DEFAULT_PRODUCT_SORT,
+    next: nextParam
   })
 
-  const products = data?.value?.data ?? []
-  const nextCursor = data?.value?.paginator.next?.id ?? 0
+  const products = response?.value?.data ?? []
+  const nextCursor = response?.value?.paginator?.next?.id ?? 0
   const hasPreviousPage = cursorStack.length > 1
   const hasNextPage = products.length === SIGNATURE_BOUQUETS_PAGE_SIZE && nextCursor > 0 && nextCursor !== currentCursor
 
@@ -251,7 +231,7 @@ export default function SignatureBouquetsSection() {
                           {avatar ? (
                             <Image
                               src={avatar}
-                              alt={product.name}
+                              alt={product.name ?? ''}
                               width={128}
                               height={128}
                               className={`h-32 w-32 rounded-2xl object-cover ${imageStyle}`}

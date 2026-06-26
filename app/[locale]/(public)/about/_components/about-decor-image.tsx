@@ -3,7 +3,7 @@
 import NextImage from 'next/image'
 import { useState, type ReactNode } from 'react'
 
-type DecorImageProps = {
+interface DecorImageProps {
   /** Path under /public, e.g. "/images/about/hero-hanoi-wash.png". */
   src: string
   alt?: string

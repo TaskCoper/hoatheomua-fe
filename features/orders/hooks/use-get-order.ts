@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import orderService from '../services'
+import { getOrderQuery } from '../queries'
 
 export const useGetOrder = ({ orderId, enabled = true }: { orderId: string; enabled?: boolean }) => {
   const { data: order, isLoading: isLoadingOrder } = useQuery({
-    queryKey: ['order', orderId],
-    queryFn: () => orderService.getOrder({ orderId }),
+    ...getOrderQuery({ orderId }),
     enabled: enabled && !!orderId
   })
 

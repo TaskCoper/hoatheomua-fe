@@ -136,7 +136,10 @@
       "clear": "Clear"
     },
     "error": {
-      "uploadNoUrlReturned": "Upload failed: no URL returned"
+      "uploadNoUrlReturned": "Upload failed: no URL returned",
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "tryAgain": "Try again"
     },
     "validation": {
       "code": "Please enter a valid code.",
@@ -167,7 +170,8 @@
       "instructions": {
         "draggable": "Press space to pick up the item, then move it {direction}. Press space again to drop it, or escape to cancel."
       }
-    }
+    },
+    "loading": "Loading..."
   },
   "richTextEditor": {
     "placeholder": "Write something...",
@@ -353,7 +357,7 @@
           "daNang": "Da Nang"
         }
       },
-      "quote": "\u201cEvery bloom tells a story. Every person is a piece of something beautiful.\u201d"
+      "quote": "“Every bloom tells a story. Every person is a piece of something beautiful.”"
     },
     "pagination": {
       "previous": "Previous page",

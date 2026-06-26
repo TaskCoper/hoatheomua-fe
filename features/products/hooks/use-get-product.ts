@@ -1,14 +1,15 @@
+import { productDetailQuery } from '@/features/products/queries'
 import { useQuery } from '@tanstack/react-query'
-import productService from '../services'
-
-export const buildGetProductKey = (id?: string) => ['product', id] as const
+import { useLocale } from 'next-intl'
 
 export const useGetProduct = ({ id }: { id?: string }) => {
-  const { data: product, isLoading: isLoadingProduct } = useQuery({
-    queryKey: buildGetProductKey(id),
-    queryFn: () => productService.getProduct({ id }),
+  const locale = useLocale()
+  const { data: envelope, isLoading: isLoadingProduct } = useQuery({
+    ...productDetailQuery(id ?? '', locale),
     enabled: !!id
   })
+
+  const product = envelope?.value?.data ?? null
 
   return { product, isLoadingProduct }
 }

@@ -1,14 +1,23 @@
 import { I18nKey } from '@/lib/i18n/types'
 
-export interface NewRow {
+export interface Article {
   id: string
   title: string
   description: string
   viewCount: number
   pictureUrl: string
+  slug: string
   status: NewStatus
-  userId: string
-  categoryIds: string[]
+  user: {
+    userId: string
+    email: string
+    userAvatar: string | null
+    userFullName: string
+  }
+  categories: Array<{
+    categoryId: string
+    categoryName: string
+  }>
   createdAt: string
   updatedAt: string | null
 }

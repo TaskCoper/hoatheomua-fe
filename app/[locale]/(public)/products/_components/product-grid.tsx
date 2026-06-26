@@ -8,23 +8,14 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination'
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
-import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
-import productService from '@/features/products/services'
+import { useGetProducts } from '@/features/products/hooks/use-get-products'
 import type { Product } from '@/features/products/types'
-import type { BaseResponse } from '@/lib/axios'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { motion, type Variants } from 'motion/react'
 import { useState } from 'react'
 import ProductCard from './product-card'
 import ProductGridEmpty from './product-grid-empty'
 import ProductGridSkeleton from './product-grid-skeleton'
-
-type ProductListResponse = BaseResponse<{
-  code: number
-  data: Product[]
-  paginator: { next: { id: number } }
-}>
 
 const cardStagger: Variants = {
   hidden: {},
@@ -50,29 +41,17 @@ export default function ProductGrid({
   const isFirstPage = currentCursor === 0
   const nextParam = isFirstPage ? undefined : { id: currentCursor }
 
-  const { data, isFetching, isLoading } = useQuery<ProductListResponse>({
-    queryKey: buildGetProductsKey({
-      size: pageSize,
-      categoryIds,
-      name,
-      price,
-      sort: DEFAULT_PRODUCT_SORT,
-      next: nextParam
-    }),
-    queryFn: () =>
-      productService.getProducts({
-        size: pageSize,
-        categoryIds,
-        name,
-        price,
-        sort: DEFAULT_PRODUCT_SORT,
-        next: nextParam
-      }),
-    placeholderData: keepPreviousData
+  const { products: data, isFetchingProducts: isFetching, isLoadingProducts: isLoading } = useGetProducts({
+    size: pageSize,
+    categoryIds,
+    name,
+    price,
+    sort: DEFAULT_PRODUCT_SORT,
+    next: nextParam
   })
 
-  const items = data?.value?.data ?? []
-  const nextCursor = data?.value?.paginator.next?.id ?? 0
+  const items = (data?.value?.data ?? []) as Product[]
+  const nextCursor = data?.value?.paginator?.next?.id ?? 0
   const hasPreviousPage = cursorStack.length > 1
   const hasNextPage = items.length === pageSize && nextCursor > 0 && nextCursor !== currentCursor
 

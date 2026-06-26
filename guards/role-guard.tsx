@@ -14,7 +14,12 @@ interface RoleGuardProps {
   children: React.ReactNode
 }
 
-export default function RoleGuard({ allowedRoles, allowedUserRoles, allowAnonymous = false, children }: RoleGuardProps) {
+export default function RoleGuard({
+  allowedRoles,
+  allowedUserRoles,
+  allowAnonymous = false,
+  children
+}: RoleGuardProps) {
   const router = useRouter()
   const pathname = usePathname()
   const { me, isGettingMe } = useGetMe()

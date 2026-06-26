@@ -1,6 +1,21 @@
-/**
- * Product in list API.
- */
+import type { BaseResponse } from '@/lib/axios'
+
+export interface ProductListPayload {
+  code: number
+  data: Product[]
+  paginator?: {
+    next: { id: number } | null
+  }
+}
+
+export interface ProductDetailPayload {
+  code: number
+  data: ProductDetail | null
+}
+
+export type ProductListResponse = BaseResponse<ProductListPayload>
+export type ProductDetailResponse = BaseResponse<ProductDetailPayload>
+
 export interface Product extends ProductBase {
   priceVatMode: number
   importPriceVatMode: number
@@ -11,9 +26,6 @@ export interface Product extends ProductBase {
   inventory: ProductInventory
 }
 
-/**
- * Product in detail API. Mirrors backend `ResponseProductDetails.ProductDetailData`.
- */
 export interface ProductDetail {
   id: number
   parentId: number

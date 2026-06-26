@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import orderService from '../services'
+import { getLatLngQuery } from '../queries'
 
 export const useGetLatLng = ({ address, enabled }: { address?: string; enabled?: boolean }) => {
   const { data: latLng, isLoading: isLoadingLatLng } = useQuery({
-    queryKey: ['lat-lng', address],
-    queryFn: () => orderService.getLatLngFromAddress({ address }),
+    ...getLatLngQuery({ address }),
     enabled: enabled && !!address
   })
 

@@ -136,7 +136,10 @@
       "clear": "Xoá"
     },
     "error": {
-      "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về"
+      "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về",
+      "title": "Đã xảy ra lỗi",
+      "description": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.",
+      "tryAgain": "Thử lại"
     },
     "validation": {
       "code": "Vui lòng nhập mã hợp lệ.",
@@ -167,7 +170,8 @@
       "instructions": {
         "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {direction}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
       }
-    }
+    },
+    "loading": "Đang tải..."
   },
   "richTextEditor": {
     "placeholder": "Nhập nội dung...",

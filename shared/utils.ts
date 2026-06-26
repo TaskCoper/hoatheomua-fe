@@ -58,3 +58,26 @@ const defaultPaginationResponse: BasePaginationResponse<unknown> = {
 export function getDefaultPaginationResponse<T>(): BasePaginationResponse<T> {
   return defaultPaginationResponse as BasePaginationResponse<T>
 }
+
+export const getFirstParagraphTextFromHtml = (html: string | null | undefined): string => {
+  if (!html) return ''
+
+  try {
+    if (typeof DOMParser !== 'undefined') {
+      const document = new DOMParser().parseFromString(html, 'text/html')
+      const firstParagraph = document.querySelector('p')
+
+      return firstParagraph?.textContent?.replace(/\s+/g, ' ').trim() ?? ''
+    }
+  } catch {
+    // fall through to regex-based fallback
+  }
+
+  const firstParagraphMatch = html.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i)
+  const fallbackContent = firstParagraphMatch?.[1] ?? ''
+
+  return fallbackContent
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
