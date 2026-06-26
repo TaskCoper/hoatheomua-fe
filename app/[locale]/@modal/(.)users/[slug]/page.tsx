@@ -1,18 +1,17 @@
 'use client'
 
-import { Dialog, DialogContent } from '@/components/ui/dialog'
-import { ProfileCard } from '@/features/users/components/profile-dialog'
+import { ProfileSheet } from '@/features/users/components/profile-sheet'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { use, useEffect, useRef, useState } from 'react'
 
 const EXIT_ANIMATION_MS = 220
 
 interface UserProfileModalPageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
 }
 
 export default function UserProfileModalPage({ params }: UserProfileModalPageProps) {
-  const { id } = use(params)
+  const { slug } = use(params)
   const router = useRouter()
   const pathname = usePathname()
   const [isUserClosing, setIsUserClosing] = useState(false)
@@ -37,14 +36,5 @@ export default function UserProfileModalPage({ params }: UserProfileModalPagePro
     }, EXIT_ANIMATION_MS)
   }
 
-  return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent
-        className='gap-0 overflow-hidden p-0 sm:max-w-sm'
-        onInteractOutside={() => handleOpenChange(false)}
-      >
-        <ProfileCard userId={id} />
-      </DialogContent>
-    </Dialog>
-  )
+  return <ProfileSheet open={isOpen} onOpenChange={handleOpenChange} slug={slug} />
 }

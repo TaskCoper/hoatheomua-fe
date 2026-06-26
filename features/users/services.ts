@@ -1,5 +1,5 @@
 import { apiTaskcoper, BaseResponse } from '@/lib/axios'
-import { Me, UserProfile } from './types'
+import { Me, UserProfile, type ChangePasswordPayload, type UpdateMePayload } from './types'
 import { SignInFormValues, SignUpFormValues, VerifyEmailFormValues } from './validations'
 
 class UserService {
@@ -10,8 +10,13 @@ class UserService {
     return data.value
   }
 
-  getUserById = async (id: string) => {
-    const { data } = await apiTaskcoper.get<BaseResponse<UserProfile>>(`v1/${this.baseUrl}/${id}`)
+  getUserBySlug = async (slug: string) => {
+    const { data } = await apiTaskcoper.get<BaseResponse<UserProfile>>(`v1/${this.baseUrl}/${slug}`)
+    return data.value
+  }
+
+  updateMe = async (body: UpdateMePayload) => {
+    const { data } = await apiTaskcoper.put<BaseResponse<Me>>('v1/user/me', body)
     return data.value
   }
 
@@ -47,6 +52,11 @@ class UserService {
       body
     )
 
+    return data.value
+  }
+
+  changePassword = async (body: ChangePasswordPayload) => {
+    const { data } = await apiTaskcoper.post<BaseResponse<unknown>>(`v1/${this.baseUrl}/change_password`, body)
     return data.value
   }
 }

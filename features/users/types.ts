@@ -28,3 +28,22 @@ export interface UserProfile {
   organizationId: string | null
   createdOnUtc: string
 }
+
+export interface UpdateMePayload {
+  firstName: string
+  lastName: string
+  email: string
+  avatar: string
+  coverImageUrl: string
+  phoneNumber: string
+  address: string
+  city: string
+  state: string
+  timeZone: string
+  domainIds: string[]
+}
+
+export interface ChangePasswordPayload {
+  currentPassword: string
+  newPassword: string
+}
