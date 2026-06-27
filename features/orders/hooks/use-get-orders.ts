@@ -1,11 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
-import orderService from '../services'
+import { getOrdersQuery } from '../queries'
 
 export const useGetOrders = () => {
-  const { data: orders, isLoading: isLoadingOrders } = useQuery({
-    queryKey: ['orders'],
-    queryFn: () => orderService.getOrders()
-  })
+  const { data: orders, isLoading: isLoadingOrders } = useQuery(getOrdersQuery())
 
   return { orders, isLoadingOrders }
 }

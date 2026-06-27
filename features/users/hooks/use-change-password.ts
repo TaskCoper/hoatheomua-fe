@@ -4,11 +4,11 @@ import type { ChangePasswordPayload } from '../types'
 
 export const useChangePassword = () => {
   const {
-    mutateAsync: changePassword,
-    isPending: isChangingPassword,
+    mutateAsync: resetPassword,
+    isPending: isResettingPassword,
   } = useMutation({
-    mutationFn: (body: ChangePasswordPayload) => userService.changePassword(body),
+    mutationFn: (body: ChangePasswordPayload) => userService.resetPassword({ body }),
   })
 
-  return { changePassword, isChangingPassword }
+  return { resetPassword, isResettingPassword }
 }

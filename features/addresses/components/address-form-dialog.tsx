@@ -23,6 +23,9 @@ import { Controller, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { ArrowDown01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { useDebounce } from 'use-debounce'
+import { useGetLatLng } from '@/features/orders/hooks/use-get-lat-lng'
+import { pickBestGeocodeResult } from '@/features/orders/services'
 import type { Address } from '../types'
 import { useCreateAddress } from '../hooks/use-create-address'
 import { useGetAddress } from '../hooks/use-get-address'
@@ -70,7 +73,9 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
     resolver: zodResolver(schema),
   })
 
+  const addressLineValue = useWatch({ control: methods.control, name: 'addressLine' }) ?? ''
   const cityValue = useWatch({ control: methods.control, name: 'city' }) ?? ''
+  const wardValue = useWatch({ control: methods.control, name: 'ward' }) ?? ''
   const selectedCity = useMemo(() => cityValue.trim(), [cityValue])
   const { shippingLocations: cities, isLoadingShippingLocations: isLoadingCities } = useGetShippingLocations({
     type: 'CITY',
@@ -84,11 +89,14 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
     parentId: selectedCityId,
     enabled: selectedCityId !== -1,
   })
+  const fullAddress = addressLineValue && wardValue && cityValue ? `${addressLineValue}, ${wardValue}, ${cityValue}` : ''
+  const [debouncedAddress] = useDebounce(fullAddress, 300)
+  const { latLng } = useGetLatLng({ address: debouncedAddress, enabled: !!debouncedAddress && open })
 
   useEffect(() => {
-      if (!open) return
+    if (!open) return
 
-      methods.reset(
+    methods.reset(
       activeAddress
         ? {
             receiverName: activeAddress.receiverName ?? '',
@@ -105,6 +113,22 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
         : defaultValues
     )
   }, [activeAddress, methods, open])
+
+  useEffect(() => {
+    if (!debouncedAddress) {
+      methods.setValue('latitude', 0, { shouldDirty: true, shouldValidate: true })
+      methods.setValue('longitude', 0, { shouldDirty: true, shouldValidate: true })
+      methods.setValue('mapId', '', { shouldDirty: true, shouldValidate: true })
+      return
+    }
+
+    const best = pickBestGeocodeResult(debouncedAddress, latLng)
+    if (!best) return
+
+    methods.setValue('latitude', best.geometry.location.lat, { shouldDirty: true, shouldValidate: true })
+    methods.setValue('longitude', best.geometry.location.lng, { shouldDirty: true, shouldValidate: true })
+    methods.setValue('mapId', best.place_id, { shouldDirty: true, shouldValidate: true })
+  }, [debouncedAddress, latLng, methods])
 
   const close = () => {
     setOpen(false)
@@ -147,7 +171,7 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
           </DialogHeader>
 
           <form className='flex min-h-0 flex-1 flex-col' onSubmit={onSubmit}>
-            <div className='no-scrollbar flex-1 overflow-y-auto px-5 py-4'>
+            <div className='profile-scrollbar flex-1 overflow-y-auto scroll-smooth overscroll-contain px-5 py-4 pr-3'>
               <FieldGroup className='gap-3'>
                 <Controller
                   name='receiverName'
@@ -177,43 +201,7 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
                   )}
                 />
 
-                <Controller
-                  name='addressLine'
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                      <FieldLabel htmlFor={field.name}>{t('profile.addressLine')}</FieldLabel>
-                      <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
-                      <div className='min-h-4'>
-                        {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                      </div>
-                    </Field>
-                  )}
-                />
-
                 <div className='grid gap-3 md:grid-cols-2'>
-                  <Controller
-                    name='ward'
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                        <FieldLabel htmlFor={field.name}>{t('profile.addressWard')}</FieldLabel>
-                        <LocationCombobox
-                          value={field.value}
-                          onChange={(value) => field.onChange(value)}
-                          options={wards.map((ward) => ({ label: ward.name, value: ward.name }))}
-                          placeholder={t('orders.checkout.wardPlaceholder')}
-                          searchPlaceholder={t('orders.checkout.wardSearchPlaceholder')}
-                          emptyMessage={t('orders.checkout.comboboxEmpty')}
-                          disabled={isLoadingWards || wards.length === 0 || !selectedCity}
-                          invalid={fieldState.invalid}
-                        />
-                        <div className='min-h-4'>
-                          {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                        </div>
-                      </Field>
-                    )}
-                  />
                   <Controller
                     name='city'
                     control={methods.control}
@@ -239,14 +227,37 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
                       </Field>
                     )}
                   />
+                  <Controller
+                    name='ward'
+                    control={methods.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                        <FieldLabel htmlFor={field.name}>{t('profile.addressWard')}</FieldLabel>
+                        <LocationCombobox
+                          value={field.value}
+                          onChange={(value) => field.onChange(value)}
+                          options={wards.map((ward) => ({ label: ward.name, value: ward.name }))}
+                          placeholder={t('orders.checkout.wardPlaceholder')}
+                          searchPlaceholder={t('orders.checkout.wardSearchPlaceholder')}
+                          emptyMessage={t('orders.checkout.comboboxEmpty')}
+                          disabled={isLoadingWards || wards.length === 0 || !selectedCity}
+                          invalid={fieldState.invalid}
+                        />
+                        <div className='min-h-4'>
+                          {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                        </div>
+                      </Field>
+                    )}
+                  />
+                  
                 </div>
-
+                
                 <Controller
-                  name='country'
+                  name='addressLine'
                   control={methods.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                      <FieldLabel htmlFor={field.name}>{t('profile.addressCountry')}</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>{t('profile.addressLine')}</FieldLabel>
                       <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
                       <div className='min-h-4'>
                         {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
@@ -256,11 +267,11 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
                 />
 
                 <Controller
-                  name='mapId'
+                  name='country'
                   control={methods.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                      <FieldLabel htmlFor={field.name}>{t('profile.addressMapId')}</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>{t('profile.addressCountry')}</FieldLabel>
                       <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
                       <div className='min-h-4'>
                         {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
@@ -283,7 +294,8 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
                           type='number'
                           step='any'
                           value={field.value}
-                          onChange={(event) => field.onChange(event.target.value === '' ? 0 : Number(event.target.value))}
+                          readOnly
+                          aria-readonly='true'
                         />
                         <div className='min-h-4'>
                           {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
@@ -304,7 +316,8 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
                           type='number'
                           step='any'
                           value={field.value}
-                          onChange={(event) => field.onChange(event.target.value === '' ? 0 : Number(event.target.value))}
+                          readOnly
+                          aria-readonly='true'
                         />
                         <div className='min-h-4'>
                           {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
@@ -313,6 +326,26 @@ export function AddressFormDialog({ trigger, address, addressId, open: openProp,
                     )}
                   />
                 </div>
+
+                <Controller
+                  name='mapId'
+                  control={methods.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                      <FieldLabel htmlFor={field.name}>{t('profile.addressMapId')}</FieldLabel>
+                      <Input
+                        {...field}
+                        id={field.name}
+                        aria-invalid={fieldState.invalid}
+                        readOnly
+                        aria-readonly='true'
+                      />
+                      <div className='min-h-4'>
+                        {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                      </div>
+                    </Field>
+                  )}
+                />
 
                 <Controller
                   name='isDefault'

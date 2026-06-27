@@ -1,8 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { useGetMe } from '@/features/users/hooks/use-get-me'
 import type { ProductUnit } from '@/features/products/types'
+import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { buildLineId, MAX_QUANTITY, useCartStore } from '@/stores/cart.store'
@@ -42,7 +42,8 @@ export default function ProductPurchaseBox({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const { isAuthenticated, isGettingMe } = useGetMe()
+  const { isAuthenticated, isGettingMe, me } = useGetMe()
+
   const addItem = useCartStore((state) => state.addItem)
   const variantOptions = useMemo(() => units.filter((unit) => unit.name && unit.price?.retail > 0), [units])
   const hasVariants = variantOptions.length > 1
@@ -74,25 +75,39 @@ export default function ProductPurchaseBox({
     (state) => state.items.find((item) => item.lineId === targetLineId)?.quantity ?? 0
   )
 
+  const isVerified = !!me?.isEmailVerified
+  const isQualifiedBuyer = isAuthenticated && isVerified
   const remainingStock = Math.max(0, Math.min(available, MAX_QUANTITY) - inCartQuantity)
-  const canAdd = remainingStock > 0
+  const hasRoomInCart = remainingStock > 0
+  const canAdd = isQualifiedBuyer && inStock && hasRoomInCart
+  const isPurchaseDisabled = isGettingMe || !inStock || (isQualifiedBuyer && !hasRoomInCart)
   const stepperCap = Math.max(remainingStock, 1)
   const effectiveQuantity = Math.min(Math.max(quantity, 1), stepperCap)
 
   const decrement = () => setQuantity(Math.max(1, effectiveQuantity - 1))
   const increment = () => setQuantity(Math.min(stepperCap, effectiveQuantity + 1))
 
-  const handleAddToCart = () => {
-    if (isGettingMe) return
+  const guardPurchase = () => {
+    if (isGettingMe) return false
 
     if (!isAuthenticated) {
       const queryString = searchParams.toString()
       const from = `${pathname}${queryString ? `?${queryString}` : ''}`
       router.push(`/sign-in?from=${encodeURIComponent(from)}`)
-      return
+      return false
     }
 
-    if (!canAdd) return
+    if (!isVerified) {
+      const verifyParams = me?.email ? `?${new URLSearchParams({ email: me.email }).toString()}` : ''
+      router.push(`/verify-sent${verifyParams}`)
+      return false
+    }
+
+    return inStock && hasRoomInCart
+  }
+
+  const handleAddToCart = () => {
+    if (!guardPurchase()) return
 
     addItem({
       productId,
@@ -102,6 +117,10 @@ export default function ProductPurchaseBox({
     })
 
     toast.success(t('products.detail.purchase.addedToCart'), { description: productName })
+  }
+
+  const handleBuyNow = () => {
+    if (!guardPurchase()) return
   }
 
   return (
@@ -173,7 +192,7 @@ export default function ProductPurchaseBox({
               {t('products.detail.purchase.inCartInfo', { inCart: inCartQuantity, remaining: remainingStock })}
             </p>
           ) : null}
-          {inStock && !canAdd ? (
+          {inStock && isQualifiedBuyer && !hasRoomInCart ? (
             <p className='text-xs text-rose-500'>{t('products.detail.purchase.stockLimit')}</p>
           ) : null}
           {!inStock ? <p className='text-xs text-rose-500'>{t('products.detail.purchase.outOfStock')}</p> : null}
@@ -205,30 +224,31 @@ export default function ProductPurchaseBox({
 
       <div className='flex flex-wrap items-center gap-3'>
         <motion.div
-          whileHover={canAdd ? { y: -3, scale: 1.03 } : undefined}
-          whileTap={canAdd ? { scale: 0.97 } : undefined}
+          whileHover={isPurchaseDisabled ? undefined : { y: -3, scale: 1.03 }}
+          whileTap={isPurchaseDisabled ? undefined : { scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 320, damping: 14 }}
           className='min-w-40 flex-1'
         >
-          <Button
-            type='button'
-            size='lg'
-            disabled={!canAdd || isGettingMe}
-            className='w-full'
-            onClick={handleAddToCart}
-          >
+          <Button type='button' size='lg' disabled={isPurchaseDisabled} className='w-full' onClick={handleAddToCart}>
             <HugeiconsIcon icon={ShoppingBasket02Icon} />
             {t('products.detail.purchase.addToCart')}
           </Button>
         </motion.div>
 
         <motion.div
-          whileHover={inStock ? { y: -3, scale: 1.03 } : undefined}
-          whileTap={inStock ? { scale: 0.97 } : undefined}
+          whileHover={isPurchaseDisabled ? undefined : { y: -3, scale: 1.03 }}
+          whileTap={isPurchaseDisabled ? undefined : { scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 320, damping: 14 }}
           className='min-w-32 flex-1'
         >
-          <Button type='button' size='lg' variant='secondary' className='w-full' disabled={!inStock}>
+          <Button
+            type='button'
+            size='lg'
+            variant='secondary'
+            className='w-full'
+            disabled={isPurchaseDisabled}
+            onClick={handleBuyNow}
+          >
             <HugeiconsIcon icon={FlashIcon} />
             {t('products.detail.purchase.buyNow')}
           </Button>

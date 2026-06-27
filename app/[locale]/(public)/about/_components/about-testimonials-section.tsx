@@ -5,7 +5,7 @@ import { QuoteUpIcon, StarIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
-import DecorImage from './decor-image'
+import DecorImage from './about-decor-image'
 
 const TESTIMONIALS = [
   {

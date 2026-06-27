@@ -7,26 +7,17 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
-import { buildGetProductsKey } from '@/features/products/hooks/use-get-products'
-import productService from '@/features/products/services'
-import type { Product } from '@/features/products/types'
-import type { BaseResponse } from '@/lib/axios'
+import { useGetProducts } from '@/features/products/hooks/use-get-products'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { FlowerIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { useState } from 'react'
 import { SparkleDivider } from './sparkle-dividier'
-
-type ProductListResponse = BaseResponse<{
-  code: number
-  data: Product[]
-  paginator: { next: { id: number } }
-}>
 
 const SIGNATURE_BOUQUETS_PAGE_SIZE = 6
 const SIGNATURE_BOUQUETS_CATEGORY_ID = [58901]
@@ -98,25 +89,15 @@ export default function SignatureBouquetsSection() {
   const isFirstPage = currentCursor === 0
   const nextParam = isFirstPage ? undefined : { id: currentCursor }
 
-  const { data, isFetching } = useQuery<ProductListResponse>({
-    queryKey: buildGetProductsKey({
-      size: SIGNATURE_BOUQUETS_PAGE_SIZE,
-      categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
-      sort: DEFAULT_PRODUCT_SORT,
-      next: nextParam
-    }),
-    queryFn: () =>
-      productService.getProducts({
-        size: SIGNATURE_BOUQUETS_PAGE_SIZE,
-        categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
-        sort: DEFAULT_PRODUCT_SORT,
-        next: nextParam
-      }),
-    placeholderData: keepPreviousData
+  const { products: response, isFetchingProducts: isFetching } = useGetProducts({
+    size: SIGNATURE_BOUQUETS_PAGE_SIZE,
+    categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
+    sort: DEFAULT_PRODUCT_SORT,
+    next: nextParam
   })
 
-  const products = data?.value?.data ?? []
-  const nextCursor = data?.value?.paginator.next?.id ?? 0
+  const products = response?.value?.data ?? []
+  const nextCursor = response?.value?.paginator?.next?.id ?? 0
   const hasPreviousPage = cursorStack.length > 1
   const hasNextPage = products.length === SIGNATURE_BOUQUETS_PAGE_SIZE && nextCursor > 0 && nextCursor !== currentCursor
 
@@ -250,7 +231,7 @@ export default function SignatureBouquetsSection() {
                           {avatar ? (
                             <Image
                               src={avatar}
-                              alt={product.name}
+                              alt={product.name ?? ''}
                               width={128}
                               height={128}
                               className={`h-32 w-32 rounded-2xl object-cover ${imageStyle}`}
@@ -267,8 +248,24 @@ export default function SignatureBouquetsSection() {
                       </div>
 
                       <div className='flex items-end justify-between gap-4'>
-                        <div className='min-w-0'>
-                          <h2 className='truncate text-base font-bold leading-tight text-foreground'>{product.name}</h2>
+                        <div className='min-w-0 flex-1'>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <h2 className='truncate text-base font-bold leading-tight text-foreground'>
+                                  {product.name}
+                                </h2>
+                              </TooltipTrigger>
+
+                              <TooltipContent
+                                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                                iconClassName=' bg-white fill-white'
+                              >
+                                {product.name}
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
                           <p className='text-xs font-medium text-foreground'>{formatVnd(retail)}</p>
                         </div>
 

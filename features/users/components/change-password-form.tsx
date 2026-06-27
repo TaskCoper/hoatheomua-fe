@@ -24,8 +24,9 @@ export function ChangePasswordForm() {
   const { t } = useTranslation()
   const [isCurrentVisible, setIsCurrentVisible] = useState(false)
   const [isNewVisible, setIsNewVisible] = useState(false)
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false)
   const schema = useMemo(() => createChangePasswordSchema(t), [t])
-  const { changePassword, isChangingPassword } = useChangePassword()
+  const { resetPassword, isResettingPassword } = useChangePassword()
 
   const methods = useForm<ChangePasswordFormValues>({
     defaultValues,
@@ -37,7 +38,7 @@ export function ChangePasswordForm() {
     void confirmPassword
 
     try {
-      await changePassword(values)
+      await resetPassword(values)
       methods.reset(defaultValues)
       toast.success(t('profile.passwordUpdated'))
     } catch (error) {
@@ -115,9 +116,16 @@ export function ChangePasswordForm() {
                   {...field}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
-                  type='password'
+                  type={isConfirmVisible ? 'text' : 'password'}
                   autoComplete='new-password'
                 />
+                <InputGroupAddon align='inline-end'>
+                  <HugeiconsIcon
+                    icon={isConfirmVisible ? ViewOffSlashIcon : ViewIcon}
+                    className='size-4 cursor-pointer'
+                    onClick={() => setIsConfirmVisible((prev) => !prev)}
+                  />
+                </InputGroupAddon>
               </InputGroup>
               <div className='min-h-4'>{fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}</div>
             </Field>
@@ -126,8 +134,8 @@ export function ChangePasswordForm() {
       </div>
 
       <div className='flex items-center justify-end gap-3 border-t pt-4'>
-        <Button type='submit' disabled={isChangingPassword}>
-          {isChangingPassword ? <Spinner /> : null}
+        <Button type='submit' disabled={isResettingPassword}>
+          {isResettingPassword ? <Spinner /> : null}
           {t('profile.changePassword')}
         </Button>
       </div>

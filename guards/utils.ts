@@ -11,6 +11,7 @@ export const getUserType = (me: Me | null | undefined): Role | null => {
   return ROLES.Customer
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getRoleHomePath = (_userType: Role | null): string => {
   return '/'
 }

@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import CheckoutDialog from '@/features/orders/components/checkout-dialog'
-import productService from '@/features/products/services'
+import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -20,6 +20,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueries } from '@tanstack/react-query'
 import { motion, type Variants } from 'motion/react'
+import { useLocale } from 'next-intl'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 import { SparkleDivider } from '../../../(public)/_components/sparkle-dividier'
@@ -66,8 +67,11 @@ const cardItem: Variants = {
 
 export default function CartPage() {
   const { t } = useTranslation()
+
+  const locale = useLocale()
   const hasHydrated = useCartHydrated()
   const items = useCartStore((state) => state.items)
+
   const updateQuantity = useCartStore((state) => state.updateQuantity)
   const removeItem = useCartStore((state) => state.removeItem)
   const incrementItem = useCartStore((state) => state.incrementItem)
@@ -82,10 +86,7 @@ export default function CartPage() {
   )
 
   const productQueries = useQueries({
-    queries: productIds.map((id) => ({
-      queryKey: ['product', String(id)],
-      queryFn: () => productService.getProduct({ id: String(id) })
-    }))
+    queries: productIds.map((id) => productDetailQuery(String(id), locale))
   })
 
   const productStateById = useMemo(() => {
@@ -93,7 +94,7 @@ export default function CartPage() {
     productIds.forEach((id, index) => {
       const query = productQueries[index]
       map.set(id, {
-        product: query?.data ?? null,
+        product: (query?.data?.value?.data as ProductDetail | undefined) ?? null,
         isResolving: !query || query.isLoading
       })
     })
@@ -476,9 +477,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           {product && !isResolving && (
             <div className='flex items-baseline gap-2'>
               <span className='font-title text-base font-bold text-primary'>{formatVnd(retailPrice)}</span>
-              {hasDiscount && (
-                <span className='text-xs text-muted-foreground line-through'>{formatVnd(oldPrice)}</span>
-              )}
+              {hasDiscount && <span className='text-xs text-muted-foreground line-through'>{formatVnd(oldPrice)}</span>}
             </div>
           )}
 

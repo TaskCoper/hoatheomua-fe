@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import orderService from '../services'
+import { getShippingLocationsQuery } from '../queries'
 import type { ShippingLocationType } from '../types'
 
 interface UseGetShippingLocationsParams {
@@ -10,8 +10,7 @@ interface UseGetShippingLocationsParams {
 
 export const useGetShippingLocations = ({ type, parentId, enabled = true }: UseGetShippingLocationsParams) => {
   const { data: shippingLocations = [], isLoading: isLoadingShippingLocations } = useQuery({
-    queryKey: ['shipping-locations', type, parentId ?? null],
-    queryFn: () => orderService.getOrderShippingLocations({ locationVersion: 'v2', type, parentId }),
+    ...getShippingLocationsQuery({ type, parentId }),
     enabled
   })
 

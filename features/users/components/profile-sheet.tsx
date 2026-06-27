@@ -248,6 +248,8 @@ interface ProfileSheetProps {
 }
 
 export function ProfileSheet({ open, onOpenChange, slug }: ProfileSheetProps) {
+  const { t } = useTranslation()
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -260,6 +262,8 @@ export function ProfileSheet({ open, onOpenChange, slug }: ProfileSheetProps) {
         }}
         showCloseButton
       >
+        <DialogTitle className='sr-only'>{t('profile.title')}</DialogTitle>
+        <DialogDescription className='sr-only'>{t('profile.title')}</DialogDescription>
         <ProfileSheetBody slug={slug} />
       </DialogContent>
     </Dialog>
@@ -279,52 +283,48 @@ export function ProfileSheetBody({ slug }: { slug?: string }) {
   const currentLabel = sections.find((s) => s.key === activeSection)?.label
 
   return (
-    <>
-      <DialogTitle className='sr-only'>{t('profile.title')}</DialogTitle>
-      <DialogDescription className='sr-only'>{t('profile.title')}</DialogDescription>
-      <SidebarProvider className='w-full items-start' style={{ minHeight: 0 }}>
-        <Sidebar collapsible='none' className='hidden md:flex'>
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {sections.map((section) => (
-                    <SidebarMenuItem key={section.key}>
-                      <SidebarMenuButton
-                        isActive={activeSection === section.key}
-                        onClick={() => setActiveSection(section.key)}
-                      >
-                        <HugeiconsIcon icon={section.icon} strokeWidth={1.5} />
-                        <span>{section.label}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </Sidebar>
-        <main className='flex w-full min-w-0 flex-1 min-h-0 max-h-[calc(100vh-8rem)] flex-col overflow-y-auto'>
-          <header className='flex shrink-0 items-center gap-2 border-b px-4 py-3'>
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className='hidden md:block'>
-                  <span className='text-sm text-muted-foreground'>{t('profile.title')}</span>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className='hidden md:block' />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{currentLabel}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </header>
-          <div className='w-full p-4'>
-            {activeSection === 'info' && <PersonalInfoContent slug={slug} />}
-            {activeSection === 'address' && <AddressContent slug={slug} />}
-            {activeSection === 'password' && <PasswordContent />}
-          </div>
-        </main>
-      </SidebarProvider>
-    </>
+    <SidebarProvider className='w-full items-start' style={{ minHeight: 0 }}>
+      <Sidebar collapsible='none' className='hidden md:flex'>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {sections.map((section) => (
+                  <SidebarMenuItem key={section.key}>
+                    <SidebarMenuButton
+                      isActive={activeSection === section.key}
+                      onClick={() => setActiveSection(section.key)}
+                    >
+                      <HugeiconsIcon icon={section.icon} strokeWidth={1.5} />
+                      <span>{section.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <main className='profile-scrollbar flex w-full min-w-0 flex-1 min-h-0 max-h-[calc(100vh-8rem)] flex-col overflow-y-auto'>
+        <header className='flex shrink-0 items-center gap-2 border-b px-4 py-3'>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className='hidden md:block'>
+                <span className='text-sm text-muted-foreground'>{t('profile.title')}</span>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className='hidden md:block' />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{currentLabel}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
+        <div className='w-full p-4'>
+          {activeSection === 'info' && <PersonalInfoContent slug={slug} />}
+          {activeSection === 'address' && <AddressContent slug={slug} />}
+          {activeSection === 'password' && <PasswordContent />}
+        </div>
+      </main>
+    </SidebarProvider>
   )
 }
