@@ -1,5 +1,5 @@
 import { apiTaskcoper, BaseResponse } from '@/lib/axios'
-import { Me } from './types'
+import { Me, UpdateMePayload, UserProfile } from './types'
 import {
   ForgotPasswordFormValues,
   ResetPassWordFormValue,
@@ -14,6 +14,19 @@ class UserService {
 
   getMe = async () => {
     const { data } = await apiTaskcoper.get<BaseResponse<Me>>(`v1/${this.baseUrl}/me`)
+
+    return data.value
+  }
+
+  getUserBySlug = async (slug: string) => {
+    const { data } = await apiTaskcoper.get<BaseResponse<UserProfile>>(`v1/${this.baseUrl}/${slug}`)
+
+    return data.value
+  }
+
+  updateMe = async (body: UpdateMePayload) => {
+    const { data } = await apiTaskcoper.put<BaseResponse<Me>>(`v1/${this.baseUrl}/me`, body)
+
     return data.value
   }
 
@@ -52,6 +65,12 @@ class UserService {
     return data.value
   }
 
+  changePassword = async (body: { currentPassword: string; newPassword: string }) => {
+    const { data } = await apiTaskcoper.post<BaseResponse<string>>(`v1/${this.baseUrl}/change_password`, body)
+
+    return data.value
+  }
+
   forgotPassword = async ({ body }: { body: ForgotPasswordFormValues }) => {
     const { data } = await apiTaskcoper.post<BaseResponse<string>>(`/v1/${this.baseUrl}/forgot_password`, body)
 
@@ -59,8 +78,7 @@ class UserService {
   }
 
   resetPassword = async ({ body }: { body: ResetPassWordFormValue }) => {
-    const { data } = await apiTaskcoper.post<BaseResponse<string>>(`v1/${this.baseUrl}/change_password`, body)
-    return data.value
+    return this.changePassword(body as { currentPassword: string; newPassword: string })
   }
 
   verifyForgotPasswordCode = async ({ body }: { body: VerifyCodeFormValues }) => {
@@ -68,6 +86,7 @@ class UserService {
       `v1/${this.baseUrl}/verify_change_password_code`,
       body
     )
+
     return data.value
   }
 }

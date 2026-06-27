@@ -2,6 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import OrderDetailDialog from '@/features/orders/components/order-detail-dialog'
 import OrderQrDialog from '@/features/orders/components/order-qr-dialog'
 import { useGetOrders } from '@/features/orders/hooks/use-get-orders'
 import { OrderStatus, type Order } from '@/features/orders/types'
@@ -12,6 +13,7 @@ import { cn } from '@/shared/utils'
 import {
   CheckmarkCircle02Icon,
   DeliveryTruck02Icon,
+  InvoiceIcon,
   PackageIcon,
   QrCodeIcon,
   ShoppingBag03Icon,
@@ -42,7 +44,7 @@ export default function OrdersPage() {
   const { formatDateTime } = useDateFormat()
   const { orders, isLoadingOrders } = useGetOrders()
 
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
   const items = orders?.value?.items ?? []
   const totalCount = orders?.value?.totalCount ?? items.length
@@ -110,21 +112,29 @@ export default function OrdersPage() {
             order={order}
             t={t}
             formatDateTime={formatDateTime}
-            onOpenQr={() => setSelectedOrderId(order.orderId)}
+            onOpen={() => setSelectedOrder(order)}
           />
         ))}
       </motion.ul>
 
-      {selectedOrderId ? (
-        <OrderQrDialog
-          orderId={selectedOrderId}
-          open={!!selectedOrderId}
-          onOpenChange={(next) => {
-            if (!next) {
-              setSelectedOrderId(null)
-            }
-          }}
-        />
+      {selectedOrder ? (
+        selectedOrder.status === OrderStatus.Paid ? (
+          <OrderDetailDialog
+            order={selectedOrder}
+            open
+            onOpenChange={(next) => {
+              if (!next) setSelectedOrder(null)
+            }}
+          />
+        ) : (
+          <OrderQrDialog
+            orderId={selectedOrder.orderId}
+            open
+            onOpenChange={(next) => {
+              if (!next) setSelectedOrder(null)
+            }}
+          />
+        )
       ) : null}
     </section>
   )
@@ -168,38 +178,34 @@ interface OrderRowProps {
   order: Order
   t: ReturnType<typeof useTranslation>['t']
   formatDateTime: ReturnType<typeof useDateFormat>['formatDateTime']
-  onOpenQr: () => void
+  onOpen: () => void
 }
 
-function OrderRow({ order, t, formatDateTime, onOpenQr }: OrderRowProps) {
+function OrderRow({ order, t, formatDateTime, onOpen }: OrderRowProps) {
   const isPaid = order.status === OrderStatus.Paid
   const isPending = order.status === OrderStatus.Pending
   const statusLabel = isPaid ? t('orders.list.status.Paid') : t('orders.list.status.Pending')
 
-  const handleClick = isPending ? onOpenQr : undefined
-  const handleKeyDown = isPending
-    ? (event: React.KeyboardEvent<HTMLLIElement>) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-          onOpenQr()
-        }
-      }
-    : undefined
+  const handleClick = onOpen
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLLIElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onOpen()
+    }
+  }
 
   return (
     <motion.li
       variants={cardItem}
       whileHover={{ y: -4, scale: 1.005 }}
       transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-      role={isPending ? 'button' : undefined}
-      tabIndex={isPending ? 0 : undefined}
+      role='button'
+      tabIndex={0}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
-      aria-label={isPending ? t('orders.list.qr.title') : undefined}
+      aria-label={isPending ? t('orders.list.qr.title') : t('orders.list.detail.title')}
       className={cn(
-        'group relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-card p-4 outline-none shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow sm:flex-row sm:items-center sm:p-5',
-        isPending &&
-          'cursor-pointer hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-visible:ring-2 focus-visible:ring-ring/40'
+        'group relative flex cursor-pointer flex-col gap-4 overflow-hidden rounded-3xl bg-card p-4 outline-none shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-visible:ring-2 focus-visible:ring-ring/40 sm:flex-row sm:items-center sm:p-5'
       )}
     >
       <motion.div
@@ -252,29 +258,42 @@ function OrderRow({ order, t, formatDateTime, onOpenQr }: OrderRowProps) {
           </div>
         </dl>
 
-        {isPending ? (
-          <motion.span
-            whileHover={{ x: 2 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-            className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary ring-1 ring-primary/15'
-          >
-            <HugeiconsIcon icon={QrCodeIcon} strokeWidth={2} className='size-3.5' />
-            {t('orders.list.qr.openHint')}
-          </motion.span>
-        ) : order.ahahaMoveTrackingUrl ? (
-          <motion.a
-            whileHover={{ x: 2 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-            href={order.ahahaMoveTrackingUrl}
-            target='_blank'
-            rel='noreferrer noopener'
-            onClick={(event) => event.stopPropagation()}
-            className='inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
-          >
-            <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
-            {t('orders.list.trackAhamove')}
-          </motion.a>
-        ) : null}
+        <div className='flex flex-wrap items-center gap-2'>
+          {isPending ? (
+            <motion.span
+              whileHover={{ x: 2 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+              className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary ring-1 ring-primary/15'
+            >
+              <HugeiconsIcon icon={QrCodeIcon} strokeWidth={2} className='size-3.5' />
+              {t('orders.list.qr.openHint')}
+            </motion.span>
+          ) : (
+            <motion.span
+              whileHover={{ x: 2 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+              className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary ring-1 ring-primary/15'
+            >
+              <HugeiconsIcon icon={InvoiceIcon} strokeWidth={2} className='size-3.5' />
+              {t('orders.list.detail.openHint')}
+            </motion.span>
+          )}
+
+          {isPaid && order.ahahaMoveTrackingUrl ? (
+            <motion.a
+              whileHover={{ x: 2 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+              href={order.ahahaMoveTrackingUrl}
+              target='_blank'
+              rel='noreferrer noopener'
+              onClick={(event) => event.stopPropagation()}
+              className='inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
+            >
+              <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
+              {t('orders.list.trackAhamove')}
+            </motion.a>
+          ) : null}
+        </div>
       </div>
     </motion.li>
   )

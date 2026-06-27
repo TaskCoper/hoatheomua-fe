@@ -1,4 +1,5 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
+import { createPhoneNumberSchema } from '@/shared/validations'
 import z from 'zod'
 
 export const createCheckoutSchema = (t: TranslationFunction) => {
@@ -10,11 +11,7 @@ export const createCheckoutSchema = (t: TranslationFunction) => {
       .trim()
       .min(1, { error: requiredFor(t('orders.checkout.fullName')) })
       .max(100, { error: t('common.validation.maxLength', { field: t('orders.checkout.fullName'), max: 100 }) }),
-    phone: z
-      .string()
-      .trim()
-      .min(1, { error: requiredFor(t('orders.checkout.phone')) })
-      .regex(/^(\+?\d{8,15})$/, { error: t('common.validation.phoneNumber') }),
+    phone: createPhoneNumberSchema(t, t('orders.checkout.phone')),
     remarks: z.string().max(500),
     addressLine: z
       .string()

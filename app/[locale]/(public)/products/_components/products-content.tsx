@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic'
 import ProductsCatalogSection from './products-catalog-section'
-import ProductsHeroSection from './products-hero-section'
 import ProductsOccasionsSection from './products-occasions-section'
 import ProductsPromiseSection from './products-promise-section'
 
@@ -11,7 +10,7 @@ const FloatingPetals = dynamic(() => import('../../_components/floating-petals')
 export default function ProductsContent() {
   return (
     <div className='relative overflow-hidden'>
-      <ProductsHeroSection />
+      {/* <ProductsHeroSection /> */}
 
       <ProductsOccasionsSection />
 
