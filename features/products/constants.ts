@@ -1,6 +1,4 @@
-export const DEFAULT_PRODUCT_CATEGORY_IDS = [
-  58896, 58869, 58901, 19958, 58929, 58905, 58841, 58840, 58902, 19810, 19960
-]
+export const DEFAULT_PRODUCT_CATEGORY_IDS = [19958, 58929, 58905, 58841, 58840]
 
 export const DEFAULT_PRODUCT_SORT: Record<string, 'asc' | 'desc'> = { id: 'desc' }
 

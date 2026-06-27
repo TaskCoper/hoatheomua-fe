@@ -1,15 +1,8 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
-import { Slider } from '@/components/ui/slider'
-import {
-  DEFAULT_PRODUCT_CATEGORY_IDS,
-  PRICE_MAX,
-  PRICE_MIN,
-  PRICE_RANGES,
-  PRICE_STEP,
-  PRODUCT_CATEGORIES
-} from '@/features/products/constants'
+import { DEFAULT_PRODUCT_CATEGORY_IDS, PRICE_MAX, PRICE_MIN } from '@/features/products/constants'
+import { productsSearchParsers } from '@/features/products/search-params'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
@@ -17,7 +10,6 @@ import { useQueryStates } from 'nuqs'
 import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
-import { productsSearchParsers } from '@/features/products/search-params'
 import ProductGrid from './product-grid'
 
 const fadeUp: Variants = {
@@ -135,42 +127,45 @@ export default function ProductsCatalogSection() {
         </p>
       </motion.div>
 
-      <div className='mx-auto mt-6 grid w-full max-w-7xl gap-6 lg:grid-cols-[260px_1fr] lg:gap-8'>
-        <motion.aside
-          initial='hidden'
-          whileInView='visible'
-          viewport={{ once: true, margin: '-40px' }}
-          variants={fadeUp}
-          aria-label={t('products.filter.title')}
-          className='h-fit rounded-3xl bg-card/60 p-5 ring-1 ring-foreground/5 backdrop-blur-sm lg:sticky lg:top-24'
-        >
-          <div className='flex items-center justify-between gap-2'>
-            <h3 className='font-title text-base font-semibold text-primary'>{t('products.filter.title')}</h3>
-            {hasFilters && (
-              <button
-                type='button'
-                onClick={handleReset}
-                className='text-xs font-medium text-primary underline-offset-2 hover:underline cursor-pointer'
-              >
-                {t('products.filter.reset')}
-              </button>
-            )}
-          </div>
+      <div className='mx-auto mt-6 w-full max-w-7xl'>
+        {/* Filters temporarily hidden — flip to `true` to restore. */}
+        {false && (
+          <motion.aside
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-40px' }}
+            variants={fadeUp}
+            aria-label={t('products.filter.title')}
+            className='h-fit rounded-3xl bg-card/60 p-5 ring-1 ring-foreground/5 backdrop-blur-sm lg:sticky lg:top-24'
+          >
+            <div className='flex items-center justify-between gap-2'>
+              <h3 className='font-title text-base font-semibold text-primary'>{t('products.filter.title')}</h3>
+              {hasFilters && (
+                <button
+                  type='button'
+                  onClick={handleReset}
+                  className='text-xs font-medium text-primary underline-offset-2 hover:underline cursor-pointer'
+                >
+                  {t('products.filter.reset')}
+                </button>
+              )}
+            </div>
 
-          <div className='mt-4 space-y-1.5'>
-            <label htmlFor='product-search' className='text-xs font-medium text-foreground'>
-              {t('products.filter.search')}
-            </label>
-            <Input
-              id='product-search'
-              type='search'
-              value={nameDraft}
-              onChange={(event) => setNameDraft(event.target.value)}
-              placeholder={t('products.filter.searchPlaceholder')}
-            />
-          </div>
+            <div className='mt-4 space-y-1.5'>
+              <label htmlFor='product-search' className='text-xs font-medium text-foreground'>
+                {t('products.filter.search')}
+              </label>
 
-          <div className='mt-5 space-y-2'>
+              <Input
+                id='product-search'
+                type='search'
+                value={nameDraft}
+                onChange={(event) => setNameDraft(event.target.value)}
+                placeholder={t('products.filter.searchPlaceholder')}
+              />
+            </div>
+
+            {/* <div className='mt-5 space-y-2'>
             <div className='flex items-center justify-between gap-2'>
               <span className='text-xs font-medium text-foreground'>{t('products.filter.priceHeading')}</span>
               <span className='text-[0.6875rem] text-muted-foreground'>
@@ -201,6 +196,7 @@ export default function ProductsCatalogSection() {
               >
                 {t('products.filter.all')}
               </button>
+
               {PRICE_RANGES.map((range) => {
                 const active = priceDraft[0] === range.min && priceDraft[1] === range.max
                 return (
@@ -216,9 +212,9 @@ export default function ProductsCatalogSection() {
                 )
               })}
             </div>
-          </div>
+          </div> */}
 
-          <div className='mt-5 space-y-2'>
+            {/* <div className='mt-5 space-y-2'>
             <span className='text-xs font-medium text-foreground'>{t('products.filter.categoriesHeading')}</span>
             <div className='flex flex-wrap gap-2'>
               <button
@@ -244,8 +240,9 @@ export default function ProductsCatalogSection() {
                 )
               })}
             </div>
-          </div>
-        </motion.aside>
+          </div> */}
+          </motion.aside>
+        )}
 
         <div className='min-w-0'>
           <ProductGrid key={gridKey} categoryIds={categoryIds} name={debouncedName} price={priceParam} />

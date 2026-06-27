@@ -36,12 +36,17 @@ export default function ProductGrid({
   pageSize?: number
 }) {
   const { t } = useTranslation()
+  const [activeIndex, setActiveIndex] = useState(0)
   const [cursorStack, setCursorStack] = useState([0])
   const currentCursor = cursorStack.at(-1) ?? 0
   const isFirstPage = currentCursor === 0
   const nextParam = isFirstPage ? undefined : { id: currentCursor }
 
-  const { products: data, isFetchingProducts: isFetching, isLoadingProducts: isLoading } = useGetProducts({
+  const {
+    products: data,
+    isFetchingProducts: isFetching,
+    isLoadingProducts: isLoading
+  } = useGetProducts({
     size: pageSize,
     categoryIds,
     name,
@@ -85,7 +90,13 @@ export default function ProductGrid({
         className='mx-auto grid w-full max-w-7xl grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5'
       >
         {items.map((product, index) => (
-          <ProductCard key={product.id} product={product} eager={isFirstPage && index < 4} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            eager={isFirstPage && index < 4}
+            isActive={index === activeIndex}
+            onHoverStart={() => setActiveIndex(index)}
+          />
         ))}
       </motion.div>
 

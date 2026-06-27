@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { VolumeHighIcon, VolumeMute02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { useEffect, useRef, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 const CONTACT_CHANNELS = [
   {
@@ -24,6 +24,7 @@ const CONTACT_CHANNELS = [
 const MUSIC_SRC = '/music/bg-music.mp3'
 const MUTED_STORAGE_KEY = 'floatingContact.musicMuted'
 const MUTED_CHANGE_EVENT = 'floating-contact:muted-change'
+const AUDIO_MOUNT_DELAY_MS = 4000
 
 const GESTURE_EVENTS = ['pointerdown', 'click', 'keydown', 'touchstart', 'touchend', 'wheel', 'scroll'] as const
 
@@ -61,8 +62,46 @@ export default function FloatingContact() {
   const { t } = useTranslation()
   const audioRef = useRef<HTMLAudioElement>(null)
   const isMuted = useSyncExternalStore(subscribeMutedPref, readMutedPref, getServerMutedPref)
+  const [audioMounted, setAudioMounted] = useState(false)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const mount = () => setAudioMounted(true)
+
+    const ric = (
+      window as typeof window & { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }
+    ).requestIdleCallback
+
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let idleHandle: number | undefined
+
+    if (ric) {
+      timer = setTimeout(() => {
+        idleHandle = ric(mount, { timeout: 1500 })
+      }, AUDIO_MOUNT_DELAY_MS)
+    } else {
+      timer = setTimeout(mount, AUDIO_MOUNT_DELAY_MS)
+    }
+
+    const interactionEvents = ['pointerdown', 'keydown', 'touchstart'] as const
+    const onEarlyInteraction = () => mount()
+    interactionEvents.forEach((evt) => {
+      window.addEventListener(evt, onEarlyInteraction, { capture: true, once: true, passive: true })
+    })
+
+    return () => {
+      if (timer) clearTimeout(timer)
+      const cic = (window as typeof window & { cancelIdleCallback?: (handle: number) => void }).cancelIdleCallback
+      if (idleHandle !== undefined && cic) cic(idleHandle)
+      interactionEvents.forEach((evt) => {
+        window.removeEventListener(evt, onEarlyInteraction, true)
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!audioMounted) return
     const audio = audioRef.current
     if (!audio) return
 
@@ -115,9 +154,10 @@ export default function FloatingContact() {
     return () => {
       detachGesture?.()
     }
-  }, [isMuted])
+  }, [isMuted, audioMounted])
 
   const toggleMusic = () => {
+    if (!audioMounted) setAudioMounted(true)
     writeMutedPref(!isMuted)
   }
 
@@ -125,7 +165,9 @@ export default function FloatingContact() {
 
   return (
     <div className='pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6'>
-      <audio ref={audioRef} src={MUSIC_SRC} loop playsInline preload='auto' aria-hidden='true' />
+      {audioMounted ? (
+        <audio ref={audioRef} src={MUSIC_SRC} loop playsInline preload='none' aria-hidden='true' />
+      ) : null}
 
       <button
         type='button'
