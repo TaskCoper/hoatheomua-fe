@@ -5,12 +5,8 @@ import type { AddressPayload } from '../types'
 export const useUpdateAddress = () => {
   const queryClient = useQueryClient()
 
-  const {
-    mutateAsync: updateAddress,
-    isPending: isUpdatingAddress,
-  } = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: AddressPayload }) =>
-      addressService.updateAddress({ id, body }),
+  const { mutateAsync: updateAddress, isPending: isUpdatingAddress } = useMutation({
+    mutationFn: ({ id, body }: { id: string; body: AddressPayload }) => addressService.updateAddress({ id, body }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['addresses'] })
     }

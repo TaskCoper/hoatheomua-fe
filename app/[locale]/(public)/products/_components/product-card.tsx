@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import type { Product } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import { FavouriteIcon, FlowerIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
+import { FavouriteIcon, FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
@@ -140,30 +140,13 @@ export default function ProductCard({ product, eager = false }: { product: Produ
           </Tooltip>
         </TooltipProvider>
 
-        <div className='mt-1 flex items-end justify-between gap-3'>
-          <div className='-space-y-0.5'>
-            {hasDiscount ? (
-              <p className='text-[0.625rem] text-muted-foreground line-through'>{formatVnd(oldPrice)}</p>
-            ) : (
-              <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>
-            )}
-            <p className='font-title text-sm font-bold text-primary sm:text-base'>{formatVnd(retail)}</p>
-          </div>
-
-          <motion.div
-            whileHover={{ scale: 1.15, rotate: -12 }}
-            whileTap={{ scale: 0.92 }}
-            transition={{ type: 'spring', stiffness: 380, damping: 12 }}
-          >
-            <Button
-              type='button'
-              size='icon'
-              className='rounded-full hover:bg-foreground'
-              aria-label={t('products.card.addToCart', { name: product.name })}
-            >
-              <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-            </Button>
-          </motion.div>
+        <div className='mt-1 -space-y-0.5'>
+          {hasDiscount ? (
+            <p className='text-[0.625rem] text-muted-foreground line-through'>{formatVnd(oldPrice)}</p>
+          ) : (
+            <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>
+          )}
+          <p className='font-title text-sm font-bold text-primary sm:text-base'>{formatVnd(retail)}</p>
         </div>
       </div>
     </motion.article>

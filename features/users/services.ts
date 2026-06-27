@@ -14,16 +14,19 @@ class UserService {
 
   getMe = async () => {
     const { data } = await apiTaskcoper.get<BaseResponse<Me>>(`v1/${this.baseUrl}/me`)
+
     return data.value
   }
 
   getUserBySlug = async (slug: string) => {
     const { data } = await apiTaskcoper.get<BaseResponse<UserProfile>>(`v1/${this.baseUrl}/${slug}`)
+
     return data.value
   }
 
   updateMe = async (body: UpdateMePayload) => {
-    const { data } = await apiTaskcoper.put<BaseResponse<Me>>('v1/user/me', body)
+    const { data } = await apiTaskcoper.put<BaseResponse<Me>>(`v1/${this.baseUrl}/me`, body)
+
     return data.value
   }
 
@@ -64,6 +67,7 @@ class UserService {
 
   changePassword = async (body: { currentPassword: string; newPassword: string }) => {
     const { data } = await apiTaskcoper.post<BaseResponse<string>>(`v1/${this.baseUrl}/change_password`, body)
+
     return data.value
   }
 
@@ -82,6 +86,7 @@ class UserService {
       `v1/${this.baseUrl}/verify_change_password_code`,
       body
     )
+
     return data.value
   }
 }

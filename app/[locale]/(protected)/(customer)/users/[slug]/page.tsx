@@ -1,18 +1,15 @@
-'use client'
-
 import { ProfileSheetBody } from '@/features/users/components/profile-sheet'
-import { use } from 'react'
 
 interface UserProfilePageProps {
   params: Promise<{ slug: string }>
 }
 
-export default function UserProfilePage({ params }: UserProfilePageProps) {
-  const { slug } = use(params)
+export default async function UserProfilePage({ params }: UserProfilePageProps) {
+  const { slug } = await params
 
   return (
-    <div className='flex min-h-[60vh] items-center justify-center p-4'>
-      <div className='w-full max-w-[84rem] overflow-hidden rounded-[2.5rem] bg-popover shadow-2xl ring-1 ring-foreground/5'>
+    <div className='mx-auto w-full max-w-4xl px-4 py-8'>
+      <div className='overflow-hidden rounded-3xl border bg-card shadow-[0_0.8rem_2.5rem_rgb(0_0_0/8%)]'>
         <ProfileSheetBody slug={slug} />
       </div>
     </div>

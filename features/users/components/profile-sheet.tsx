@@ -1,16 +1,15 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
+  BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
-import { Skeleton } from '@/components/ui/skeleton'
 import {
   Sidebar,
   SidebarContent,
@@ -19,8 +18,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
+  SidebarProvider
 } from '@/components/ui/sidebar'
+import { Skeleton } from '@/components/ui/skeleton'
+import { AddressActionsMenu } from '@/features/addresses/components/address-actions-menu'
+import { AddressFormDialog } from '@/features/addresses/components/address-form-dialog'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import {
@@ -30,17 +32,15 @@ import {
   LockPasswordIcon,
   Mail02Icon,
   TimeZoneIcon,
-  User03Icon,
+  User03Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
-import { AddressActionsMenu } from '@/features/addresses/components/address-actions-menu'
-import { AddressFormDialog } from '@/features/addresses/components/address-form-dialog'
-import { ChangePasswordForm } from './change-password-form'
-import { PersonalInfoFormInner } from './personal-info-form'
 import { useGetMe } from '../hooks/use-get-me'
 import { useGetUser } from '../hooks/use-get-user'
+import { ChangePasswordForm } from './change-password-form'
+import { PersonalInfoFormInner } from './personal-info-form'
 
 type Section = 'info' | 'address' | 'password'
 
@@ -149,9 +149,7 @@ function PersonalInfoContent({ slug }: { slug?: string }) {
       <div className='space-y-4'>
         <div className='relative overflow-hidden rounded-2xl border bg-muted/20'>
           <div className='relative h-28 w-full bg-linear-to-br from-slate-900 to-slate-700'>
-            {user?.coverImageUrl && (
-              <Image src={user.coverImageUrl} alt='' fill className='object-cover' unoptimized />
-            )}
+            {user?.coverImageUrl && <Image src={user.coverImageUrl} alt='' fill className='object-cover' unoptimized />}
           </div>
           <div className='px-4 pb-4'>
             <div className='-mt-8'>
@@ -219,11 +217,7 @@ function PersonalInfoContent({ slug }: { slug?: string }) {
         <h3 className='text-base font-medium'>{t('profile.personalInfoTitle')}</h3>
         <p className='text-sm text-muted-foreground'>{t('profile.personalInfoDescription')}</p>
       </div>
-      <PersonalInfoFormInner
-        slug={slug}
-        onSuccess={() => setIsEditing(false)}
-        onCancel={() => setIsEditing(false)}
-      />
+      <PersonalInfoFormInner slug={slug} onSuccess={() => setIsEditing(false)} onCancel={() => setIsEditing(false)} />
     </div>
   )
 }
@@ -258,7 +252,7 @@ export function ProfileSheet({ open, onOpenChange, slug }: ProfileSheetProps) {
         style={{
           width: 'min(56rem, calc(100vw - 2rem))',
           maxWidth: 'none',
-          borderRadius: '1.5rem',
+          borderRadius: '1.5rem'
         }}
         showCloseButton
       >
@@ -277,7 +271,7 @@ export function ProfileSheetBody({ slug }: { slug?: string }) {
   const sections = [
     { key: 'info' as Section, label: t('profile.tabInfo'), icon: User03Icon },
     { key: 'address' as Section, label: t('profile.tabAddress'), icon: Home01Icon },
-    { key: 'password' as Section, label: t('profile.tabPassword'), icon: LockPasswordIcon },
+    { key: 'password' as Section, label: t('profile.tabPassword'), icon: LockPasswordIcon }
   ]
 
   const currentLabel = sections.find((s) => s.key === activeSection)?.label

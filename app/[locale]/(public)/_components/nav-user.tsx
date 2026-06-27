@@ -23,7 +23,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
 import { getAvatarFallback } from '@/shared/utils'
-import { GlobalIcon, Logout03Icon, Settings02Icon, UserCircle02Icon } from '@hugeicons/core-free-icons'
+import { GlobalIcon, Logout03Icon, UserCircle02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
 
@@ -121,19 +121,8 @@ export default function NavUser({ user }: NavUserProps) {
               </DropdownMenuPortal>
             </DropdownMenuSub>
           </DropdownMenuGroup>
-          <DropdownMenuItem
-            className='px-2 py-1.5 cursor-pointer'
-            onSelect={() => router.push(`/users/${user?.slug}/settings`)}
-          >
-            <HugeiconsIcon icon={Settings02Icon} className='shrink-0 size-4.5' />
-            {t('account.settings')}
-          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className='px-2 py-1.5 cursor-pointer'
-            onClick={() => signOut()}
-            disabled={isSigningOut}
-          >
+          <DropdownMenuItem className='px-2 py-1.5 cursor-pointer' onClick={() => signOut()} disabled={isSigningOut}>
             <HugeiconsIcon icon={Logout03Icon} className='shrink-0 size-4.5' />
             {t('account.logout')}
           </DropdownMenuItem>

@@ -135,7 +135,9 @@
       "clearAll": "Xóa tất cả",
       "clear": "Xoá",
       "cancel": "Hủy",
-      "save": "Lưu"
+      "save": "Lưu",
+      "upload": "Tải lên",
+      "remove": "Gỡ bỏ"
     },
     "error": {
       "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về",
@@ -149,7 +151,7 @@
       "required": "{field} là bắt buộc.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
       "maxLength": "{field} không được vượt quá {max} ký tự.",
-      "phoneNumber": "Vui lòng nhập số điện thoại hợp lệ.",
+      "phoneNumber": "Số điện thoại phải có 10 hoặc 11 chữ số và bắt đầu bằng 0.",
       "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái in hoa, 1 số và 1 ký tự đặc biệt.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",
       "fixErrors": "Vui lòng kiểm tra lại các trường thông tin."
@@ -582,6 +584,9 @@
       "ward": "Phường / Xã",
       "wardPlaceholder": "Chọn phường / xã",
       "wardSearchPlaceholder": "Tìm phường / xã",
+      "savedAddress": "Địa chỉ đã lưu",
+      "savedAddressPlaceholder": "Chọn địa chỉ đã lưu",
+      "savedAddressSearchPlaceholder": "Tìm địa chỉ đã lưu",
       "remarks": "Ghi chú",
       "remarksPlaceholder": "Ghi chú cho người bán (tuỳ chọn)",
       "orderTime": "Ngày giao hàng",
@@ -639,6 +644,11 @@
         "amount": "Số tiền",
         "content": "Nội dung",
         "waiting": "Đang chờ xác nhận thanh toán…"
+      },
+      "detail": {
+        "title": "Chi tiết đơn hàng",
+        "description": "Xem thông tin đơn hàng đã thanh toán.",
+        "openHint": "Nhấn để xem chi tiết đơn hàng"
       }
     }
   },
@@ -1374,8 +1384,8 @@
     "phone": "Số điện thoại",
     "address": "Địa chỉ",
     "phoneNumber": "Số điện thoại",
-    "avatar": "URL avatar",
-    "coverImageUrl": "URL ảnh bìa",
+    "avatar": "Ảnh đại diện",
+    "coverImageUrl": "Ảnh bìa",
     "city": "Thành phố",
     "state": "Tỉnh/Trạng thái",
     "timeZone": "Múi giờ",

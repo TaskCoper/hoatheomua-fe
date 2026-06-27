@@ -135,7 +135,9 @@
       "clearAll": "Clear all",
       "clear": "Clear",
       "cancel": "Cancel",
-      "save": "Save"
+      "save": "Save",
+      "upload": "Upload",
+      "remove": "Remove"
     },
     "error": {
       "uploadNoUrlReturned": "Upload failed: no URL returned",
@@ -149,7 +151,7 @@
       "required": "{field} is required.",
       "minLength": "{field} must be at least {min} characters.",
       "maxLength": "{field} must be no more than {max} characters.",
-      "phoneNumber": "Please enter a valid phone number.",
+      "phoneNumber": "Phone number must be 10 or 11 digits and start with 0.",
       "passwordStrength": "Use at least 1 uppercase letter, 1 number, and 1 special character.",
       "passwordMismatch": "Confirm password does not match.",
       "fixErrors": "Please review the highlighted fields."
@@ -582,6 +584,9 @@
       "ward": "Ward",
       "wardPlaceholder": "Select ward",
       "wardSearchPlaceholder": "Search ward",
+      "savedAddress": "Saved address",
+      "savedAddressPlaceholder": "Select a saved address",
+      "savedAddressSearchPlaceholder": "Search saved addresses",
       "remarks": "Notes",
       "remarksPlaceholder": "Notes for the seller (optional)",
       "orderTime": "Delivery date",
@@ -639,6 +644,11 @@
         "amount": "Amount",
         "content": "Content",
         "waiting": "Waiting for payment confirmation…"
+      },
+      "detail": {
+        "title": "Order details",
+        "description": "Review the information for this paid order.",
+        "openHint": "Tap to view order details"
       }
     }
   },
@@ -1374,8 +1384,8 @@
     "phone": "Phone number",
     "address": "Address",
     "phoneNumber": "Phone number",
-    "avatar": "Avatar URL",
-    "coverImageUrl": "Cover image URL",
+    "avatar": "Avatar",
+    "coverImageUrl": "Cover image",
     "city": "City",
     "state": "State",
     "timeZone": "Time zone",

@@ -1,4 +1,5 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
+import { createPhoneNumberSchema } from '@/shared/validations'
 import z from 'zod'
 
 export const createAddressSchema = (t: TranslationFunction) => {
@@ -10,11 +11,7 @@ export const createAddressSchema = (t: TranslationFunction) => {
       .trim()
       .min(1, { error: requiredFor(t('profile.addressReceiverName')) })
       .max(100, { error: t('common.validation.maxLength', { field: t('profile.addressReceiverName'), max: 100 }) }),
-    phoneNumber: z
-      .string()
-      .trim()
-      .min(1, { error: requiredFor(t('profile.addressPhoneNumber')) })
-      .max(20, { error: t('common.validation.maxLength', { field: t('profile.addressPhoneNumber'), max: 20 }) }),
+    phoneNumber: createPhoneNumberSchema(t, t('profile.addressPhoneNumber')),
     addressLine: z
       .string()
       .trim()

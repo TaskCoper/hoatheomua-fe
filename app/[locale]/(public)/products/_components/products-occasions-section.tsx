@@ -94,7 +94,7 @@ export default function ProductsOccasionsSection() {
   const { t } = useTranslation()
 
   return (
-    <section id='occasion' className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
+    <section id='occasion' className='relative mt-4 sm:mt-6 md:mt-8 lg:mt-10 px-4'>
       <motion.div
         initial='hidden'
         whileInView='visible'

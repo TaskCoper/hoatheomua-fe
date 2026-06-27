@@ -1,5 +1,5 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
-import { createEmailSchema } from '@/shared/validations'
+import { createEmailSchema, createOptionalPhoneNumberSchema } from '@/shared/validations'
 import z from 'zod'
 
 export const createSignInSchema = (t: TranslationFunction) =>
@@ -140,7 +140,7 @@ export const createUpdateMeSchema = (t: TranslationFunction) =>
       email: createEmailSchema(t),
       avatar: z.string().trim().max(500),
       coverImageUrl: z.string().trim().max(500),
-      phoneNumber: z.string().trim().max(20),
+      phoneNumber: createOptionalPhoneNumberSchema(t),
       address: z.string().trim().max(255),
       city: z.string().trim().max(100),
       state: z.string().trim().max(100),
