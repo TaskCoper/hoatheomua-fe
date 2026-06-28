@@ -1374,6 +1374,46 @@
       "secondary": "Xem sản phẩm của chúng tôi"
     }
   },
+  "policies": {
+    "common": {
+      "home": "Trang chủ",
+      "eyebrow": "Chính sách Hoa Theo Mùa",
+      "contact": {
+        "title": "Còn thắc mắc? Hoa Theo Mùa luôn ở bên bạn.",
+        "description": "Đội ngũ tư vấn lắng nghe và hỗ trợ bạn từ 7h00 đến 18h00 mỗi ngày, kể cả cuối tuần.",
+        "hotlineLabel": "Hotline",
+        "hotlineValue": "0931 734 353",
+        "emailLabel": "Email",
+        "emailValue": "sale.hoatheomua@gmail.com"
+      }
+    },
+    "terms": {
+      "breadcrumb": "Điều khoản sử dụng",
+      "title": "Điều khoản sử dụng",
+      "subtitle": "Những điều khoản và điều kiện áp dụng khi bạn truy cập, sử dụng website hoatheomua.net và các dịch vụ do Hoa Theo Mùa cung cấp."
+    },
+    "privacy": {
+      "breadcrumb": "Chính sách bảo mật thông tin",
+      "title": "Chính sách bảo mật thông tin",
+      "subtitle": "Hoa Theo Mùa cam kết tôn trọng và bảo mật mọi thông tin cá nhân khách hàng chia sẻ trong quá trình mua sắm và sử dụng dịch vụ."
+    },
+    "returns": {
+      "breadcrumb": "Chính sách đổi trả",
+      "title": "Chính sách đổi trả",
+      "subtitle": "Hoa Theo Mùa luôn đặt sự hài lòng của khách hàng lên hàng đầu — chính sách đổi trả minh bạch, nhanh chóng và đúng cam kết."
+    },
+    "delivery": {
+      "breadcrumb": "Chính sách giao – nhận và kiểm tra hàng",
+      "title": "Chính sách giao – nhận & kiểm tra hàng",
+      "subtitle": "Quy trình giao – nhận và kiểm tra hàng tại Hoa Theo Mùa được thiết kế để mỗi đơn hoa đến tay bạn vẹn nguyên cảm xúc.",
+      "effectiveDate": "Áp dụng từ ngày 01/01/2022"
+    },
+    "ordering": {
+      "breadcrumb": "Hướng dẫn đặt hàng & thanh toán",
+      "title": "Hướng dẫn đặt hàng & thanh toán",
+      "subtitle": "Ba cách đặt hoa và hai phương thức thanh toán linh hoạt — Hoa Theo Mùa giúp bạn gửi yêu thương chỉ trong vài phút."
+    }
+  },
   "profile": {
     "title": "Hồ sơ cá nhân",
     "viewProfile": "Xem hồ sơ",

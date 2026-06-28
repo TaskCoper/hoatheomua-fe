@@ -1,17 +1,18 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { Link } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
 import { Facebook01Icon, InstagramIcon, Mail01Icon, MessageMultiple01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 
 const POLICIES = [
-  'footer.policies.terms',
-  'footer.policies.returns',
-  'footer.policies.ordering',
-  'footer.policies.privacy',
-  'footer.policies.delivery'
+  { labelKey: 'footer.policies.terms', href: '/terms' },
+  { labelKey: 'footer.policies.returns', href: '/returns' },
+  { labelKey: 'footer.policies.ordering', href: '/ordering' },
+  { labelKey: 'footer.policies.privacy', href: '/privacy' },
+  { labelKey: 'footer.policies.delivery', href: '/delivery' }
 ] as const
 
 const FEATURED_PRODUCTS = [
@@ -68,12 +69,12 @@ export default function Footer() {
           <div className='space-y-2 lg:col-span-3'>
             <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.policiesHeading')}</h2>
             <ul className='space-y-2 text-xs sm:text-sm text-foreground'>
-              {POLICIES.map((key) => (
-                <li key={key} className='flex items-center gap-2'>
+              {POLICIES.map((policy) => (
+                <li key={policy.labelKey} className='flex items-center gap-2'>
                   <span className='inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
-                  <a href='#' className='transition-colors hover:text-primary'>
-                    {t(key)}
-                  </a>
+                  <Link href={policy.href} className='transition-colors hover:text-primary'>
+                    {t(policy.labelKey)}
+                  </Link>
                 </li>
               ))}
             </ul>

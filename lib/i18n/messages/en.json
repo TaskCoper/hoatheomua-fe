@@ -1374,6 +1374,46 @@
       "secondary": "Browse our products"
     }
   },
+  "policies": {
+    "common": {
+      "home": "Home",
+      "eyebrow": "Hoa Theo Mua policies",
+      "contact": {
+        "title": "Still have questions? We are here to help.",
+        "description": "Our florist concierge is available from 7:00 AM to 6:00 PM every day, weekends included.",
+        "hotlineLabel": "Hotline",
+        "hotlineValue": "0931 734 353",
+        "emailLabel": "Email",
+        "emailValue": "sale.hoatheomua@gmail.com"
+      }
+    },
+    "terms": {
+      "breadcrumb": "Terms of use",
+      "title": "Terms of use",
+      "subtitle": "The terms and conditions that apply when you visit hoatheomua.net and use the services provided by Hoa Theo Mua."
+    },
+    "privacy": {
+      "breadcrumb": "Privacy policy",
+      "title": "Privacy policy",
+      "subtitle": "Hoa Theo Mua respects and safeguards every piece of personal information you share during your shopping journey with us."
+    },
+    "returns": {
+      "breadcrumb": "Return policy",
+      "title": "Return policy",
+      "subtitle": "Customer satisfaction comes first — our return policy is transparent, swift, and aligned with every promise we make."
+    },
+    "delivery": {
+      "breadcrumb": "Delivery & inspection policy",
+      "title": "Delivery & inspection policy",
+      "subtitle": "Our delivery and inspection process keeps every bouquet pristine from the studio to your loved one's hands.",
+      "effectiveDate": "Effective from January 1, 2022"
+    },
+    "ordering": {
+      "breadcrumb": "Ordering & payment guide",
+      "title": "Ordering & payment guide",
+      "subtitle": "Three flexible ways to order and two secure payment options — Hoa Theo Mua helps you send love within minutes."
+    }
+  },
   "profile": {
     "title": "Profile",
     "viewProfile": "View profile",
