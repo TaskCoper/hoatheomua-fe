@@ -42,6 +42,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
   return (
     <>
       <JsonLd data={buildHomeJsonLd()} />
+
       <HydrationBoundary state={dehydrate(queryClient)}>
         <HomeContent />
       </HydrationBoundary>

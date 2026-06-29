@@ -758,53 +758,53 @@
     },
     "criteria": {
       "branchAlt": "Cành lá trang trí",
-      "fresh": {
-        "title": "Hoa Tươi Mỗi Ngày",
-        "description": "Tuyển chọn mỗi ngày, giao tươi nguyên"
+      "affordable": {
+        "title": "Giá Hợp Lý",
+        "description": "Đa dạng phân khúc, phù hợp mọi ngân sách"
       },
-      "delivery": {
-        "title": "Giao Hàng Trong Ngày",
-        "description": "Giao ngay hôm nay, đảm bảo đúng hẹn"
+      "gardenFresh": {
+        "title": "Hoa Từ Vườn",
+        "description": "Thu hái trực tiếp từ vườn, vận chuyển trong ngày"
       },
-      "artisan": {
-        "title": "Nghệ Nhân Tin Cậy",
-        "description": "Cắm hoa bởi nghệ nhân chuyên nghiệp"
+      "fastDelivery": {
+        "title": "Giao Nhanh 2H",
+        "description": "Tự đặt giao nhanh đúng giờ ngay trên web, trong nội thành TP.HCM"
       },
-      "occasion": {
-        "title": "Mọi Dịp Lễ",
-        "description": "Từ sinh nhật đến tiệc cưới"
+      "dedicatedSupport": {
+        "title": "Đồng Hành Tận Tâm",
+        "description": "Tư vấn sát sao, hiểu đúng nhu cầu"
       },
       "ecoPack": {
         "title": "Đóng Gói Thân Thiện",
-        "description": "Trân trọng từng chi tiết với thiên nhiên"
+        "description": "Tôn trọng giá trị xanh, gần gũi thiên nhiên"
       }
     },
     "whyChooseUs": {
-      "title": "Giá Trị Cốt Lõi",
-      "description": "Chúng tôi tin rằng hoa cần đến tay bạn tươi mới và rực rỡ như khoảnh khắc vừa được hái. Từ việc tuyển chọn từng bông hoa, đóng gói cẩn thận đến giao hàng đúng hẹn, mỗi bước đều được thực hiện bằng cả sự tận tâm.",
+      "title": "Lời Hứa Từ Hoa Theo Mùa",
+      "description": "Chúng tôi tin hoa cần đến tay bạn tươi mới và rực rỡ như khoảnh khắc vừa được hái. Mỗi bó hoa đều được đảm bảo bằng chính sự tận tâm của chúng tôi.",
       "bannerAlt": "Bó hoa tươi Hoa Theo Mùa",
       "features": {
         "fresh": {
-          "title": "Sản Phẩm Tươi",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững."
+          "title": "Tươi 100%",
+          "description": "Hoa thu hái trực tiếp từ nhà vườn trong ngày, luôn tươi mới."
         },
-        "natural": {
-          "title": "100% Tự Nhiên",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững."
+        "payment": {
+          "title": "An Tâm Thanh Toán",
+          "description": "Thanh toán online an toàn ngay trên web, hỗ trợ thẻ tín dụng, minh bạch từng đơn hàng."
         },
-        "care": {
-          "title": "Chăm Sóc Tận Tâm",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế."
+        "warranty": {
+          "title": "Bảo Hành & Đổi/Trả",
+          "description": "Hoa không đạt chất lượng như mô tả, bạn được bảo hành đổi/trả ngay."
         },
         "refund": {
-          "title": "Hoàn Tiền Đảm Bảo",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế."
+          "title": "Hoàn Tiền Khi Bất Khả Kháng",
+          "description": "Với những trường hợp ngoài kiểm soát, bạn luôn được hoàn tiền minh bạch."
         }
       }
     },
     "signatureBouquets": {
       "title": "Bó Hoa Đặc Trưng",
-      "description": "Được cắm thủ công tỉ mỉ bởi những nghệ nhân chuyên nghiệp với các loài hoa tươi mới nhất, mỗi bó hoa của chúng tôi đều mang đến vẻ đẹp, hương thơm và ấn tượng khó quên cho mọi dịp.",
+      "description": "Mỗi sản phẩm là một dấu ấn riêng - nơi sự tinh tế thể hiện trong từng chi tiết sản phẩm để mang đến vẻ đẹp không thể nhầm lẫn.",
       "addToCart": "Thêm {name} vào giỏ",
       "flowers": {
         "peony": "Mẫu Đơn — Paeonia lactiflora",
@@ -833,9 +833,9 @@
       "authorName": "Nguyễn Thị Mai",
       "authorRole": "Quản Lý Sự Kiện"
     },
-    "shopFresh": {
-      "title": "Mua Hoa Tươi",
-      "description": "Khám phá bộ sưu tập hoa tươi được tuyển chọn kỹ lưỡng, sắp đặt tinh tế bởi những nghệ nhân chuyên nghiệp, mang đến vẻ đẹp, hương thơm và sự thanh lịch trường tồn ngay tận cửa nhà bạn."
+    "dailyFlowers": {
+      "title": "Hoa Mỗi Ngày",
+      "description": "Không cần dịp đặc biệt để có hoa trong nhà. Mỗi bó hoa được chọn lựa và sắp đặt tinh tế, mang vẻ đẹp tự nhiên đến với những điều bình thường nhất của bạn mỗi ngày."
     }
   },
   "about": {

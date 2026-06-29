@@ -225,3 +225,66 @@ export interface OccasionsCollectionConfigItem {
     validations: OccasionsConfigValidation[]
   }
 }
+
+// Feedbacks
+export type FeedbacksConfigKey = 'feedbacks.collection'
+
+export type FeedbacksConfigGroup = 'feedbacks'
+
+export type FeedbacksConfigInputType = 'json'
+
+export interface FeedbacksConfigOption {
+  label: string
+  value: string
+}
+
+export interface FeedbacksConfigValidation {
+  url?: boolean
+  email?: boolean
+}
+
+export interface LocalizedText {
+  vi: string
+  en: string
+}
+
+export interface FeedbacksCollectionSection {
+  title: LocalizedText
+  description: LocalizedText
+  enabled: boolean
+}
+
+export type FeedbackSource = 'messenger' | 'zalo' | 'other'
+
+export interface FeedbackItem {
+  id: string
+  customerName: string
+  area: string
+  content: LocalizedText
+  flowerType: string
+  image: string
+  postDate: string
+  rating: number
+  featured: boolean
+  isPlaceholder: boolean
+  source: FeedbackSource
+  sourceUrl: string
+}
+
+export interface FeedbacksCollection {
+  section: FeedbacksCollectionSection
+  items: FeedbackItem[]
+}
+
+export interface FeedbacksCollectionConfigItem {
+  key: FeedbacksConfigKey
+  value: {
+    group: FeedbacksConfigGroup
+    label: string
+    value: string
+    options: []
+    required: false
+    inputType: FeedbacksConfigInputType
+    validations: []
+  }
+}

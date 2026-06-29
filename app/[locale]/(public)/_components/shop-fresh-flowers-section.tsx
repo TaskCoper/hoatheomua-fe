@@ -30,7 +30,7 @@ export default function ShopFreshFlowersSection() {
           />
 
           <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-            {t('home.shopFresh.title')}
+            {t('home.dailyFlowers.title')}
           </h1>
 
           <SparkleDivider
@@ -42,7 +42,7 @@ export default function ShopFreshFlowersSection() {
         </div>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-140 md:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          {t('home.shopFresh.description')}
+          {t('home.dailyFlowers.description')}
         </p>
       </motion.div>
 

@@ -758,53 +758,53 @@
     },
     "criteria": {
       "branchAlt": "Decorative branch",
-      "fresh": {
-        "title": "Fresh Flowers Daily",
-        "description": "Hand-picked daily and delivered fresh"
+      "affordable": {
+        "title": "Reasonable Price",
+        "description": "Diverse tiers to fit every budget"
       },
-      "delivery": {
-        "title": "Same-day Delivery",
-        "description": "Delivered today, always on time"
+      "gardenFresh": {
+        "title": "Garden-fresh Flowers",
+        "description": "Hand-picked from gardens and delivered same day"
       },
-      "artisan": {
-        "title": "Trusted Artisans",
-        "description": "Arranged by professional florists"
+      "fastDelivery": {
+        "title": "2-Hour Delivery",
+        "description": "Self-schedule on-time express delivery on the web within HCMC"
       },
-      "occasion": {
-        "title": "Every Occasion",
-        "description": "From birthdays to weddings"
+      "dedicatedSupport": {
+        "title": "Dedicated Care",
+        "description": "Attentive consultation that truly understands your needs"
       },
       "ecoPack": {
         "title": "Eco-friendly Packaging",
-        "description": "Every detail respects nature"
+        "description": "Honoring green values, close to nature"
       }
     },
     "whyChooseUs": {
-      "title": "Core Values",
-      "description": "We believe flowers should reach you as fresh and vibrant as the moment they were picked. From hand-picking each stem to careful packaging and on-time delivery, every step is performed with devotion.",
+      "title": "Our Promise From Hoa Theo Mua",
+      "description": "We believe flowers should reach you as fresh and vibrant as the moment they were picked. Every bouquet is backed by our wholehearted dedication.",
       "bannerAlt": "Fresh bouquet by Hoa Theo Mua",
       "features": {
         "fresh": {
-          "title": "Fresh Products",
-          "description": "Building a brand cannot happen overnight. It takes great effort to nurture lasting relationships."
+          "title": "100% Fresh",
+          "description": "Flowers harvested directly from gardens within the day — always fresh."
         },
-        "natural": {
-          "title": "100% Natural",
-          "description": "Building a brand cannot happen overnight. It takes great effort to nurture lasting relationships."
+        "payment": {
+          "title": "Worry-free Payment",
+          "description": "Secure online payment on our site with credit card support and full transparency on every order."
         },
-        "care": {
-          "title": "Attentive Care",
-          "description": "Building a brand cannot happen overnight. It takes great effort to nurture lasting relationships with customers — and much more."
+        "warranty": {
+          "title": "Warranty & Exchange",
+          "description": "If flowers don't match the described quality, you get an instant exchange or return."
         },
         "refund": {
-          "title": "Money-back Guarantee",
-          "description": "Building a brand cannot happen overnight. It takes great effort to nurture lasting relationships with customers — and much more."
+          "title": "Refund For Force Majeure",
+          "description": "For circumstances beyond our control, you always receive a transparent refund."
         }
       }
     },
     "signatureBouquets": {
       "title": "Signature Bouquets",
-      "description": "Hand-crafted with care by professional florists using the freshest blooms, every one of our bouquets delivers beauty, fragrance, and an unforgettable impression for every occasion.",
+      "description": "Each product is a signature of its own — where refinement is reflected in every detail to create an unmistakable beauty.",
       "addToCart": "Add {name} to cart",
       "flowers": {
         "peony": "Peony — Paeonia lactiflora",
@@ -833,9 +833,9 @@
       "authorName": "Nguyen Thi Mai",
       "authorRole": "Event Manager"
     },
-    "shopFresh": {
-      "title": "Shop Fresh Flowers",
-      "description": "Discover our carefully curated collection of fresh flowers, elegantly arranged by professional florists to bring beauty, fragrance, and timeless grace right to your door."
+    "dailyFlowers": {
+      "title": "Everyday Flowers",
+      "description": "You don't need a special occasion to keep flowers at home. Every bouquet is carefully selected and elegantly arranged to bring natural beauty into the simplest moments of your day."
     }
   },
   "about": {
