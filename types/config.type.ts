@@ -6,6 +6,7 @@ export type CompanyConfigKey =
   | 'company.bg_music'
   | 'company.hotlines'
   | 'company.website'
+  | 'company.bg_video'
 
 export type CompanyConfigGroup = 'company'
 
@@ -92,7 +93,16 @@ export type CompanyConfigItem =
         validations: [{ url: true }]
       }
     }
-
+  | {
+      key: 'company.bg_video'
+      value: BaseCompanyConfigValue & {
+        value: string
+        inputType: 'file'
+        required: false
+        options: []
+        validations: [{ url: true }]
+      }
+    }
 // Contact
 export type ContactConfigKey =
   | 'contact.phone'

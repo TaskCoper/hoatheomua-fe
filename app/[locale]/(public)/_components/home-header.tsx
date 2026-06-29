@@ -11,11 +11,13 @@ import {
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
+import { useGetConfigs } from '@/hooks/use-get-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
 import logo from '@/public/images/logo.png'
 import vine from '@/public/images/vine.png'
+import { CompanyConfigItem } from '@/types/config.type'
 import {
   GlobalIcon,
   LoginCircle01Icon,
@@ -28,9 +30,6 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
 import NavUser from './nav-user'
-
-const HOME_VIDEO_SRC =
-  'https://www.youtube.com/embed/NVYZ6v_jvko?autoplay=1&mute=1&loop=1&playlist=NVYZ6v_jvko&controls=0&playsinline=1&modestbranding=1&rel=0'
 
 const NAV_ITEMS = [
   { id: 1, labelKey: 'header.nav.home', href: '/' },
@@ -49,6 +48,9 @@ const LOCALE_OPTIONS = [
 
 export default function Header() {
   const { isAuthenticated, me, isGettingMe, isVerificationRequired } = useGetMe()
+
+  const { configs: companyConfigs } = useGetConfigs<CompanyConfigItem>({ group: 'company' })
+  const video = companyConfigs.find((c) => c.key === 'company.bg_video')?.value.value
 
   const { t } = useTranslation()
   const pathname = usePathname()
@@ -72,7 +74,7 @@ export default function Header() {
     <header className='relative isolate min-h-[18rem] w-full overflow-hidden bg-background sm:min-h-[26rem] lg:min-h-[36rem]'>
       <iframe
         title='Hoa Theo Mua home video'
-        src={HOME_VIDEO_SRC}
+        src={video}
         allow='autoplay; encrypted-media; picture-in-picture'
         referrerPolicy='strict-origin-when-cross-origin'
         className='pointer-events-none absolute left-1/2 top-1/2 z-0 h-[56.25vw] min-h-full w-[177.7778vh] min-w-full -translate-x-1/2 -translate-y-1/2 border-0'
