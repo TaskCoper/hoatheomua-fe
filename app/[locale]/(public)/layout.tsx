@@ -4,7 +4,7 @@ import pedalsRight from '@/public/images/pedals-right.png'
 import Image from 'next/image'
 import FloatingContact from './_components/floating-contact'
 import Footer from './_components/footer'
-import Header from './_components/header'
+import PublicHeader from './_components/public-header'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +17,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           className='wind-wiggle-right absolute -right-1.5 top-0 h-52 w-auto hidden lg:block'
         />
 
-        <Header />
+        <PublicHeader />
 
         <main className='flex-1'>{children}</main>
 
