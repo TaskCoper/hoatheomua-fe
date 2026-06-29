@@ -12,26 +12,26 @@ const CRITERIAS = [
   {
     id: 1,
     icon: Flower2Icon,
-    titleKey: 'home.criteria.fresh.title',
-    descriptionKey: 'home.criteria.fresh.description'
+    titleKey: 'home.criteria.affordable.title',
+    descriptionKey: 'home.criteria.affordable.description'
   },
   {
     id: 100,
     icon: DeliveryTruck01Icon,
-    titleKey: 'home.criteria.delivery.title',
-    descriptionKey: 'home.criteria.delivery.description'
+    titleKey: 'home.criteria.gardenFresh.title',
+    descriptionKey: 'home.criteria.gardenFresh.description'
   },
   {
     id: 200,
     icon: Award05Icon,
-    titleKey: 'home.criteria.artisan.title',
-    descriptionKey: 'home.criteria.artisan.description'
+    titleKey: 'home.criteria.fastDelivery.title',
+    descriptionKey: 'home.criteria.fastDelivery.description'
   },
   {
     id: 300,
     icon: PartyIcon,
-    titleKey: 'home.criteria.occasion.title',
-    descriptionKey: 'home.criteria.occasion.description'
+    titleKey: 'home.criteria.dedicatedSupport.title',
+    descriptionKey: 'home.criteria.dedicatedSupport.description'
   },
   {
     id: 400,
@@ -101,7 +101,7 @@ export default function CriteriaSection() {
               <p className='font-semibold text-foreground text-xs sm:text-sm lg:text-base line-clamp-1'>
                 {t(criteria.titleKey)}
               </p>
-              <p className='text-[0.625rem] text-foreground line-clamp-1'>{t(criteria.descriptionKey)}</p>
+              <p className='text-[0.625rem] text-foreground'>{t(criteria.descriptionKey)}</p>
             </div>
           </motion.div>
         ))}

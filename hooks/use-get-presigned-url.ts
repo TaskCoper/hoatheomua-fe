@@ -1,4 +1,4 @@
-import api, { type BaseResponse } from '@/lib/axios'
+import { apiTaskcoper, type BaseResponse } from '@/lib/axios'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -25,7 +25,7 @@ export const useGetPresignedUrl = () => {
     isPending: isGettingPresignedUrl
   } = useMutation({
     mutationFn: async ({ key, contentType }: GetPresignedUrlParams) => {
-      const { data } = await api.get<BaseResponse<GetPresignedUrlResponse>>('/v1/storages/presigned-url', {
+      const { data } = await apiTaskcoper.get<BaseResponse<GetPresignedUrlResponse>>('v1/storages/presigned-url', {
         params: {
           key,
           contentType

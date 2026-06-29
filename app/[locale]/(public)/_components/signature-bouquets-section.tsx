@@ -19,29 +19,8 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { SparkleDivider } from './sparkle-dividier'
 
-const SIGNATURE_BOUQUETS_PAGE_SIZE = 6
+const SIGNATURE_BOUQUETS_PAGE_SIZE = 8
 const SIGNATURE_BOUQUETS_CATEGORY_ID = [58901]
-
-const SIGNATURE_FLOWERS = [
-  'home.signatureBouquets.flowers.peony',
-  'home.signatureBouquets.flowers.phalaenopsis',
-  'home.signatureBouquets.flowers.calla',
-  'home.signatureBouquets.flowers.lilyOfTheValley',
-  'home.signatureBouquets.flowers.birdOfParadise',
-  'home.signatureBouquets.flowers.hyacinth',
-  'home.signatureBouquets.flowers.tulip',
-  'home.signatureBouquets.flowers.gardenRose',
-  'home.signatureBouquets.flowers.anemone'
-] as const
-
-const BOUQUET_IMAGE_STYLES = [
-  'scale-105 rotate-[-6deg]',
-  'scale-110 rotate-[8deg]',
-  'scale-95 rotate-[2deg]',
-  'scale-100 rotate-[-2deg]',
-  'scale-105 rotate-[5deg]',
-  'scale-100 rotate-[-8deg]'
-] as const
 
 const vndFormatter = new Intl.NumberFormat('vi-VN', {
   style: 'currency',
@@ -54,16 +33,6 @@ const formatVnd = (value: number) => vndFormatter.format(value)
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
   visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 18 } }
-}
-
-const listStagger: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } }
-}
-
-const listItem: Variants = {
-  hidden: { opacity: 0, x: -24 },
-  visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 200, damping: 20 } }
 }
 
 const cardStagger: Variants = {
@@ -84,7 +53,9 @@ const cardItem: Variants = {
 
 export default function SignatureBouquetsSection() {
   const { t } = useTranslation()
+  const [activeIndex, setActiveIndex] = useState(0)
   const [cursorStack, setCursorStack] = useState([0])
+
   const currentCursor = cursorStack.at(-1) ?? 0
   const isFirstPage = currentCursor === 0
   const nextParam = isFirstPage ? undefined : { id: currentCursor }
@@ -149,172 +120,135 @@ export default function SignatureBouquetsSection() {
       </motion.div>
 
       <section id='signature-bouquets' className='relative left-1/2 -translate-x-1/2 bg-background'>
-        <div className='mx-auto grid w-full max-w-7xl gap-4 px-4 lg:grid-cols-12'>
+        <div className='mx-auto grid w-full max-w-7xl gap-4 px-4'>
           <motion.div
+            key={products[0]?.id ?? 'empty'}
             initial='hidden'
-            whileInView='visible'
-            viewport={{ once: true, margin: '-60px' }}
-            variants={listStagger}
-            className='flex flex-col gap-2 items-center lg:items-start text-sm text-muted-foreground lg:col-span-5'
+            animate='visible'
+            variants={cardStagger}
+            className='grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6'
           >
-            {SIGNATURE_FLOWERS.map((flowerKey, index) => {
-              const isActive = index === 2
+            {products.map((product, index) => {
+              const isActive = index === activeIndex
+              const avatar = product.images?.avatar
+              const retail = product.prices?.retail ?? 0
 
               return (
-                <motion.button
-                  key={flowerKey}
-                  variants={listItem}
-                  whileHover={{ x: 6, scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-                  type='button'
-                  className={[
-                    'block w-full sm:w-fit rounded-xl px-3 py-2 text-center lg:text-left text-xs sm:text-sm transition-colors',
-                    isActive
-                      ? 'bg-card font-bold text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)]'
-                      : 'hover:text-primary'
-                  ].join(' ')}
+                <motion.article
+                  key={product.id}
+                  variants={cardItem}
+                  whileHover={{ y: -12, scale: 1.035 }}
+                  transition={{ type: 'spring', stiffness: 240, damping: 18 }}
+                  onHoverStart={() => setActiveIndex(index)}
+                  className={['group relative', isActive ? 'rounded-[1.75rem]' : ''].join(' ')}
                 >
-                  {t(flowerKey)}
-                </motion.button>
+                  {isActive ? (
+                    <div
+                      aria-hidden='true'
+                      className='pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-[1.9rem] border border-primary'
+                    />
+                  ) : null}
+
+                  <Link
+                    href={`/products/${product.id}`}
+                    className={[
+                      'relative z-10 flex flex-col overflow-hidden rounded-[1.75rem] bg-card shadow-[0_0.8rem_2rem_rgb(81_108_108_/_7%)]',
+                      isActive ? 'bg-white shadow-[0_1rem_2.5rem_rgb(81_108_108_/_16%)]' : ''
+                    ].join(' ')}
+                  >
+                    <div className='relative isolate flex h-36 items-center justify-center overflow-hidden bg-secondary/40'>
+                      {avatar ? (
+                        <Image
+                          src={avatar}
+                          alt={product.name ?? ''}
+                          fill
+                          sizes='(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw'
+                          loading='lazy'
+                          quality={70}
+                          className='object-cover transition-transform duration-700 ease-out group-hover:scale-105'
+                        />
+                      ) : (
+                        <>
+                          <motion.div
+                            aria-hidden='true'
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+                            className='absolute inset-3 rounded-2xl border border-dashed border-primary/15'
+                          />
+                          <div className='grid size-24 place-items-center rounded-full bg-primary/10 text-primary'>
+                            <HugeiconsIcon icon={FlowerIcon} className='size-10' />
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    <div className='flex items-end justify-between gap-4 p-4'>
+                      <div className='min-w-0 flex-1'>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h2 className='truncate text-base font-bold leading-tight text-foreground'>
+                                {product.name}
+                              </h2>
+                            </TooltipTrigger>
+
+                            <TooltipContent
+                              className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                              iconClassName=' bg-white fill-white'
+                            >
+                              {product.name}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
+                        <p className='text-xs font-medium text-foreground'>{formatVnd(retail)}</p>
+                      </div>
+
+                      <motion.button
+                        type='button'
+                        whileHover={{ scale: 1.15, rotate: -12 }}
+                        whileTap={{ scale: 0.92 }}
+                        transition={{ type: 'spring', stiffness: 380, damping: 12 }}
+                        onClick={(event) => event.preventDefault()}
+                        className='grid size-8 shrink-0 place-items-center rounded-full border border-foreground bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground'
+                        aria-label={t('home.signatureBouquets.addToCart', { name: product.name })}
+                      >
+                        <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
+                      </motion.button>
+                    </div>
+                  </Link>
+                </motion.article>
               )
             })}
           </motion.div>
 
-          <div className='lg:col-span-7'>
-            <motion.div
-              key={products[0]?.id ?? 'empty'}
-              initial='hidden'
-              animate='visible'
-              variants={cardStagger}
-              className='grid gap-4 sm:gap-6 md:gap-8 lg:gap-10 grid-cols-2 xl:grid-cols-3'
-            >
-              {products.map((product, index) => {
-                const isActive = index === 0
-                const imageStyle = BOUQUET_IMAGE_STYLES[index % BOUQUET_IMAGE_STYLES.length]
-                const avatar = product.images?.avatar
-                const retail = product.prices?.retail ?? 0
-
-                return (
-                  <motion.article
-                    key={product.id}
-                    variants={cardItem}
-                    whileHover={{ y: -12, scale: 1.035 }}
-                    transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-                    className={['group relative h-60', isActive ? 'rounded-[1.75rem]' : ''].join(' ')}
-                  >
-                    {isActive ? (
-                      <div
-                        aria-hidden='true'
-                        className='pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-[1.9rem] border border-primary'
-                      />
-                    ) : null}
-
-                    <Link
-                      href={`/products/${product.id}`}
-                      className={[
-                        'relative z-10 flex h-full flex-col justify-between rounded-[1.75rem] bg-card p-4 shadow-[0_0.8rem_2rem_rgb(81_108_108_/_7%)]',
-                        isActive ? 'rounded-[1.75rem] bg-white shadow-[0_1rem_2.5rem_rgb(81_108_108_/_16%)]' : ''
-                      ].join(' ')}
-                    >
-                      <div className='flex flex-1 items-center justify-center'>
-                        <motion.div
-                          animate={{ y: [0, -6, 0], rotate: [0, -2, 0, 2, 0] }}
-                          whileHover={{ scale: 1.12, rotate: -6 }}
-                          transition={{
-                            y: { duration: 3.5 + (index % 3) * 0.4, repeat: Infinity, ease: 'easeInOut' },
-                            rotate: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-                            scale: { type: 'spring', stiffness: 240, damping: 16 }
-                          }}
-                          className='flex items-center justify-center'
-                        >
-                          {avatar ? (
-                            <Image
-                              src={avatar}
-                              alt={product.name ?? ''}
-                              width={128}
-                              height={128}
-                              className={`h-32 w-32 rounded-2xl object-cover ${imageStyle}`}
-                              sizes='8rem'
-                              loading='lazy'
-                              quality={70}
-                            />
-                          ) : (
-                            <div className='grid size-32 place-items-center rounded-full bg-primary/10 text-primary'>
-                              <HugeiconsIcon icon={FlowerIcon} className='size-10' />
-                            </div>
-                          )}
-                        </motion.div>
-                      </div>
-
-                      <div className='flex items-end justify-between gap-4'>
-                        <div className='min-w-0 flex-1'>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <h2 className='truncate text-base font-bold leading-tight text-foreground'>
-                                  {product.name}
-                                </h2>
-                              </TooltipTrigger>
-
-                              <TooltipContent
-                                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                                iconClassName=' bg-white fill-white'
-                              >
-                                {product.name}
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          <p className='text-xs font-medium text-foreground'>{formatVnd(retail)}</p>
-                        </div>
-
-                        <motion.button
-                          type='button'
-                          whileHover={{ scale: 1.15, rotate: -12 }}
-                          whileTap={{ scale: 0.92 }}
-                          transition={{ type: 'spring', stiffness: 380, damping: 12 }}
-                          onClick={(event) => event.preventDefault()}
-                          className='grid size-8 shrink-0 place-items-center rounded-full border border-foreground bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground'
-                          aria-label={t('home.signatureBouquets.addToCart', { name: product.name })}
-                        >
-                          <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                        </motion.button>
-                      </div>
-                    </Link>
-                  </motion.article>
-                )
-              })}
-            </motion.div>
-
-            <Pagination className='mt-6'>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href='#signature-bouquets'
-                    text={t('products.grid.previous')}
-                    aria-disabled={!hasPreviousPage || isFetching}
-                    className={!hasPreviousPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
-                    onClick={handlePreviousPage}
-                  />
-                </PaginationItem>
-                <PaginationItem>
-                  <span className='flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm font-medium text-muted-foreground'>
-                    {cursorStack.length}
-                  </span>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext
-                    href='#signature-bouquets'
-                    text={t('products.grid.next')}
-                    aria-disabled={!hasNextPage || isFetching}
-                    className={!hasNextPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
-                    onClick={handleNextPage}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <Pagination className='mt-6'>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href='#signature-bouquets'
+                  text={t('products.grid.previous')}
+                  aria-disabled={!hasPreviousPage || isFetching}
+                  className={!hasPreviousPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
+                  onClick={handlePreviousPage}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <span className='flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm font-medium text-muted-foreground'>
+                  {cursorStack.length}
+                </span>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  href='#signature-bouquets'
+                  text={t('products.grid.next')}
+                  aria-disabled={!hasNextPage || isFetching}
+                  className={!hasNextPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
+                  onClick={handleNextPage}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       </section>
     </>

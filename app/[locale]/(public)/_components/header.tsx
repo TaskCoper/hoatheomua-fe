@@ -22,7 +22,6 @@ import {
   MailValidation01Icon,
   Menu01Icon,
   PackageIcon,
-  Search01Icon,
   ShoppingBasket03Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -172,15 +171,6 @@ export default function Header() {
               <LanguageSwitcher />
             </>
           )}
-
-          <Button
-            variant='outline'
-            size='icon-sm'
-            className='border-none ring ring-primary ring-inset'
-            aria-label={t('header.aria.search')}
-          >
-            <HugeiconsIcon icon={Search01Icon} />
-          </Button>
         </div>
 
         <Sheet>
@@ -198,7 +188,7 @@ export default function Header() {
             <SheetHeader className='border-b border-secondary'>
               <SheetTitle asChild>
                 <Link href='/' aria-label={t('header.brand')} className='flex items-center'>
-                  <Image src={logo} alt={t('header.logoAlt')} className='h-10 w-auto' />
+                  <Image src={logo} alt={t('header.logoAlt')} className='h-8 w-auto' />
                 </Link>
               </SheetTitle>
             </SheetHeader>
@@ -267,15 +257,6 @@ export default function Header() {
                           <HugeiconsIcon icon={PackageIcon} />
                         </Link>
                       </Button>
-
-                      <Button
-                        variant='outline'
-                        size='icon-sm'
-                        className='flex-1 border-none ring ring-primary ring-inset'
-                        aria-label={t('header.aria.search')}
-                      >
-                        <HugeiconsIcon icon={Search01Icon} />
-                      </Button>
                     </div>
                   )}
                 </>
@@ -291,15 +272,6 @@ export default function Header() {
                   </SheetClose>
 
                   <LanguageSwitcher className='w-full' />
-
-                  <Button
-                    variant='outline'
-                    size='icon-sm'
-                    className='w-full border-none ring ring-primary ring-inset'
-                    aria-label={t('header.aria.search')}
-                  >
-                    <HugeiconsIcon icon={Search01Icon} />
-                  </Button>
                 </>
               )}
             </div>

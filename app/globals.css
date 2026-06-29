@@ -176,6 +176,33 @@
 }
 
 @layer utilities {
+  .profile-scrollbar {
+    scrollbar-gutter: stable;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+  }
+
+  .profile-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  .profile-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .profile-scrollbar::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    background-color: color-mix(in oklab, var(--muted-foreground) 40%, transparent);
+    border-radius: 9999px;
+  }
+
+  .profile-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in oklab, var(--muted-foreground) 62%, transparent);
+  }
+
   .page-petal-drop {
     animation: page-petal-drop var(--petal-duration, 36s) linear var(--petal-delay, 0s) infinite;
     backface-visibility: hidden;

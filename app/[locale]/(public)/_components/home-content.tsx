@@ -6,7 +6,6 @@ import { motion, type Variants } from 'motion/react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import CriteriaSection from './criteria-section'
-import HeroSection from './hero-section'
 import ShopFreshFlowersSection from './shop-fresh-flowers-section'
 import SignatureBouquetsSection from './signature-bouquets-section'
 import TestimonialSection from './testimonial-section'
@@ -22,8 +21,6 @@ const bannerReveal: Variants = {
 export default function HomeContent() {
   return (
     <div className='relative overflow-hidden'>
-      <HeroSection />
-
       <CriteriaSection />
 
       <ShopFreshFlowersSection />

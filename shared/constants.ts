@@ -16,7 +16,12 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/about',
   '/recruitment',
   '/contact',
-  '/b2b'
+  '/b2b',
+  '/terms',
+  '/privacy',
+  '/returns',
+  '/delivery',
+  '/ordering'
 ])
 
 const normalizeRoutePath = (pathname: string) => {

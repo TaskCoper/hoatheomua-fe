@@ -1,11 +1,12 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import CheckoutDialog from '@/features/orders/components/checkout-dialog'
 import type { ProductUnit } from '@/features/products/types'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
-import { buildLineId, MAX_QUANTITY, useCartStore } from '@/stores/cart.store'
+import { buildLineId, MAX_QUANTITY, useCartStore, type CartItem } from '@/stores/cart.store'
 import { FlashIcon, MinusSignIcon, PlusSignIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
@@ -51,6 +52,7 @@ export default function ProductPurchaseBox({
 
   const [activeUnitId, setActiveUnitId] = useState<number | null>(hasVariants ? (variantOptions[0]?.id ?? null) : null)
   const [quantity, setQuantity] = useState(1)
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
 
   const activeUnit = hasVariants ? (variantOptions.find((unit) => unit.id === activeUnitId) ?? null) : null
   const currentRetail = activeUnit?.price?.retail ?? retail
@@ -119,8 +121,22 @@ export default function ProductPurchaseBox({
     toast.success(t('products.detail.purchase.addedToCart'), { description: productName })
   }
 
+  const buyNowItem = useMemo<CartItem>(() => {
+    const now = new Date().toISOString()
+    return {
+      lineId: targetLineId,
+      productId,
+      variantId,
+      quantity: effectiveQuantity,
+      selectedOptions,
+      addedAt: now,
+      updatedAt: now
+    }
+  }, [targetLineId, productId, variantId, effectiveQuantity, selectedOptions])
+
   const handleBuyNow = () => {
     if (!guardPurchase()) return
+    setIsCheckoutOpen(true)
   }
 
   return (
@@ -254,6 +270,8 @@ export default function ProductPurchaseBox({
           </Button>
         </motion.div>
       </div>
+
+      <CheckoutDialog items={[buyNowItem]} open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen} />
     </div>
   )
 }

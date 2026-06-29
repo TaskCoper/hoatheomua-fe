@@ -10,12 +10,6 @@ import type { Metadata } from 'next'
 import ProductsContent from './_components/products-content'
 
 const PRODUCTS_PAGE_SIZE = 12
-
-// Page is ISR (revalidates every 10 min). Filters live on the client via nuqs
-// inside `<ProductsCatalogSection>`, which drives `<ProductGrid>` to re-fetch
-// when the URL changes — so the static hero/occasions/promise blocks stay in
-// the ISR cache while the grid alone reacts to filter selection.
-// Mirrors `REVALIDATE.productsList` in shared/cache.ts.
 export const revalidate = 600
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
@@ -43,6 +37,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   return (
     <>
       <JsonLd data={buildProductsCollectionJsonLd(locale, initialItems)} />
+
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ProductsContent />
       </HydrationBoundary>

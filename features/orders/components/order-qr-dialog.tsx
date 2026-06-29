@@ -119,7 +119,7 @@ export default function OrderQrDialog({ orderId, open, onOpenChange }: OrderQrDi
                     {paymentRows.map((row) => (
                       <div key={row.label} className='grid grid-cols-[7rem_minmax(0,1fr)] items-start gap-2 text-sm'>
                         <dt className='text-muted-foreground'>{row.label}</dt>
-                        <dd className='wrap-break-word font-medium text-foreground'>{row.value}</dd>
+                        <dd className='wrap-break-word font-medium text-foreground text-right'>{row.value}</dd>
                       </div>
                     ))}
                   </dl>

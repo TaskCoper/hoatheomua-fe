@@ -34,7 +34,12 @@ export interface OrderDetail {
   ahahaMoveOrderId: string | null
   ahahaMoveTrackingUrl: string | null
   qrCodeUrl: string | null
-  transaction: unknown | null
+  transaction: {
+    transferAmount: number
+    code: string
+    gateway: string
+    transactionDate: string
+  } | null
 }
 
 export interface CheckoutPayload {

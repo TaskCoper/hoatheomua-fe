@@ -133,7 +133,11 @@
     },
     "button": {
       "clearAll": "Xóa tất cả",
-      "clear": "Xoá"
+      "clear": "Xoá",
+      "cancel": "Hủy",
+      "save": "Lưu",
+      "upload": "Tải lên",
+      "remove": "Gỡ bỏ"
     },
     "error": {
       "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về",
@@ -147,7 +151,7 @@
       "required": "{field} là bắt buộc.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
       "maxLength": "{field} không được vượt quá {max} ký tự.",
-      "phoneNumber": "Vui lòng nhập số điện thoại hợp lệ.",
+      "phoneNumber": "Số điện thoại phải có 10 hoặc 11 chữ số và bắt đầu bằng 0.",
       "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái in hoa, 1 số và 1 ký tự đặc biệt.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",
       "fixErrors": "Vui lòng kiểm tra lại các trường thông tin."
@@ -580,6 +584,9 @@
       "ward": "Phường / Xã",
       "wardPlaceholder": "Chọn phường / xã",
       "wardSearchPlaceholder": "Tìm phường / xã",
+      "savedAddress": "Địa chỉ đã lưu",
+      "savedAddressPlaceholder": "Chọn địa chỉ đã lưu",
+      "savedAddressSearchPlaceholder": "Tìm địa chỉ đã lưu",
       "remarks": "Ghi chú",
       "remarksPlaceholder": "Ghi chú cho người bán (tuỳ chọn)",
       "orderTime": "Ngày giao hàng",
@@ -637,6 +644,11 @@
         "amount": "Số tiền",
         "content": "Nội dung",
         "waiting": "Đang chờ xác nhận thanh toán…"
+      },
+      "detail": {
+        "title": "Chi tiết đơn hàng",
+        "description": "Xem thông tin đơn hàng đã thanh toán.",
+        "openHint": "Nhấn để xem chi tiết đơn hàng"
       }
     }
   },
@@ -746,53 +758,53 @@
     },
     "criteria": {
       "branchAlt": "Cành lá trang trí",
-      "fresh": {
-        "title": "Hoa Tươi Mỗi Ngày",
-        "description": "Tuyển chọn mỗi ngày, giao tươi nguyên"
+      "affordable": {
+        "title": "Giá Hợp Lý",
+        "description": "Đa dạng phân khúc, phù hợp mọi ngân sách"
       },
-      "delivery": {
-        "title": "Giao Hàng Trong Ngày",
-        "description": "Giao ngay hôm nay, đảm bảo đúng hẹn"
+      "gardenFresh": {
+        "title": "Hoa Từ Vườn",
+        "description": "Thu hái trực tiếp từ vườn, vận chuyển trong ngày"
       },
-      "artisan": {
-        "title": "Nghệ Nhân Tin Cậy",
-        "description": "Cắm hoa bởi nghệ nhân chuyên nghiệp"
+      "fastDelivery": {
+        "title": "Giao Nhanh 2H",
+        "description": "Tự đặt giao nhanh đúng giờ ngay trên web, trong nội thành TP.HCM"
       },
-      "occasion": {
-        "title": "Mọi Dịp Lễ",
-        "description": "Từ sinh nhật đến tiệc cưới"
+      "dedicatedSupport": {
+        "title": "Đồng Hành Tận Tâm",
+        "description": "Tư vấn sát sao, hiểu đúng nhu cầu"
       },
       "ecoPack": {
         "title": "Đóng Gói Thân Thiện",
-        "description": "Trân trọng từng chi tiết với thiên nhiên"
+        "description": "Tôn trọng giá trị xanh, gần gũi thiên nhiên"
       }
     },
     "whyChooseUs": {
-      "title": "Giá Trị Cốt Lõi",
-      "description": "Chúng tôi tin rằng hoa cần đến tay bạn tươi mới và rực rỡ như khoảnh khắc vừa được hái. Từ việc tuyển chọn từng bông hoa, đóng gói cẩn thận đến giao hàng đúng hẹn, mỗi bước đều được thực hiện bằng cả sự tận tâm.",
+      "title": "Lời Hứa Từ Hoa Theo Mùa",
+      "description": "Chúng tôi tin hoa cần đến tay bạn tươi mới và rực rỡ như khoảnh khắc vừa được hái. Mỗi bó hoa đều được đảm bảo bằng chính sự tận tâm của chúng tôi.",
       "bannerAlt": "Bó hoa tươi Hoa Theo Mùa",
       "features": {
         "fresh": {
-          "title": "Sản Phẩm Tươi",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững."
+          "title": "Tươi 100%",
+          "description": "Hoa thu hái trực tiếp từ nhà vườn trong ngày, luôn tươi mới."
         },
-        "natural": {
-          "title": "100% Tự Nhiên",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững."
+        "payment": {
+          "title": "An Tâm Thanh Toán",
+          "description": "Thanh toán online an toàn ngay trên web, hỗ trợ thẻ tín dụng, minh bạch từng đơn hàng."
         },
-        "care": {
-          "title": "Chăm Sóc Tận Tâm",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế."
+        "warranty": {
+          "title": "Bảo Hành & Đổi/Trả",
+          "description": "Hoa không đạt chất lượng như mô tả, bạn được bảo hành đổi/trả ngay."
         },
         "refund": {
-          "title": "Hoàn Tiền Đảm Bảo",
-          "description": "Xây dựng một thương hiệu không thể diễn ra trong một sớm một chiều. Cần rất nhiều nỗ lực để vun đắp những mối quan hệ bền vững với khách hàng — và còn nhiều hơn thế."
+          "title": "Hoàn Tiền Khi Bất Khả Kháng",
+          "description": "Với những trường hợp ngoài kiểm soát, bạn luôn được hoàn tiền minh bạch."
         }
       }
     },
     "signatureBouquets": {
       "title": "Bó Hoa Đặc Trưng",
-      "description": "Được cắm thủ công tỉ mỉ bởi những nghệ nhân chuyên nghiệp với các loài hoa tươi mới nhất, mỗi bó hoa của chúng tôi đều mang đến vẻ đẹp, hương thơm và ấn tượng khó quên cho mọi dịp.",
+      "description": "Mỗi sản phẩm là một dấu ấn riêng - nơi sự tinh tế thể hiện trong từng chi tiết sản phẩm để mang đến vẻ đẹp không thể nhầm lẫn.",
       "addToCart": "Thêm {name} vào giỏ",
       "flowers": {
         "peony": "Mẫu Đơn — Paeonia lactiflora",
@@ -821,9 +833,9 @@
       "authorName": "Nguyễn Thị Mai",
       "authorRole": "Quản Lý Sự Kiện"
     },
-    "shopFresh": {
-      "title": "Mua Hoa Tươi",
-      "description": "Khám phá bộ sưu tập hoa tươi được tuyển chọn kỹ lưỡng, sắp đặt tinh tế bởi những nghệ nhân chuyên nghiệp, mang đến vẻ đẹp, hương thơm và sự thanh lịch trường tồn ngay tận cửa nhà bạn."
+    "dailyFlowers": {
+      "title": "Hoa Mỗi Ngày",
+      "description": "Không cần dịp đặc biệt để có hoa trong nhà. Mỗi bó hoa được chọn lựa và sắp đặt tinh tế, mang vẻ đẹp tự nhiên đến với những điều bình thường nhất của bạn mỗi ngày."
     }
   },
   "about": {
@@ -1032,7 +1044,7 @@
       }
     },
     "catalog": {
-      "title": "Tuyển Chọn Hôm Nay",
+      "title": "Phụ Kiện Chơi Hoa",
       "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc."
     },
     "filter": {
@@ -1361,5 +1373,107 @@
       "primary": "Gửi brief",
       "secondary": "Xem sản phẩm của chúng tôi"
     }
+  },
+  "policies": {
+    "common": {
+      "home": "Trang chủ",
+      "eyebrow": "Chính sách Hoa Theo Mùa",
+      "contact": {
+        "title": "Còn thắc mắc? Hoa Theo Mùa luôn ở bên bạn.",
+        "description": "Đội ngũ tư vấn lắng nghe và hỗ trợ bạn từ 7h00 đến 18h00 mỗi ngày, kể cả cuối tuần.",
+        "hotlineLabel": "Hotline",
+        "hotlineValue": "0931 734 353",
+        "emailLabel": "Email",
+        "emailValue": "sale.hoatheomua@gmail.com"
+      }
+    },
+    "terms": {
+      "breadcrumb": "Điều khoản sử dụng",
+      "title": "Điều khoản sử dụng",
+      "subtitle": "Những điều khoản và điều kiện áp dụng khi bạn truy cập, sử dụng website hoatheomua.net và các dịch vụ do Hoa Theo Mùa cung cấp."
+    },
+    "privacy": {
+      "breadcrumb": "Chính sách bảo mật thông tin",
+      "title": "Chính sách bảo mật thông tin",
+      "subtitle": "Hoa Theo Mùa cam kết tôn trọng và bảo mật mọi thông tin cá nhân khách hàng chia sẻ trong quá trình mua sắm và sử dụng dịch vụ."
+    },
+    "returns": {
+      "breadcrumb": "Chính sách đổi trả",
+      "title": "Chính sách đổi trả",
+      "subtitle": "Hoa Theo Mùa luôn đặt sự hài lòng của khách hàng lên hàng đầu — chính sách đổi trả minh bạch, nhanh chóng và đúng cam kết."
+    },
+    "delivery": {
+      "breadcrumb": "Chính sách giao – nhận và kiểm tra hàng",
+      "title": "Chính sách giao – nhận & kiểm tra hàng",
+      "subtitle": "Quy trình giao – nhận và kiểm tra hàng tại Hoa Theo Mùa được thiết kế để mỗi đơn hoa đến tay bạn vẹn nguyên cảm xúc.",
+      "effectiveDate": "Áp dụng từ ngày 01/01/2022"
+    },
+    "ordering": {
+      "breadcrumb": "Hướng dẫn đặt hàng & thanh toán",
+      "title": "Hướng dẫn đặt hàng & thanh toán",
+      "subtitle": "Ba cách đặt hoa và hai phương thức thanh toán linh hoạt — Hoa Theo Mùa giúp bạn gửi yêu thương chỉ trong vài phút."
+    }
+  },
+  "profile": {
+    "title": "Hồ sơ cá nhân",
+    "viewProfile": "Xem hồ sơ",
+    "fullName": "Họ và tên",
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "address": "Địa chỉ",
+    "phoneNumber": "Số điện thoại",
+    "avatar": "Ảnh đại diện",
+    "coverImageUrl": "Ảnh bìa",
+    "city": "Thành phố",
+    "state": "Tỉnh/Trạng thái",
+    "timeZone": "Múi giờ",
+    "notProvided": "Chưa cập nhật",
+    "joinedOn": "Tham gia",
+    "tabInfo": "Cá nhân",
+    "tabAddress": "Địa chỉ",
+    "tabPassword": "Mật khẩu",
+    "defaultAddress": "Mặc định",
+    "noAddress": "Chưa có địa chỉ nào",
+    "addressPermissionDenied": "Bạn chỉ có thể xem địa chỉ của tài khoản hiện tại.",
+    "passwordComingSoon": "Tính năng đổi mật khẩu sẽ sớm ra mắt",
+    "personalInfoTitle": "Thông tin cá nhân",
+    "personalInfoDescription": "Cập nhật thông tin tài khoản của bạn.",
+    "personalInfoUpdated": "Đã cập nhật thông tin cá nhân",
+    "editPersonalInfo": "Chỉnh sửa thông tin",
+    "addressListTitle": "Địa chỉ của bạn",
+    "addressListDescription": "Quản lý các địa chỉ giao hàng.",
+    "addAddress": "Thêm địa chỉ",
+    "editAddress": "Sửa địa chỉ",
+    "editAddressDescription": "Cập nhật thông tin địa chỉ giao hàng của bạn.",
+    "addAddressDescription": "Tạo một địa chỉ mới.",
+    "createAddress": "Tạo địa chỉ",
+    "updateAddress": "Cập nhật địa chỉ",
+    "addressCreated": "Đã tạo địa chỉ",
+    "addressUpdated": "Đã cập nhật địa chỉ",
+    "addressDeleted": "Đã xóa địa chỉ",
+    "addressDefaultSet": "Đã cập nhật địa chỉ mặc định",
+    "setDefaultAddress": "Đặt làm mặc định",
+    "deleteAddress": "Xóa địa chỉ",
+    "confirmDeleteAddress": "Xóa địa chỉ này?",
+    "confirmDeleteAddressDescription": "Xác nhận xóa địa chỉ của {receiverName}.",
+    "addressReceiverName": "Tên người nhận",
+    "addressPhoneNumber": "Số điện thoại",
+    "addressLine": "Địa chỉ",
+    "addressWard": "Phường/Xã",
+    "addressCity": "Thành phố",
+    "addressCountry": "Quốc gia",
+    "addressMapId": "Map ID",
+    "addressLatitude": "Vĩ độ",
+    "addressLongitude": "Kinh độ",
+    "addressIsDefault": "Đặt làm mặc định",
+    "changePasswordTitle": "Đổi mật khẩu",
+    "changePasswordDescription": "Đặt mật khẩu mới cho tài khoản của bạn.",
+    "currentPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmNewPassword": "Xác nhận mật khẩu mới",
+    "changePassword": "Đổi mật khẩu",
+    "passwordUpdated": "Đã cập nhật mật khẩu"
   }
 }

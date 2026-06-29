@@ -15,14 +15,14 @@ const WHY_CHOOSE_FEATURES = [
   },
   {
     number: '02',
-    titleKey: 'home.whyChooseUs.features.natural.title',
-    descriptionKey: 'home.whyChooseUs.features.natural.description',
+    titleKey: 'home.whyChooseUs.features.payment.title',
+    descriptionKey: 'home.whyChooseUs.features.payment.description',
     className: 'lg:-right-2 lg:top-18 xl:right-20 xl:top-22 2xl:right-18 2xl:top-22'
   },
   {
     number: '03',
-    titleKey: 'home.whyChooseUs.features.care.title',
-    descriptionKey: 'home.whyChooseUs.features.care.description',
+    titleKey: 'home.whyChooseUs.features.warranty.title',
+    descriptionKey: 'home.whyChooseUs.features.warranty.description',
     className: 'lg:left-28 lg:bottom-18 xl:left-50 xl:bottom-22 2xl:left-52 2xl:bottom-22'
   },
   {
