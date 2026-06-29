@@ -1,11 +1,15 @@
 'use client'
 
+import { useGetCompanyAddress } from '@/hooks/use-get-company-address'
+import { useGetConfigs } from '@/hooks/use-get-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
+import { CompanyConfigItem, ContactConfigItem } from '@/types/config.type'
 import { Facebook01Icon, InstagramIcon, Mail01Icon, MessageMultiple01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
+import { useMemo } from 'react'
 
 const POLICIES = [
   { labelKey: 'footer.policies.terms', href: '/terms' },
@@ -27,15 +31,40 @@ const FEATURED_PRODUCTS = [
   'footer.featured.orchid'
 ] as const
 
-const SOCIALS = [
-  { icon: Facebook01Icon, label: 'Facebook', href: '#' },
-  { icon: Mail01Icon, label: 'Email', href: '#' },
-  { icon: MessageMultiple01Icon, label: 'Zalo', href: '#' },
-  { icon: InstagramIcon, label: 'Instagram', href: '#' }
-]
-
 export default function Footer() {
   const { t } = useTranslation()
+  const { configs: companyConfigs } = useGetConfigs<CompanyConfigItem>({ group: 'company' })
+  const { configs: contactConfigs } = useGetConfigs<ContactConfigItem>({ group: 'contact' })
+
+  const { companyAddress } = useGetCompanyAddress()
+
+  const companyInfo = companyConfigs.find((c) => c.key === 'company.info')
+  const website = companyConfigs.find((c) => c.key === 'company.website')
+  const businessId = companyConfigs.find((c) => c.key === 'company.gpkd')
+  const hotlines = companyConfigs.find((c) => c.key === 'company.hotlines')
+
+  const facebook = contactConfigs.find((c) => c.key === 'contact.facebook')
+  const instagram = contactConfigs.find((c) => c.key === 'contact.instagram')
+  const phone = contactConfigs.find((c) => c.key === 'contact.phone')
+  const email = contactConfigs.find((c) => c.key === 'contact.email')
+
+  const SOCIALS = useMemo(() => {
+    return [
+      { icon: Facebook01Icon, label: 'Facebook', href: facebook?.value.value || '#' },
+      { icon: Mail01Icon, label: 'Email', href: email?.value.value ? `mailto:${email?.value.value}` : '#' },
+      { icon: MessageMultiple01Icon, label: 'Phone', href: phone?.value.value ? `sms:${phone?.value.value}` : '#' },
+      { icon: InstagramIcon, label: 'Instagram', href: instagram?.value.value || '#' }
+    ]
+  }, [facebook, instagram, phone, email])
+
+  const fullAddress = companyAddress?.addressLine
+    ? `${companyAddress.addressLine}, ${companyAddress.ward}, ${companyAddress.city}, ${companyAddress.country}`
+    : ''
+  const hasCoordinates = Number.isFinite(companyAddress?.latitude) && Number.isFinite(companyAddress?.longitude)
+  const mapQuery = hasCoordinates ? `${companyAddress?.latitude},${companyAddress?.longitude}` : fullAddress
+  const googleMapSrc = mapQuery
+    ? `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`
+    : undefined
 
   return (
     <footer className='bg-background space-y-6 sm:space-y-8'>
@@ -46,22 +75,24 @@ export default function Footer() {
             <p className='text-base sm:text-lg font-bold'>{t('footer.company')}</p>
             <div className='space-y-2 text-xs sm:text-sm leading-relaxed text-foreground'>
               <p>
-                <span className='font-semibold'>{t('footer.brand')}</span> - {t('footer.description')}
+                <span className='font-semibold'>{companyInfo?.value.value}</span>
+                {companyInfo?.value.description && ` - ${companyInfo.value.description}`}
               </p>
               <p>
-                <span className='font-semibold'>{t('footer.addressLabel')}</span> {t('footer.address')}
+                <span className='font-semibold'>{t('footer.addressLabel')}</span> {fullAddress}
               </p>
               <p>
-                <span className='font-semibold'>{t('footer.hotlineLabel')}</span> {t('footer.hotline')}
+                <span className='font-semibold'>{t('footer.hotlineLabel')}</span>{' '}
+                {hotlines?.value.options.map((o) => o.value).join(' - ')}
               </p>
               <p>
                 <span className='font-semibold'>{t('footer.directorLabel')}</span> {t('footer.director')}
               </p>
               <p>
-                <span className='font-semibold'>{t('footer.websiteLabel')}</span> {t('footer.website')}
+                <span className='font-semibold'>{t('footer.websiteLabel')}</span> {website?.value.value}
               </p>
               <p>
-                <span className='font-semibold'>{t('footer.businessIdLabel')}</span> {t('footer.businessId')}
+                <span className='font-semibold'>{t('footer.businessIdLabel')}</span> {businessId?.value.value}
               </p>
             </div>
           </div>
@@ -97,13 +128,15 @@ export default function Footer() {
           <div className='space-y-2 lg:col-span-3'>
             <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.mapHeading')}</h2>
             <div className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md'>
-              <iframe
-                src='https://www.google.com/maps?q=13A+Dao+Duy+Anh,+Phu+Nhuan,+Ho+Chi+Minh&output=embed'
-                title={t('footer.mapTitle')}
-                className='h-40 w-full sm:h-48 lg:h-44'
-                loading='lazy'
-                referrerPolicy='no-referrer-when-downgrade'
-              />
+              {googleMapSrc && (
+                <iframe
+                  src={googleMapSrc}
+                  title={t('footer.mapTitle')}
+                  className='h-40 w-full sm:h-48 lg:h-44'
+                  loading='lazy'
+                  referrerPolicy='no-referrer-when-downgrade'
+                />
+              )}
             </div>
             <div className='flex items-center gap-3'>
               {SOCIALS.map((social) => (

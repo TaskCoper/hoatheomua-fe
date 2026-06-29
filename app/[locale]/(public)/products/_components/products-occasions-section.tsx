@@ -1,73 +1,18 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useGetConfigs } from '@/hooks/use-get-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import image10 from '@/public/images/10.png'
-import image2 from '@/public/images/2.png'
-import image3 from '@/public/images/3.png'
-import image5 from '@/public/images/5.png'
-import image6 from '@/public/images/6.png'
-import image7 from '@/public/images/7.png'
 import rightBranch from '@/public/images/right-branch.png'
-import { ArrowRight02Icon, FlowerIcon } from '@hugeicons/core-free-icons'
+import { OccasionsCollection, OccasionsCollectionConfigItem } from '@/types/config.type'
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
+import { useMemo } from 'react'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
-
-const OCCASIONS = [
-  {
-    id: 'birthday',
-    occasionKey: 'products.occasions.items.birthday.occasion',
-    nameKey: 'products.occasions.items.birthday.name',
-    descriptionKey: 'products.occasions.items.birthday.description',
-    image: image2,
-    accent: 'bg-rose-100/80'
-  },
-  {
-    id: 'love',
-    occasionKey: 'products.occasions.items.love.occasion',
-    nameKey: 'products.occasions.items.love.name',
-    descriptionKey: 'products.occasions.items.love.description',
-    image: image3,
-    accent: 'bg-amber-100/80'
-  },
-  {
-    id: 'opening',
-    occasionKey: 'products.occasions.items.opening.occasion',
-    nameKey: 'products.occasions.items.opening.name',
-    descriptionKey: 'products.occasions.items.opening.description',
-    image: image10,
-    accent: 'bg-secondary/60'
-  },
-  {
-    id: 'wedding',
-    occasionKey: 'products.occasions.items.wedding.occasion',
-    nameKey: 'products.occasions.items.wedding.name',
-    descriptionKey: 'products.occasions.items.wedding.description',
-    image: image5,
-    accent: 'bg-lime-100/70'
-  },
-  {
-    id: 'orchid',
-    occasionKey: 'products.occasions.items.orchid.occasion',
-    nameKey: 'products.occasions.items.orchid.name',
-    descriptionKey: 'products.occasions.items.orchid.description',
-    image: image6,
-    accent: 'bg-yellow-100/75'
-  },
-  {
-    id: 'congrats',
-    occasionKey: 'products.occasions.items.congrats.occasion',
-    nameKey: 'products.occasions.items.congrats.name',
-    descriptionKey: 'products.occasions.items.congrats.description',
-    image: image7,
-    accent: 'bg-sky-100/70'
-  }
-] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -80,18 +25,30 @@ const cardStagger: Variants = {
 }
 
 const cardItem: Variants = {
-  hidden: { opacity: 0, y: 50, scale: 0.88, rotate: -2 },
+  hidden: { opacity: 0, y: 40, scale: 0.92 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
-    rotate: 0,
     transition: { type: 'spring', stiffness: 140, damping: 16 }
   }
 }
 
 export default function ProductsOccasionsSection() {
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
+  const { configs } = useGetConfigs<OccasionsCollectionConfigItem>({ group: 'occasions' })
+
+  const cards = useMemo(() => {
+    const raw = configs.find((c) => c.key === 'occasions.collection')?.value.value
+    if (!raw) return []
+
+    try {
+      const parsed = JSON.parse(raw) as OccasionsCollection
+      return (parsed.cards ?? []).filter((card) => card.enabled)
+    } catch {
+      return []
+    }
+  }, [configs])
 
   return (
     <section id='occasion' className='relative mt-4 sm:mt-6 md:mt-8 lg:mt-10 px-4'>
@@ -133,118 +90,90 @@ export default function ProductsOccasionsSection() {
         aria-hidden='true'
       />
 
-      <motion.div
-        initial='hidden'
-        whileInView='visible'
-        viewport={{ once: true, margin: '-60px' }}
-        variants={cardStagger}
-        className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3 lg:gap-5'
-      >
-        {OCCASIONS.map((line) => {
-          const name = t(line.nameKey)
+      {cards.length > 0 && (
+        <motion.div
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, margin: '-60px' }}
+          variants={cardStagger}
+          className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6'
+        >
+          {cards.map((card) => {
+            const name = card.name[locale]
 
-          return (
-            <motion.article
-              key={line.id}
-              variants={cardItem}
-              whileHover={{ y: -12, scale: 1.025 }}
-              transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-              className='group relative flex flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:rounded-2xl lg:rounded-3xl'
-            >
-              <div
-                className={`relative isolate flex h-44 items-center justify-center overflow-hidden sm:h-36 md:h-40 lg:h-44 ${line.accent}`}
+            return (
+              <motion.article
+                key={card.id}
+                variants={cardItem}
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ type: 'spring', stiffness: 240, damping: 18 }}
+                className='group relative flex h-44 overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'
               >
-                <motion.div
-                  aria-hidden='true'
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-                  className='absolute inset-3 rounded-2xl border border-dashed border-primary/15 sm:inset-2 lg:inset-3'
-                />
-                <motion.div
-                  animate={{ y: [0, -6, 0], rotate: [0, -2, 0, 2, 0] }}
-                  whileHover={{ scale: 1.15, rotate: -6 }}
-                  transition={{
-                    y: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
-                    rotate: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-                    scale: { type: 'spring', stiffness: 240, damping: 16 }
-                  }}
-                  className='flex items-center justify-center'
-                >
+                <div className='relative w-2/5 shrink-0 overflow-hidden'>
                   <Image
-                    src={line.image}
+                    src={card.image}
                     alt={name}
-                    className='h-36 w-auto object-contain sm:h-28 md:h-32 lg:h-40'
-                    loading='lazy'
+                    fill
+                    sizes='(min-width: 1024px) 16rem, (min-width: 640px) 14rem, 12rem'
+                    className='object-cover'
                   />
-                </motion.div>
-                <motion.span
-                  whileHover={{ scale: 1.12, rotate: -3 }}
-                  transition={{ type: 'spring', stiffness: 360, damping: 14 }}
-                  className='absolute left-3 top-3 inline-flex max-w-[calc(100%-1.5rem)] sm:left-2 sm:top-2 sm:max-w-[calc(100%-1rem)] lg:left-3 lg:top-3 lg:max-w-[calc(100%-1.5rem)]'
-                >
-                  <Badge
-                    variant='secondary'
-                    className='bg-card/90 px-2 text-[0.625rem] font-medium text-primary backdrop-blur-sm ring-1 ring-foreground/5 hover:bg-card/90'
+                  <div
+                    aria-hidden='true'
+                    className='pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-r from-transparent to-card'
+                  />
+                </div>
+
+                <div className='flex flex-1 flex-col justify-between gap-2 p-4 lg:p-5'>
+                  <div className='space-y-1.5'>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h2 className='line-clamp-1 font-title text-lg font-bold leading-tight text-primary lg:text-xl'>
+                            {name}
+                          </h2>
+                        </TooltipTrigger>
+
+                        <TooltipContent
+                          className='max-w-55 rounded-3xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                          iconClassName=' bg-white fill-white'
+                        >
+                          {name}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <p className='line-clamp-2 text-xs leading-relaxed text-foreground'>{card.description[locale]}</p>
+                  </div>
+
+                  <motion.div
+                    whileHover={{ x: 4 }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 16 }}
+                    className='inline-flex w-fit'
                   >
-                    <motion.span
-                      animate={{ rotate: [0, 12, -8, 0] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                      className='inline-flex'
+                    <Button
+                      asChild
+                      variant='link'
+                      size='sm'
+                      className='h-auto gap-1 px-0 text-xs font-semibold text-primary hover:text-foreground'
                     >
-                      <HugeiconsIcon icon={FlowerIcon} className='size-3.5 shrink-0' />
-                    </motion.span>
-                    <span className='truncate'>{t(line.occasionKey)}</span>
-                  </Badge>
-                </motion.span>
-              </div>
-
-              <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <h2 className='font-title text-lg font-bold leading-tight text-primary sm:text-base md:text-lg lg:text-xl'>
-                        {name}
-                      </h2>
-                    </TooltipTrigger>
-
-                    <TooltipContent
-                      className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                      iconClassName=' bg-white fill-white'
-                    >
-                      {name}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <p className='flex-1 text-xs leading-relaxed text-foreground'>{t(line.descriptionKey)}</p>
-
-                <motion.div
-                  whileHover={{ x: 4 }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 16 }}
-                  className='mt-1 inline-flex w-fit'
-                >
-                  <Button
-                    asChild
-                    variant='link'
-                    size='sm'
-                    className='h-auto gap-1 px-0 text-xs font-semibold text-primary hover:text-foreground'
-                  >
-                    <Link href={`/products?occasion=${line.id}`}>
-                      {t('products.occasions.explore')}
-                      <motion.span
-                        className='inline-flex'
-                        animate={{ x: [0, 6, 0] }}
-                        transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                      >
-                        <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
-                      </motion.span>
-                    </Link>
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.article>
-          )
-        })}
-      </motion.div>
+                      <Link href={`/products?occasion=${card.id}`}>
+                        {t('products.occasions.explore')}
+                        <motion.span
+                          className='inline-flex'
+                          animate={{ x: [0, 6, 0] }}
+                          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                        >
+                          <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
+                        </motion.span>
+                      </Link>
+                    </Button>
+                  </motion.div>
+                </div>
+              </motion.article>
+            )
+          })}
+        </motion.div>
+      )}
     </section>
   )
 }
