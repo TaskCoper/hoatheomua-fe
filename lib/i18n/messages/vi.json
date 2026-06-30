@@ -15,7 +15,8 @@
       "passwordPlaceholder": "Nhập mật khẩu",
       "forgotPassword": "Quên mật khẩu?",
       "submit": "Đăng nhập",
-      "signUpPrompt": "Chưa có tài khoản? Đăng ký"
+      "signUpPrompt": "Chưa có tài khoản? Đăng ký",
+      "customerOnly": "Chỉ dành cho tài khoản khách hàng. Vui lòng sử dụng cổng quản trị để đăng nhập."
     },
     "signUp": {
       "label": "Đăng ký",

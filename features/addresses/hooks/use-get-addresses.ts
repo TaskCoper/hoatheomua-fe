@@ -6,7 +6,11 @@ interface UseGetAddressesOptions {
 }
 
 export const useGetAddresses = ({ enabled = true }: UseGetAddressesOptions = {}) => {
-  const { data: addresses = [], isPending, isFetching } = useQuery({
+  const {
+    data: addresses = [],
+    isPending,
+    isFetching
+  } = useQuery({
     queryKey: ['addresses'],
     queryFn: () => addressService.getAddresses(),
     enabled,

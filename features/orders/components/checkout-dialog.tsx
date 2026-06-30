@@ -69,7 +69,7 @@ export default function CheckoutDialog({
 
   const [lastPayload, setLastPayload] = useState<CheckoutPayload | null>(null)
 
-  const { addresses } = useGetAddresses({ enabled: open })
+  const { addresses, isLoading: isLoadingAddresses } = useGetAddresses({ enabled: open })
   const [selectedAddressId, setSelectedAddressId] = useState<string>('')
   const hasInitializedRef = useRef(false)
 
@@ -208,6 +208,10 @@ export default function CheckoutDialog({
                 }
               }}
             />
+          ) : isLoadingAddresses ? (
+            <div className='flex items-center justify-center py-12'>
+              <Spinner />
+            </div>
           ) : (
             <form onSubmit={handleSubmit} className='flex flex-col gap-4 overflow-y-auto pr-1'>
               {checkoutItems.length > 0 ? <CheckoutItemsPreview items={checkoutItems} /> : null}

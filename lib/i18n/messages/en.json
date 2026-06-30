@@ -15,7 +15,8 @@
       "passwordPlaceholder": "Enter your password",
       "forgotPassword": "Forgot password?",
       "submit": "Sign in",
-      "signUpPrompt": "Don't have an account? Sign up"
+      "signUpPrompt": "Don't have an account? Sign up",
+      "customerOnly": "Customer accounts only. Please use the admin portal to sign in."
     },
     "signUp": {
       "label": "Sign up",
