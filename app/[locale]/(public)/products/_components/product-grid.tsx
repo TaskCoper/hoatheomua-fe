@@ -22,7 +22,7 @@ const cardStagger: Variants = {
   visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } }
 }
 
-const PRODUCTS_PAGE_SIZE = 12
+const PRODUCTS_PAGE_SIZE = 8
 
 export default function ProductGrid({
   categoryIds,
@@ -87,7 +87,7 @@ export default function ProductGrid({
         initial='hidden'
         animate='visible'
         variants={cardStagger}
-        className='mx-auto grid w-full max-w-7xl grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5'
+        className='mx-auto grid w-full max-w-7xl grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5'
       >
         {items.map((product, index) => (
           <ProductCard

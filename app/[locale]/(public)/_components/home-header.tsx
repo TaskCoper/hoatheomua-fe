@@ -11,12 +11,11 @@ import {
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
-import { useGetConfigs } from '@/hooks/use-get-configs'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
 import logo from '@/public/images/logo.png'
-import vine from '@/public/images/vine.png'
 import { CompanyConfigItem } from '@/types/config.type'
 import {
   GlobalIcon,
@@ -49,8 +48,11 @@ const LOCALE_OPTIONS = [
 export default function Header() {
   const { isAuthenticated, me, isGettingMe, isVerificationRequired } = useGetMe()
 
-  const { configs: companyConfigs } = useGetConfigs<CompanyConfigItem>({ group: 'company' })
-  const video = companyConfigs.find((c) => c.key === 'company.bg_video')?.value.value
+  const { configs: companyConfigs } = useGetPublicConfigs<CompanyConfigItem, 'company.bg_video'>({
+    group: 'company',
+    key: 'company.bg_video'
+  })
+  const video = companyConfigs[0]?.value.value
 
   const { t } = useTranslation()
   const pathname = usePathname()
@@ -94,7 +96,7 @@ export default function Header() {
           aria-label={t('header.aria.mainNav')}
           className='relative isolate justify-self-center rounded-full bg-primary p-1 shadow-md hidden lg:block'
         >
-          <Image
+          {/* <Image
             src={vine}
             alt={t('header.vineAlt')}
             className='pointer-events-none absolute hidden xl:block -left-20 -top-8 z-0 h-14 w-auto'
@@ -103,7 +105,7 @@ export default function Header() {
             src={vine}
             alt={t('header.vineAlt')}
             className='pointer-events-none absolute hidden xl:block -right-20 -top-8 z-0 h-14 w-auto -scale-x-100'
-          />
+          /> */}
 
           <ul className='relative z-10 flex items-center gap-2'>
             {NAV_ITEMS.map((item) => {

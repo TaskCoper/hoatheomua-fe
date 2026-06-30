@@ -126,7 +126,7 @@ export default function SignatureBouquetsSection() {
             initial='hidden'
             animate='visible'
             variants={cardStagger}
-            className='grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6'
+            className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6'
           >
             {products.map((product, index) => {
               const isActive = index === activeIndex
@@ -156,7 +156,7 @@ export default function SignatureBouquetsSection() {
                       isActive ? 'bg-white shadow-[0_1rem_2.5rem_rgb(81_108_108_/_16%)]' : ''
                     ].join(' ')}
                   >
-                    <div className='relative isolate flex h-36 items-center justify-center overflow-hidden bg-secondary/40'>
+                    <div className='relative isolate flex h-80 items-center justify-center overflow-hidden bg-secondary/40'>
                       {avatar ? (
                         <Image
                           src={avatar}

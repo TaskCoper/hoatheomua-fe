@@ -1,6 +1,8 @@
 'use client'
 
 import type { ProductDetail } from '@/features/products/types'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
+import { ProductSignatureMap, ProductsSignatureConfigItem } from '@/types/config.type'
 import { useState } from 'react'
 import FloatingPetals from '../../../_components/floating-petals'
 import ProductsPromiseSection from '../../_components/products-promise-section'
@@ -15,6 +17,11 @@ import ProductSummary from './product-summary'
 export default function ProductDetailContent({ product }: { product: ProductDetail }) {
   const childs = product.childs ?? []
   const hasChildren = childs.length > 0
+
+  const { configs } = useGetPublicConfigs<ProductsSignatureConfigItem>({ group: 'products', key: 'products.signature' })
+  const signatureProducts = configs[0]?.value.value ?? '{}'
+  const parsed = JSON.parse(signatureProducts) as ProductSignatureMap
+  const landingUrl = parsed[String(product.id)]?.trim() || null
 
   const [activeChildId, setActiveChildId] = useState<number | null>(hasChildren ? childs[0].id : null)
 
@@ -85,6 +92,7 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
                 category={active.category?.name ?? product.category?.name ?? null}
                 country={active.countryName || product.countryName || null}
                 shipping={active.shipping ?? product.shipping ?? null}
+                landingUrl={landingUrl}
               />
             </div>
           </div>

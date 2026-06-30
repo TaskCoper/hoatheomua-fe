@@ -25,15 +25,7 @@ import { AddressActionsMenu } from '@/features/addresses/components/address-acti
 import { AddressFormDialog } from '@/features/addresses/components/address-form-dialog'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import {
-  Add01Icon,
-  Call02Icon,
-  Home01Icon,
-  LockPasswordIcon,
-  Mail02Icon,
-  TimeZoneIcon,
-  User03Icon
-} from '@hugeicons/core-free-icons'
+import { Add01Icon, Call02Icon, Home01Icon, LockPasswordIcon, Mail02Icon, User03Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -190,20 +182,6 @@ function PersonalInfoContent({ slug }: { slug?: string }) {
             <div className='min-w-0'>
               <p className='text-xs text-muted-foreground'>{t('profile.phoneNumber')}</p>
               <p className='text-sm'>{user?.phoneNumber || t('profile.notProvided')}</p>
-            </div>
-          </div>
-          <div className='flex items-start gap-3 rounded-xl border bg-muted/30 p-3.5'>
-            <HugeiconsIcon icon={TimeZoneIcon} className='mt-0.5 size-4 shrink-0 text-muted-foreground' />
-            <div className='min-w-0'>
-              <p className='text-xs text-muted-foreground'>{t('profile.timeZone')}</p>
-              <p className='text-sm'>{user?.timeZone || t('profile.notProvided')}</p>
-            </div>
-          </div>
-          <div className='flex items-start gap-3 rounded-xl border bg-muted/30 p-3.5'>
-            <HugeiconsIcon icon={Home01Icon} className='mt-0.5 size-4 shrink-0 text-muted-foreground' />
-            <div className='min-w-0'>
-              <p className='text-xs text-muted-foreground'>{t('profile.address')}</p>
-              <p className='text-sm'>{user?.address || t('profile.notProvided')}</p>
             </div>
           </div>
         </div>

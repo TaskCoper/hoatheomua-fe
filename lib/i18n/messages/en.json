@@ -15,7 +15,8 @@
       "passwordPlaceholder": "Enter your password",
       "forgotPassword": "Forgot password?",
       "submit": "Sign in",
-      "signUpPrompt": "Don't have an account? Sign up"
+      "signUpPrompt": "Don't have an account? Sign up",
+      "customerOnly": "Customer accounts only. Please use the admin portal to sign in."
     },
     "signUp": {
       "label": "Sign up",
@@ -991,10 +992,10 @@
   "products": {
     "hero": {
       "title": "Fresh Flower Collection",
-      "description": "Every bouquet is curated by season, hand-arranged by Hoa Theo Mua artisans, and delivered within 2 hours in Ho Chi Minh City — to send your loved ones a complete moment.",
-      "headline": "Every bouquet — a story uniquely for the one you love.",
-      "body": "Explore 50+ seasonal fresh flower designs, from birthday bouquets and grand-opening flowers to wedding florals and premium orchids. Same-day sourcing, elegant packaging, on-time delivery — ready for every special moment.",
-      "shopAll": "Shop all products",
+      "description": "Every bouquet is seasonally curated, hand-arranged with care and elegance, and delivered to you within 2 hours in Ho Chi Minh City.",
+      "headline": "Every bouquet, every occasion tells a story — choose the right one for your moment",
+      "body": "Over 50 seasonal designs — from birthdays, grand openings, and graduations to premium phalaenopsis orchids. Same-day-imported flowers, elegantly packaged, delivered on time for every special moment.",
+      "shopByType": "Shop by category",
       "shopByOccasion": "Shop by occasion",
       "imageAlt": "Hoa Theo Mua fresh bouquet",
       "highlights": {
@@ -1041,11 +1042,41 @@
           "name": "Congratulations Bouquet",
           "description": "A fresh wish for a new journey — a natural bouquet brimming with positive energy."
         }
+      },
+      "detail": {
+        "breadcrumb": {
+          "ariaLabel": "Breadcrumb",
+          "home": "Home",
+          "occasions": "Occasions",
+          "back": "Back to occasions"
+        },
+        "headline": "{name} — picks curated for the moment",
+        "campaign": {
+          "label": "Now featuring",
+          "dates": "{start} – {end}"
+        },
+        "cta": {
+          "viewCollection": "View collection",
+          "otherOccasions": "Other occasions"
+        },
+        "products": {
+          "title": "Flowers for {name}",
+          "description": "Hand-picked arrangements tailored to this occasion — fresh, locally arranged, and ready to be delivered with care.",
+          "empty": {
+            "title": "Collection coming soon",
+            "description": "This collection is being prepared by our artisans. Please come back soon to discover our freshest bouquets for this occasion."
+          }
+        }
       }
     },
     "catalog": {
       "title": "Flower Accessories",
-      "description": "Same-day-imported flowers hand-arranged by artisans — a collection curated from color to emotion for every moment."
+      "description": "Same-day-imported flowers hand-arranged by artisans — a collection curated from color to emotion for every moment.",
+      "vaseFlowers": {
+        "title": "Vase Flowers",
+        "description": "Seasonal stems for you to arrange in your favorite vase — fresh, easy to mix, and keeping a quiet rhythm of calm in your space.",
+        "prompt": "Found your favorite flowers? Don't forget to add a matching vase 🌿"
+      }
     },
     "filter": {
       "all": "All",
@@ -1082,16 +1113,16 @@
       "bannerAlt": "Hoa Theo Mua fresh flower promotion",
       "items": {
         "fresh": {
-          "title": "Same-day-imported flowers",
-          "description": "100% fresh guarantee, hand-picked from gardens and imported every morning."
+          "title": "100% Fresh Flowers",
+          "description": "Same-day-imported flowers, hand-picked straight from the garden — never from storage."
         },
         "delivery": {
-          "title": "2-hour delivery",
-          "description": "Express delivery within 2 hours in HCMC — on time and as beautiful as in the photo."
+          "title": "2-Hour Hand Delivery",
+          "description": "Order and receive your flowers within 2 hours — available in Ho Chi Minh City."
         },
         "support": {
-          "title": "Free consultation",
-          "description": "Our artisans are ready to help you pick flowers to match your budget and occasion."
+          "title": "Heartfelt Consultation",
+          "description": "Not sure which flowers to pick? Message HTM for advice tailored to your occasion and the story you want to share."
         }
       }
     },
@@ -1170,6 +1201,9 @@
         "noSpecs": "Detailed specifications are being updated for this product.",
         "viewMore": "View more",
         "viewLess": "View less",
+        "landing": "Explore",
+        "landingTitle": "Landing page preview",
+        "visitLanding": "Open landing page",
         "specRows": {
           "code": "Product code",
           "brand": "Brand",

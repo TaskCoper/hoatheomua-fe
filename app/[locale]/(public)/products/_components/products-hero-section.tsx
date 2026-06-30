@@ -5,7 +5,14 @@ import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import flower from '@/public/images/flower.png'
-import { CherryIcon, DeliveryTruck01Icon, Flower2Icon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
+import {
+  Building02Icon,
+  CherryIcon,
+  DeliveryTruck01Icon,
+  Flower2Icon,
+  GiftIcon,
+  ShoppingBag01Icon
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
@@ -115,25 +122,73 @@ export default function ProductsHeroSection() {
 
           <motion.div variants={fadeUp} className='flex flex-wrap items-center gap-3'>
             <motion.div
-              whileHover={{ y: -3, scale: 1.04 }}
+              whileHover={{ y: -5, scale: 1.06 }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+              className='group relative'
             >
-              <Button asChild size='lg'>
-                <Link href='/products'>
-                  <HugeiconsIcon icon={ShoppingBag01Icon} className='size-4' />
-                  {t('products.hero.shopAll')}
+              <motion.span
+                aria-hidden='true'
+                animate={{ opacity: [0.45, 0.85, 0.45], scale: [1, 1.08, 1] }}
+                transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+                className='pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-primary/35 blur-xl'
+              />
+              <Button
+                asChild
+                size='lg'
+                className='relative gap-2 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/22%)] ring-1 ring-primary/20 transition-shadow hover:shadow-[0_1rem_2.4rem_rgb(81_108_108/32%)]'
+              >
+                <Link href='/about#product-lines'>
+                  <HugeiconsIcon
+                    icon={ShoppingBag01Icon}
+                    className='size-4 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-125'
+                  />
+                  {t('products.hero.shopByType')}
                 </Link>
               </Button>
             </motion.div>
 
             <motion.div
-              whileHover={{ y: -3, scale: 1.04 }}
+              whileHover={{ y: -5, scale: 1.06 }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+              className='group'
             >
-              <Button asChild size='lg' variant='outline'>
-                <a href='#occasion'>{t('products.hero.shopByOccasion')}</a>
+              <Button
+                asChild
+                size='lg'
+                variant='outline'
+                className='gap-2 bg-card text-primary shadow-[0_0.45rem_1.2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5 transition-all hover:bg-secondary/60 hover:shadow-[0_0.9rem_2.2rem_rgb(81_108_108/20%)]'
+              >
+                <Link href='/products#occasion'>
+                  <HugeiconsIcon
+                    icon={GiftIcon}
+                    className='size-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-125'
+                  />
+                  {t('products.hero.shopByOccasion')}
+                </Link>
+              </Button>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ y: -5, scale: 1.06 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+              className='group'
+            >
+              <Button
+                asChild
+                size='lg'
+                variant='outline'
+                className='gap-2 bg-card text-primary shadow-[0_0.45rem_1.2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5 transition-all hover:bg-secondary/60 hover:shadow-[0_0.9rem_2.2rem_rgb(81_108_108/20%)]'
+              >
+                <Link href='/b2b'>
+                  <HugeiconsIcon
+                    icon={Building02Icon}
+                    className='size-4 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-125'
+                  />
+                  Đặt hoa cho doanh nghiệp
+                </Link>
               </Button>
             </motion.div>
           </motion.div>

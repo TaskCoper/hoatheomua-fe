@@ -1,12 +1,9 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import leftBranch from '@/public/images/left-branch.png'
-import rightBranch from '@/public/images/right-branch.png'
 import { Award05Icon, DeliveryTruck01Icon, EcoEnergyIcon, Flower2Icon, PartyIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import Image from 'next/image'
 
 const CRITERIAS = [
   {
@@ -62,12 +59,12 @@ export default function CriteriaSection() {
 
   return (
     <div className='w-full bg-secondary flex items-center relative py-4 lg:py-10'>
-      <Image
+      {/* <Image
         src={leftBranch}
         alt={t('home.criteria.branchAlt')}
         className='wind-wiggle-left h-3/4 w-auto absolute -left-4 top-1/2 -translate-y-1/2 opacity-70 hidden lg:block pointer-events-none'
         aria-hidden='true'
-      />
+      /> */}
 
       <motion.div
         initial='hidden'
@@ -107,12 +104,12 @@ export default function CriteriaSection() {
         ))}
       </motion.div>
 
-      <Image
+      {/* <Image
         src={rightBranch}
         alt={t('home.criteria.branchAlt')}
         className='wind-wiggle-right h-3/4 w-auto absolute -right-4 top-1/2 -translate-y-1/2 opacity-70 hidden lg:block pointer-events-none'
         aria-hidden='true'
-      />
+      /> */}
     </div>
   )
 }

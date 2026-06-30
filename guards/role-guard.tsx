@@ -1,9 +1,13 @@
 'use client'
 
 import { useGetMe } from '@/features/users/hooks/use-get-me'
+import { useSignOut } from '@/features/users/hooks/use-sign-out'
+import { Role as UserRole } from '@/features/users/types'
 import { useGetUserHomePath } from '@/hooks/use-get-user-home-path'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { toast } from 'sonner'
 import { isRedirectLoop } from './redirect-loop'
 import { getRoleHomePath, getUserType, Role } from './utils'
 
@@ -22,9 +26,25 @@ export default function RoleGuard({
 }: RoleGuardProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const { t } = useTranslation()
   const { me, isGettingMe } = useGetMe()
   const userType = getUserType(me)
   const userHomePath = useGetUserHomePath()
+  const { signOut } = useSignOut()
+  const hasSignedOutRef = useRef(false)
+
+  const isNonCustomer = !!me && me.role !== UserRole.Customer
+
+  useEffect(() => {
+    if (!isNonCustomer || !me || hasSignedOutRef.current) {
+      return
+    }
+
+    hasSignedOutRef.current = true
+    toast.error(t('auth.signIn.customerOnly'))
+
+    signOut()
+  }, [isNonCustomer, me, signOut, t])
 
   const isMissingAuth = !isGettingMe && !me && !allowAnonymous
   const isWrongRole = !isGettingMe && !!userType && !allowedRoles.includes(userType)
@@ -32,7 +52,7 @@ export default function RoleGuard({
     !isGettingMe && userType === 'Customer' && !!allowedUserRoles && !!me?.role && !allowedUserRoles.includes(me.role)
 
   useEffect(() => {
-    if (isGettingMe) return
+    if (isGettingMe || isNonCustomer) return
 
     if (isMissingAuth) {
       if (pathname === '/sign-in') return
@@ -70,10 +90,13 @@ export default function RoleGuard({
     me,
     pathname,
     router,
-    userHomePath
+    userHomePath,
+    isNonCustomer
   ])
 
-  if (isGettingMe || isMissingAuth || isWrongRole || isWrongUserRole) return null
+  if (isGettingMe) return null
+  if (isNonCustomer) return null
+  if (isMissingAuth || isWrongRole || isWrongUserRole) return null
 
   return <>{children}</>
 }

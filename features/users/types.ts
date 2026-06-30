@@ -1,3 +1,9 @@
+export const Role = {
+  Customer: 'Customer'
+} as const
+
+export type Role = (typeof Role)[keyof typeof Role]
+
 export interface Me {
   avatar: string | null
   email: string
