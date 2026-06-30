@@ -8,7 +8,9 @@ import { cn } from '@/shared/utils'
 import {
   ArrowDown01Icon,
   ArrowUp01Icon,
+  ArrowUpRight01Icon,
   DropletIcon,
+  MusicNote01Icon,
   Scissor01Icon,
   Sun03Icon,
   ThermometerIcon
@@ -17,12 +19,15 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
 import { useEffect, useMemo, useState } from 'react'
 
-type TabKey = 'description' | 'specs' | 'care'
+type TabKey = 'description' | 'specs' | 'care' | 'landing'
 
-const TABS: {
-  key: TabKey
-  labelKey: 'products.detail.tabs.description' | 'products.detail.tabs.specs' | 'products.detail.tabs.care'
-}[] = [
+type TabLabelKey =
+  | 'products.detail.tabs.description'
+  | 'products.detail.tabs.specs'
+  | 'products.detail.tabs.care'
+  | 'products.detail.tabs.landing'
+
+const BASE_TABS: { key: Exclude<TabKey, 'landing'>; labelKey: TabLabelKey }[] = [
   { key: 'description', labelKey: 'products.detail.tabs.description' },
   { key: 'specs', labelKey: 'products.detail.tabs.specs' },
   { key: 'care', labelKey: 'products.detail.tabs.care' }
@@ -74,7 +79,8 @@ export default function ProductDetailsTabs({
   type,
   category,
   country,
-  shipping
+  shipping,
+  landingUrl
 }: {
   description: string
   content: string
@@ -84,9 +90,15 @@ export default function ProductDetailsTabs({
   category: string | null
   country: string | null
   shipping: ProductShipping | null
+  landingUrl: string | null
 }) {
   const { t } = useTranslation()
   const [active, setActive] = useState<TabKey>('description')
+
+  const tabs = useMemo<{ key: TabKey; labelKey: TabLabelKey }[]>(
+    () => (landingUrl ? [...BASE_TABS, { key: 'landing', labelKey: 'products.detail.tabs.landing' }] : BASE_TABS),
+    [landingUrl]
+  )
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   const [showDescriptionToggle, setShowDescriptionToggle] = useState(false)
   const [descriptionElement, setDescriptionElement] = useState<HTMLDivElement | null>(null)
@@ -128,7 +140,7 @@ export default function ProductDetailsTabs({
         aria-label={t('products.detail.tabs.ariaLabel')}
         className='flex flex-wrap gap-1 border-b border-border'
       >
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const isActive = active === tab.key
 
           return (
@@ -138,10 +150,11 @@ export default function ProductDetailsTabs({
               role='tab'
               aria-selected={isActive}
               onClick={() => setActive(tab.key)}
-              className='relative px-4 py-3 text-sm font-semibold transition-colors'
+              className='cursor-pointer relative px-4 py-3 text-sm font-semibold transition-colors'
               style={{ color: isActive ? 'var(--primary)' : 'var(--muted-foreground)' }}
             >
               {t(tab.labelKey)}
+
               {isActive ? (
                 <motion.span
                   layoutId='product-tab-underline'
@@ -154,7 +167,7 @@ export default function ProductDetailsTabs({
         })}
       </div>
 
-      <div role='tabpanel' className='pt-6'>
+      <div role='tabpanel' className='pt-4'>
         {active === 'description' ? (
           hasDescription ? (
             <div>
@@ -162,13 +175,15 @@ export default function ProductDetailsTabs({
                 <div
                   ref={setDescriptionElement}
                   className={cn(
-                    'space-y-4 overflow-hidden transition-[max-height] duration-300',
+                    'space-y-4 overflow-hidden transition-[max-height] duration-300 bg-white/50 p-4 rounded-3xl',
                     !isDescriptionExpanded && showDescriptionToggle && 'max-h-96'
                   )}
                 >
                   {description ? <SanitizedHtml html={description} /> : null}
+
                   {content ? <SanitizedHtml html={content} /> : null}
                 </div>
+
                 {showDescriptionToggle && !isDescriptionExpanded ? (
                   <div className='pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-background to-transparent' />
                 ) : null}
@@ -188,7 +203,9 @@ export default function ProductDetailsTabs({
               ) : null}
             </div>
           ) : (
-            <p className='text-sm text-muted-foreground'>{t('products.detail.tabs.noDescription')}</p>
+            <p className='text-sm text-muted-foreground p-4 bg-white/50 rounded-3xl'>
+              {t('products.detail.tabs.noDescription')}
+            </p>
           )
         ) : null}
 
@@ -226,6 +243,27 @@ export default function ProductDetailsTabs({
               </div>
             ))}
           </div>
+        ) : null}
+
+        {active === 'landing' && landingUrl ? (
+          <a
+            href={landingUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='group flex items-center gap-4 rounded-2xl bg-card pl-2 pr-4 py-2 ring-1 ring-foreground/5 transition-colors hover:ring-primary/20'
+          >
+            <span className='grid size-12 shrink-0 place-items-center rounded-xl bg-secondary/60 text-primary ring-1 ring-primary/10'>
+              <HugeiconsIcon icon={MusicNote01Icon} className='size-6' />
+            </span>
+            <div className='min-w-0 flex-1'>
+              <p className='font-title text-sm font-bold text-primary'>{t('products.detail.tabs.landingTitle')}</p>
+              <p className='truncate text-xs text-muted-foreground'>{t('products.detail.tabs.visitLanding')}</p>
+            </div>
+            <HugeiconsIcon
+              icon={ArrowUpRight01Icon}
+              className='size-5 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary'
+            />
+          </a>
         ) : null}
       </div>
     </div>

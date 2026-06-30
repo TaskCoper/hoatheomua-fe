@@ -1201,6 +1201,9 @@
         "noSpecs": "Đang cập nhật thông số chi tiết cho sản phẩm này.",
         "viewMore": "Xem thêm",
         "viewLess": "Thu gọn",
+        "landing": "Khám phá",
+        "landingTitle": "Xem trước trang giới thiệu",
+        "visitLanding": "Mở trang giới thiệu",
         "specRows": {
           "code": "Mã sản phẩm",
           "brand": "Thương hiệu",

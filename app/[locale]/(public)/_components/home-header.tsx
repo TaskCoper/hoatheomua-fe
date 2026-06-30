@@ -16,7 +16,6 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
 import logo from '@/public/images/logo.png'
-import vine from '@/public/images/vine.png'
 import { CompanyConfigItem } from '@/types/config.type'
 import {
   GlobalIcon,
@@ -94,7 +93,7 @@ export default function Header() {
           aria-label={t('header.aria.mainNav')}
           className='relative isolate justify-self-center rounded-full bg-primary p-1 shadow-md hidden lg:block'
         >
-          <Image
+          {/* <Image
             src={vine}
             alt={t('header.vineAlt')}
             className='pointer-events-none absolute hidden xl:block -left-20 -top-8 z-0 h-14 w-auto'
@@ -103,7 +102,7 @@ export default function Header() {
             src={vine}
             alt={t('header.vineAlt')}
             className='pointer-events-none absolute hidden xl:block -right-20 -top-8 z-0 h-14 w-auto -scale-x-100'
-          />
+          /> */}
 
           <ul className='relative z-10 flex items-center gap-2'>
             {NAV_ITEMS.map((item) => {

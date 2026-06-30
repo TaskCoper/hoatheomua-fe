@@ -105,69 +105,80 @@ export default function ProductsOccasionsSection() {
               <motion.article
                 key={card.id}
                 variants={cardItem}
-                whileHover={{ y: -8, scale: 1.02 }}
+                whileHover={{ y: -10, scale: 1.025 }}
                 transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-                className='group relative flex h-44 overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'
+                className='group relative cursor-pointer'
               >
-                <div className='relative w-2/5 shrink-0 overflow-hidden'>
-                  <Image
-                    src={card.image}
-                    alt={name}
-                    fill
-                    sizes='(min-width: 1024px) 16rem, (min-width: 640px) 14rem, 12rem'
-                    className='object-cover'
-                  />
-                  <div
-                    aria-hidden='true'
-                    className='pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-r from-transparent to-card'
-                  />
-                </div>
-
-                <div className='flex flex-1 flex-col justify-between gap-2 p-4 lg:p-5'>
-                  <div className='space-y-1.5'>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <h2 className='line-clamp-1 font-title text-lg font-bold leading-tight text-primary lg:text-xl'>
-                            {name}
-                          </h2>
-                        </TooltipTrigger>
-
-                        <TooltipContent
-                          className='max-w-55 rounded-3xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                          iconClassName=' bg-white fill-white'
-                        >
-                          {name}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-
-                    <p className='line-clamp-2 text-xs leading-relaxed text-foreground'>{card.description[locale]}</p>
-                  </div>
-
-                  <motion.div
-                    whileHover={{ x: 4 }}
-                    transition={{ type: 'spring', stiffness: 380, damping: 16 }}
-                    className='inline-flex w-fit'
+                <div className='relative z-10 flex h-44 overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:h-48 lg:h-52'>
+                  <Link
+                    href={`/occasions/${card.id}`}
+                    className='relative isolate flex h-full w-2/5 shrink-0 items-center justify-center overflow-hidden bg-secondary/40'
                   >
-                    <Button
-                      asChild
-                      variant='link'
-                      size='sm'
-                      className='h-auto gap-1 px-0 text-xs font-semibold text-primary hover:text-foreground'
-                    >
-                      <Link href={`/occasions/${card.id}`}>
+                    <Image
+                      src={card.image}
+                      alt={name}
+                      fill
+                      sizes='(min-width: 1024px) 16rem, (min-width: 640px) 14rem, 12rem'
+                      className='object-cover transition-transform duration-700 ease-out group-hover:scale-110'
+                    />
+                    <div
+                      aria-hidden='true'
+                      className='pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-r from-transparent to-card'
+                    />
+                    <div
+                      aria-hidden='true'
+                      className='pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/0 to-primary/25 opacity-0 transition-opacity duration-500 group-hover:opacity-100'
+                    />
+                  </Link>
+
+                  <div className='flex flex-1 flex-col justify-between gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
+                    <div className='space-y-1.5'>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg'>
+                              {name}
+                            </h2>
+                          </TooltipTrigger>
+
+                          <TooltipContent
+                            className='max-w-55 rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                            iconClassName=' bg-white fill-white'
+                          >
+                            {name}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+
+                      <p className='line-clamp-2 text-xs leading-relaxed text-muted-foreground'>
+                        {card.description[locale]}
+                      </p>
+                    </div>
+
+                    <div className='mt-1 flex items-center justify-between gap-3'>
+                      <span className='font-title text-xs font-semibold tracking-wider text-primary/80'>
                         {t('products.occasions.explore')}
-                        <motion.span
-                          className='inline-flex'
-                          animate={{ x: [0, 6, 0] }}
-                          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                      </span>
+
+                      <motion.div
+                        whileHover={{ scale: 1.15, rotate: -12 }}
+                        whileTap={{ scale: 0.92 }}
+                        transition={{ type: 'spring', stiffness: 380, damping: 12 }}
+                      >
+                        <Button
+                          asChild
+                          type='button'
+                          size='icon'
+                          className='rounded-full hover:bg-foreground'
+                          aria-label={t('products.occasions.explore')}
                         >
-                          <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
-                        </motion.span>
-                      </Link>
-                    </Button>
-                  </motion.div>
+                          <Link href={`/occasions/${card.id}`}>
+                            <HugeiconsIcon icon={ArrowRight02Icon} className='size-4' />
+                          </Link>
+                        </Button>
+                      </motion.div>
+                    </div>
+                  </div>
                 </div>
               </motion.article>
             )

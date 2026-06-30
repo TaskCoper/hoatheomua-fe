@@ -1201,6 +1201,9 @@
         "noSpecs": "Detailed specifications are being updated for this product.",
         "viewMore": "View more",
         "viewLess": "View less",
+        "landing": "Explore",
+        "landingTitle": "Landing page preview",
+        "visitLanding": "Open landing page",
         "specRows": {
           "code": "Product code",
           "brand": "Brand",

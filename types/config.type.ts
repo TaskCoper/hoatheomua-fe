@@ -302,3 +302,27 @@ export interface FeedbacksCollectionConfigItem {
     validations: []
   }
 }
+
+// Products
+export type ProductsConfigKey = 'products.signature'
+
+export type ProductsConfigGroup = 'products'
+
+export type ProductsConfigInputType = 'json'
+
+export interface ProductSignatureMap {
+  [productId: string]: string
+}
+
+export interface ProductsSignatureConfigItem {
+  key: ProductsConfigKey
+  value: {
+    group: ProductsConfigGroup
+    label: string
+    value: string
+    options: []
+    required: true
+    inputType: ProductsConfigInputType
+    validations: []
+  }
+}

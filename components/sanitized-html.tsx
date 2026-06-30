@@ -4,6 +4,7 @@ import '@/components/tiptap-node/blockquote-node/blockquote-node.scss'
 import '@/components/tiptap-node/code-block-node/code-block-node.scss'
 import '@/components/tiptap-node/heading-node/heading-node.scss'
 import '@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss'
+import '@/components/tiptap-node/image-node/image-node.scss'
 import '@/components/tiptap-node/image-upload-node/image-upload-node.scss'
 import '@/components/tiptap-node/list-node/list-node.scss'
 import '@/components/tiptap-node/paragraph-node/paragraph-node.scss'
@@ -63,20 +64,7 @@ const PURIFY_CONFIG = {
     'colgroup',
     'col'
   ],
-  ALLOWED_ATTR: [
-    'href',
-    'target',
-    'rel',
-    'src',
-    'alt',
-    'width',
-    'height',
-    'class',
-    'colspan',
-    'rowspan',
-    'align',
-    'data-type'
-  ],
+  ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'width', 'height', 'colspan', 'rowspan', 'align', 'data-type'],
   FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'font'],
   FORBID_ATTR: ['onclick', 'onerror', 'onload', 'style', 'color', 'bgcolor', 'face']
 }
@@ -93,6 +81,15 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
     doc.querySelectorAll('a[target="_blank"]').forEach((link) => {
       link.setAttribute('rel', 'noopener noreferrer')
     })
+
+    const isEmptyBlock = (el: Element | null) => {
+      if (!el || el.tagName !== 'P') return false
+      if (el.querySelector('img, iframe, video, audio, picture, svg')) return false
+      return (el.textContent ?? '').replace(/ /g, ' ').trim() === ''
+    }
+    while (isEmptyBlock(doc.body.lastElementChild)) {
+      doc.body.lastElementChild!.remove()
+    }
 
     return doc.body.innerHTML
   }, [html])
@@ -122,8 +119,9 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
     <ElementType
       onClick={handleContainerClick}
       className={cn(
-        'tiptap ProseMirror prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl overflow-auto',
+        'tiptap ProseMirror prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl max-w-none overflow-auto',
         'prose-pre:whitespace-pre-wrap prose-pre:wrap-break-word wrap-break-word',
+        'prose-img:my-6 prose-img:w-full prose-img:rounded-2xl',
         className
       )}
       dangerouslySetInnerHTML={{ __html: finalHtml }}

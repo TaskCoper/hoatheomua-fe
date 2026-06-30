@@ -1,21 +1,21 @@
 .tiptap.ProseMirror {
   --tt-collaboration-carets-label: var(--tt-gray-light-900);
-  --link-text-color: var(--tt-brand-color-500);
+  --link-text-color: var(--primary);
   --thread-text: var(--tt-gray-light-900);
   --placeholder-color: var(--tt-gray-light-a-400);
   --thread-bg-color: var(--tt-color-yellow-inc-2);
 
   // ai
-  --tiptap-ai-insertion-color: var(--tt-brand-color-600);
+  --tiptap-ai-insertion-color: var(--primary);
 
   .dark & {
     --tt-collaboration-carets-label: var(--tt-gray-dark-100);
-    --link-text-color: var(--tt-brand-color-400);
+    --link-text-color: var(--primary);
     --thread-text: var(--tt-gray-dark-900);
     --placeholder-color: var(--tt-gray-dark-a-400);
     --thread-bg-color: var(--tt-color-yellow-dec-2);
 
-    --tiptap-ai-insertion-color: var(--tt-brand-color-400);
+    --tiptap-ai-insertion-color: var(--primary);
   }
 }
 
@@ -34,17 +34,15 @@
   caret-color: var(--tt-cursor-color);
 
   // Paragraph spacing
-  p:not(:first-child) {
-    font-size: 0.895rem;
-    line-height: 1.6;
+  p {
+    font-size: 1rem;
+    line-height: 1.75;
     font-weight: normal;
-    margin-top: 10px;
+    margin: 0;
   }
 
-  p:first-child {
-    font-size: 0.895rem;
-    line-height: 1.6;
-    font-weight: normal;
+  p:not(:first-child) {
+    margin-top: 1rem;
   }
 
   // Selection styles
@@ -160,7 +158,7 @@
 .tiptap.ProseMirror {
   [data-type='mention'] {
     display: inline-block;
-    color: var(--tt-brand-color-500);
+    color: var(--primary);
   }
 }
 
@@ -262,7 +260,7 @@
      ===================== */
 .prosemirror-dropcursor-block,
 .prosemirror-dropcursor-inline {
-  background: var(--tt-brand-color-400) !important;
+  background: var(--primary) !important;
   border-radius: 0.25rem;
   margin-left: -1px;
   margin-right: -1px;

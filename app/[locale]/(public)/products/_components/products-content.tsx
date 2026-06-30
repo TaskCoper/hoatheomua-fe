@@ -39,7 +39,7 @@ export default function ProductsContent() {
           variants={promptReveal}
           className='mx-auto mt-2 flex w-full max-w-7xl items-center justify-center gap-3 px-4 sm:mt-4 md:mt-6 lg:mt-8 bg-secondary/50 py-10 rounded-2xl'
         >
-          <p className='shrink-0 text-center font-title text-sm italic leading-relaxed text-primary sm:text-base md:text-lg'>
+          <p className='text-center font-title text-sm italic leading-relaxed text-primary sm:text-base md:text-lg'>
             {t('products.catalog.vaseFlowers.prompt')}
           </p>
         </motion.div>

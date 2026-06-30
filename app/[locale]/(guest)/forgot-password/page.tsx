@@ -21,7 +21,7 @@ export default async function ForgotPasswordPage({ params }: ForgotPasswordPageP
 
   setRequestLocale(locale)
 
-  const t = await getTranslations({ locale })
+  const t = await getTranslations({ locale, namespace: 'auth.forgotPassword' })
 
   return (
     <main className='mx-auto flex min-h-svh w-full max-w-sm flex-col justify-center px-4'>
