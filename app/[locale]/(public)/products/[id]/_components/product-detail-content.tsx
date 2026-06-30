@@ -1,7 +1,7 @@
 'use client'
 
 import type { ProductDetail } from '@/features/products/types'
-import { useGetConfigs } from '@/hooks/use-get-configs'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { ProductSignatureMap, ProductsSignatureConfigItem } from '@/types/config.type'
 import { useState } from 'react'
 import FloatingPetals from '../../../_components/floating-petals'
@@ -18,8 +18,8 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
   const childs = product.childs ?? []
   const hasChildren = childs.length > 0
 
-  const { configs } = useGetConfigs<ProductsSignatureConfigItem>({ group: 'products' })
-  const signatureProducts = configs?.find((config) => config.key === 'products.signature')?.value.value ?? '{}'
+  const { configs } = useGetPublicConfigs<ProductsSignatureConfigItem>({ group: 'products', key: 'products.signature' })
+  const signatureProducts = configs[0]?.value.value ?? '{}'
   const parsed = JSON.parse(signatureProducts) as ProductSignatureMap
   const landingUrl = parsed[String(product.id)]?.trim() || null
 

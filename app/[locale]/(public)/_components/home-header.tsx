@@ -11,7 +11,7 @@ import {
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
-import { useGetConfigs } from '@/hooks/use-get-configs'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
@@ -48,8 +48,11 @@ const LOCALE_OPTIONS = [
 export default function Header() {
   const { isAuthenticated, me, isGettingMe, isVerificationRequired } = useGetMe()
 
-  const { configs: companyConfigs } = useGetConfigs<CompanyConfigItem>({ group: 'company' })
-  const video = companyConfigs.find((c) => c.key === 'company.bg_video')?.value.value
+  const { configs: companyConfigs } = useGetPublicConfigs<CompanyConfigItem, 'company.bg_video'>({
+    group: 'company',
+    key: 'company.bg_video'
+  })
+  const video = companyConfigs[0]?.value.value
 
   const { t } = useTranslation()
   const pathname = usePathname()

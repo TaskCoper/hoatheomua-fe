@@ -6,8 +6,11 @@ import { cache } from 'react'
 
 export const getOccasionsCollection = cache(async (): Promise<OccasionsCollection | null> => {
   try {
-    const configs = await configService.getConfigs<OccasionsCollectionConfigItem>({ group: 'occasions' })
-    const raw = configs.find((c) => c.key === 'occasions.collection')?.value.value
+    const configs = await configService.getPublicConfigs<OccasionsCollectionConfigItem>({
+      group: 'occasions',
+      key: 'occasions.collection'
+    })
+    const raw = configs[0]?.value.value
     if (!raw) return null
     return JSON.parse(raw) as OccasionsCollection
   } catch {

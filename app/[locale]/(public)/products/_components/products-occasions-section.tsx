@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useGetConfigs } from '@/hooks/use-get-configs'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import rightBranch from '@/public/images/right-branch.png'
@@ -36,10 +36,13 @@ const cardItem: Variants = {
 
 export default function ProductsOccasionsSection() {
   const { t, locale } = useTranslation()
-  const { configs } = useGetConfigs<OccasionsCollectionConfigItem>({ group: 'occasions' })
+  const { configs } = useGetPublicConfigs<OccasionsCollectionConfigItem, 'occasions.collection'>({
+    group: 'occasions',
+    key: 'occasions.collection'
+  })
 
   const cards = useMemo(() => {
-    const raw = configs.find((c) => c.key === 'occasions.collection')?.value.value
+    const raw = configs[0]?.value.value
     if (!raw) return []
 
     try {
@@ -109,77 +112,73 @@ export default function ProductsOccasionsSection() {
                 transition={{ type: 'spring', stiffness: 240, damping: 18 }}
                 className='group relative cursor-pointer'
               >
-                <div className='relative z-10 flex h-44 overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:h-48 lg:h-52'>
-                  <Link
-                    href={`/occasions/${card.id}`}
-                    className='relative isolate flex h-full w-2/5 shrink-0 items-center justify-center overflow-hidden bg-secondary/40'
-                  >
-                    <Image
-                      src={card.image}
-                      alt={name}
-                      fill
-                      sizes='(min-width: 1024px) 16rem, (min-width: 640px) 14rem, 12rem'
-                      className='object-cover transition-transform duration-700 ease-out group-hover:scale-110'
-                    />
-                    <div
-                      aria-hidden='true'
-                      className='pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-r from-transparent to-card'
-                    />
-                    <div
-                      aria-hidden='true'
-                      className='pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/0 to-primary/25 opacity-0 transition-opacity duration-500 group-hover:opacity-100'
-                    />
-                  </Link>
-
-                  <div className='flex flex-1 flex-col justify-between gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
-                    <div className='space-y-1.5'>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg'>
-                              {name}
-                            </h2>
-                          </TooltipTrigger>
-
-                          <TooltipContent
-                            className='max-w-55 rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                            iconClassName=' bg-white fill-white'
-                          >
-                            {name}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-
-                      <p className='line-clamp-2 text-xs leading-relaxed text-muted-foreground'>
-                        {card.description[locale]}
-                      </p>
+                <Link href={`/occasions/${card.id}`}>
+                  <div className='relative z-10 flex h-44 overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:h-48 lg:h-52'>
+                    <div className='relative isolate flex h-full w-2/5 shrink-0 items-center justify-center overflow-hidden bg-secondary/40'>
+                      <Image
+                        src={card.image}
+                        alt={name}
+                        fill
+                        sizes='(min-width: 1024px) 16rem, (min-width: 640px) 14rem, 12rem'
+                        className='object-cover transition-transform duration-700 ease-out group-hover:scale-110'
+                      />
+                      <div
+                        aria-hidden='true'
+                        className='pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-r from-transparent to-card'
+                      />
+                      <div
+                        aria-hidden='true'
+                        className='pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/0 via-primary/0 to-primary/25 opacity-0 transition-opacity duration-500 group-hover:opacity-100'
+                      />
                     </div>
 
-                    <div className='mt-1 flex items-center justify-between gap-3'>
-                      <span className='font-title text-xs font-semibold tracking-wider text-primary/80'>
-                        {t('products.occasions.explore')}
-                      </span>
+                    <div className='flex flex-1 flex-col justify-between gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
+                      <div className='space-y-1.5'>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg'>
+                                {name}
+                              </h2>
+                            </TooltipTrigger>
 
-                      <motion.div
-                        whileHover={{ scale: 1.15, rotate: -12 }}
-                        whileTap={{ scale: 0.92 }}
-                        transition={{ type: 'spring', stiffness: 380, damping: 12 }}
-                      >
-                        <Button
-                          asChild
-                          type='button'
-                          size='icon'
-                          className='rounded-full hover:bg-foreground'
-                          aria-label={t('products.occasions.explore')}
+                            <TooltipContent
+                              className='max-w-55 rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
+                              iconClassName=' bg-white fill-white'
+                            >
+                              {name}
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
+                        <p className='line-clamp-2 text-xs leading-relaxed text-muted-foreground'>
+                          {card.description[locale]}
+                        </p>
+                      </div>
+
+                      <div className='mt-1 flex items-center justify-between gap-3'>
+                        <span className='font-title text-xs font-semibold tracking-wider text-primary/80'>
+                          {t('products.occasions.explore')}
+                        </span>
+
+                        <motion.div
+                          whileHover={{ scale: 1.15, rotate: -12 }}
+                          whileTap={{ scale: 0.92 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 12 }}
                         >
-                          <Link href={`/occasions/${card.id}`}>
+                          <Button
+                            type='button'
+                            size='icon'
+                            className='rounded-full hover:bg-foreground'
+                            aria-label={t('products.occasions.explore')}
+                          >
                             <HugeiconsIcon icon={ArrowRight02Icon} className='size-4' />
-                          </Link>
-                        </Button>
-                      </motion.div>
+                          </Button>
+                        </motion.div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               </motion.article>
             )
           })}
