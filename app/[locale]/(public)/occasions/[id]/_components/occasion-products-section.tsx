@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import type { LocalizedText, OccasionCard } from '@/types/config.type'
+import type { BaseCard, LocalizedText } from '@/types/config.type'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -15,7 +15,7 @@ const fadeUp: Variants = {
 }
 
 interface OccasionProductsSectionProps {
-  card: OccasionCard
+  card: BaseCard
   categoryIds: number[]
   skuPrefix: string | null
   campaign: {
@@ -35,7 +35,6 @@ export default function OccasionProductsSection({
 }: OccasionProductsSectionProps) {
   const { t, locale } = useTranslation()
   const displayName = campaign ? campaign.name[locale] || campaign.name.vi || card.name[locale] : card.name[locale]
-  const isEmpty = categoryIds.length === 0
   const sectionId = campaign ? `occasion-products-${campaign.name.en || campaign.name.vi}` : 'occasion-products'
 
   return (
@@ -86,7 +85,7 @@ export default function OccasionProductsSection({
       </motion.div>
 
       <div className='mx-auto mt-6 w-full max-w-7xl'>
-        {isEmpty ? (
+        {!skuPrefix && categoryIds.length === 0 ? (
           <motion.div
             initial='hidden'
             whileInView='visible'

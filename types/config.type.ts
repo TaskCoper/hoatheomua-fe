@@ -182,9 +182,9 @@ export type ContactConfigItem =
     }
 
 // Occasions
-export type OccasionsConfigKey = 'occasions.collection'
+export type OccasionsConfigKey = 'products.occasions'
 
-export type OccasionsConfigGroup = 'occasions'
+export type OccasionsConfigGroup = 'products'
 
 export type OccasionsConfigInputType = 'json'
 
@@ -210,7 +210,7 @@ export interface OccasionCampaign {
   enabled: boolean
 }
 
-export interface OccasionCard {
+export interface BaseCard {
   id: string
   image: string
   badge: LocalizedText
@@ -218,6 +218,9 @@ export interface OccasionCard {
   description: LocalizedText
   categoryIds: string[]
   enabled: boolean
+}
+
+export interface OccasionCard extends BaseCard {
   accent?: string
   campaigns: OccasionCampaign[]
 }
@@ -240,6 +243,33 @@ export interface OccasionsCollectionConfigItem {
   }
 }
 
+// Mainline
+export type MainlineConfigKey = 'products.mainline'
+
+export type MainlineConfigGroup = 'products'
+
+export type MainlineConfigInputType = 'json'
+
+export type MainlineCard = BaseCard
+
+export interface MainlineCollection {
+  section: OccasionsCollectionSection
+  cards: MainlineCard[]
+}
+
+export interface MainlineCollectionConfigItem {
+  key: MainlineConfigKey
+  value: {
+    group: MainlineConfigGroup
+    label: string
+    value: string
+    options: []
+    required: false
+    inputType: MainlineConfigInputType
+    validations: []
+  }
+}
+
 // Feedbacks
 export type FeedbacksConfigKey = 'feedbacks.collection'
 
@@ -255,11 +285,6 @@ export interface FeedbacksConfigOption {
 export interface FeedbacksConfigValidation {
   url?: boolean
   email?: boolean
-}
-
-export interface LocalizedText {
-  vi: string
-  en: string
 }
 
 export interface FeedbacksCollectionSection {

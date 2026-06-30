@@ -1,6 +1,6 @@
 'use client'
 
-import type { LocalizedText, OccasionCard } from '@/types/config.type'
+import type { BaseCard, LocalizedText } from '@/types/config.type'
 import dynamic from 'next/dynamic'
 import ProductsPromiseSection from '../../../products/_components/products-promise-section'
 import OccasionBreadcrumb from './occasion-breadcrumb'
@@ -21,7 +21,7 @@ export interface OccasionSection {
 }
 
 interface OccasionDetailContentProps {
-  card: OccasionCard
+  card: BaseCard
   badge: LocalizedText
   sections: OccasionSection[]
 }

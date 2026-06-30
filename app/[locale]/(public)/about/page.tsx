@@ -8,6 +8,7 @@ import AboutHeroSection from './_components/about-hero-section'
 import AboutPressSection from './_components/about-press-section'
 import AboutProductLinesSection from './_components/about-product-lines-section'
 import AboutTestimonialsSection from './_components/about-testimonials-section'
+import AboutVisionMissionSection from './_components/about-vision-mission-section'
 import { buildAboutJsonLd, generateAboutMetadata } from './_seo'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
@@ -25,6 +26,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <div className='relative overflow-hidden'>
         <FloatingPetals />
         <AboutHeroSection />
+        <AboutVisionMissionSection />
         <AboutBrandValuesSection />
         <AboutProductLinesSection />
         <AboutAdvantagesSection />

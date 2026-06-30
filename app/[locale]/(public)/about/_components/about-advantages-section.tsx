@@ -1,16 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import {
-  CustomerService01Icon,
-  DeliveryTruck01Icon,
-  DiscountTag02Icon,
-  EcoLab01Icon,
-  Flower2Icon,
-  GiftIcon,
-  HandHeartIcon,
-  HonorIcon
-} from '@hugeicons/core-free-icons'
+import { DeliveryTruck01Icon, DiscountTag02Icon, Flower2Icon, HandHeartIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import DecorImage from './about-decor-image'
@@ -25,44 +16,20 @@ const ADVANTAGES = [
   {
     id: 2,
     icon: Flower2Icon,
-    titleKey: 'about.advantages.items.product.title',
-    descriptionKey: 'about.advantages.items.product.description'
+    titleKey: 'about.advantages.items.freshness.title',
+    descriptionKey: 'about.advantages.items.freshness.description'
   },
   {
     id: 3,
-    icon: HandHeartIcon,
-    titleKey: 'about.advantages.items.emotional.title',
-    descriptionKey: 'about.advantages.items.emotional.description'
-  },
-  {
-    id: 4,
     icon: DeliveryTruck01Icon,
     titleKey: 'about.advantages.items.delivery.title',
     descriptionKey: 'about.advantages.items.delivery.description'
   },
   {
-    id: 5,
-    icon: CustomerService01Icon,
+    id: 4,
+    icon: HandHeartIcon,
     titleKey: 'about.advantages.items.service.title',
     descriptionKey: 'about.advantages.items.service.description'
-  },
-  {
-    id: 6,
-    icon: EcoLab01Icon,
-    titleKey: 'about.advantages.items.community.title',
-    descriptionKey: 'about.advantages.items.community.description'
-  },
-  {
-    id: 7,
-    icon: HonorIcon,
-    titleKey: 'about.advantages.items.culture.title',
-    descriptionKey: 'about.advantages.items.culture.description'
-  },
-  {
-    id: 8,
-    icon: GiftIcon,
-    titleKey: 'about.advantages.items.promotion.title',
-    descriptionKey: 'about.advantages.items.promotion.description'
   }
 ] as const
 
