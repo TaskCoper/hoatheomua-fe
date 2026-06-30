@@ -1,7 +1,7 @@
 import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
-import { GUEST_ONLY_ROUTES, isPublicRoutePath } from './shared/constants'
+import { GUEST_ONLY_ROUTES } from './shared/constants'
 
 const ACCESS_TOKEN_COOKIE = 'accessToken'
 const REFRESH_TOKEN_COOKIE = 'refreshToken'
@@ -43,11 +43,6 @@ export default function proxy(request: NextRequest) {
 
   if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed) {
     return buildRedirect(request, '/')
-  }
-
-  if (!isPublicRoutePath(pathname) && !isProbablyAuthed) {
-    const params = new URLSearchParams({ from: request.nextUrl.pathname })
-    return buildRedirect(request, '/sign-in', params)
   }
 
   return intlResponse

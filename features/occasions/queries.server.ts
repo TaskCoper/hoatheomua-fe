@@ -7,8 +7,8 @@ import { cache } from 'react'
 export const getOccasionsCollection = cache(async (): Promise<OccasionsCollection | null> => {
   try {
     const configs = await configService.getPublicConfigs<OccasionsCollectionConfigItem>({
-      group: 'occasions',
-      key: 'occasions.collection'
+      group: 'products',
+      key: 'products.occasions'
     })
     const raw = configs[0]?.value.value
     if (!raw) return null

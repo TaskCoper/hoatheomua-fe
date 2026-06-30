@@ -36,9 +36,9 @@ const cardItem: Variants = {
 
 export default function ProductsOccasionsSection() {
   const { t, locale } = useTranslation()
-  const { configs } = useGetPublicConfigs<OccasionsCollectionConfigItem, 'occasions.collection'>({
-    group: 'occasions',
-    key: 'occasions.collection'
+  const { configs } = useGetPublicConfigs<OccasionsCollectionConfigItem, 'products.occasions'>({
+    group: 'products',
+    key: 'products.occasions'
   })
 
   const cards = useMemo(() => {

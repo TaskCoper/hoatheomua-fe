@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import type { LocalizedText, OccasionCard } from '@/types/config.type'
+import type { BaseCard, LocalizedText } from '@/types/config.type'
 import { CherryIcon, DeliveryTruck01Icon, Flower2Icon, GiftIcon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -43,7 +43,7 @@ const chipPop: Variants = {
 }
 
 interface OccasionHeroSectionProps {
-  card: OccasionCard
+  card: BaseCard
   badge: LocalizedText
 }
 
