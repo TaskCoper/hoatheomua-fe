@@ -617,6 +617,7 @@
       "taxBusinessNotFound": "No business information found for this tax code.",
       "taxBusinessLookupError": "Unable to look up tax code information.",
       "subtotal": "Subtotal",
+      "vat": "VAT 8%",
       "shippingFee": "Shipping fee",
       "total": "Total",
       "back": "Back to edit",

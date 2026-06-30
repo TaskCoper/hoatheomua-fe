@@ -617,6 +617,7 @@
       "taxBusinessNotFound": "Không tìm thấy thông tin doanh nghiệp cho mã số thuế này.",
       "taxBusinessLookupError": "Không thể tra cứu thông tin mã số thuế.",
       "subtotal": "Tạm tính",
+      "vat": "VAT 8%",
       "shippingFee": "Phí vận chuyển",
       "total": "Tổng cộng",
       "back": "Quay lại chỉnh sửa",

@@ -86,10 +86,11 @@ export function EstimateResultPanel({
   )
 
   const productsSubtotal = lines.reduce((sum, line) => sum + line.subtotal, 0)
+  const vatAmount = Math.round(productsSubtotal * 0.08)
 
   const selectedService = sortedAhamove.find((s) => s.service_id === selectedServiceId) ?? sortedAhamove[0]
   const shippingFee = selectedService?.data?.total_fee ?? 0
-  const grandTotal = productsSubtotal + shippingFee
+  const grandTotal = productsSubtotal + vatAmount + shippingFee
 
   const orderTimeLabel =
     payload && payload.orderTime > 0
@@ -276,6 +277,10 @@ export function EstimateResultPanel({
           <div className='flex justify-between text-muted-foreground'>
             <dt>{t('orders.checkout.subtotal')}</dt>
             <dd>{formatVnd(productsSubtotal)}</dd>
+          </div>
+          <div className='flex justify-between text-muted-foreground'>
+            <dt>{t('orders.checkout.vat')}</dt>
+            <dd>{formatVnd(vatAmount)}</dd>
           </div>
           <div className='flex justify-between text-muted-foreground'>
             <dt>{t('orders.checkout.shippingFee')}</dt>
