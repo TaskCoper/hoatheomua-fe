@@ -1,10 +1,10 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
-import { DEFAULT_PRODUCT_CATEGORY_IDS, PRICE_MAX, PRICE_MIN } from '@/features/products/constants'
+import { PRICE_MAX, PRICE_MIN } from '@/features/products/constants'
 import { productsSearchParsers } from '@/features/products/search-params'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { cn } from '@/shared/utils'
+import type { I18nKey } from '@/lib/i18n/types'
 import { motion, type Variants } from 'motion/react'
 import { useQueryStates } from 'nuqs'
 import { useEffect, useMemo, useState } from 'react'
@@ -19,19 +19,29 @@ const fadeUp: Variants = {
 
 type PriceRange = [number, number]
 
-const vndFormatter = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-  maximumFractionDigits: 0
-})
-const formatVnd = (value: number) => vndFormatter.format(value)
+// const vndFormatter = new Intl.NumberFormat('vi-VN', {
+//   style: 'currency',
+//   currency: 'VND',
+//   maximumFractionDigits: 0
+// })
+// const formatVnd = (value: number) => vndFormatter.format(value)
 
 const FULL_RANGE: PriceRange = [PRICE_MIN, PRICE_MAX]
 
 const priceFromSearch = (pmin: number | null, pmax: number | null): PriceRange =>
   pmin !== null && pmax !== null ? [pmin, pmax] : FULL_RANGE
 
-export default function ProductsCatalogSection() {
+type ProductsCatalogSectionProps = {
+  titleKey?: I18nKey
+  descriptionKey?: I18nKey
+  categoryIds?: number[]
+}
+
+export default function ProductsCatalogSection({
+  titleKey = 'products.catalog.title',
+  // descriptionKey = 'products.catalog.description',
+  categoryIds = []
+}: ProductsCatalogSectionProps) {
   const { t } = useTranslation()
   const [search, setSearch] = useQueryStates(productsSearchParsers)
 
@@ -60,9 +70,9 @@ export default function ProductsCatalogSection() {
   const isFullPrice = debouncedPrice[0] === PRICE_MIN && debouncedPrice[1] === PRICE_MAX
   const hasFilters = !isAll || nameDraft.trim() !== '' || !isFullPrice
 
-  const categoryIds = useMemo(
-    () => (isAll ? DEFAULT_PRODUCT_CATEGORY_IDS : [search.category as number]),
-    [isAll, search.category]
+  const activeCategoryIds = useMemo(
+    () => (isAll ? categoryIds : [search.category as number]),
+    [categoryIds, isAll, search.category]
   )
 
   const priceParam = useMemo(
@@ -72,13 +82,13 @@ export default function ProductsCatalogSection() {
 
   const gridKey = `${search.category ?? 'all'}|${debouncedName.trim()}|${debouncedPrice[0]}-${debouncedPrice[1]}`
 
-  const pillClass = (active: boolean) =>
-    cn(
-      'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap cursor-pointer',
-      active
-        ? 'border-primary bg-primary text-primary-foreground'
-        : 'border-foreground/15 bg-card text-foreground hover:border-primary/40 hover:bg-primary/5'
-    )
+  // const pillClass = (active: boolean) =>
+  //   cn(
+  //     'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap cursor-pointer',
+  //     active
+  //       ? 'border-primary bg-primary text-primary-foreground'
+  //       : 'border-foreground/15 bg-card text-foreground hover:border-primary/40 hover:bg-primary/5'
+  //   )
 
   const handleReset = () => {
     setSearch({ category: null, q: null, pmin: null, pmax: null })
@@ -86,13 +96,13 @@ export default function ProductsCatalogSection() {
     setPriceDraft(FULL_RANGE)
   }
 
-  const handlePriceRangePreset = (min: number, max: number) => {
-    setPriceDraft([min, max])
-  }
+  // const handlePriceRangePreset = (min: number, max: number) => {
+  //   setPriceDraft([min, max])
+  // }
 
-  const handleSelectCategory = (id: number | null) => {
-    setSearch({ category: id })
-  }
+  // const handleSelectCategory = (id: number | null) => {
+  //   setSearch({ category: id })
+  // }
 
   return (
     <section id='all-products' className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
@@ -110,9 +120,7 @@ export default function ProductsCatalogSection() {
             color='#516c6c'
           />
 
-          <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-            {t('products.catalog.title')}
-          </h2>
+          <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>{t(titleKey)}</h2>
 
           <SparkleDivider
             className='min-w-0 max-w-96 flex-1 hidden sm:flex'
@@ -122,13 +130,12 @@ export default function ProductsCatalogSection() {
           />
         </div>
 
-        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          {t('products.catalog.description')}
-        </p>
+        {/* <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
+          {t(descriptionKey)}
+        </p> */}
       </motion.div>
 
       <div className='mx-auto mt-6 w-full max-w-7xl'>
-        {/* Filters temporarily hidden — flip to `true` to restore. */}
         {false && (
           <motion.aside
             initial='hidden'
@@ -245,7 +252,7 @@ export default function ProductsCatalogSection() {
         )}
 
         <div className='min-w-0'>
-          <ProductGrid key={gridKey} categoryIds={categoryIds} name={debouncedName} price={priceParam} />
+          <ProductGrid key={gridKey} categoryIds={activeCategoryIds} name={debouncedName} price={priceParam} />
         </div>
       </div>
     </section>

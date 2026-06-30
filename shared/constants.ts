@@ -21,7 +21,9 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/privacy',
   '/returns',
   '/delivery',
-  '/ordering'
+  '/ordering',
+  '/occasions',
+  '/occasions/[id]'
 ])
 
 const normalizeRoutePath = (pathname: string) => {

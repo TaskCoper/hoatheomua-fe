@@ -103,6 +103,7 @@ export type CompanyConfigItem =
         validations: [{ url: true }]
       }
     }
+
 // Contact
 export type ContactConfigKey =
   | 'contact.phone'
@@ -187,16 +188,6 @@ export type OccasionsConfigGroup = 'occasions'
 
 export type OccasionsConfigInputType = 'json'
 
-export interface OccasionsConfigOption {
-  label: string
-  value: string
-}
-
-export interface OccasionsConfigValidation {
-  url?: boolean
-  email?: boolean
-}
-
 export interface LocalizedText {
   vi: string
   en: string
@@ -208,7 +199,18 @@ export interface OccasionsCollectionSection {
   enabled: boolean
 }
 
-export interface OccasionsCollectionCard {
+export interface OccasionCampaign {
+  id: string
+  campaignName: LocalizedText
+  skuPrefix: string
+  startDate: string
+  endDate: string
+  categoryIds: string[]
+  badge: LocalizedText
+  enabled: boolean
+}
+
+export interface OccasionCard {
   id: string
   image: string
   badge: LocalizedText
@@ -216,11 +218,13 @@ export interface OccasionsCollectionCard {
   description: LocalizedText
   categoryIds: string[]
   enabled: boolean
+  accent?: string
+  campaigns: OccasionCampaign[]
 }
 
 export interface OccasionsCollection {
   section: OccasionsCollectionSection
-  cards: OccasionsCollectionCard[]
+  cards: OccasionCard[]
 }
 
 export interface OccasionsCollectionConfigItem {
@@ -230,9 +234,9 @@ export interface OccasionsCollectionConfigItem {
     label: string
     value: string
     options: []
-    required: boolean
+    required: false
     inputType: OccasionsConfigInputType
-    validations: OccasionsConfigValidation[]
+    validations: []
   }
 }
 

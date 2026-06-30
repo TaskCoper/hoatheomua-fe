@@ -1,5 +1,5 @@
 import api, { localeHeaders } from '@/lib/axios'
-import { DEFAULT_PRODUCT_CATEGORY_IDS, DEFAULT_PRODUCT_SORT } from './constants'
+import { DEFAULT_PRODUCT_SORT } from './constants'
 import type { ProductDetailResponse, ProductListResponse } from './types'
 
 export interface ProductListParams {
@@ -20,8 +20,8 @@ const buildListBody = (params: ProductListParams) => {
     filters: {
       ids: params.ids ?? [],
       status: params.status ?? [],
-      categoryIds: params.categoryIds ?? DEFAULT_PRODUCT_CATEGORY_IDS,
-      ...(trimmedName.length > 0 ? { name: trimmedName } : {}),
+      categoryIds: params.categoryIds,
+      ...(trimmedName.length > 0 ? { name: trimmedName.toLowerCase() } : {}),
       ...(params.price && params.price.length === 2 ? { price: params.price } : {})
     },
     paginator: {

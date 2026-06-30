@@ -992,10 +992,10 @@
   "products": {
     "hero": {
       "title": "Bộ Sưu Tập Hoa Tươi",
-      "description": "Từng bó hoa được tuyển chọn theo mùa, cắm thủ công bởi nghệ nhân Hoa Theo Mùa và giao tận tay bạn trong vòng 2 giờ tại TP. Hồ Chí Minh — gửi trao trọn vẹn cảm xúc cho người bạn yêu thương.",
-      "headline": "Mỗi bó hoa - một câu chuyện rất riêng cho người bạn thương.",
-      "body": "Khám phá hơn 50+ thiết kế hoa tươi theo mùa, từ bó hoa sinh nhật, hoa khai trương, hoa cưới đến lan hồ điệp cao cấp. Cam kết hoa nhập trong ngày, đóng gói tinh tế và giao đúng hẹn — sẵn sàng cho mọi khoảnh khắc đặc biệt.",
-      "shopAll": "Xem tất cả sản phẩm",
+      "description": "Mỗi bó hoa được tuyển chọn theo mùa, cắm thủ công tỉ mỉ, tinh tế và giao đến tay bạn trong 2 giờ tại TP. Hồ Chí Minh.",
+      "headline": "Mỗi bó hoa, mỗi dịp tặng là một câu chuyện - chọn đúng bó hoa cho khoảnh khắc của bạn",
+      "body": "Hơn 50 thiết kế theo mùa — từ sinh nhật, khai trương, tốt nghiệp đến lan hồ điệp cao cấp. Hoa nhập trong ngày, đóng gói tinh tế, giao đúng hẹn cho mọi khoảnh khắc đặc biệt.",
+      "shopByType": "Chọn theo loại",
       "shopByOccasion": "Chọn theo dịp",
       "imageAlt": "Bó hoa tươi Hoa Theo Mùa",
       "highlights": {
@@ -1042,11 +1042,41 @@
           "name": "Bó Hoa Chúc Mừng",
           "description": "Lời chúc tươi mới cho hành trình mới — bó hoa tự nhiên, đầy năng lượng tích cực."
         }
+      },
+      "detail": {
+        "breadcrumb": {
+          "ariaLabel": "Đường dẫn",
+          "home": "Trang chủ",
+          "occasions": "Dịp lễ",
+          "back": "Trở lại danh sách dịp"
+        },
+        "headline": "{name} — gợi ý hoa được tuyển chọn",
+        "campaign": {
+          "label": "Đang diễn ra",
+          "dates": "{start} – {end}"
+        },
+        "cta": {
+          "viewCollection": "Xem bộ sưu tập",
+          "otherOccasions": "Xem các dịp khác"
+        },
+        "products": {
+          "title": "Hoa cho {name}",
+          "description": "Bộ sưu tập được nghệ nhân chăm chút riêng cho dịp này — hoa tươi, cắm thủ công và sẵn sàng giao tận tay.",
+          "empty": {
+            "title": "Bộ sưu tập sắp ra mắt",
+            "description": "Bộ sưu tập đang được nghệ nhân chuẩn bị. Vui lòng quay lại sau để khám phá những bó hoa tươi mới nhất cho dịp này."
+          }
+        }
       }
     },
     "catalog": {
       "title": "Phụ Kiện Chơi Hoa",
-      "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc."
+      "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc.",
+      "vaseFlowers": {
+        "title": "Hoa Cắm Bình",
+        "description": "Những cành hoa theo mùa để bạn tự cắm vào chiếc bình yêu thích — tươi mới, dễ phối và giữ nhịp bình yên cho không gian sống.",
+        "prompt": "Đã chọn được hoa yêu thích? Đừng quên chọn thêm bình cắm phù hợp 🌿"
+      }
     },
     "filter": {
       "all": "Tất cả",
@@ -1083,16 +1113,16 @@
       "bannerAlt": "Ưu đãi hoa tươi Hoa Theo Mùa",
       "items": {
         "fresh": {
-          "title": "Hoa nhập trong ngày",
-          "description": "Cam kết 100% hoa tươi, được tuyển chọn từ vườn và nhập khẩu mỗi sáng."
+          "title": "100% Hoa Tươi",
+          "description": "Hoa nhập trong ngày, tuyển chọn trực tiếp từ vườn - không qua kho lưu trữ."
         },
         "delivery": {
-          "title": "Giao tận tay 2 giờ",
-          "description": "Giao siêu tốc trong vòng 2 giờ tại TP. HCM — đúng hẹn, đẹp như ảnh."
+          "title": "Giao Tận Tay 2 Giờ",
+          "description": "Đặt hoa và nhận hoa trong 2h - phục vụ tại TP. Hồ Chí Minh."
         },
         "support": {
-          "title": "Tư vấn miễn phí",
-          "description": "Đội ngũ nghệ nhân sẵn sàng tư vấn lựa hoa phù hợp với ngân sách và dịp."
+          "title": "Tư Vấn Tận Tâm",
+          "description": "Chưa biết chọn hoa nào? Nhắn HTM tư vấn theo đúng dịp và câu chuyện bạn muốn gửi gắm."
         }
       }
     },

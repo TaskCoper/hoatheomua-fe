@@ -51,7 +51,7 @@ export default function ProductsOccasionsSection() {
   }, [configs])
 
   return (
-    <section id='occasion' className='relative mt-4 sm:mt-6 md:mt-8 lg:mt-10 px-4'>
+    <section id='occasion' className='relative mt-4 scroll-mt-8 px-4 sm:mt-6 md:mt-8 lg:mt-10'>
       <motion.div
         initial='hidden'
         whileInView='visible'
@@ -156,7 +156,7 @@ export default function ProductsOccasionsSection() {
                       size='sm'
                       className='h-auto gap-1 px-0 text-xs font-semibold text-primary hover:text-foreground'
                     >
-                      <Link href={`/products?occasion=${card.id}`}>
+                      <Link href={`/occasions/${card.id}`}>
                         {t('products.occasions.explore')}
                         <motion.span
                           className='inline-flex'

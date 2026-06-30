@@ -97,7 +97,7 @@ export default function ProductLinesSection() {
   const { t } = useTranslation()
 
   return (
-    <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
+    <section id='product-lines' className='relative mt-8 scroll-mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
       <motion.div
         initial='hidden'
         whileInView='visible'
