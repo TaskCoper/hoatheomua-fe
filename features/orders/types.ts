@@ -52,7 +52,14 @@ export interface CheckoutPayload {
   remarks: string
   /** Unix timestamp in SECONDS for scheduled delivery. `0` means deliver now. */
   orderTime: number
+  taxCode: string
   items: { itemId: string; number: number }[]
+}
+
+export interface TaxBusinessInfo {
+  id: string
+  name: string
+  address: string
 }
 
 export type ShippingLocationType = 'CITY' | 'WARD'

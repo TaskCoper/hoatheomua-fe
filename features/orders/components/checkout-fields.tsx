@@ -11,17 +11,30 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { useDebounce } from 'use-debounce'
 import { useGetLatLng } from '../hooks/use-get-lat-lng'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
-import { pickBestGeocodeResult } from '../services'
+import orderService, { pickBestGeocodeResult } from '../services'
 import type { CheckoutFormValues } from '../validations'
+import type { TaxBusinessInfo } from '../types'
 import { LocationCombobox } from './location-combobox'
 
 interface CheckoutFieldsProps {
   addresses: Address[]
   selectedAddressId: string
   onSelectAddress: (id: string) => void
+  taxBusinessInfo: TaxBusinessInfo | null
+  taxBusinessLookupState: 'idle' | 'loading' | 'found' | 'not_found' | 'error'
+  onTaxBusinessInfoChange: (info: TaxBusinessInfo | null) => void
+  onTaxBusinessLookupStateChange: (state: 'idle' | 'loading' | 'found' | 'not_found' | 'error') => void
 }
 
-export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }: CheckoutFieldsProps) {
+export function CheckoutFields({
+  addresses,
+  selectedAddressId,
+  onSelectAddress,
+  taxBusinessInfo,
+  taxBusinessLookupState,
+  onTaxBusinessInfoChange,
+  onTaxBusinessLookupStateChange
+}: CheckoutFieldsProps) {
   const { t } = useTranslation()
   const { control, setValue, watch } = useFormContext<CheckoutFormValues>()
 
@@ -30,6 +43,7 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
   const addressLineForm = watch('addressLine')
   const wardForm = watch('ward')
   const cityForm = watch('city')
+  const taxCodeForm = watch('taxCode')
 
   const { shippingLocations: cities, isLoadingShippingLocations: isLoadingCities } = useGetShippingLocations({
     type: 'CITY'
@@ -42,6 +56,8 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
 
   const fullAddress = addressLineForm && wardForm && cityForm ? `${addressLineForm}, ${wardForm}, ${cityForm}` : ''
   const [debouncedAddress] = useDebounce(fullAddress, 300)
+  const [debouncedTaxCode] = useDebounce(taxCodeForm, 500)
+  const hasTaxCodeEntered = !!debouncedTaxCode?.trim()
 
   const { latLng } = useGetLatLng({ address: debouncedAddress, enabled: !!debouncedAddress })
 
@@ -69,6 +85,37 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
       setValue('wardCode', match.id, { shouldDirty: true, shouldValidate: true })
     }
   }, [wardForm, wards, wardCodeForm, setValue])
+
+  useEffect(() => {
+    const taxCode = debouncedTaxCode?.trim() ?? ''
+
+    if (!taxCode) {
+      onTaxBusinessInfoChange(null)
+      onTaxBusinessLookupStateChange('idle')
+      return
+    }
+
+    let cancelled = false
+
+    onTaxBusinessLookupStateChange('loading')
+
+    orderService
+      .lookupTaxCode({ taxCode })
+      .then((businessInfo) => {
+        if (cancelled) return
+        onTaxBusinessInfoChange(businessInfo)
+        onTaxBusinessLookupStateChange(businessInfo ? 'found' : 'not_found')
+      })
+      .catch(() => {
+        if (cancelled) return
+        onTaxBusinessInfoChange(null)
+        onTaxBusinessLookupStateChange('error')
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [debouncedTaxCode, onTaxBusinessInfoChange, onTaxBusinessLookupStateChange])
 
   const addressOptions = useMemo(
     () =>
@@ -241,8 +288,56 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
               )}
             />
           </div>
+
         </>
       )}
+
+      <Controller
+        name='taxCode'
+        control={control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid} className='gap-1'>
+            <FieldLabel htmlFor={field.name}>{t('orders.checkout.taxCode')}</FieldLabel>
+            <Input
+              {...field}
+              id={field.name}
+              aria-invalid={fieldState.invalid}
+              autoComplete='off'
+              spellCheck={false}
+              placeholder={t('orders.checkout.taxCodePlaceholder')}
+            />
+            <div className='min-h-4'>
+              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+            </div>
+            {hasTaxCodeEntered ? (
+              <div className='rounded-2xl border border-border/60 bg-muted/30 px-3 py-2 text-sm'>
+                {taxBusinessLookupState === 'loading' ? (
+                  <p className='text-muted-foreground'>{t('orders.checkout.taxBusinessLoading')}</p>
+                ) : taxBusinessLookupState === 'found' && taxBusinessInfo ? (
+                  <div className='grid gap-1'>
+                    <p>
+                      <span className='text-muted-foreground'>{t('orders.checkout.taxBusinessId')}:</span>{' '}
+                      <span className='font-medium'>{taxBusinessInfo.id}</span>
+                    </p>
+                    <p>
+                      <span className='text-muted-foreground'>{t('orders.checkout.taxBusinessName')}:</span>{' '}
+                      <span className='font-medium'>{taxBusinessInfo.name}</span>
+                    </p>
+                    <p className='min-w-0 whitespace-normal wrap-break-words'>
+                      <span className='text-muted-foreground'>{t('orders.checkout.taxBusinessAddress')}:</span>{' '}
+                      <span className='font-medium'>{taxBusinessInfo.address}</span>
+                    </p>
+                  </div>
+                ) : taxBusinessLookupState === 'error' ? (
+                  <p className='text-destructive'>{t('orders.checkout.taxBusinessLookupError')}</p>
+                ) : taxBusinessLookupState === 'not_found' ? (
+                  <p className='text-muted-foreground'>{t('orders.checkout.taxBusinessNotFound')}</p>
+                ) : null}
+              </div>
+            ) : null}
+          </Field>
+        )}
+      />
 
       <DatePickerField<CheckoutFormValues>
         name='orderTime'

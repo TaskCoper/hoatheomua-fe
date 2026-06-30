@@ -18,7 +18,8 @@ const defaultValues: CheckoutFormValues = {
   latitude: 0,
   longitude: 0,
   mapId: '',
-  orderTime: null
+  orderTime: null,
+  taxCode: ''
 }
 
 export const useEstimateOrder = () => {

@@ -20,7 +20,7 @@ import { FormProvider } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useCreateOrder } from '../hooks/use-create-order'
 import { useEstimateOrder } from '../hooks/use-estimate-order'
-import type { CheckoutPayload } from '../types'
+import type { CheckoutPayload, TaxBusinessInfo } from '../types'
 import { type CheckoutFormValues } from '../validations'
 import { CheckoutFields } from './checkout-fields'
 import { CheckoutItemsPreview } from './checkout-items-preview'
@@ -68,6 +68,10 @@ export default function CheckoutDialog({
   const checkoutItems = items ?? cartItems
 
   const [lastPayload, setLastPayload] = useState<CheckoutPayload | null>(null)
+  const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
+  const [taxBusinessLookupState, setTaxBusinessLookupState] = useState<
+    'idle' | 'loading' | 'found' | 'not_found' | 'error'
+  >('idle')
 
   const { addresses, isLoading: isLoadingAddresses } = useGetAddresses({ enabled: open })
   const [selectedAddressId, setSelectedAddressId] = useState<string>('')
@@ -111,6 +115,8 @@ export default function CheckoutDialog({
     resetEstimate()
     resetCreate()
     setLastPayload(null)
+    setTaxBusinessInfo(null)
+    setTaxBusinessLookupState('idle')
     setSelectedAddressId('')
     hasInitializedRef.current = false
   }
@@ -131,6 +137,7 @@ export default function CheckoutDialog({
       phone: values.phone,
       remarks: values.remarks ?? '',
       orderTime: values.orderTime ? Math.floor(new Date(values.orderTime).getTime() / 1000) : 0,
+      taxCode: values.taxCode ?? '',
       items: checkoutItems.map((item) => ({
         itemId: String(item.productId),
         number: item.quantity
@@ -164,6 +171,8 @@ export default function CheckoutDialog({
           resetEstimate()
           resetCreate()
           setLastPayload(null)
+          setTaxBusinessInfo(null)
+          setTaxBusinessLookupState('idle')
           setSelectedAddressId('')
           hasInitializedRef.current = false
         }
@@ -186,6 +195,8 @@ export default function CheckoutDialog({
               ahamove={estimatedOrder.ahamoveResult}
               products={estimatedOrder.productNhanhResult.data}
               payload={lastPayload}
+              taxBusinessInfo={taxBusinessInfo}
+              taxBusinessLookupState={taxBusinessLookupState}
               isConfirming={isCreatingOrder}
               onBack={() => {
                 if (isCreatingOrder) return
@@ -213,13 +224,17 @@ export default function CheckoutDialog({
               <Spinner />
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className='flex flex-col gap-4 overflow-y-auto pr-1'>
+            <form onSubmit={handleSubmit} className='no-scrollbar flex flex-col gap-4 overflow-y-auto pr-1'>
               {checkoutItems.length > 0 ? <CheckoutItemsPreview items={checkoutItems} /> : null}
 
               <CheckoutFields
                 addresses={addresses}
                 selectedAddressId={selectedAddressId}
                 onSelectAddress={handleSelectAddress}
+                taxBusinessInfo={taxBusinessInfo}
+                taxBusinessLookupState={taxBusinessLookupState}
+                onTaxBusinessInfoChange={setTaxBusinessInfo}
+                onTaxBusinessLookupStateChange={setTaxBusinessLookupState}
               />
 
               {isCartEmpty ? <p className='text-sm text-destructive'>{t('orders.checkout.emptyCart')}</p> : null}

@@ -20,7 +20,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 import type { AhamoveResult, ProductNhanh } from '../ahamove.type'
-import type { CheckoutPayload } from '../types'
+import type { CheckoutPayload, TaxBusinessInfo } from '../types'
 
 const vndFormatter = new Intl.NumberFormat('vi-VN', {
   style: 'currency',
@@ -33,8 +33,10 @@ const formatVnd = (value: number) => vndFormatter.format(value)
 interface EstimateResultPanelProps {
   cartItems: CartItem[]
   ahamove: AhamoveResult[]
-  products: ProductNhanh[]
+  products: ProductNhanh[] 
   payload: CheckoutPayload | null
+  taxBusinessInfo: TaxBusinessInfo | null
+  taxBusinessLookupState: 'idle' | 'loading' | 'found' | 'not_found' | 'error'
   isConfirming: boolean
   onBack: () => void
   onConfirm: (serviceId: string) => void
@@ -45,6 +47,8 @@ export function EstimateResultPanel({
   ahamove,
   products,
   payload,
+  taxBusinessInfo,
+  taxBusinessLookupState,
   isConfirming,
   onBack,
   onConfirm
@@ -92,9 +96,10 @@ export function EstimateResultPanel({
       ? formatDate(new Date(payload.orderTime * 1000), 'dateTimeMedium')
       : t('orders.checkout.deliverNow')
   const remarksLabel = payload?.remarks?.trim() ? payload.remarks : t('orders.checkout.noRemarks')
+  const hasTaxCode = !!payload?.taxCode?.trim()
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className=' no-scrollbar scroll-smooth flex flex-col gap-4 overflow-y-auto pr-1'>
       {payload ? (
         <section className='rounded-3xl bg-card p-4 ring-1 ring-foreground/5'>
           <header className='mb-3 flex items-center gap-2'>
@@ -149,6 +154,42 @@ export function EstimateResultPanel({
               </div>
             </div>
           </dl>
+        </section>
+      ) : null}
+
+      {hasTaxCode ? (
+        <section className='rounded-3xl bg-card p-4 ring-1 ring-foreground/5'>
+          <header className='mb-3 flex items-center gap-2'>
+            <span className='inline-flex size-7 items-center justify-center rounded-full bg-primary/10 text-primary'>
+              <HugeiconsIcon icon={Location04Icon} strokeWidth={2} className='size-4' />
+            </span>
+            <h3 className='font-heading text-sm font-semibold'>{t('orders.checkout.taxBusinessHeading')}</h3>
+          </header>
+
+          {taxBusinessLookupState === 'loading' ? (
+            <p className='text-sm text-muted-foreground'>{t('orders.checkout.taxBusinessLoading')}</p>
+          ) : taxBusinessLookupState === 'found' && taxBusinessInfo ? (
+            <dl className='grid grid-cols-1 gap-3 text-sm'>
+              <div className='min-w-0 whitespace-normal break-words'>
+                <span className='text-xs text-muted-foreground'>{t('orders.checkout.taxBusinessId')}:</span>{' '}
+                <span className='font-medium'>{taxBusinessInfo.id}</span>
+              </div>
+              <div className='min-w-0 whitespace-normal break-words'>
+                <span className='text-xs text-muted-foreground'>{t('orders.checkout.taxBusinessName')}:</span>{' '}
+                <span className='font-medium'>{taxBusinessInfo.name}</span>
+              </div>
+              <div className='min-w-0 whitespace-normal break-words'>
+                <span className='text-xs text-muted-foreground'>{t('orders.checkout.taxBusinessAddress')}:</span>{' '}
+                <span className='font-medium'>{taxBusinessInfo.address}</span>
+              </div>
+            </dl>
+          ) : taxBusinessLookupState === 'error' ? (
+            <p className='text-sm text-destructive'>{t('orders.checkout.taxBusinessLookupError')}</p>
+          ) : taxBusinessLookupState === 'not_found' ? (
+            <p className='text-sm text-muted-foreground'>{t('orders.checkout.taxBusinessNotFound')}</p>
+          ) : (
+            <p className='text-sm text-muted-foreground'>{t('orders.checkout.taxBusinessHint')}</p>
+          )}
         </section>
       ) : null}
 
