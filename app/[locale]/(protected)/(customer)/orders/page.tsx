@@ -205,18 +205,10 @@ function OrderRow({ order, t, formatDateTime, onOpen }: OrderRowProps) {
       onKeyDown={handleKeyDown}
       aria-label={isPending ? t('orders.list.qr.title') : t('orders.list.detail.title')}
       className={cn(
-        'group relative flex cursor-pointer flex-col gap-4 overflow-hidden rounded-3xl bg-card p-4 outline-none shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-visible:ring-2 focus-visible:ring-ring/40 sm:flex-row sm:items-center sm:p-5'
+        'group relative flex cursor-pointer flex-col gap-4 overflow-hidden rounded-3xl bg-card p-2 outline-none shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-visible:ring-2 focus-visible:ring-ring/40 sm:flex-row sm:items-center sm:p-3'
       )}
     >
-      <motion.div
-        whileHover={{ rotate: -8, scale: 1.08 }}
-        transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-        className='grid size-12 shrink-0 place-items-center rounded-2xl bg-secondary/40 text-primary ring-1 ring-primary/10 sm:size-14'
-      >
-        <HugeiconsIcon icon={PackageIcon} strokeWidth={1.75} className='size-6' />
-      </motion.div>
-
-      <div className='min-w-0 flex-1 space-y-1.5'>
+      <div className='min-w-0 flex-1'>
         <div className='flex flex-wrap items-center justify-between gap-2'>
           <div className='flex items-center gap-2'>
             <span className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
@@ -252,13 +244,13 @@ function OrderRow({ order, t, formatDateTime, onOpen }: OrderRowProps) {
             <dt className='shrink-0 font-medium'>{t('orders.checkout.orderTime')}:</dt>
             <dd className='truncate font-medium text-foreground/90'>
               {order.orderTime > 0
-                ? formatDateTime(order.orderTime * 1000, 'dateTimeShort')
+                ? formatDateTime(order.orderTime * 1000, 'dateShort')
                 : t('orders.checkout.deliverNow')}
             </dd>
           </div>
         </dl>
 
-        <div className='flex flex-wrap items-center gap-2'>
+        <div className='flex flex-wrap items-center gap-2 mt-3'>
           {isPending ? (
             <motion.span
               whileHover={{ x: 2 }}

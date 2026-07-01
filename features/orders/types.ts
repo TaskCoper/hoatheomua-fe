@@ -31,6 +31,7 @@ export interface OrderDetail {
   orderId: string
   status: OrderStatus
   trackNumber: string
+  details: OrderItem[]
   ahahaMoveOrderId: string | null
   ahahaMoveTrackingUrl: string | null
   qrCodeUrl: string | null
@@ -42,6 +43,18 @@ export interface OrderDetail {
   } | null
 }
 
+export interface OrderItem {
+  orderDetailsId: string
+  name: string
+  itemId: number
+  number: number
+  price: number
+  weight: number
+  length: number
+  width: number
+  height: number
+}
+
 export interface CheckoutPayload {
   latitude: number
   longitude: number
@@ -50,10 +63,10 @@ export interface CheckoutPayload {
   fullName: string
   phone: string
   remarks: string
-  /** Unix timestamp in SECONDS for scheduled delivery. `0` means deliver now. */
   orderTime: number
   taxCode: string
   items: { itemId: string; number: number }[]
+  tagIds: number[]
 }
 
 export interface TaxBusinessInfo {

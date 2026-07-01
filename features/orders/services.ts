@@ -26,9 +26,7 @@ const normalizeAddress = (value: string): string =>
 
 const normalizeTaxBusinessInfo = (response: unknown): TaxBusinessInfo | null => {
   const candidate =
-    response && typeof response === 'object'
-      ? ((response as { data?: unknown }).data ?? response)
-      : null
+    response && typeof response === 'object' ? ((response as { data?: unknown }).data ?? response) : null
 
   if (!candidate || typeof candidate !== 'object') {
     return null

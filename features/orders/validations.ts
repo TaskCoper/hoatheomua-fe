@@ -26,7 +26,8 @@ export const createCheckoutSchema = (t: TranslationFunction) => {
     longitude: z.number(),
     mapId: z.string(),
     orderTime: z.string().nullable(),
-    taxCode: z.string().trim().optional()
+    taxCode: z.string().trim().optional(),
+    tagIds: z.array(z.number()).max(1)
   })
 }
 

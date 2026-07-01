@@ -14,7 +14,7 @@ export const useCreateOrder = () => {
   } = useMutation({
     mutationFn: orderService.createOrder,
     onSuccess: () => {
-      router.push(`/orders`)
+      router.push('/orders')
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] })

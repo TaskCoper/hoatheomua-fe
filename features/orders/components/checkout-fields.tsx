@@ -3,8 +3,10 @@
 import { DatePickerField } from '@/components/date-picker-field'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { Address } from '@/features/addresses/types'
+import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useEffect, useMemo } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -12,9 +14,11 @@ import { useDebounce } from 'use-debounce'
 import { useGetLatLng } from '../hooks/use-get-lat-lng'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
 import orderService, { pickBestGeocodeResult } from '../services'
-import type { CheckoutFormValues } from '../validations'
 import type { TaxBusinessInfo } from '../types'
+import type { CheckoutFormValues } from '../validations'
 import { LocationCombobox } from './location-combobox'
+
+const ORDER_TAG_NONE = '__none__'
 
 interface CheckoutFieldsProps {
   addresses: Address[]
@@ -44,6 +48,8 @@ export function CheckoutFields({
   const wardForm = watch('ward')
   const cityForm = watch('city')
   const taxCodeForm = watch('taxCode')
+
+  const { orderTags, isGettingOrderTags } = useGetOrderTags()
 
   const { shippingLocations: cities, isLoadingShippingLocations: isLoadingCities } = useGetShippingLocations({
     type: 'CITY'
@@ -288,7 +294,6 @@ export function CheckoutFields({
               )}
             />
           </div>
-
         </>
       )}
 
@@ -306,11 +311,9 @@ export function CheckoutFields({
               spellCheck={false}
               placeholder={t('orders.checkout.taxCodePlaceholder')}
             />
-            <div className='min-h-4'>
-              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-            </div>
+
             {hasTaxCodeEntered ? (
-              <div className='rounded-2xl border border-border/60 bg-muted/30 px-3 py-2 text-sm'>
+              <div className='rounded-2xl border border-border/60 bg-muted/30 px-3 py-2 text-sm mt-2'>
                 {taxBusinessLookupState === 'loading' ? (
                   <p className='text-muted-foreground'>{t('orders.checkout.taxBusinessLoading')}</p>
                 ) : taxBusinessLookupState === 'found' && taxBusinessInfo ? (
@@ -335,6 +338,10 @@ export function CheckoutFields({
                 ) : null}
               </div>
             ) : null}
+
+            <div className='min-h-4'>
+              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+            </div>
           </Field>
         )}
       />
@@ -345,6 +352,41 @@ export function CheckoutFields({
         placeholder='orders.checkout.orderTimePlaceholder'
         minDate={new Date(new Date().setHours(0, 0, 0, 0))}
         maxDate={new Date(new Date(new Date().setHours(23, 59, 59, 999)).getTime() + 7 * 24 * 60 * 60 * 1000)}
+      />
+
+      <Controller
+        name='tagIds'
+        control={control}
+        render={({ field, fieldState }) => {
+          const selected = field.value?.[0]
+          return (
+            <Field data-invalid={fieldState.invalid} className='gap-1'>
+              <FieldLabel htmlFor={field.name}>{t('orders.checkout.tag')}</FieldLabel>
+              <Select
+                value={selected !== undefined ? String(selected) : ORDER_TAG_NONE}
+                onValueChange={(value) => {
+                  field.onChange(value === ORDER_TAG_NONE ? [] : [Number(value)])
+                }}
+                disabled={isGettingOrderTags || !orderTags?.options?.length}
+              >
+                <SelectTrigger id={field.name} className='w-full' aria-invalid={fieldState.invalid}>
+                  <SelectValue placeholder={t('orders.checkout.tagPlaceholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ORDER_TAG_NONE}>{t('orders.checkout.tagNone')}</SelectItem>
+                  {orderTags?.options?.map((option) => (
+                    <SelectItem key={option.value} value={String(option.value)}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
+            </Field>
+          )
+        }}
       />
 
       <Controller
