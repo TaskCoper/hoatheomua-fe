@@ -1,12 +1,12 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import CheckoutDialog from '@/features/orders/components/checkout-dialog'
 import type { ProductUnit } from '@/features/products/types'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { buildLineId, MAX_QUANTITY, useCartStore, type CartItem } from '@/stores/cart.store'
+import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { FlashIcon, MinusSignIcon, PlusSignIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
@@ -46,13 +46,13 @@ export default function ProductPurchaseBox({
   const { isAuthenticated, isGettingMe, me } = useGetMe()
 
   const addItem = useCartStore((state) => state.addItem)
+  const setCheckoutIntent = useCheckoutIntentStore((state) => state.setIntent)
   const variantOptions = useMemo(() => units.filter((unit) => unit.name && unit.price?.retail > 0), [units])
   const hasVariants = variantOptions.length > 1
   const inStock = available > 0
 
   const [activeUnitId, setActiveUnitId] = useState<number | null>(hasVariants ? (variantOptions[0]?.id ?? null) : null)
   const [quantity, setQuantity] = useState(1)
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
 
   const activeUnit = hasVariants ? (variantOptions.find((unit) => unit.id === activeUnitId) ?? null) : null
   const currentRetail = activeUnit?.price?.retail ?? retail
@@ -136,7 +136,8 @@ export default function ProductPurchaseBox({
 
   const handleBuyNow = () => {
     if (!guardPurchase()) return
-    setIsCheckoutOpen(true)
+    setCheckoutIntent([buyNowItem], 'buy-now')
+    router.push('/checkout')
   }
 
   return (
@@ -270,8 +271,6 @@ export default function ProductPurchaseBox({
           </Button>
         </motion.div>
       </div>
-
-      <CheckoutDialog items={[buyNowItem]} open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen} />
     </div>
   )
 }
