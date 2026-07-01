@@ -83,18 +83,18 @@ export default function Header() {
       />
       <div className='pointer-events-none absolute inset-0 z-0 bg-foreground/10' aria-hidden='true' />
 
-      <div className='relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-4 p-4 sm:p-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:p-8'>
+      <div className='relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between gap-4 p-4 sm:p-6 lg:p-8 xl:grid xl:grid-cols-[1fr_auto_1fr]'>
         <Link
           href='/'
           aria-label={t('header.brand')}
-          className='flex flex-col items-center gap-0.5 lg:justify-self-start cursor-pointer'
+          className='flex flex-col items-center gap-0.5 xl:justify-self-start cursor-pointer'
         >
           <Image src={logo} alt={t('header.logoAlt')} className='h-10 sm:h-12 lg:h-14 w-auto' />
         </Link>
 
         <nav
           aria-label={t('header.aria.mainNav')}
-          className='relative isolate justify-self-center rounded-full bg-primary p-1 shadow-md hidden lg:block'
+          className='relative isolate justify-self-center rounded-full bg-primary p-1 shadow-md hidden xl:block'
         >
           {/* <Image
             src={vine}
@@ -133,7 +133,7 @@ export default function Header() {
           </ul>
         </nav>
 
-        <div className='hidden items-center gap-2 lg:flex lg:justify-self-end z-10'>
+        <div className='hidden items-center gap-2 xl:flex xl:justify-self-end z-10'>
           {isGettingMe ? (
             <Skeleton className='h-9 w-32 rounded-full' />
           ) : isAuthenticated ? (
@@ -190,7 +190,7 @@ export default function Header() {
         </div>
 
         <Sheet>
-          <SheetTrigger asChild className='lg:hidden'>
+          <SheetTrigger asChild className='xl:hidden'>
             <Button
               size='icon-sm'
               className='border-none ring ring-primary ring-inset'

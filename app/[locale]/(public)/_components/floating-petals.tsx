@@ -8,7 +8,7 @@ import Image from 'next/image'
 import { useEffect, useState, type CSSProperties } from 'react'
 
 const PETAL_IMAGES = [petal1, petal2, petal3]
-const PETAL_COUNT = 24
+const PETAL_COUNT = 12
 const RENDER_DELAY_MS = 2500
 
 const seededRandom = (seed: number) => {
@@ -93,6 +93,7 @@ export default function FloatingPetals() {
           key={petal.id}
           src={petal.src}
           alt=''
+          aria-hidden='true'
           loading='lazy'
           fetchPriority='low'
           sizes='160px'

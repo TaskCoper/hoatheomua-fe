@@ -112,16 +112,16 @@ export default function FlowersCarousel() {
                     />
                     <Image
                       src={item.image}
-                      alt=''
-                      aria-hidden='true'
+                      alt={index === 0 ? item.label : ''}
+                      {...(index === 0 ? {} : { 'aria-hidden': 'true' as const })}
                       className='pointer-events-none col-start-1 row-start-1 object-contain'
                       style={{
                         width: imageSize,
                         height: imageSize,
                         transition: `width 550ms ${EASE}, height 550ms ${EASE}`
                       }}
-                      sizes='(min-width: 1024px) 320px, (min-width: 768px) 240px, (min-width: 640px) 180px, 160px'
-                      loading='lazy'
+                      sizes='(min-width: 1024px) 320px, (min-width: 768px) 240px, (min-width: 640px) 200px, 220px'
+                      {...(index === 0 ? { priority: true } : { loading: 'lazy' as const })}
                       quality={55}
                     />
                   </div>

@@ -2,16 +2,11 @@
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
-import Lightbox from 'yet-another-react-lightbox'
-import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
-import Slideshow from 'yet-another-react-lightbox/plugins/slideshow'
-import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
-import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 
-import 'yet-another-react-lightbox/plugins/thumbnails.css'
-import 'yet-another-react-lightbox/styles.css'
+const ProductLightbox = dynamic(() => import('./product-lightbox'), { ssr: false })
 
 export default function ProductGallery({
   name,
@@ -124,19 +119,16 @@ export default function ProductGallery({
         </button>
       </div>
 
-      <Lightbox
-        open={isLightboxOpen}
-        close={() => setIsLightboxOpen(false)}
-        index={safeIndex}
-        on={{
-          view: ({ index }) => setActiveIndex(index)
-        }}
-        slides={slides}
-        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-        carousel={{ finite: images.length <= 1 }}
-        thumbnails={{ position: 'bottom', showToggle: true }}
-        zoom={{ maxZoomPixelRatio: 3, scrollToZoom: true }}
-      />
+      {isLightboxOpen ? (
+        <ProductLightbox
+          open={isLightboxOpen}
+          close={() => setIsLightboxOpen(false)}
+          index={safeIndex}
+          slides={slides}
+          onView={(index) => setActiveIndex(index)}
+          finite={images.length <= 1}
+        />
+      ) : null}
     </div>
   )
 }

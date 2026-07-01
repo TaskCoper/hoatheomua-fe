@@ -9,7 +9,7 @@ import { CompanyConfigItem, ContactConfigItem } from '@/types/config.type'
 import { Facebook01Icon, InstagramIcon, Mail01Icon, MessageMultiple01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 const POLICIES = [
   { labelKey: 'footer.policies.terms', href: '/terms' },
@@ -18,6 +18,45 @@ const POLICIES = [
   { labelKey: 'footer.policies.privacy', href: '/privacy' },
   { labelKey: 'footer.policies.delivery', href: '/delivery' }
 ] as const
+
+function MapEmbed({ src, title }: { src: string | undefined; title: string }) {
+  const [shouldRender, setShouldRender] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!src || shouldRender) return
+    const node = ref.current
+    if (!node) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setShouldRender(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '400px' }
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [src, shouldRender])
+
+  return (
+    <div ref={ref} className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md bg-secondary/20'>
+      {shouldRender && src ? (
+        <iframe
+          src={src}
+          title={title}
+          className='h-40 w-full sm:h-48 lg:h-44'
+          loading='lazy'
+          referrerPolicy='no-referrer-when-downgrade'
+        />
+      ) : (
+        <div className='h-40 w-full sm:h-48 lg:h-44' aria-hidden='true' />
+      )}
+    </div>
+  )
+}
 
 const FEATURED_PRODUCTS = [
   'footer.featured.birthday',
@@ -127,17 +166,7 @@ export default function Footer() {
 
           <div className='space-y-2 lg:col-span-3'>
             <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.mapHeading')}</h2>
-            <div className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md'>
-              {googleMapSrc && (
-                <iframe
-                  src={googleMapSrc}
-                  title={t('footer.mapTitle')}
-                  className='h-40 w-full sm:h-48 lg:h-44'
-                  loading='lazy'
-                  referrerPolicy='no-referrer-when-downgrade'
-                />
-              )}
-            </div>
+            <MapEmbed src={googleMapSrc} title={t('footer.mapTitle')} />
             <div className='flex items-center gap-3'>
               {SOCIALS.map((social) => (
                 <a

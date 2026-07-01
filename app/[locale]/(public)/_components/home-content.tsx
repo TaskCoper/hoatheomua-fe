@@ -39,7 +39,6 @@ export default function HomeContent() {
           alt='Bộ sưu tập hoa tươi Hoa Theo Mùa'
           className='w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-secondary/80'
           sizes='(min-width: 1280px) 1200px, 100vw'
-          loading='lazy'
           quality={65}
         />
       </motion.div>

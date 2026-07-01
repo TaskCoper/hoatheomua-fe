@@ -19,10 +19,10 @@
     "check": "pnpm run lint && pnpm run i18n:verify && pnpm run typecheck"
   },
   "browserslist": [
-    "chrome >= 87",
-    "edge >= 88",
-    "firefox >= 78",
-    "safari >= 14"
+    "chrome >= 111",
+    "edge >= 111",
+    "firefox >= 115",
+    "safari >= 16.4"
   ],
   "lint-staged": {
     "*.{ts,tsx}": [
