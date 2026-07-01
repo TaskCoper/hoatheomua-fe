@@ -1,12 +1,12 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { Link } from '@/lib/i18n/navigation'
 import {
   ArrowRight02Icon,
   Building03Icon,
   Calendar03Icon,
   GiftIcon,
-  HeartCheckIcon,
   HotelIcon,
   SparklesIcon
 } from '@hugeicons/core-free-icons'
@@ -16,46 +16,49 @@ import { SparkleDivider } from '../../_components/sparkle-dividier'
 
 const SERVICES = [
   {
-    id: 'corporate-events',
+    id: 'outsourced',
+    icon: HotelIcon,
+    tagKey: 'b2b.services.items.outsourced.tag',
+    nameKey: 'b2b.services.items.outsourced.name',
+    descriptionKey: 'b2b.services.items.outsourced.description',
+    accent: 'primary' as const,
+    linkToPackages: false
+  },
+  {
+    id: 'events-mice',
     icon: Calendar03Icon,
-    tagKey: 'b2b.services.items.corporateEvents.tag',
-    nameKey: 'b2b.services.items.corporateEvents.name',
-    descriptionKey: 'b2b.services.items.corporateEvents.description'
+    tagKey: 'b2b.services.items.eventsMice.tag',
+    nameKey: 'b2b.services.items.eventsMice.name',
+    descriptionKey: 'b2b.services.items.eventsMice.description',
+    accent: 'primary' as const,
+    linkToPackages: false
   },
   {
     id: 'office-subscription',
     icon: Building03Icon,
     tagKey: 'b2b.services.items.officeSubscription.tag',
     nameKey: 'b2b.services.items.officeSubscription.name',
-    descriptionKey: 'b2b.services.items.officeSubscription.description'
+    descriptionKey: 'b2b.services.items.officeSubscription.description',
+    accent: 'primary' as const,
+    linkToPackages: true
   },
   {
-    id: 'hospitality',
-    icon: HotelIcon,
-    tagKey: 'b2b.services.items.hospitality.tag',
-    nameKey: 'b2b.services.items.hospitality.name',
-    descriptionKey: 'b2b.services.items.hospitality.description'
-  },
-  {
-    id: 'weddings',
-    icon: HeartCheckIcon,
-    tagKey: 'b2b.services.items.weddings.tag',
-    nameKey: 'b2b.services.items.weddings.name',
-    descriptionKey: 'b2b.services.items.weddings.description'
-  },
-  {
-    id: 'gifting',
+    id: 'corporate-gifts',
     icon: GiftIcon,
-    tagKey: 'b2b.services.items.gifting.tag',
-    nameKey: 'b2b.services.items.gifting.name',
-    descriptionKey: 'b2b.services.items.gifting.description'
+    tagKey: 'b2b.services.items.corporateGifts.tag',
+    nameKey: 'b2b.services.items.corporateGifts.name',
+    descriptionKey: 'b2b.services.items.corporateGifts.description',
+    accent: 'primary' as const,
+    linkToPackages: false
   },
   {
-    id: 'grand-opening',
+    id: 'brand-experience',
     icon: SparklesIcon,
-    tagKey: 'b2b.services.items.grandOpening.tag',
-    nameKey: 'b2b.services.items.grandOpening.name',
-    descriptionKey: 'b2b.services.items.grandOpening.description'
+    tagKey: 'b2b.services.items.brandExperience.tag',
+    nameKey: 'b2b.services.items.brandExperience.name',
+    descriptionKey: 'b2b.services.items.brandExperience.description',
+    accent: 'leaf' as const,
+    linkToPackages: false
   }
 ] as const
 
@@ -149,12 +152,22 @@ export default function B2BServicesSection() {
                   scale: { type: 'spring', stiffness: 380, damping: 12 },
                   y: { duration: 2.6 + (index % 3) * 0.3, repeat: Infinity, ease: 'easeInOut' }
                 }}
-                className='grid size-11 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-md sm:size-12'
+                className={`grid size-11 shrink-0 place-items-center rounded-2xl shadow-md sm:size-12 ${
+                  service.accent === 'leaf'
+                    ? 'bg-leaf text-leaf-foreground'
+                    : 'bg-primary text-primary-foreground'
+                }`}
               >
                 <HugeiconsIcon icon={service.icon} className='size-5 sm:size-6' />
               </motion.div>
 
-              <span className='inline-flex items-center rounded-full bg-secondary/60 px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-widest text-primary ring-1 ring-primary/10'>
+              <span
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-widest ring-1 ${
+                  service.accent === 'leaf'
+                    ? 'bg-leaf/15 text-leaf ring-leaf/20'
+                    : 'bg-secondary/60 text-primary ring-primary/10'
+                }`}
+              >
                 {t(service.tagKey)}
               </span>
             </div>
@@ -166,20 +179,32 @@ export default function B2BServicesSection() {
               <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{t(service.descriptionKey)}</p>
             </div>
 
-            <motion.div
-              whileHover={{ x: 4 }}
-              transition={{ type: 'spring', stiffness: 380, damping: 16 }}
-              className='relative mt-1 inline-flex w-fit items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-foreground'
-            >
-              {t('b2b.services.explore')}
-              <motion.span
-                className='inline-flex'
-                animate={{ x: [0, 6, 0] }}
-                transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+            <div className='relative mt-1 flex flex-wrap items-center gap-x-4 gap-y-1.5'>
+              <motion.div
+                whileHover={{ x: 4 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 16 }}
+                className='inline-flex w-fit items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-foreground'
               >
-                <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
-              </motion.span>
-            </motion.div>
+                {t('b2b.services.explore')}
+                <motion.span
+                  className='inline-flex'
+                  animate={{ x: [0, 6, 0] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
+                </motion.span>
+              </motion.div>
+
+              {service.linkToPackages && (
+                <Link
+                  href='#b2b-packages'
+                  className='inline-flex w-fit items-center gap-1 text-xs font-semibold text-leaf transition-colors hover:text-primary'
+                >
+                  {t('b2b.services.viewPackages')}
+                  <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
+                </Link>
+              )}
+            </div>
           </motion.article>
         ))}
       </motion.div>

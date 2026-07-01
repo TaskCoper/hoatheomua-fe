@@ -11,16 +11,16 @@ const B2B_COPY = {
   vi: {
     title: 'Dịch Vụ Hoa Cho Doanh Nghiệp',
     description:
-      'Hoa Theo Mùa cung cấp dịch vụ hoa B2B cao cấp cho doanh nghiệp tại Việt Nam: hoa văn phòng định kỳ, sự kiện công ty, khách sạn, đám cưới, quà tặng và khai trương.',
+      'Hoa Theo Mùa — đối tác hoa cho khách sạn 4–5 sao, văn phòng và thương hiệu: phòng hoa thuê ngoài, hoa văn phòng định kỳ, gói hoa lan lễ tân theo quý, hoa sự kiện MICE và quà tặng doanh nghiệp.',
     keywords: [
-      'hoa B2B',
       'hoa doanh nghiệp',
-      'hoa văn phòng',
+      'phòng hoa thuê ngoài',
       'hoa khách sạn',
-      'hoa sự kiện',
-      'hoa cưới',
+      'hoa văn phòng định kỳ',
+      'hoa lan lễ tân',
+      'hoa sự kiện MICE',
       'quà tặng doanh nghiệp',
-      'hoa Theo Mùa B2B'
+      'Hoa Theo Mùa B2B'
     ],
     ogAlt: 'Dịch vụ hoa doanh nghiệp Hoa Theo Mùa',
     breadcrumb: 'Doanh nghiệp'
@@ -28,14 +28,14 @@ const B2B_COPY = {
   en: {
     title: 'Flowers For Business',
     description:
-      'Hoa Theo Mùa delivers premium B2B floral services across Vietnam: office subscriptions, corporate events, hotel styling, weddings, corporate gifts and grand-opening installations.',
+      'Hoa Theo Mùa — floral partner for 4–5 star hotels, offices and brands: outsourced florist department, recurring office flowers, quarterly reception orchid packages, MICE event florals and corporate gifting.',
     keywords: [
       'B2B flowers Vietnam',
-      'corporate flower subscription',
-      'office flowers',
+      'outsourced florist department',
       'hotel florist',
-      'event florist Vietnam',
-      'wedding florist',
+      'office flower subscription',
+      'reception orchid packages',
+      'MICE event flowers',
       'corporate gifting flowers'
     ],
     ogAlt: 'Hoa Theo Mùa B2B floral services',
@@ -46,33 +46,42 @@ const B2B_COPY = {
 const B2B_PACKAGE_OFFERS = [
   {
     '@type': 'Offer',
-    name: 'Boutique',
+    name: 'Như Ý',
     priceCurrency: 'VND',
-    price: '8000000',
+    price: '2595000',
     priceSpecification: {
       '@type': 'UnitPriceSpecification',
-      price: '8000000',
+      price: '2595000',
       priceCurrency: 'VND',
-      unitText: 'MONTH'
+      unitCode: 'P3M',
+      unitText: 'quarter'
     }
   },
   {
     '@type': 'Offer',
-    name: 'Atelier',
+    name: 'Lộc Phát',
     priceCurrency: 'VND',
-    price: '25000000',
+    price: '3995000',
     priceSpecification: {
       '@type': 'UnitPriceSpecification',
-      price: '25000000',
+      price: '3995000',
       priceCurrency: 'VND',
-      unitText: 'MONTH'
+      unitCode: 'P3M',
+      unitText: 'quarter'
     }
   },
   {
     '@type': 'Offer',
-    name: 'Signature',
+    name: 'Thịnh Vượng',
     priceCurrency: 'VND',
-    description: 'Custom pricing on request'
+    price: '6995000',
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: '6995000',
+      priceCurrency: 'VND',
+      unitCode: 'P3M',
+      unitText: 'quarter'
+    }
   }
 ] as const
 

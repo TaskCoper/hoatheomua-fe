@@ -1332,31 +1332,58 @@
   "b2b": {
     "hero": {
       "eyebrow": "Hoa Theo Mùa cho Doanh nghiệp",
-      "title": "Đối Tác Hoa Cho Doanh Nghiệp Hiện Đại",
-      "subtitle": "Từ phòng họp đến đại sảnh — chúng tôi kiến tạo trải nghiệm hoa cho khách sạn, văn phòng và thương hiệu trên toàn Việt Nam.",
+      "title": "Đối Tác Hoa Tinh Tế Cho Doanh Nghiệp & Tổ Chức",
+      "subtitle": "Từ phòng họp đến đại sảnh — chúng tôi kiến tạo trải nghiệm hoa cho khách sạn, văn phòng và thương hiệu yêu thích sự chuẩn mực và đẳng cấp.",
+      "audienceLine": "Dành cho khách sạn 4–5 sao, văn phòng và thương hiệu đang tìm một đối tác hoa vận hành dài hạn.",
       "primaryCta": "Nhận báo giá",
       "secondaryCta": "Trao đổi cùng đội ngũ",
-      "imageAlt": "Tác phẩm hoa cao cấp cho doanh nghiệp",
+      "imageAlt": "Tác phẩm hoa cao cấp cho doanh nghiệp"
+    },
+    "trustBar": {
+      "eyebrow": "Được tin tưởng bởi các thương hiệu hàng đầu",
       "stats": {
         "clients": {
-          "value": "200+",
+          "value": "50+",
           "label": "Khách hàng doanh nghiệp"
         },
         "hotels": {
-          "value": "12+",
-          "label": "Khách sạn 5 sao"
+          "value": "5+",
+          "label": "Khách sạn 4–5 sao quốc tế"
         },
         "events": {
-          "value": "1.500+",
+          "value": "200+",
           "label": "Sự kiện đã thực hiện"
-        },
-        "cities": {
-          "value": "3",
-          "label": "Thành phố phục vụ"
-        },
-        "support": {
-          "value": "24/7",
-          "label": "Hỗ trợ"
+        }
+      },
+      "logos": {
+        "ariaLabel": "Khách hàng và đối tác tiêu biểu",
+        "groups": {
+          "hospitality": {
+            "label": "Khách sạn",
+            "items": {
+              "indigo": { "name": "Indigo Saigon Hotel" },
+              "fusion": { "name": "Fusion Saigon Hotel" },
+              "eastin": { "name": "Eastin Saigon Hotel" }
+            }
+          },
+          "finance": {
+            "label": "Tài chính — Ngân hàng",
+            "items": {
+              "shinhan": { "name": "Shinhan Bank" },
+              "mbbank": { "name": "MB Bank" },
+              "woori": { "name": "Woori Bank" }
+            }
+          },
+          "enterprise": {
+            "label": "Doanh nghiệp — Bán lẻ — Xây dựng",
+            "items": {
+              "sevenEleven": { "name": "Seven-Eleven" },
+              "datxanh": { "name": "Đất Xanh" },
+              "gsenc": { "name": "GS E&C" },
+              "tancang": { "name": "Tân Cảng Sài Gòn" },
+              "glex": { "name": "Glex Group" }
+            }
+          }
         }
       }
     },
@@ -1364,135 +1391,185 @@
       "title": "Dịch Vụ Dành Riêng Cho Doanh Nghiệp",
       "description": "Dù bạn cần một bình hoa cho phòng họp hay một chương trình hoa trọn năm cho khách sạn, mọi dịch vụ đều được may đo theo thương hiệu và không gian của bạn.",
       "explore": "Trao đổi dịch vụ này",
+      "viewPackages": "Xem gói hoa lan lễ tân",
       "items": {
-        "corporateEvents": {
-          "tag": "Sự kiện",
-          "name": "Hoa Cho Sự Kiện Doanh Nghiệp",
-          "description": "Hội nghị, gala, lễ ra mắt sản phẩm và đêm trao giải — định hướng hoa trọn gói từ sân khấu đến sảnh lễ tân."
+        "outsourced": {
+          "tag": "Khách sạn",
+          "name": "Phòng Hoa Thuê Ngoài",
+          "description": "Giải pháp outsource toàn bộ vận hành hoa cho khách sạn 4–5 sao chuẩn quốc tế: từ sảnh, nhà hàng đến phòng khách VIP — vận hành như một phòng hoa nội bộ, không cần khách sạn tự duy trì nhân sự florist."
+        },
+        "eventsMice": {
+          "tag": "Sự kiện & MICE",
+          "name": "Hoa Khai Trương, Sự Kiện & MICE",
+          "description": "Hội nghị, gala, lễ ra mắt sản phẩm, khai trương showroom — định hướng hoa trọn gói từ sân khấu, hội trường đến bục cắt băng khai trương."
         },
         "officeSubscription": {
           "tag": "Định kỳ",
-          "name": "Gói Hoa Văn Phòng",
-          "description": "Luân chuyển hoa tươi hằng tuần hoặc hai tuần một lần — giữ quầy lễ tân và phòng họp luôn rực rỡ."
+          "name": "Hoa Văn Phòng Định Kỳ",
+          "description": "Luân chuyển hoa tươi hằng tuần hoặc hai tuần một lần theo hợp đồng dài hạn — giữ sảnh, bàn lễ tân và phòng họp luôn rực rỡ."
         },
-        "hospitality": {
-          "tag": "Khách sạn — F&B",
-          "name": "Trang Trí Khách Sạn & Nhà Hàng",
-          "description": "Bình hoa sảnh, bàn ăn và trang trí theo mùa cho khách sạn, nhà hàng và lounge cao cấp."
-        },
-        "weddings": {
-          "tag": "Sự kiện riêng",
-          "name": "Đám Cưới & Sự Kiện Riêng",
-          "description": "Thiết kế trọn gói cho lễ cưới, tiệc chiêu đãi và những cột mốc đáng nhớ tại các venue cao cấp."
-        },
-        "gifting": {
+        "corporateGifts": {
           "tag": "Quà tặng",
           "name": "Quà Tặng Doanh Nghiệp",
-          "description": "Quà tặng khách hàng và nhân viên được tuyển chọn kỹ — từ giỏ Tết đến bó hoa 8/3 và 20/10."
+          "description": "Giải pháp quà tặng hoa tươi dành cho khách hàng và nhân viên, được thiết kế đáp ứng nhu cầu và ngân sách riêng của từng doanh nghiệp."
         },
-        "grandOpening": {
-          "tag": "Khai trương",
-          "name": "Khai Trương & Kích Hoạt Thương Hiệu",
-          "description": "Khai trương showroom, hoa cắt băng và bục tác phẩm in-brand — gây ấn tượng ngay ngày đầu."
+        "brandExperience": {
+          "tag": "Trải nghiệm thương hiệu",
+          "name": "Trải Nghiệm Thương Hiệu Cùng Hoa",
+          "description": "Workshop cắm hoa, mini event thiền hoa, chăm sóc khách VIP và đối tác — biến hoa thành điểm chạm cảm xúc, không chỉ là vật trang trí."
+        }
+      }
+    },
+    "caseStudies": {
+      "title": "Minh Chứng Năng Lực",
+      "description": "Một góc nhìn cụ thể về một trong những hợp tác hospitality dài hạn của chúng tôi.",
+      "categories": {
+        "weekly": "Hoa tuần",
+        "event": "Hoa sự kiện",
+        "room": "Hoa phòng ở"
+      },
+      "indigo": {
+        "logoAlt": "Indigo Saigon Hotel",
+        "badge": "Khách sạn 5 sao quốc tế — IHG Group",
+        "summary": "Hơn 1 năm qua, Hoa Theo Mùa đảm nhận toàn diện công tác hoa tươi tại Indigo Saigon Hotel — từ sảnh, khu vực phòng họp/sự kiện đến không gian F&B — với tần suất thay hoa hàng tuần. Thay vì duy trì một bộ phận hoa nội bộ, khách sạn giao toàn bộ quy trình này cho một đầu mối duy nhất: từ lên thiết kế theo mùa, đặt hoa, đến chăm sóc và thay mới — đảm bảo mọi không gian khách lưu trú đi qua luôn đúng tiêu chuẩn thẩm mỹ và đúng tinh thần thương hiệu khách sạn.",
+        "quote": "Đội ngũ Hoa Theo Mùa truyền tải đúng ý tưởng vào thực tế ở nhiều không gian khác nhau trong khách sạn, được cả khách hàng và ban lãnh đạo đánh giá cao.",
+        "quoteAuthor": "Chị Nicole Đoàn",
+        "quoteRole": "Marketing Manager, Indigo Saigon Hotel",
+        "images": {
+          "gifts": "Hoa Theo Mùa decor mùa lễ tại sảnh Indigo Saigon Hotel",
+          "winterTable": "Decor mùa đông tại khu vực F&B",
+          "orchidVase": "Bình lan vàng cho phòng khách hành lang",
+          "lotusSinger": "Hoa sen trang trí trên bàn cổ điển",
+          "banquetCenterpiece": "Bàn tiệc với centerpiece sen — gala sự kiện",
+          "banquetDetail": "Chi tiết centerpiece bàn tiệc"
         }
       }
     },
     "packages": {
-      "title": "Gói Hợp Tác Dài Hạn",
-      "description": "Ba điểm khởi đầu cho đối tác muốn một chương trình hoa định kỳ — mọi gói đều có thể tùy biến hoàn toàn.",
+      "title": "Gói Hoa Lan Lễ Tân",
+      "description": "Ba lựa chọn cho không gian lễ tân – văn phòng: tối ưu, thuận tiện, sang trọng. Mọi gói đều bao gồm chăm sóc và thay hoa trọn gói.",
       "popular": "Được chọn nhiều nhất",
       "fromLabel": "Từ",
       "cta": "Chọn gói này",
-      "monthlySuffix": "/tháng",
-      "customLabel": "Theo yêu cầu",
+      "quarterlySuffix": "/quý",
       "items": {
-        "boutique": {
-          "name": "Boutique",
-          "tagline": "Cho văn phòng boutique và thương hiệu đang phát triển",
-          "price": "8.000.000đ",
+        "nhuY": {
+          "name": "Như Ý",
+          "target": "Lễ tân nhỏ, văn phòng khởi đầu",
+          "price": "2.595.000đ",
           "features": {
-            "rotation": "Luân chuyển hoa tươi 2 tuần / lần",
-            "arrangements": "1 bình hoa cỡ vừa mỗi đợt",
-            "location": "Phục vụ 1 địa điểm",
-            "manager": "Quản lý tài khoản riêng",
-            "support": "Hỗ trợ trong giờ hành chính"
+            "pots": "4 chậu hoa lan tươi",
+            "area": "Dưới 20m², bàn 1,2–1,6m",
+            "potSize": "30W x 50H",
+            "locations": "1 địa điểm",
+            "care": "Trọn gói 3 tháng — chăm sóc & thay hoa"
           }
         },
-        "atelier": {
-          "name": "Atelier",
-          "tagline": "Cho doanh nghiệp đa địa điểm và thương hiệu lifestyle",
-          "price": "25.000.000đ",
+        "locPhat": {
+          "name": "Lộc Phát",
+          "target": "Văn phòng vừa, cần điểm nhấn sang trọng",
+          "price": "3.995.000đ",
           "features": {
-            "rotation": "Luân chuyển hoa tươi hằng tuần",
-            "arrangements": "3 bình hoa cỡ vừa – lớn mỗi đợt",
-            "location": "Phục vụ tối đa 3 địa điểm",
-            "seasonal": "Nâng cấp theo mùa và dịp lễ",
-            "priority": "Hỗ trợ ưu tiên qua hotline"
+            "pots": "4 chậu hoa lan tươi",
+            "area": "25–40m², bàn 1,8–2,4m",
+            "potSize": "45W x 60H",
+            "locations": "1 địa điểm",
+            "care": "Trọn gói 3 tháng — chăm sóc & thay hoa"
           }
         },
-        "signature": {
-          "name": "Signature",
-          "tagline": "Cho khách sạn, tập đoàn hospitality và venue flagship",
-          "price": "Theo yêu cầu",
+        "thinhVuong": {
+          "name": "Thịnh Vượng",
+          "target": "Lễ tân lớn, quầy tiếp tân ấn tượng",
+          "price": "6.995.000đ",
           "features": {
-            "rotation": "Luân chuyển hằng ngày hoặc hằng tuần",
-            "installations": "Tác phẩm signature và điểm nhấn riêng",
-            "onSite": "Đội ngũ florist on-site cho sự kiện",
-            "branding": "Tùy biến theo màu thương hiệu và theo mùa",
-            "support": "Đường dây WhatsApp / Zalo riêng"
+            "pots": "4 chậu hoa lan tươi",
+            "area": "45–60m², quầy 2,6–3,6m",
+            "potSize": "60W x 80H",
+            "locations": "1 địa điểm",
+            "care": "Trọn gói 3 tháng — chăm sóc & thay hoa"
           }
         }
       }
     },
     "advantages": {
+      "eyebrow": "Hoa Theo Mùa Cho Doanh Nghiệp",
       "title": "Vì Sao Đối Tác Chọn Hoa Theo Mùa",
       "description": "Sự tinh tế của một boutique florist kết hợp với độ tin cậy vận hành mà doanh nghiệp cần.",
       "items": {
-        "account": {
-          "title": "Quản Lý Tài Khoản Riêng",
-          "description": "Một florist hiểu rõ thương hiệu, lịch sự kiện và không gian của bạn — mọi yêu cầu đều đi qua người này."
+        "onTime": {
+          "title": "Đúng Giờ, Đúng Chất Lượng",
+          "description": "Một lần hay hàng trăm lần, hoa luôn đến đúng giờ với độ tươi mới và cứng cáp — để sự kiện của bạn luôn hoàn hảo."
         },
-        "delivery": {
-          "title": "Giao Trong Ngày Toàn Thành Phố",
-          "description": "TP.HCM, Hà Nội và Đà Nẵng — xe chuyên dụng, có lạnh, cam kết đúng giờ."
+        "singlePoc": {
+          "title": "Một Đầu Mối Duy Nhất",
+          "description": "Một florist riêng đồng hành xuyên suốt, nắm rõ thương hiệu, lịch trình và những yêu cầu riêng của doanh nghiệp bạn."
         },
-        "natural": {
-          "title": "Nguyên Liệu 100% Tự Nhiên",
-          "description": "Hoa chọn tay mỗi sáng từ những vườn đáng tin cậy — chỉ những bông đạt chuẩn mới rời studio."
+        "brandAligned": {
+          "title": "Thiết Kế Đồng Điệu Với Hình Ảnh Thương Hiệu",
+          "description": "Mỗi thiết kế hoa được sáng tạo để phản chiếu đúng tinh thần thương hiệu bạn muốn truyền tải."
         },
-        "scale": {
-          "title": "Sản Xuất Quy Mô Lớn",
-          "description": "Hàng trăm tác phẩm mỗi tuần mà vẫn giữ trọn độ hoàn thiện — sẵn sàng cho lễ ra mắt và gala."
+        "transparent": {
+          "title": "Vận Hành Minh Bạch, An Tâm Hợp Tác",
+          "description": "Hợp đồng, hóa đơn và quy trình thanh toán rõ ràng minh bạch giúp doanh nghiệp bạn an tâm hợp tác dài lâu."
         }
       }
     },
     "process": {
+      "eyebrow": "Cách Chúng Tôi Làm Việc",
       "title": "Quy Trình Hợp Tác",
-      "description": "Bốn bước đơn giản giúp sự kiện của bạn đúng tinh thần thương hiệu, đúng tiến độ và đúng ngân sách.",
+      "description": "Bốn bước đơn giản đảm bảo 3 đúng: đúng tinh thần thương hiệu — đúng tiến độ — đúng ngân sách.",
       "steps": {
-        "brief": {
-          "label": "Bước 01",
-          "title": "Tiếp nhận yêu cầu",
-          "description": "Chúng tôi gặp bạn (hoặc đội sự kiện) để hiểu venue, đối tượng khách mời và cảm xúc bạn muốn để lại."
+        "listen": {
+          "label": "BƯỚC 01",
+          "title": "Lắng Nghe Nhu Cầu",
+          "description": "Chúng tôi gặp bạn để hiểu venue, đối tượng khách mời và cảm xúc bạn muốn để lại."
         },
-        "proposal": {
-          "label": "Bước 02",
-          "title": "Đề xuất ý tưởng",
+        "propose": {
+          "label": "BƯỚC 02",
+          "title": "Đề Xuất Ý Tưởng",
           "description": "Mood board, bảng hoa và báo giá minh bạch — thường trong vòng 48 giờ."
         },
-        "production": {
-          "label": "Bước 03",
-          "title": "Sản xuất",
-          "description": "Hoa về studio, dưỡng qua đêm và được các florist sắp tay vào sáng ngày giao."
+        "sample": {
+          "label": "BƯỚC 03",
+          "title": "Làm Sản Phẩm Mẫu",
+          "description": "Chúng tôi làm mẫu để bạn thấy, cảm nhận và xác nhận trước khi sản xuất chính thức."
         },
-        "delivery": {
-          "label": "Bước 04",
-          "title": "Giao & Setup",
-          "description": "Xe lạnh chuyên dụng, dựng tại chỗ và kiểm tra lần cuối trước khi khách mời tới."
+        "produce": {
+          "label": "BƯỚC 04",
+          "title": "Tiến Hành Sản Xuất",
+          "description": "Chúng tôi đặt hoa, dưỡng, làm và giao tại chỗ — dựng và kiểm tra lần cuối trước giờ G."
+        }
+      }
+    },
+    "faq": {
+      "title": "Câu Hỏi Thường Gặp",
+      "description": "Trả lời nhanh những câu khách doanh nghiệp thường hỏi trước khi liên hệ.",
+      "items": {
+        "moq": {
+          "question": "Đơn hàng tối thiểu (MOQ) cho hợp đồng doanh nghiệp là bao nhiêu?",
+          "answer": "Các gói hoa lan lễ tân bắt đầu từ 1 địa điểm cho mỗi quý. Với sự kiện và phòng hoa thuê ngoài cho khách sạn, MOQ được xác định theo phạm vi cụ thể — chúng tôi sẽ trao đổi trong buổi tư vấn đầu tiên."
+        },
+        "contractTerm": {
+          "question": "Thời gian hợp đồng tối thiểu là bao lâu?",
+          "answer": "Gói hoa lan lễ tân ký theo từng quý (3 tháng) mỗi chu kỳ. Hợp đồng phòng hoa thuê ngoài cho khách sạn thường ký theo năm (12 tháng)."
+        },
+        "coverage": {
+          "question": "Khu vực giao hàng hiện tại gồm những thành phố nào?",
+          "answer": "Chúng tôi phục vụ tại TP. Hồ Chí Minh, Hà Nội và Đà Nẵng. Với các tỉnh thành khác, chúng tôi có thể báo giá phương án vận chuyển riêng."
+        },
+        "invoicing": {
+          "question": "Hoa Theo Mùa có xuất hóa đơn VAT và hợp đồng cho doanh nghiệp không?",
+          "answer": "Có. Mỗi hợp tác B2B đều đi kèm hợp đồng đầy đủ và hóa đơn VAT xuất cho pháp nhân doanh nghiệp."
+        },
+        "flexibility": {
+          "question": "Có thể đổi hoặc tạm dừng lịch giao hoa định kỳ khi cần không?",
+          "answer": "Có. Báo trước ít nhất 48 giờ, chúng tôi có thể dời lịch giao kế tiếp, đổi ngày quanh các dịp lễ hoặc tạm dừng một chu kỳ — quản lý tài khoản sẽ xử lý cho bạn."
         }
       }
     },
     "cta": {
+      "eyebrow": "B2B",
+      "subEyebrow": "Hoa Theo Mùa cho Doanh nghiệp",
       "title": "Cùng kiến tạo một điều gì đó nở rộ",
       "description": "Kể chúng tôi nghe về dự án của bạn — chúng tôi sẽ phản hồi trong vòng 4 giờ làm việc với ý tưởng đầu tiên và bước tiếp theo rõ ràng.",
       "callLabel": "Hotline",

@@ -223,6 +223,17 @@
     transform-origin: 0% 0%;
     will-change: transform;
   }
+
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+      animation-play-state: paused;
+    }
+  }
 }
 
 @keyframes page-petal-drop {
@@ -260,6 +271,15 @@
     opacity: 0;
     transform: translate3d(var(--petal-drift, 2rem), calc(100lvh + 0.5rem), 0) rotate(var(--petal-tumble, 420deg))
       rotateY(540deg) scale(var(--petal-scale, 1));
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }
 

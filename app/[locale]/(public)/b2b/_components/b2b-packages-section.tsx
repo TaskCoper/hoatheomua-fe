@@ -9,51 +9,51 @@ import { motion, type Variants } from 'motion/react'
 
 const PACKAGES = [
   {
-    id: 'boutique',
+    id: 'nhuY',
+    slug: 'nhu-y',
     icon: Flower2Icon,
-    nameKey: 'b2b.packages.items.boutique.name',
-    taglineKey: 'b2b.packages.items.boutique.tagline',
-    priceKey: 'b2b.packages.items.boutique.price',
-    monthly: true,
+    nameKey: 'b2b.packages.items.nhuY.name',
+    targetKey: 'b2b.packages.items.nhuY.target',
+    priceKey: 'b2b.packages.items.nhuY.price',
     featured: false,
     featureKeys: [
-      'b2b.packages.items.boutique.features.rotation',
-      'b2b.packages.items.boutique.features.arrangements',
-      'b2b.packages.items.boutique.features.location',
-      'b2b.packages.items.boutique.features.manager',
-      'b2b.packages.items.boutique.features.support'
+      'b2b.packages.items.nhuY.features.pots',
+      'b2b.packages.items.nhuY.features.area',
+      'b2b.packages.items.nhuY.features.potSize',
+      'b2b.packages.items.nhuY.features.locations',
+      'b2b.packages.items.nhuY.features.care'
     ] as const
   },
   {
-    id: 'atelier',
-    icon: Diamond01Icon,
-    nameKey: 'b2b.packages.items.atelier.name',
-    taglineKey: 'b2b.packages.items.atelier.tagline',
-    priceKey: 'b2b.packages.items.atelier.price',
-    monthly: true,
+    id: 'locPhat',
+    slug: 'loc-phat',
+    icon: Crown02Icon,
+    nameKey: 'b2b.packages.items.locPhat.name',
+    targetKey: 'b2b.packages.items.locPhat.target',
+    priceKey: 'b2b.packages.items.locPhat.price',
     featured: true,
     featureKeys: [
-      'b2b.packages.items.atelier.features.rotation',
-      'b2b.packages.items.atelier.features.arrangements',
-      'b2b.packages.items.atelier.features.location',
-      'b2b.packages.items.atelier.features.seasonal',
-      'b2b.packages.items.atelier.features.priority'
+      'b2b.packages.items.locPhat.features.pots',
+      'b2b.packages.items.locPhat.features.area',
+      'b2b.packages.items.locPhat.features.potSize',
+      'b2b.packages.items.locPhat.features.locations',
+      'b2b.packages.items.locPhat.features.care'
     ] as const
   },
   {
-    id: 'signature',
-    icon: Crown02Icon,
-    nameKey: 'b2b.packages.items.signature.name',
-    taglineKey: 'b2b.packages.items.signature.tagline',
-    priceKey: 'b2b.packages.items.signature.price',
-    monthly: false,
+    id: 'thinhVuong',
+    slug: 'thinh-vuong',
+    icon: Diamond01Icon,
+    nameKey: 'b2b.packages.items.thinhVuong.name',
+    targetKey: 'b2b.packages.items.thinhVuong.target',
+    priceKey: 'b2b.packages.items.thinhVuong.price',
     featured: false,
     featureKeys: [
-      'b2b.packages.items.signature.features.rotation',
-      'b2b.packages.items.signature.features.installations',
-      'b2b.packages.items.signature.features.onSite',
-      'b2b.packages.items.signature.features.branding',
-      'b2b.packages.items.signature.features.support'
+      'b2b.packages.items.thinhVuong.features.pots',
+      'b2b.packages.items.thinhVuong.features.area',
+      'b2b.packages.items.thinhVuong.features.potSize',
+      'b2b.packages.items.thinhVuong.features.locations',
+      'b2b.packages.items.thinhVuong.features.care'
     ] as const
   }
 ] as const
@@ -172,15 +172,13 @@ export default function B2BPackagesSection() {
                   }`}
                 >
                   {t(pkg.priceKey)}
-                  {pkg.monthly && (
-                    <span
-                      className={`ml-1 text-xs font-medium ${
-                        pkg.featured ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                      }`}
-                    >
-                      {t('b2b.packages.monthlySuffix')}
-                    </span>
-                  )}
+                  <span
+                    className={`ml-1 text-xs font-medium ${
+                      pkg.featured ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                    }`}
+                  >
+                    {t('b2b.packages.quarterlySuffix')}
+                  </span>
                 </p>
               </div>
             </div>
@@ -198,7 +196,7 @@ export default function B2BPackagesSection() {
                   pkg.featured ? 'text-primary-foreground/85' : 'text-foreground'
                 }`}
               >
-                {t(pkg.taglineKey)}
+                {t(pkg.targetKey)}
               </p>
             </div>
 
@@ -228,7 +226,7 @@ export default function B2BPackagesSection() {
                 pkg.featured ? 'bg-primary-foreground text-primary hover:bg-primary-foreground/90' : ''
               }`}
             >
-              <Link href='/contact'>{t('b2b.packages.cta')}</Link>
+              <Link href={`/contact?package=${pkg.slug}`}>{t('b2b.packages.cta')}</Link>
             </Button>
           </motion.article>
         ))}

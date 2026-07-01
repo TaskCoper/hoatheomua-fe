@@ -50,10 +50,13 @@ export default function B2BCtaSection() {
 
         <div className='relative grid grid-cols-1 items-center gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10'>
           <motion.div variants={containerStagger} className='space-y-3'>
-            <motion.div variants={fadeUp}>
+            <motion.div variants={fadeUp} className='flex flex-wrap items-center gap-2'>
               <span className='inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/15 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground ring-1 ring-primary-foreground/25 sm:text-xs'>
                 <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
-                {t('b2b.hero.eyebrow')}
+                {t('b2b.cta.eyebrow')}
+              </span>
+              <span className='text-[0.625rem] font-medium uppercase tracking-widest text-primary-foreground/70 sm:text-xs'>
+                {t('b2b.cta.subEyebrow')}
               </span>
             </motion.div>
 
