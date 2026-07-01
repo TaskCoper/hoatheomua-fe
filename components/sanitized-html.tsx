@@ -73,8 +73,6 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
   const router = useRouter()
 
   const finalHtml = useMemo(() => {
-    if (typeof window === 'undefined') return html
-
     const cleanHtml = DOMPurify.sanitize(html, PURIFY_CONFIG)
 
     const parser = new DOMParser()
@@ -120,7 +118,6 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
   return (
     <ElementType
       onClick={handleContainerClick}
-      suppressHydrationWarning
       className={cn(
         'tiptap ProseMirror prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl max-w-none overflow-auto',
         'prose-pre:whitespace-pre-wrap prose-pre:wrap-break-word wrap-break-word',

@@ -94,7 +94,7 @@ export default function RoleGuard({
     isNonCustomer
   ])
 
-  if (isGettingMe && !allowAnonymous) return null
+  if (isGettingMe) return null
   if (isNonCustomer) return null
   if (isMissingAuth || isWrongRole || isWrongUserRole) return null
 

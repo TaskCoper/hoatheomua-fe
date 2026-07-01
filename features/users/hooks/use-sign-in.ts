@@ -1,6 +1,5 @@
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
-import { setSessionMarker } from '@/lib/session-marker'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
@@ -41,7 +40,6 @@ export const useSignIn = () => {
   const { mutate: signIn, isPending: isSigningIn } = useMutation({
     mutationFn: authService.signIn,
     onSuccess: async () => {
-      setSessionMarker()
       const me = await authService.getMe()
       queryClient.setQueryData(['me'], me)
 

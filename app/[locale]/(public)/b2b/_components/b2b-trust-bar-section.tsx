@@ -90,9 +90,9 @@ const LOGO_GROUPS = [
         src: '/images/b2b/logos/enterprise/tancang.png'
       },
       {
-        id: 'gelex',
-        nameKey: 'b2b.trustBar.logos.groups.enterprise.items.gelex.name',
-        src: '/images/b2b/logos/enterprise/gelex.png'
+        id: 'glex',
+        nameKey: 'b2b.trustBar.logos.groups.enterprise.items.glex.name',
+        src: '/images/b2b/logos/enterprise/glex.png'
       }
     ]
   }

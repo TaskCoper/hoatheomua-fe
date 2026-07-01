@@ -1,6 +1,5 @@
 import { isPublicRoutePath } from '@/shared/constants'
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
-import { clearSessionMarker } from './session-marker'
 
 interface ApiResponse {
   isSuccess: boolean
@@ -112,7 +111,6 @@ const refreshAccessToken = async (
       error.response?.data?.messageCode &&
       expiredRefreshTokenCodes.includes(error.response.data.messageCode)
     ) {
-      clearSessionMarker()
       const isOnPublicRoute = isCurrentPublicRoutePath(window.location.pathname)
 
       if (!isOnPublicRoute) {
