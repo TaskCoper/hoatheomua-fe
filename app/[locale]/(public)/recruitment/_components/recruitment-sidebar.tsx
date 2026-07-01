@@ -2,49 +2,68 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
+import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import flowerImage from '@/public/images/flower.png'
 import pedalsRight from '@/public/images/pedals-right.png'
 import { FavouriteIcon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
+import { useMemo } from 'react'
 import type { RecruitmentFilters } from '../types'
 
-const groups = [
+const jobTypeGroup = {
+  titleKey: 'recruitment.sidebar.groups.jobType.title',
+  items: [
+    {
+      labelKey: 'recruitment.sidebar.groups.jobType.fullTime',
+      filterKey: 'employmentType',
+      value: 'fullTime'
+    },
+    {
+      labelKey: 'recruitment.sidebar.groups.jobType.partTime',
+      filterKey: 'employmentType',
+      value: 'partTime'
+    }
+  ]
+} as const
+
+type JobTypeItem = (typeof jobTypeGroup)['items'][number]
+type LocationItem = {
+  label: string
+  filterKey: 'location'
+  value: string
+}
+type SidebarFilterItem = JobTypeItem | LocationItem
+
+const getUniqueCities = (addresses: { city?: string | null }[]) => {
+  const cities = new Map<string, string>()
+
+  addresses.forEach((address) => {
+    const city = address.city?.trim()
+    if (!city) return
+
+    cities.set(city.toLowerCase(), city)
+  })
+
+  return Array.from(cities.values())
+}
+
+const getItemLabel = (item: SidebarFilterItem, t: ReturnType<typeof useTranslation>['t']) => {
+  if ('labelKey' in item) return t(item.labelKey)
+
+  return item.label
+}
+
+const getItemKey = (item: SidebarFilterItem) => {
+  if ('labelKey' in item) return item.labelKey
+
+  return item.value
+}
+
+const baseGroups = [
   {
-    titleKey: 'recruitment.sidebar.groups.jobType.title',
-    items: [
-      {
-        labelKey: 'recruitment.sidebar.groups.jobType.fullTime',
-        filterKey: 'employmentType',
-        value: 'fullTime'
-      },
-      {
-        labelKey: 'recruitment.sidebar.groups.jobType.partTime',
-        filterKey: 'employmentType',
-        value: 'partTime'
-      }
-    ]
-  },
-  {
-    titleKey: 'recruitment.sidebar.groups.location.title',
-    items: [
-      {
-        labelKey: 'recruitment.sidebar.groups.location.hoChiMinhCity',
-        filterKey: 'location',
-        value: 'TP.HCM'
-      },
-      {
-        labelKey: 'recruitment.sidebar.groups.location.haNoi',
-        filterKey: 'location',
-        value: 'Hà Nội'
-      },
-      {
-        labelKey: 'recruitment.sidebar.groups.location.daNang',
-        filterKey: 'location',
-        value: 'Đà Nẵng'
-      }
-    ]
+    ...jobTypeGroup
   }
 ] as const
 
@@ -55,16 +74,29 @@ type RecruitmentSidebarProps = {
 
 export default function RecruitmentSidebar({ filters, onFilterChange }: RecruitmentSidebarProps) {
   const { t } = useTranslation()
+  const { addresses } = useGetAddresses({ enabled: true })
 
-  const isFilterChecked = (item: (typeof groups)[number]['items'][number]) => {
-    if (!('filterKey' in item)) return false
+  const groups = useMemo(
+    () => [
+      ...baseGroups,
+      {
+        titleKey: 'recruitment.sidebar.groups.location.title' as const,
+        items: getUniqueCities(addresses).map((city) => ({
+          label: city,
+          filterKey: 'location' as const,
+          value: city
+        }))
+      }
+    ],
+    [addresses]
+  )
+
+  const isFilterChecked = (item: SidebarFilterItem) => {
     if (item.filterKey === 'employmentType') return filters.employmentType === item.value
     return filters.location === item.value
   }
 
-  const handleFilterChange = (item: (typeof groups)[number]['items'][number], checked: boolean) => {
-    if (!('filterKey' in item)) return
-
+  const handleFilterChange = (item: SidebarFilterItem, checked: boolean) => {
     if (item.filterKey === 'employmentType') {
       onFilterChange({ employmentType: checked ? item.value : undefined })
       return
@@ -87,10 +119,11 @@ export default function RecruitmentSidebar({ filters, onFilterChange }: Recruitm
               <div className='space-y-3'>
                 {group.items.map((item, itemIndex) => {
                   const checkboxId = `recruitment-filter-${groupIndex}-${itemIndex}`
+                  const itemLabel = getItemLabel(item, t)
 
                   return (
                     <Label
-                      key={item.labelKey}
+                      key={getItemKey(item)}
                       htmlFor={checkboxId}
                       className='group -mx-2 flex cursor-pointer items-center gap-3 rounded-2xl px-2 py-1 text-sm font-normal leading-5 text-foreground transition-colors delay-75 duration-500 ease-out hover:bg-primary/5 focus-within:bg-primary/5'
                     >
@@ -98,9 +131,9 @@ export default function RecruitmentSidebar({ filters, onFilterChange }: Recruitm
                         id={checkboxId}
                         checked={isFilterChecked(item)}
                         onCheckedChange={(checked) => handleFilterChange(item, checked === true)}
-                        aria-label={t(item.labelKey)}
+                        aria-label={itemLabel}
                       />
-                      <span className='min-w-0 flex-1'>{t(item.labelKey)}</span>
+                      <span className='min-w-0 flex-1'>{itemLabel}</span>
                     </Label>
                   )
                 })}

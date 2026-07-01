@@ -2,25 +2,36 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { I18nKey } from '@/lib/i18n/types'
 import { Briefcase01Icon, Building02Icon, Money03Icon, Search01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import type { FormEvent } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 import type { RecruitmentFilters } from '../types'
 
-const filters = [
+const getUniqueCities = (addresses: { city?: string | null }[]) => {
+  const cities = new Map<string, string>()
+
+  addresses.forEach((address) => {
+    const city = address.city?.trim()
+    if (!city) return
+
+    cities.set(city.toLowerCase(), city)
+  })
+
+  return Array.from(cities.values())
+}
+
+const baseFilters = [
   {
     key: 'location',
     id: 'recruitment-location',
     placeholderKey: 'recruitment.sidebar.groups.location.title',
-    values: [
-      { value: 'TP.HCM', labelKey: 'recruitment.sidebar.groups.location.hoChiMinhCity' },
-      { value: 'Hà Nội', labelKey: 'recruitment.sidebar.groups.location.haNoi' },
-      { value: 'Đà Nẵng', labelKey: 'recruitment.sidebar.groups.location.daNang' }
-    ],
+    values: [],
     icon: Building02Icon
   },
   {
@@ -47,7 +58,12 @@ const filters = [
   }
 ] as const
 
-type FilterKey = (typeof filters)[number]['key']
+type FilterKey = (typeof baseFilters)[number]['key']
+type FilterOption = {
+  value: string
+  label?: string
+  labelKey?: I18nKey
+}
 
 type FilterSectionProps = {
   filters: RecruitmentFilters
@@ -57,8 +73,25 @@ type FilterSectionProps = {
 
 export default function FilterSection({ filters: selectedFilters, onFilterChange, onSearchTitle }: FilterSectionProps) {
   const { t } = useTranslation()
+  const { addresses } = useGetAddresses({ enabled: true })
   const [draftTitle, setDraftTitle] = useState(selectedFilters.title)
   const [debouncedTitle] = useDebounce(draftTitle, 500)
+
+  const filters = useMemo(
+    () =>
+      baseFilters.map((filter) => {
+        if (filter.key !== 'location') return filter
+
+        return {
+          ...filter,
+          values: getUniqueCities(addresses).map((city) => ({
+            value: city,
+            label: city
+          }))
+        }
+      }),
+    [addresses]
+  )
 
   useEffect(() => {
     const nextTitle = debouncedTitle.trim()
@@ -68,7 +101,12 @@ export default function FilterSection({ filters: selectedFilters, onFilterChange
     onSearchTitle(nextTitle)
   }, [debouncedTitle, onSearchTitle, selectedFilters.title])
 
-  const getOptionLabel = (option: (typeof filters)[number]['values'][number]) => t(option.labelKey)
+  const getOptionLabel = (option: FilterOption) => {
+    if (option.label) return option.label
+    if (option.labelKey) return t(option.labelKey)
+
+    return option.value
+  }
 
   const getSelectValue = (key: FilterKey) => {
     if (key === 'employmentType') return selectedFilters.employmentType ?? 'all'
