@@ -324,14 +324,23 @@
         }
       },
       "salary": {
-        "placeholder": "All salary ranges",
-        "options": {
-          "below8": "Under 8 million",
-          "range8To12": "8 - 12 million",
-          "range12To18": "12 - 18 million",
-          "above18": "Above 18 million"
-        }
+        "placeholder": "All salary ranges"
       }
+    },
+    "salary": {
+      "negotiable": "Negotiable",
+      "units": {
+        "billion": "billion",
+        "million": "million",
+        "thousand": "thousand"
+      }
+    },
+    "seo": {
+      "title": "Careers At Hoa Theo Mùa",
+      "description": "Explore open positions at Hoa Theo Mùa — join our premium florist team in Ho Chi Minh City and help bring Vietnamese floral artistry to more homes and businesses.",
+      "keywords": "Hoa Theo Mua careers|florist jobs Vietnam|flower shop jobs HCMC|florist designer jobs|flower delivery jobs|flower retail jobs Vietnam",
+      "ogAlt": "Hoa Theo Mùa careers",
+      "breadcrumb": "Careers"
     },
     "sidebar": {
       "newsletter": {

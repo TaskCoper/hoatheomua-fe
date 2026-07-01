@@ -93,17 +93,23 @@ export default function RecruitmentSidebar({ filters, onFilterChange }: Recruitm
   )
 
   const isFilterChecked = (item: SidebarFilterItem) => {
-    if (item.filterKey === 'employmentType') return filters.employmentType === item.value
-    return filters.location === item.value
+    if (item.filterKey === 'employmentType') return filters.employmentType.includes(item.value)
+    return filters.location.includes(item.value)
   }
 
   const handleFilterChange = (item: SidebarFilterItem, checked: boolean) => {
     if (item.filterKey === 'employmentType') {
-      onFilterChange({ employmentType: checked ? item.value : undefined })
+      onFilterChange({
+        employmentType: checked
+          ? [...filters.employmentType, item.value]
+          : filters.employmentType.filter((value) => value !== item.value)
+      })
       return
     }
 
-    onFilterChange({ location: checked ? item.value : undefined })
+    onFilterChange({
+      location: checked ? [...filters.location, item.value] : filters.location.filter((value) => value !== item.value)
+    })
   }
 
   return (

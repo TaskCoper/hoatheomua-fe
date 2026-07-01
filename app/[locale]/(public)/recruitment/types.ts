@@ -23,17 +23,16 @@ export type JobDescriptionParam = {
   pageIndex: number
   pageSize: number
   title?: string
-  location?: string
-  employmentType?: string
+  location?: string[]
+  employmentType?: string[]
   salaryMin?: number
   salaryMax?: number
 }
 
-export type RecruitmentSalaryRange = 'below-8' | '8-12' | '12-18' | 'above-18'
-
 export type RecruitmentFilters = {
   title: string
-  location?: string
-  employmentType?: string
-  salaryRange?: RecruitmentSalaryRange
+  location: string[]
+  employmentType: string[]
+  salaryMin?: number
+  salaryMax?: number
 }

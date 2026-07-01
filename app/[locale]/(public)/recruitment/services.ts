@@ -43,6 +43,12 @@ class JobDescription {
     })
     return data.value
   }
+
+  getHighestSalaryJobDescription = async () => {
+    const { data } = await api.get<BaseResponse<number>>(`v1/job-descriptions/highest-salary`)
+
+    return data.value
+  }
 }
 export const recruitmentRequestService = new RecruitmentRequestService()
 export const jobDescriptionService = new JobDescription()

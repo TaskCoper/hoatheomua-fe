@@ -11,7 +11,7 @@ export const createRecruitmentRequestSchema = (t: TranslationFunction) =>
         .trim()
         .min(1, {
           error: t('common.validation.required', {
-            field: t('careers.form.role')
+            field: t('recruitment.applyDialog.fields.roleTitle')
           })
         }),
       title: z
@@ -19,14 +19,14 @@ export const createRecruitmentRequestSchema = (t: TranslationFunction) =>
         .trim()
         .min(1, {
           error: t('common.validation.required', {
-            field: t('careers.form.role')
+            field: t('recruitment.applyDialog.fields.roleTitle')
           })
         }),
       coverLetter: z
         .string()
         .refine(hasRichTextContent, {
           error: t('common.validation.required', {
-            field: t('careers.form.coverLetter')
+            field: t('recruitment.applyDialog.fields.coverLetter')
           })
         }),
       attachments: z.array(

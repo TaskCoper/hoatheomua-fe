@@ -33,7 +33,7 @@ export default async function RecruitmentPage({
 
   return (
     <>
-      <JsonLd data={buildRecruitmentJsonLd(locale)} />
+      <JsonLd data={await buildRecruitmentJsonLd(locale)} />
       <HydrationBoundary state={dehydrate(queryClient)}>
         <RecruitmentView />
       </HydrationBoundary>

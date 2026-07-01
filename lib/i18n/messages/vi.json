@@ -324,14 +324,23 @@
         }
       },
       "salary": {
-        "placeholder": "Tất cả mức lương",
-        "options": {
-          "below8": "Dưới 8 triệu",
-          "range8To12": "8 - 12 triệu",
-          "range12To18": "12 - 18 triệu",
-          "above18": "Trên 18 triệu"
-        }
+        "placeholder": "Tất cả mức lương"
       }
+    },
+    "salary": {
+      "negotiable": "Thỏa thuận",
+      "units": {
+        "billion": "tỷ",
+        "million": "triệu",
+        "thousand": "ngàn"
+      }
+    },
+    "seo": {
+      "title": "Cơ Hội Nghề Nghiệp Tại Hoa Theo Mùa",
+      "description": "Khám phá các vị trí tuyển dụng tại Hoa Theo Mùa — gia nhập đội ngũ hoa tươi cao cấp tại TP. Hồ Chí Minh, cùng phát triển sự nghiệp và lan toả vẻ đẹp Việt qua từng bó hoa.",
+      "keywords": "tuyển dụng Hoa Theo Mùa|việc làm hoa tươi|tuyển dụng florist Việt Nam|việc làm shop hoa TP HCM|việc làm thiết kế hoa|việc làm chăm sóc khách hàng hoa|tuyển nhân viên giao hoa",
+      "ogAlt": "Cơ hội nghề nghiệp Hoa Theo Mùa",
+      "breadcrumb": "Tuyển dụng"
     },
     "sidebar": {
       "newsletter": {
