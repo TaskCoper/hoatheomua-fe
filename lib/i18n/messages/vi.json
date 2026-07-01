@@ -869,31 +869,47 @@
       "founderRole": "Nhà sáng lập & CEO — Hoa Theo Mùa",
       "closing": "Từ những mong muốn mang đến những giá trị cảm xúc, những bình yên tìm về ấy mà Hoa Theo Mùa đã đúc kết nên các giá trị riêng của thương hiệu — những điều tốt đẹp muốn dành đến cho khách hàng để gửi trao trong từng sản phẩm."
     },
+    "visionMission": {
+      "title": "Tầm Nhìn & Sứ Mệnh",
+      "motto": "Hoa đẹp nhất khi nở đúng mùa, bạn đẹp nhất khi bạn hạnh phúc",
+      "vision": {
+        "label": "Tầm nhìn",
+        "statement": "Một thế giới hạnh phúc, nơi cái đẹp hiện diện trong từng khoảnh khắc"
+      },
+      "mission": {
+        "label": "Sứ mệnh",
+        "statement": "Mang trải nghiệm cảm xúc đến với mọi người qua những đóa hoa tươi thu hái trực tiếp từ vườn, được gói ghém bằng yêu thương trao gửi đến người nhận"
+      }
+    },
     "values": {
       "title": "Giá Trị Chúng Tôi Hướng Đến",
-      "description": "Từ những mong muốn mang đến cảm xúc bình yên ấy, Hoa Theo Mùa đã đúc kết nên năm giá trị cốt lõi — những điều tốt đẹp được gửi trao trong từng sản phẩm đến tay khách hàng.",
+      "description": "Mỗi đóa hoa Hoa Theo Mùa gửi đi đều mang theo những điều chúng tôi tin và gìn giữ.",
       "coreLabel": "Giá Trị Cốt Lõi",
       "branchAlt": "Cành lá trang trí",
       "items": {
+        "emotion": {
+          "title": "Chạm Cảm Xúc",
+          "description": "Hoa Theo Mùa không chỉ tạo ra những bó hoa đẹp, mà chúng tôi gửi gắm những điều tử tế bên trong từng cánh hoa. Mỗi sản phẩm là lời thay cho cảm xúc khó nói, để người nhận cảm nhận được sự quan tâm chân thành từ người gửi."
+        },
         "enjoy": {
           "title": "Enjoy Cuộc Sống",
-          "description": "Hoa Theo Mùa không chỉ mang hoa mà còn gửi gắm những giá trị tích cực để bạn cảm nhận vẻ đẹp và lắng nghe sự bình yên trong tâm hồn. Tận hưởng từng bông hoa là cách để bạn trân trọng cuộc sống và tìm thấy niềm vui riêng."
+          "description": "Chúng tôi tin một bình hoa tươi mỗi ngày có thể đánh thức năng lượng sống tích cực. Hoa Theo Mùa lan tỏa tinh thần tận hưởng cuộc sống, nhìn ngắm và yêu thương những điều nhỏ bé quanh mình."
         },
-        "eco": {
-          "title": "Thân Thiện Môi Trường",
-          "description": "Chúng tôi dùng chất liệu tự nhiên như rổ mây, giỏ tre, giấy kraft… giúp giảm thiểu nhựa và tạo nên sản phẩm vừa đẹp, vừa giữ gìn môi trường."
+        "simple": {
+          "title": "Giản Dị",
+          "description": "Lấy cảm hứng từ vẻ tự nhiên thuần khiết — không cầu kỳ, không màu mè, Hoa Theo Mùa chọn cái đẹp chân thật nhất của hoa. Sự giản dị ấy giúp ai cũng dễ dàng chạm đến và cảm nhận."
         },
         "elegant": {
           "title": "Tinh Tế",
-          "description": "Hoa Theo Mùa hiểu và tôn vinh vẻ đẹp của hoa dành cho tâm hồn người phụ nữ. Chăm chút từng chi tiết, mang đến cảm giác đồng điệu và yêu thương."
+          "description": "Hoa Theo Mùa hiểu và tôn vinh vẻ đẹp của hoa dành cho phụ nữ. Từng chi tiết nhỏ, từ cách phối màu đến cách cắm, đều được chăm chút để mang đến cảm giác đồng điệu và yêu thương."
         },
-        "simple": {
-          "title": "Đơn Giản",
-          "description": "Lấy cảm hứng từ vẻ đẹp tự nhiên — chất liệu mộc mạc, sắc màu nhẹ nhàng, tôn vinh vẻ đẹp chân thật của hoa."
+        "eco": {
+          "title": "Bảo Vệ Môi Trường",
+          "description": "Chúng tôi ưu tiên nguyên liệu bền vững, giảm thiểu rác thải và nói \"có\" với những sản phẩm vừa đẹp vừa thân thiện với thiên nhiên — vì một hành tinh xanh là điều xứng đáng để cùng gìn giữ."
         },
         "vietnamese": {
           "title": "Trân Trọng Giá Trị Việt",
-          "description": "Chúng tôi trân trọng và tôn vinh vẻ đẹp Việt: từ những mùa hoa, làng nghề, đến các sản phẩm sáng tạo mang dấu ấn văn hóa Việt Nam."
+          "description": "Hoa Theo Mùa trân trọng và tôn vinh giá trị Việt — từ nguyên phụ liệu, hoa lá đến cách các nghệ nhân của chúng tôi gửi vào đó tâm tình của hoa Việt Nam."
         }
       }
     },
@@ -936,41 +952,25 @@
       }
     },
     "advantages": {
-      "title": "Ưu Điểm Nổi Bật",
-      "description": "Tám lý do giúp Hoa Theo Mùa trở thành điểm đến tin cậy của khách hàng yêu hoa khắp Sài Gòn — và cả những vùng miền xa hơn.",
+      "title": "Điều Làm Nên Hoa Theo Mùa",
+      "description": "Bốn lý do giúp Hoa Theo Mùa trở thành điểm đến tin cậy của khách hàng yêu hoa khắp Sài Gòn - và cả những vùng miền xa hơn.",
       "imageAlt": "Bàn làm việc của người cắm hoa Hoa Theo Mùa",
       "items": {
         "price": {
-          "title": "Lợi Thế Về Giá",
-          "description": "Đa dạng phân khúc giá từ thấp, trung bình tới cao — phù hợp với mọi khách hàng, đặc biệt nhóm trẻ."
+          "title": "Giá Hợp Lý, Đa Dạng Phân Khúc",
+          "description": "Từ hoa bó tặng nhanh đến hoa sự kiện cao cấp, bạn luôn tìm được mức giá phù hợp với ngân sách và mục đích của mình."
         },
-        "product": {
-          "title": "Lợi Thế Sản Phẩm",
-          "description": "Mẫu mã đa dạng, nguyên vật liệu thân thiện với môi trường, tôn vinh làng nghề và văn hoá Việt."
-        },
-        "emotional": {
-          "title": "Giá Trị Cảm Xúc",
-          "description": "Mang đến những giá trị bình yên, nuôi dưỡng sự tích cực được trao gửi qua mỗi sản phẩm."
+        "freshness": {
+          "title": "Hoa Tươi Từ Vườn, Độ Bền Cao",
+          "description": "Hoa Theo Mùa thu hái trực tiếp từ nhà vườn, không qua hoa \"nguội\" tồn kho - để mỗi bông hoa đến tay bạn đều giữ được độ tươi và sức sống lâu nhất."
         },
         "delivery": {
-          "title": "Chất Lượng Giao Hàng",
-          "description": "Giao nhanh chóng, đảm bảo trạng thái tốt nhất của sản phẩm khi đến tay khách hàng."
+          "title": "Giao Nhanh, Đúng Giờ",
+          "description": "Hoa đến tay đúng thời điểm bạn cần - để bạn không bỏ lỡ những khoảnh khắc quan trọng."
         },
         "service": {
-          "title": "Dịch Vụ Tận Tâm",
-          "description": "Đặt trải nghiệm dịch vụ và sự hài lòng của khách hàng lên hàng đầu trong từng tương tác."
-        },
-        "community": {
-          "title": "Giá Trị Cộng Đồng",
-          "description": "Sử dụng nguyên vật liệu từ thiên nhiên, thân thiện môi trường, đóng góp giá trị bền vững."
-        },
-        "culture": {
-          "title": "Giá Trị Văn Hoá",
-          "description": "Tôn vinh sản phẩm, tinh thần và văn hoá Việt qua từng bó hoa được trao đi."
-        },
-        "promotion": {
-          "title": "Ưu Đãi Hấp Dẫn",
-          "description": "Freeship 7km, giao nhanh 2h, off 10% phụ kiện cắm hoa, tặng thiệp thiết kế cho đơn từ 399K."
+          "title": "Đồng Hành Tận Tâm",
+          "description": "Đội ngũ tư vấn luôn sẵn sàng giúp bạn chọn đúng hoa, đúng dịp - như một người bạn đồng hành, thấu hiểu những mong muốn và kỳ vọng của bạn."
         }
       }
     },
@@ -998,15 +998,62 @@
           "quote": "Hoa Theo Mùa là lựa chọn của công ty mình cho các dịp đối tác và sự kiện quan trọng. Hoa luôn tươi, thiết kế tinh tế, và đặc biệt đội ngũ rất chuyên nghiệp trong việc tư vấn cũng như giao nhận đúng giờ."
         }
       }
+    },
+    "press": {
+      "title": "Báo Chí Nói Về Chúng Tôi",
+      "description": "Hành trình của Hoa Theo Mùa được ghi nhận và đồng hành cùng nhiều cơ quan báo chí uy tín trên cả nước — niềm tự hào để chúng tôi tiếp tục lan toả vẻ đẹp Việt.",
+      "footer": {
+        "thankYou": "Cảm ơn bạn đã đồng hành cùng Hoa Theo Mùa",
+        "message": "Mỗi bó hoa là một câu chuyện, mỗi câu chuyện là một cảm xúc. Chúng tôi tin rằng vẻ đẹp Việt sẽ được lan toả xa hơn nữa với sự yêu thương của bạn.",
+        "productsCta": "Sản phẩm"
+      },
+      "items": {
+        "dongkhoi": {
+          "name": "Báo Đồng Khởi",
+          "headline": "Hoa Theo Mùa — cửa hàng đặt hoa hàng đầu tại Hồ Chí Minh"
+        },
+        "tuyenquang": {
+          "name": "Báo Tuyên Quang",
+          "headline": "Hoa đẹp là hoa nở đúng mùa"
+        },
+        "thanhhoa": {
+          "name": "Báo Thanh Hoá",
+          "headline": "Cửa hàng đặt hoa tươi uy tín tại TP.HCM"
+        },
+        "cantho": {
+          "name": "Báo Cần Thơ",
+          "headline": "Cửa hàng đặt hoa 8/3 uy tín tại TP.HCM"
+        },
+        "depviet": {
+          "name": "Đẹp Việt",
+          "headline": "Ra mắt bộ sưu tập Lan Hồ Điệp chưng Tết Giáp Thìn 2024"
+        },
+        "diendandoanhnghiep": {
+          "name": "Diễn Đàn Doanh Nghiệp",
+          "headline": "Khởi nghiệp thành công nhờ kinh doanh hoa tươi"
+        },
+        "vietbao": {
+          "name": "Việt Báo",
+          "headline": "Hệ thống hoa tươi online uy tín tại TP.HCM"
+        },
+        "quangninh": {
+          "name": "Báo Quảng Ninh",
+          "headline": "Mẫu thiết kế hoa lan độc quyền tại Hoa Theo Mùa"
+        },
+        "tayninh": {
+          "name": "Báo Tây Ninh",
+          "headline": "Đặt hoa quà tặng nhanh chóng, tiết kiệm"
+        }
+      }
     }
   },
   "products": {
     "hero": {
       "title": "Bộ Sưu Tập Hoa Tươi",
-      "description": "Từng bó hoa được tuyển chọn theo mùa, cắm thủ công bởi nghệ nhân Hoa Theo Mùa và giao tận tay bạn trong vòng 2 giờ tại TP. Hồ Chí Minh — gửi trao trọn vẹn cảm xúc cho người bạn yêu thương.",
-      "headline": "Mỗi bó hoa - một câu chuyện rất riêng cho người bạn thương.",
-      "body": "Khám phá hơn 50+ thiết kế hoa tươi theo mùa, từ bó hoa sinh nhật, hoa khai trương, hoa cưới đến lan hồ điệp cao cấp. Cam kết hoa nhập trong ngày, đóng gói tinh tế và giao đúng hẹn — sẵn sàng cho mọi khoảnh khắc đặc biệt.",
-      "shopAll": "Xem tất cả sản phẩm",
+      "description": "Mỗi bó hoa được tuyển chọn theo mùa, cắm thủ công tỉ mỉ, tinh tế và giao đến tay bạn trong 2 giờ tại TP. Hồ Chí Minh.",
+      "headline": "Mỗi bó hoa, mỗi dịp tặng là một câu chuyện - chọn đúng bó hoa cho khoảnh khắc của bạn",
+      "body": "Hơn 50 thiết kế theo mùa — từ sinh nhật, khai trương, tốt nghiệp đến lan hồ điệp cao cấp. Hoa nhập trong ngày, đóng gói tinh tế, giao đúng hẹn cho mọi khoảnh khắc đặc biệt.",
+      "shopByType": "Chọn theo loại",
       "shopByOccasion": "Chọn theo dịp",
       "imageAlt": "Bó hoa tươi Hoa Theo Mùa",
       "highlights": {
@@ -1053,11 +1100,41 @@
           "name": "Bó Hoa Chúc Mừng",
           "description": "Lời chúc tươi mới cho hành trình mới — bó hoa tự nhiên, đầy năng lượng tích cực."
         }
+      },
+      "detail": {
+        "breadcrumb": {
+          "ariaLabel": "Đường dẫn",
+          "home": "Trang chủ",
+          "occasions": "Dịp lễ",
+          "back": "Trở lại danh sách dịp"
+        },
+        "headline": "{name} — gợi ý hoa được tuyển chọn",
+        "campaign": {
+          "label": "Đang diễn ra",
+          "dates": "{start} – {end}"
+        },
+        "cta": {
+          "viewCollection": "Xem bộ sưu tập",
+          "otherOccasions": "Xem các dịp khác"
+        },
+        "products": {
+          "title": "Hoa cho {name}",
+          "description": "Bộ sưu tập được nghệ nhân chăm chút riêng cho dịp này — hoa tươi, cắm thủ công và sẵn sàng giao tận tay.",
+          "empty": {
+            "title": "Bộ sưu tập sắp ra mắt",
+            "description": "Bộ sưu tập đang được nghệ nhân chuẩn bị. Vui lòng quay lại sau để khám phá những bó hoa tươi mới nhất cho dịp này."
+          }
+        }
       }
     },
     "catalog": {
       "title": "Phụ Kiện Chơi Hoa",
-      "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc."
+      "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc.",
+      "vaseFlowers": {
+        "title": "Hoa Cắm Bình",
+        "description": "Những cành hoa theo mùa để bạn tự cắm vào chiếc bình yêu thích — tươi mới, dễ phối và giữ nhịp bình yên cho không gian sống.",
+        "prompt": "Đã chọn được hoa yêu thích? Đừng quên chọn thêm bình cắm phù hợp 🌿"
+      }
     },
     "filter": {
       "all": "Tất cả",
@@ -1094,16 +1171,16 @@
       "bannerAlt": "Ưu đãi hoa tươi Hoa Theo Mùa",
       "items": {
         "fresh": {
-          "title": "Hoa nhập trong ngày",
-          "description": "Cam kết 100% hoa tươi, được tuyển chọn từ vườn và nhập khẩu mỗi sáng."
+          "title": "100% Hoa Tươi",
+          "description": "Hoa nhập trong ngày, tuyển chọn trực tiếp từ vườn - không qua kho lưu trữ."
         },
         "delivery": {
-          "title": "Giao tận tay 2 giờ",
-          "description": "Giao siêu tốc trong vòng 2 giờ tại TP. HCM — đúng hẹn, đẹp như ảnh."
+          "title": "Giao Tận Tay 2 Giờ",
+          "description": "Đặt hoa và nhận hoa trong 2h - phục vụ tại TP. Hồ Chí Minh."
         },
         "support": {
-          "title": "Tư vấn miễn phí",
-          "description": "Đội ngũ nghệ nhân sẵn sàng tư vấn lựa hoa phù hợp với ngân sách và dịp."
+          "title": "Tư Vấn Tận Tâm",
+          "description": "Chưa biết chọn hoa nào? Nhắn HTM tư vấn theo đúng dịp và câu chuyện bạn muốn gửi gắm."
         }
       }
     },
@@ -1182,6 +1259,9 @@
         "noSpecs": "Đang cập nhật thông số chi tiết cho sản phẩm này.",
         "viewMore": "Xem thêm",
         "viewLess": "Thu gọn",
+        "landing": "Khám phá",
+        "landingTitle": "Xem trước trang giới thiệu",
+        "visitLanding": "Mở trang giới thiệu",
         "specRows": {
           "code": "Mã sản phẩm",
           "brand": "Thương hiệu",
@@ -1487,5 +1567,13 @@
     "confirmNewPassword": "Xác nhận mật khẩu mới",
     "changePassword": "Đổi mật khẩu",
     "passwordUpdated": "Đã cập nhật mật khẩu"
+  },
+  "notFound": {
+    "metaTitle": "Không tìm thấy trang",
+    "code": "404",
+    "title": "Chúng tôi không tìm thấy trang này",
+    "description": "Trang bạn đang tìm có thể đã được di chuyển, gỡ bỏ hoặc tạm thời không khả dụng. Hãy quay lại để khám phá những bó hoa tươi mới nhất.",
+    "goHome": "Về trang chủ",
+    "browseProducts": "Khám phá sản phẩm"
   }
 }

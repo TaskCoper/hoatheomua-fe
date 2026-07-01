@@ -103,6 +103,7 @@ export type CompanyConfigItem =
         validations: [{ url: true }]
       }
     }
+
 // Contact
 export type ContactConfigKey =
   | 'contact.phone'
@@ -181,21 +182,11 @@ export type ContactConfigItem =
     }
 
 // Occasions
-export type OccasionsConfigKey = 'occasions.collection'
+export type OccasionsConfigKey = 'products.occasions'
 
-export type OccasionsConfigGroup = 'occasions'
+export type OccasionsConfigGroup = 'products'
 
 export type OccasionsConfigInputType = 'json'
-
-export interface OccasionsConfigOption {
-  label: string
-  value: string
-}
-
-export interface OccasionsConfigValidation {
-  url?: boolean
-  email?: boolean
-}
 
 export interface LocalizedText {
   vi: string
@@ -208,7 +199,18 @@ export interface OccasionsCollectionSection {
   enabled: boolean
 }
 
-export interface OccasionsCollectionCard {
+export interface OccasionCampaign {
+  id: string
+  campaignName: LocalizedText
+  skuPrefix: string
+  startDate: string
+  endDate: string
+  categoryIds: string[]
+  badge: LocalizedText
+  enabled: boolean
+}
+
+export interface BaseCard {
   id: string
   image: string
   badge: LocalizedText
@@ -218,9 +220,14 @@ export interface OccasionsCollectionCard {
   enabled: boolean
 }
 
+export interface OccasionCard extends BaseCard {
+  accent?: string
+  campaigns: OccasionCampaign[]
+}
+
 export interface OccasionsCollection {
   section: OccasionsCollectionSection
-  cards: OccasionsCollectionCard[]
+  cards: OccasionCard[]
 }
 
 export interface OccasionsCollectionConfigItem {
@@ -230,9 +237,36 @@ export interface OccasionsCollectionConfigItem {
     label: string
     value: string
     options: []
-    required: boolean
+    required: false
     inputType: OccasionsConfigInputType
-    validations: OccasionsConfigValidation[]
+    validations: []
+  }
+}
+
+// Mainline
+export type MainlineConfigKey = 'products.mainline'
+
+export type MainlineConfigGroup = 'products'
+
+export type MainlineConfigInputType = 'json'
+
+export type MainlineCard = BaseCard
+
+export interface MainlineCollection {
+  section: OccasionsCollectionSection
+  cards: MainlineCard[]
+}
+
+export interface MainlineCollectionConfigItem {
+  key: MainlineConfigKey
+  value: {
+    group: MainlineConfigGroup
+    label: string
+    value: string
+    options: []
+    required: false
+    inputType: MainlineConfigInputType
+    validations: []
   }
 }
 
@@ -251,11 +285,6 @@ export interface FeedbacksConfigOption {
 export interface FeedbacksConfigValidation {
   url?: boolean
   email?: boolean
-}
-
-export interface LocalizedText {
-  vi: string
-  en: string
 }
 
 export interface FeedbacksCollectionSection {
@@ -295,6 +324,30 @@ export interface FeedbacksCollectionConfigItem {
     options: []
     required: false
     inputType: FeedbacksConfigInputType
+    validations: []
+  }
+}
+
+// Products
+export type ProductsConfigKey = 'products.signature'
+
+export type ProductsConfigGroup = 'products'
+
+export type ProductsConfigInputType = 'json'
+
+export interface ProductSignatureMap {
+  [productId: string]: string
+}
+
+export interface ProductsSignatureConfigItem {
+  key: ProductsConfigKey
+  value: {
+    group: ProductsConfigGroup
+    label: string
+    value: string
+    options: []
+    required: true
+    inputType: ProductsConfigInputType
     validations: []
   }
 }

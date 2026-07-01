@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetConfigs } from '@/hooks/use-get-configs'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { FeedbacksCollection, FeedbacksCollectionConfigItem } from '@/types/config.type'
 import { QuoteUpIcon, StarIcon } from '@hugeicons/core-free-icons'
@@ -35,10 +35,13 @@ const starPop: Variants = {
 
 export default function TestimonialSection() {
   const { t, locale } = useTranslation()
-  const { configs } = useGetConfigs<FeedbacksCollectionConfigItem>({ group: 'feedbacks' })
+  const { configs } = useGetPublicConfigs<FeedbacksCollectionConfigItem, 'feedbacks.collection'>({
+    group: 'feedbacks',
+    key: 'feedbacks.collection'
+  })
 
   const items = useMemo(() => {
-    const raw = configs.find((c) => c.key === 'feedbacks.collection')?.value.value
+    const raw = configs[0]?.value.value
     if (!raw) return []
 
     try {

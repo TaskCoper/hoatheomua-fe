@@ -19,7 +19,7 @@ export default async function SignUpPage({ params }: SignUpPageProps) {
 
   setRequestLocale(locale)
 
-  const t = await getTranslations({ locale })
+  const t = await getTranslations({ locale, namespace: 'auth.signUp' })
 
   return (
     <main className='mx-auto flex min-h-svh w-full max-w-sm flex-col justify-center px-4'>

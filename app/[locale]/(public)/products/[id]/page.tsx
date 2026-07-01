@@ -47,6 +47,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
   return (
     <>
       <JsonLd data={buildProductDetailJsonLd(locale, product)} />
+
       <HydrationBoundary state={dehydrate(queryClient)}>
         <ProductDetailContent product={product} />
       </HydrationBoundary>

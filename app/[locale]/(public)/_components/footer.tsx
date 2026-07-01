@@ -1,7 +1,7 @@
 'use client'
 
 import { useGetCompanyAddress } from '@/hooks/use-get-company-address'
-import { useGetConfigs } from '@/hooks/use-get-configs'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
@@ -33,8 +33,8 @@ const FEATURED_PRODUCTS = [
 
 export default function Footer() {
   const { t } = useTranslation()
-  const { configs: companyConfigs } = useGetConfigs<CompanyConfigItem>({ group: 'company' })
-  const { configs: contactConfigs } = useGetConfigs<ContactConfigItem>({ group: 'contact' })
+  const { configs: companyConfigs } = useGetPublicConfigs<CompanyConfigItem>({ group: 'company' })
+  const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
 
   const { companyAddress } = useGetCompanyAddress()
 

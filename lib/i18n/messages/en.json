@@ -679,7 +679,7 @@
     "latestHeading": "Latest news",
     "seeAll": "See all",
     "featuredHeading": "Featured articles",
-    "featuredDescription": "Pick from the most discussed topics — full content is displayed right on each cover.",
+    "featuredDescription": "Pick from the most discussed topics - full content is displayed right on each cover.",
     "weekHighlightHeading": "This week's spotlight",
     "otherArticlesHeading": "Other articles",
     "backToNews": "← Back to news",
@@ -756,11 +756,11 @@
       "business": "Entrepreneur congratulation flowers",
       "orchid": "Beautiful Phalaenopsis orchids"
     },
-    "copyright": "Copyright © all images belong to HOA THEO MUA ® — any use of images without permission is an infringement of intellectual property rights."
+    "copyright": "Copyright © all images belong to HOA THEO MUA ® - any use of images without permission is an infringement of intellectual property rights."
   },
   "home": {
     "hero": {
-      "imageAlt": "Hoa Theo Mua — Flowers From The Heart",
+      "imageAlt": "Hoa Theo Mua - Flowers From The Heart",
       "title": "Flowers From The Heart",
       "tagline1": "Fresh flowers crafted to carry every emotion.",
       "tagline2": "From love and joy to celebrations and surprises.",
@@ -798,7 +798,7 @@
       "features": {
         "fresh": {
           "title": "100% Fresh",
-          "description": "Flowers harvested directly from gardens within the day — always fresh."
+          "description": "Flowers harvested directly from gardens within the day - always fresh."
         },
         "payment": {
           "title": "Worry-free Payment",
@@ -816,18 +816,18 @@
     },
     "signatureBouquets": {
       "title": "Signature Bouquets",
-      "description": "Each product is a signature of its own — where refinement is reflected in every detail to create an unmistakable beauty.",
+      "description": "Each product is a signature of its own - where refinement is reflected in every detail to create an unmistakable beauty.",
       "addToCart": "Add {name} to cart",
       "flowers": {
-        "peony": "Peony — Paeonia lactiflora",
-        "phalaenopsis": "Phalaenopsis — Phalaenopsis Amabilis",
-        "calla": "Calla Lily — Zantedeschia aethiopica",
-        "lilyOfTheValley": "Lily of the Valley — Convallaria Majalis",
-        "birdOfParadise": "Bird of Paradise — Strelitzia Reginae",
-        "hyacinth": "Hyacinth — Hyacinthus Orientalis",
-        "tulip": "Tulip (Premium Variety) — Tulipa gesneriana",
-        "gardenRose": "Garden Rose (David Austin) — Rosa × Hybrida",
-        "anemone": "Anemone — Anemone Coronaria"
+        "peony": "Peony - Paeonia lactiflora",
+        "phalaenopsis": "Phalaenopsis - Phalaenopsis Amabilis",
+        "calla": "Calla Lily - Zantedeschia aethiopica",
+        "lilyOfTheValley": "Lily of the Valley - Convallaria Majalis",
+        "birdOfParadise": "Bird of Paradise - Strelitzia Reginae",
+        "hyacinth": "Hyacinth - Hyacinthus Orientalis",
+        "tulip": "Tulip (Premium Variety) - Tulipa gesneriana",
+        "gardenRose": "Garden Rose (David Austin) - Rosa × Hybrida",
+        "anemone": "Anemone - Anemone Coronaria"
       },
       "bouquets": {
         "classicRose": "Classic Rose",
@@ -841,7 +841,7 @@
     },
     "testimonial": {
       "title": "What Customers Say",
-      "quote": "I rarely write reviews, but this experience truly deserves one. I ordered a bouquet for my mother's birthday and wanted everything to be perfect. From the moment I placed the order, I was continuously updated on its delivery status, which gave me great peace of mind. When the flowers arrived, they were even more beautiful than I imagined — fresh, vibrant, and arranged with great elegance. My mother was deeply moved when she received them. Thank you for turning a simple gift into an unforgettable moment for my family.",
+      "quote": "I rarely write reviews, but this experience truly deserves one. I ordered a bouquet for my mother's birthday and wanted everything to be perfect. From the moment I placed the order, I was continuously updated on its delivery status, which gave me great peace of mind. When the flowers arrived, they were even more beautiful than I imagined - fresh, vibrant, and arranged with great elegance. My mother was deeply moved when she received them. Thank you for turning a simple gift into an unforgettable moment for my family.",
       "authorName": "Nguyen Thi Mai",
       "authorRole": "Event Manager"
     },
@@ -855,51 +855,67 @@
       "title": "Our Story",
       "intro": "The story of Hoa Theo Mua is the story of",
       "ceoName": "CEO Le Thi Hoa Dao",
-      "introAfter": "— about the emotions of flowers, of memories, and of empathy from the soul of a woman who wished to bring peaceful values and nurture positivity through every heartfelt tale.",
+      "introAfter": "- about the emotions of flowers, of memories, and of empathy from the soul of a woman who wished to bring peaceful values and nurture positivity through every heartfelt tale.",
       "imageAlt": "Hoa Theo Mua bouquet",
       "twelveLabel": "Seasons of Flowers",
       "naturalLabel": "Natural",
       "founded": "Founded 12/11/2020",
-      "subtitle": "Hanoi — 12 Flower Seasons",
+      "subtitle": "Hanoi - 12 Flower Seasons",
       "story1": "For anyone who has lingered in Hanoi, memories of the flower seasons are among the most profound.",
       "story2": "The wistful emotion of pausing by flower-laden bicycles drifting through the alleys… every change of season stirs the soul in its own surprising way.",
       "story3": "And it was with that very emotion, while humming along to the song \"Hanoi's 12 Flower Seasons\", that something natural awakened within me.",
       "founderAvatarAlt": "Portrait of CEO Le Thi Hoa Dao",
       "founderName": "Le Thi Hoa Dao",
-      "founderRole": "Founder & CEO — Hoa Theo Mua",
-      "closing": "From the desire to bring those peaceful emotions, Hoa Theo Mua has distilled its own brand values — the good things meant to be entrusted in every product."
+      "founderRole": "Founder & CEO - Hoa Theo Mua",
+      "closing": "From the desire to bring those peaceful emotions, Hoa Theo Mua has distilled its own brand values - the good things meant to be entrusted in every product."
+    },
+    "visionMission": {
+      "title": "Vision & Mission",
+      "motto": "A flower is most beautiful when it blooms in its season; you are most beautiful when you are happy",
+      "vision": {
+        "label": "Vision",
+        "statement": "A joyful world where beauty is present in every single moment"
+      },
+      "mission": {
+        "label": "Mission",
+        "statement": "To bring emotional experiences to everyone through fresh flowers harvested straight from the garden, wrapped with love and delivered to those who matter"
+      }
     },
     "values": {
       "title": "Values We Pursue",
-      "description": "From that wish to bring peaceful emotions, Hoa Theo Mua has shaped five core values — good things sent forth in every product placed in our customers' hands.",
+      "description": "Every Hoa Theo Mua bouquet carries the things we believe in and hold dear.",
       "coreLabel": "Core Value",
       "branchAlt": "Decorative branch",
       "items": {
+        "emotion": {
+          "title": "Touching Emotions",
+          "description": "Hoa Theo Mua doesn't only craft beautiful bouquets - we tuck a quiet kindness into every petal. Each arrangement speaks the feelings that are hard to say, so the recipient feels the sender's sincere care."
+        },
         "enjoy": {
           "title": "Enjoy Life",
-          "description": "Hoa Theo Mua doesn't only deliver flowers; we send forth positive values so you can feel the beauty and listen to the peace within. Enjoying every bloom is your way of cherishing life and finding your own joy."
-        },
-        "eco": {
-          "title": "Eco-friendly",
-          "description": "We use natural materials such as rattan baskets, bamboo holders, and kraft paper to reduce plastic and create products that are beautiful and kind to the environment."
-        },
-        "elegant": {
-          "title": "Refined",
-          "description": "Hoa Theo Mua understands and celebrates the beauty of flowers for a woman's soul. We tend to every detail, bringing a sense of resonance and love."
+          "description": "We believe a fresh vase of flowers each day can awaken a positive energy for living. Hoa Theo Mua shares the spirit of savoring life - noticing and loving the small things around you."
         },
         "simple": {
           "title": "Simple",
-          "description": "Inspired by natural beauty — rustic materials and gentle hues that honor the genuine charm of flowers."
+          "description": "Inspired by pure, natural beauty - no flourish, no fuss - Hoa Theo Mua chooses the most honest form of each bloom. That simplicity makes it easy for anyone to feel and connect with."
+        },
+        "elegant": {
+          "title": "Refined",
+          "description": "Hoa Theo Mua understands and celebrates the beauty of flowers for women. Every small detail - from color palette to arrangement - is tended with care, bringing a sense of harmony and love."
+        },
+        "eco": {
+          "title": "Protect the Environment",
+          "description": "We prioritize sustainable materials, reduce waste, and say \"yes\" to products that are both beautiful and kind to nature - because a greener planet is worth caring for, together."
         },
         "vietnamese": {
           "title": "Honoring Vietnamese Values",
-          "description": "We cherish and honor Vietnamese beauty: from flower seasons, craft villages, to creative products that bear the mark of Vietnamese culture."
+          "description": "Hoa Theo Mua cherishes and honors Vietnamese values - from raw materials and flowers to the way our artisans place the soul of Vietnamese florals into every piece."
         }
       }
     },
     "productLines": {
       "title": "Main Product Lines",
-      "description": "Fresh bouquets designed with care in a natural style — capturing the beauty and vitality of each season, made to gift the people you cherish on every special occasion.",
+      "description": "Fresh bouquets designed with care in a natural style - capturing the beauty and vitality of each season, made to gift the people you cherish on every special occasion.",
       "branchAlt": "Decorative branch",
       "explore": "Explore the collection",
       "items": {
@@ -921,12 +937,12 @@
         "seasonalBouquet": {
           "occasion": "Seasonal Flowers",
           "name": "Seasonal Fresh Bouquet",
-          "description": "In-season blooms naturally arranged — fresh and full of emotion."
+          "description": "In-season blooms naturally arranged - fresh and full of emotion."
         },
         "tetOrchid": {
           "occasion": "Lunar New Year",
           "name": "Tet Phalaenopsis Orchid",
-          "description": "Elegant, long-lasting orchid pots — perfect for decorating the home and gifting during Tet."
+          "description": "Elegant, long-lasting orchid pots - perfect for decorating the home and gifting during Tet."
         },
         "birthdayGift": {
           "occasion": "Birthday",
@@ -936,60 +952,44 @@
       }
     },
     "advantages": {
-      "title": "Standout Strengths",
-      "description": "Eight reasons that make Hoa Theo Mua the trusted destination for flower lovers across Saigon — and even further afield.",
+      "title": "What Makes Hoa Theo Mua",
+      "description": "Four reasons that make Hoa Theo Mua the trusted destination for flower lovers across Saigon - and even further afield.",
       "imageAlt": "The work table of a Hoa Theo Mua florist",
       "items": {
         "price": {
-          "title": "Price Advantage",
-          "description": "A diverse price range — from low and mid-tier to premium — suitable for every customer, especially younger groups."
+          "title": "Fair Pricing, Diverse Tiers",
+          "description": "From quick gift bouquets to premium event arrangements, you'll always find a price that fits your budget and your purpose."
         },
-        "product": {
-          "title": "Product Advantage",
-          "description": "Diverse designs and eco-friendly materials that honor Vietnamese craft villages and culture."
-        },
-        "emotional": {
-          "title": "Emotional Value",
-          "description": "Carrying peaceful values and nurturing positivity through every product entrusted to our customers."
+        "freshness": {
+          "title": "Garden-Fresh, Long-Lasting",
+          "description": "Hoa Theo Mua harvests directly from growers - no stale inventory flowers - so every bloom reaches you at its freshest and longest-lasting."
         },
         "delivery": {
-          "title": "Delivery Quality",
-          "description": "Swift delivery that ensures products arrive in their best condition."
+          "title": "Fast, On-Time Delivery",
+          "description": "Flowers arrive exactly when you need them - so you never miss a meaningful moment."
         },
         "service": {
-          "title": "Attentive Service",
-          "description": "Placing service experience and customer satisfaction first in every interaction."
-        },
-        "community": {
-          "title": "Community Value",
-          "description": "Using natural, eco-friendly materials to contribute lasting value to the community."
-        },
-        "culture": {
-          "title": "Cultural Value",
-          "description": "Honoring Vietnamese products, spirit, and culture through every bouquet sent."
-        },
-        "promotion": {
-          "title": "Attractive Offers",
-          "description": "Free shipping within 7km, 2-hour express delivery, 10% off accessories, and a designed card for orders from 399K."
+          "title": "Devoted Companionship",
+          "description": "Our consultants are always ready to help you choose the right flowers for the right occasion - like a thoughtful friend who understands your hopes and wishes."
         }
       }
     },
     "testimonials": {
       "title": "What Customers Say",
-      "description": "Hoa Theo Mua's greatest joy is the sincere words shared by our customers — they are the very flame that fuels our journey to spread Vietnamese beauty.",
+      "description": "Hoa Theo Mua's greatest joy is the sincere words shared by our customers - they are the very flame that fuels our journey to spread Vietnamese beauty.",
       "featuredLabel": "Featured Review",
       "items": {
         "myDuyen": {
           "name": "Ms. My Duyen",
           "role": "Loyal customer",
           "initials": "MD",
-          "quote": "I'm very satisfied with Hoa Theo Mua's service. The designs are diverse and fit many occasions. The consultants are warm and ready to help me choose the perfect bouquet. The flowers are beautiful and refined — I'll keep supporting Hoa Theo Mua many more times!"
+          "quote": "I'm very satisfied with Hoa Theo Mua's service. The designs are diverse and fit many occasions. The consultants are warm and ready to help me choose the perfect bouquet. The flowers are beautiful and refined - I'll keep supporting Hoa Theo Mua many more times!"
         },
         "vanViet": {
           "name": "Mr. Van Viet",
           "role": "Bouquet recipient",
           "initials": "VV",
-          "quote": "A friend once bought my graduation bouquet at Hoa Theo Mua and I truly loved it! Fresh flowers, lovely designs — they made my graduation even more meaningful. Thank you for the quality and the emotion."
+          "quote": "A friend once bought my graduation bouquet at Hoa Theo Mua and I truly loved it! Fresh flowers, lovely designs - they made my graduation even more meaningful. Thank you for the quality and the emotion."
         },
         "thanhMai": {
           "name": "Ms. Thanh Mai",
@@ -998,15 +998,62 @@
           "quote": "Hoa Theo Mua is our company's choice for partner gifts and important events. The flowers are always fresh, the designs refined, and the team is exceptionally professional in consultation and on-time delivery."
         }
       }
+    },
+    "press": {
+      "title": "Featured In The Press",
+      "description": "Hoa Theo Mua's journey has been recognised and accompanied by reputable press outlets across the country — a source of pride that pushes us to keep spreading Vietnamese beauty.",
+      "footer": {
+        "thankYou": "Thank you for walking this path with Hoa Theo Mua",
+        "message": "Every bouquet is a story; every story is an emotion. We believe Vietnamese beauty will travel even further with your love.",
+        "productsCta": "Products"
+      },
+      "items": {
+        "dongkhoi": {
+          "name": "Báo Đồng Khởi",
+          "headline": "Hoa Theo Mua — the leading flower-ordering shop in Ho Chi Minh City"
+        },
+        "tuyenquang": {
+          "name": "Báo Tuyên Quang",
+          "headline": "A beautiful flower is one that blooms in its season"
+        },
+        "thanhhoa": {
+          "name": "Báo Thanh Hoá",
+          "headline": "A trusted fresh-flower shop in HCMC"
+        },
+        "cantho": {
+          "name": "Báo Cần Thơ",
+          "headline": "A trusted shop for March 8 flowers in HCMC"
+        },
+        "depviet": {
+          "name": "Đẹp Việt",
+          "headline": "Launching the Phalaenopsis Orchid collection for Tet Giap Thin 2024"
+        },
+        "diendandoanhnghiep": {
+          "name": "Diễn Đàn Doanh Nghiệp",
+          "headline": "A successful start-up built on the fresh-flower business"
+        },
+        "vietbao": {
+          "name": "Việt Báo",
+          "headline": "A trusted online fresh-flower system in HCMC"
+        },
+        "quangninh": {
+          "name": "Báo Quảng Ninh",
+          "headline": "Exclusive orchid designs at Hoa Theo Mua"
+        },
+        "tayninh": {
+          "name": "Báo Tây Ninh",
+          "headline": "Order gift flowers quickly and affordably"
+        }
+      }
     }
   },
   "products": {
     "hero": {
       "title": "Fresh Flower Collection",
-      "description": "Every bouquet is curated by season, hand-arranged by Hoa Theo Mua artisans, and delivered within 2 hours in Ho Chi Minh City — to send your loved ones a complete moment.",
-      "headline": "Every bouquet — a story uniquely for the one you love.",
-      "body": "Explore 50+ seasonal fresh flower designs, from birthday bouquets and grand-opening flowers to wedding florals and premium orchids. Same-day sourcing, elegant packaging, on-time delivery — ready for every special moment.",
-      "shopAll": "Shop all products",
+      "description": "Every bouquet is seasonally curated, hand-arranged with care and elegance, and delivered to you within 2 hours in Ho Chi Minh City.",
+      "headline": "Every bouquet, every occasion tells a story - choose the right one for your moment",
+      "body": "Over 50 seasonal designs - from birthdays, grand openings, and graduations to premium phalaenopsis orchids. Same-day-imported flowers, elegantly packaged, delivered on time for every special moment.",
+      "shopByType": "Shop by category",
       "shopByOccasion": "Shop by occasion",
       "imageAlt": "Hoa Theo Mua fresh bouquet",
       "highlights": {
@@ -1031,33 +1078,63 @@
         "love": {
           "occasion": "Love",
           "name": "Valentine Roses",
-          "description": "Velvet roses and premium pastel roses — pure symbols of fierce and tender love."
+          "description": "Velvet roses and premium pastel roses - pure symbols of fierce and tender love."
         },
         "opening": {
           "occasion": "Grand Opening",
           "name": "Grand Opening Basket",
-          "description": "Vivid colors arranged for prosperity — ready to celebrate a brand-new milestone."
+          "description": "Vivid colors arranged for prosperity - ready to celebrate a brand-new milestone."
         },
         "wedding": {
           "occasion": "Wedding",
           "name": "Bridal Bouquet",
-          "description": "An elegantly designed bridal bouquet made of imported flowers — perfectly harmonious for your big day."
+          "description": "An elegantly designed bridal bouquet made of imported flowers - perfectly harmonious for your big day."
         },
         "orchid": {
           "occasion": "Phalaenopsis Orchid",
           "name": "Premium Orchid Pot",
-          "description": "A long-lasting, elegant orchid pot — a meaningful gift for partners and family."
+          "description": "A long-lasting, elegant orchid pot - a meaningful gift for partners and family."
         },
         "congrats": {
           "occasion": "Graduation",
           "name": "Congratulations Bouquet",
-          "description": "A fresh wish for a new journey — a natural bouquet brimming with positive energy."
+          "description": "A fresh wish for a new journey - a natural bouquet brimming with positive energy."
+        }
+      },
+      "detail": {
+        "breadcrumb": {
+          "ariaLabel": "Breadcrumb",
+          "home": "Home",
+          "occasions": "Occasions",
+          "back": "Back to occasions"
+        },
+        "headline": "{name} - picks curated for the moment",
+        "campaign": {
+          "label": "Now featuring",
+          "dates": "{start} – {end}"
+        },
+        "cta": {
+          "viewCollection": "View collection",
+          "otherOccasions": "Other occasions"
+        },
+        "products": {
+          "title": "Flowers for {name}",
+          "description": "Hand-picked arrangements tailored to this occasion - fresh, locally arranged, and ready to be delivered with care.",
+          "empty": {
+            "title": "Collection coming soon",
+            "description": "This collection is being prepared by our artisans. Please come back soon to discover our freshest bouquets for this occasion."
+          }
         }
       }
     },
     "catalog": {
       "title": "Flower Accessories",
-      "description": "Same-day-imported flowers hand-arranged by artisans — a collection curated from color to emotion for every moment."
+      "description": "Same-day-imported flowers hand-arranged by artisans - a collection curated from color to emotion for every moment.",
+      "vaseFlowers": {
+        "title": "Vase Flowers",
+        "description": "Seasonal stems for you to arrange in your favorite vase - fresh, easy to mix, and keeping a quiet rhythm of calm in your space.",
+        "prompt": "Found your favorite flowers? Don't forget to add a matching vase 🌿"
+      }
     },
     "filter": {
       "all": "All",
@@ -1094,16 +1171,16 @@
       "bannerAlt": "Hoa Theo Mua fresh flower promotion",
       "items": {
         "fresh": {
-          "title": "Same-day-imported flowers",
-          "description": "100% fresh guarantee, hand-picked from gardens and imported every morning."
+          "title": "100% Fresh Flowers",
+          "description": "Same-day-imported flowers, hand-picked straight from the garden - never from storage."
         },
         "delivery": {
-          "title": "2-hour delivery",
-          "description": "Express delivery within 2 hours in HCMC — on time and as beautiful as in the photo."
+          "title": "2-Hour Hand Delivery",
+          "description": "Order and receive your flowers within 2 hours - available in Ho Chi Minh City."
         },
         "support": {
-          "title": "Free consultation",
-          "description": "Our artisans are ready to help you pick flowers to match your budget and occasion."
+          "title": "Heartfelt Consultation",
+          "description": "Not sure which flowers to pick? Message HTM for advice tailored to your occasion and the story you want to share."
         }
       }
     },
@@ -1182,6 +1259,9 @@
         "noSpecs": "Detailed specifications are being updated for this product.",
         "viewMore": "View more",
         "viewLess": "View less",
+        "landing": "Explore",
+        "landingTitle": "Landing page preview",
+        "visitLanding": "Open landing page",
         "specRows": {
           "code": "Product code",
           "brand": "Brand",
@@ -1206,7 +1286,7 @@
           },
           "temperature": {
             "title": "Comfortable room temperature",
-            "description": "Ideal at 18–22°C — a lightly air-conditioned room helps the flowers keep their shape."
+            "description": "Ideal at 18–22°C - a lightly air-conditioned room helps the flowers keep their shape."
           }
         }
       }
@@ -1216,7 +1296,7 @@
     "hero": {
       "eyebrow": "Hoa Theo Mùa for Business",
       "title": "Floral Partnerships For Modern Businesses",
-      "subtitle": "From boardrooms to ballrooms — we design blooming experiences for hotels, offices and brands across Vietnam.",
+      "subtitle": "From boardrooms to ballrooms - we design blooming experiences for hotels, offices and brands across Vietnam.",
       "primaryCta": "Request a quote",
       "secondaryCta": "Talk to our team",
       "imageAlt": "Premium corporate floral arrangement",
@@ -1251,7 +1331,7 @@
         "corporateEvents": {
           "tag": "Events",
           "name": "Corporate Events",
-          "description": "Conferences, galas, product launches and award nights — full floral direction from stage to lobby."
+          "description": "Conferences, galas, product launches and award nights - full floral direction from stage to lobby."
         },
         "officeSubscription": {
           "tag": "Subscription",
@@ -1271,7 +1351,7 @@
         "gifting": {
           "tag": "Gifting",
           "name": "Corporate Gifting",
-          "description": "Curated client and employee gifts delivered at scale — from Tết hampers to Women's Day bouquets."
+          "description": "Curated client and employee gifts delivered at scale - from Tết hampers to Women's Day bouquets."
         },
         "grandOpening": {
           "tag": "Activation",
@@ -1282,7 +1362,7 @@
     },
     "packages": {
       "title": "Partnership Packages",
-      "description": "Three starting points for partners who want predictable floral programs — every plan is fully customizable.",
+      "description": "Three starting points for partners who want predictable floral programs - every plan is fully customizable.",
       "popular": "Most popular",
       "fromLabel": "From",
       "cta": "Get this package",
@@ -1333,19 +1413,19 @@
       "items": {
         "account": {
           "title": "Dedicated Account Manager",
-          "description": "One florist who knows your brand, your calendar and your venue — every brief flows through them."
+          "description": "One florist who knows your brand, your calendar and your venue - every brief flows through them."
         },
         "delivery": {
           "title": "Citywide Same-Day Delivery",
-          "description": "HCM, Hà Nội and Đà Nẵng — covered with refrigerated vehicles and on-time SLAs."
+          "description": "HCM, Hà Nội and Đà Nẵng - covered with refrigerated vehicles and on-time SLAs."
         },
         "natural": {
           "title": "100% Natural Sourcing",
-          "description": "Stems hand-picked daily from trusted farms — only blooms that meet our quality bar leave the studio."
+          "description": "Stems hand-picked daily from trusted farms - only blooms that meet our quality bar leave the studio."
         },
         "scale": {
           "title": "Scalable Production",
-          "description": "Hundreds of arrangements per week without compromising the finish — ready for product launches and gala nights."
+          "description": "Hundreds of arrangements per week without compromising the finish - ready for product launches and gala nights."
         }
       }
     },
@@ -1361,7 +1441,7 @@
         "proposal": {
           "label": "Step 02",
           "title": "Proposal",
-          "description": "Curated mood boards, flower palette and a transparent quote — usually within 48 hours."
+          "description": "Curated mood boards, flower palette and a transparent quote - usually within 48 hours."
         },
         "production": {
           "label": "Step 03",
@@ -1377,7 +1457,7 @@
     },
     "cta": {
       "title": "Let's create something blooming together",
-      "description": "Tell us about your project — we'll get back within 4 working hours with first ideas and a clear next step.",
+      "description": "Tell us about your project - we'll get back within 4 working hours with first ideas and a clear next step.",
       "callLabel": "Hotline",
       "callValue": "0983 024 353",
       "emailLabel": "Partnerships",
@@ -1412,7 +1492,7 @@
     "returns": {
       "breadcrumb": "Return policy",
       "title": "Return policy",
-      "subtitle": "Customer satisfaction comes first — our return policy is transparent, swift, and aligned with every promise we make."
+      "subtitle": "Customer satisfaction comes first - our return policy is transparent, swift, and aligned with every promise we make."
     },
     "delivery": {
       "breadcrumb": "Delivery & inspection policy",
@@ -1423,7 +1503,7 @@
     "ordering": {
       "breadcrumb": "Ordering & payment guide",
       "title": "Ordering & payment guide",
-      "subtitle": "Three flexible ways to order and two secure payment options — Hoa Theo Mua helps you send love within minutes."
+      "subtitle": "Three flexible ways to order and two secure payment options - Hoa Theo Mua helps you send love within minutes."
     }
   },
   "profile": {
@@ -1487,5 +1567,13 @@
     "confirmNewPassword": "Confirm new password",
     "changePassword": "Change password",
     "passwordUpdated": "Password updated"
+  },
+  "notFound": {
+    "metaTitle": "Page not found",
+    "code": "404",
+    "title": "We can't find that page",
+    "description": "The page you're looking for may have been moved, removed, or is temporarily unavailable. Let's get you back to fresh blooms.",
+    "goHome": "Back to home",
+    "browseProducts": "Browse flowers"
   }
 }

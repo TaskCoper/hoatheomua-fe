@@ -1,4 +1,4 @@
-import { DEFAULT_PRODUCT_CATEGORY_IDS, DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
+import { DAILY_FLOWER_CATEGORY_IDS, DEFAULT_PRODUCT_SORT, VASE_CATEGORY_IDS } from '@/features/products/constants'
 import { productListQuery } from '@/features/products/queries'
 import { buildProductsCollectionJsonLd, generateProductsListMetadata } from '@/features/products/seo'
 import type { Product, ProductListResponse } from '@/features/products/types'
@@ -22,7 +22,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   const options = productListQuery(
     {
       size: PRODUCTS_PAGE_SIZE,
-      categoryIds: DEFAULT_PRODUCT_CATEGORY_IDS,
+      categoryIds: [...VASE_CATEGORY_IDS, ...DAILY_FLOWER_CATEGORY_IDS],
       sort: DEFAULT_PRODUCT_SORT
     },
     locale

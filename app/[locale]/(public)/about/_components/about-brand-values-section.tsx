@@ -2,7 +2,14 @@
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import leftBranch from '@/public/images/left-branch.png'
-import { Diamond01Icon, Flag03Icon, HappyIcon, Leaf01Icon, SparklesIcon } from '@hugeicons/core-free-icons'
+import {
+  Diamond01Icon,
+  Flag03Icon,
+  HandHeartIcon,
+  HappyIcon,
+  Leaf01Icon,
+  SparklesIcon
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
@@ -11,30 +18,36 @@ import { SparkleDivider } from '../../_components/sparkle-dividier'
 const BRAND_VALUES = [
   {
     number: '01',
+    icon: HandHeartIcon,
+    titleKey: 'about.values.items.emotion.title',
+    descriptionKey: 'about.values.items.emotion.description'
+  },
+  {
+    number: '02',
     icon: HappyIcon,
     titleKey: 'about.values.items.enjoy.title',
     descriptionKey: 'about.values.items.enjoy.description'
   },
   {
-    number: '02',
-    icon: Leaf01Icon,
-    titleKey: 'about.values.items.eco.title',
-    descriptionKey: 'about.values.items.eco.description'
-  },
-  {
     number: '03',
-    icon: SparklesIcon,
-    titleKey: 'about.values.items.elegant.title',
-    descriptionKey: 'about.values.items.elegant.description'
-  },
-  {
-    number: '04',
     icon: Diamond01Icon,
     titleKey: 'about.values.items.simple.title',
     descriptionKey: 'about.values.items.simple.description'
   },
   {
+    number: '04',
+    icon: SparklesIcon,
+    titleKey: 'about.values.items.elegant.title',
+    descriptionKey: 'about.values.items.elegant.description'
+  },
+  {
     number: '05',
+    icon: Leaf01Icon,
+    titleKey: 'about.values.items.eco.title',
+    descriptionKey: 'about.values.items.eco.description'
+  },
+  {
+    number: '06',
     icon: Flag03Icon,
     titleKey: 'about.values.items.vietnamese.title',
     descriptionKey: 'about.values.items.vietnamese.description'
@@ -171,7 +184,7 @@ export default function BrandValuesSection() {
           whileInView='visible'
           viewport={{ once: true, margin: '-60px' }}
           variants={cardStagger}
-          className='grid h-full self-stretch grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:col-span-7 lg:grid-rows-2'
+          className='grid h-full self-stretch grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:col-span-7 lg:grid-rows-3'
         >
           {restValues.map((value) => (
             <motion.article
@@ -179,7 +192,7 @@ export default function BrandValuesSection() {
               variants={cardItem}
               whileHover={{ y: -8, scale: 1.025 }}
               transition={{ type: 'spring', stiffness: 260, damping: 16 }}
-              className='group relative flex flex-col gap-2 overflow-hidden rounded-3xl bg-card p-4 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 sm:p-5'
+              className='group relative flex flex-col gap-2 overflow-hidden rounded-3xl bg-card p-4 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 last:sm:col-span-2 sm:p-5'
             >
               <motion.span
                 aria-hidden='true'

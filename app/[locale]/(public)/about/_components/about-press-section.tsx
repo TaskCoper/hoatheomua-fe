@@ -1,57 +1,24 @@
 'use client'
 
-import { LinkSquare02Icon, News01Icon } from '@hugeicons/core-free-icons'
+import { Button } from '@/components/ui/button'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { Link } from '@/lib/i18n/navigation'
+import { LinkSquare02Icon, News01Icon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
 
 const PRESS_MENTIONS = [
-  {
-    name: 'Báo Đồng Khởi',
-    headline: 'Hoa Theo Mùa — cửa hàng đặt hoa hàng đầu tại Hồ Chí Minh',
-    href: 'https://baodongkhoi.vn/hoa-theo-mua-cua-hang-dat-hoa-hang-dau-tai-ho-chi-minh-02122024-a139172.html'
-  },
-  {
-    name: 'Báo Tuyên Quang',
-    headline: 'Hoa đẹp là hoa nở đúng mùa',
-    href: 'https://baotuyenquang.com.vn/hoa-theo-mua%C2%A0hoa-dep-la-hoa-no-dung-mua-203553.html'
-  },
-  {
-    name: 'Báo Thanh Hoá',
-    headline: 'Cửa hàng đặt hoa tươi uy tín tại TP.HCM',
-    href: 'https://baothanhhoa.vn/hoa-theo-mua-cua-hang-dat-hoa-tuoi-uy-tin-tai-tphcm-233829.htm'
-  },
-  {
-    name: 'Báo Cần Thơ',
-    headline: 'Cửa hàng đặt hoa 8/3 uy tín tại TP.HCM',
-    href: 'https://baocantho.com.vn/hoa-theo-mua-cua-hang-dat-hoa-8-3-uy-tin-tai-tp-hcm-a183299.html'
-  },
-  {
-    name: 'Đẹp Việt',
-    headline: 'Ra mắt bộ sưu tập Lan Hồ Điệp chưng Tết Giáp Thìn 2024',
-    href: 'https://depviet.net.vn/hoa-theo-mua-ra-mat-bo-suu-tap-lan-ho-diep-chung-tet-giap-thin-2024-134606'
-  },
-  {
-    name: 'Diễn Đàn Doanh Nghiệp',
-    headline: 'Khởi nghiệp thành công nhờ kinh doanh hoa tươi',
-    href: 'https://diendandoanhnghiep.vn/hoa-theo-mua-khoi-nghiep-thanh-cong-nho-kinh-doanh-hoa-tuoi-10155786.html'
-  },
-  {
-    name: 'Việt Báo',
-    headline: 'Hệ thống hoa tươi online uy tín tại TP.HCM',
-    href: 'https://vietbao.vn/hoa-theo-mua-he-thong-hoa-tuoi-online-uy-tin-tai-tp-hcm-544869.html'
-  },
-  {
-    name: 'Báo Quảng Ninh',
-    headline: 'Mẫu thiết kế hoa lan độc quyền tại Hoa Theo Mùa',
-    href: 'https://baoquangninh.vn/mau-thiet-ke-hoa-lan-doc-quyen-tai-hoa-theo-mua-3332769.html'
-  },
-  {
-    name: 'Báo Tây Ninh',
-    headline: 'Đặt hoa quà tặng nhanh chóng, tiết kiệm',
-    href: 'https://baotayninh.vn/dat-hoa-qua-tang-tai-hoa-theo-mua-nhanh-chong-tiet-kiem-a182597.html'
-  }
-]
+  { id: 'dongkhoi', href: 'https://baodongkhoi.vn/hoa-theo-mua-cua-hang-dat-hoa-hang-dau-tai-ho-chi-minh-02122024-a139172.html' },
+  { id: 'tuyenquang', href: 'https://baotuyenquang.com.vn/hoa-theo-mua%C2%A0hoa-dep-la-hoa-no-dung-mua-203553.html' },
+  { id: 'thanhhoa', href: 'https://baothanhhoa.vn/hoa-theo-mua-cua-hang-dat-hoa-tuoi-uy-tin-tai-tphcm-233829.htm' },
+  { id: 'cantho', href: 'https://baocantho.com.vn/hoa-theo-mua-cua-hang-dat-hoa-8-3-uy-tin-tai-tp-hcm-a183299.html' },
+  { id: 'depviet', href: 'https://depviet.net.vn/hoa-theo-mua-ra-mat-bo-suu-tap-lan-ho-diep-chung-tet-giap-thin-2024-134606' },
+  { id: 'diendandoanhnghiep', href: 'https://diendandoanhnghiep.vn/hoa-theo-mua-khoi-nghiep-thanh-cong-nho-kinh-doanh-hoa-tuoi-10155786.html' },
+  { id: 'vietbao', href: 'https://vietbao.vn/hoa-theo-mua-he-thong-hoa-tuoi-online-uy-tin-tai-tp-hcm-544869.html' },
+  { id: 'quangninh', href: 'https://baoquangninh.vn/mau-thiet-ke-hoa-lan-doc-quyen-tai-hoa-theo-mua-3332769.html' },
+  { id: 'tayninh', href: 'https://baotayninh.vn/dat-hoa-qua-tang-tai-hoa-theo-mua-nhanh-chong-tiet-kiem-a182597.html' }
+] as const
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -69,6 +36,8 @@ const cardItem: Variants = {
 }
 
 export default function PressSection() {
+  const { t } = useTranslation()
+
   return (
     <section className='mt-8 sm:mt-10 md:mt-12 lg:mt-14 mb-4 sm:mb-6 md:mb-8 lg:mb-10'>
       <motion.div
@@ -86,7 +55,7 @@ export default function PressSection() {
           />
 
           <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
-            Báo Chí Nói Về Chúng Tôi
+            {t('about.press.title')}
           </h1>
 
           <SparkleDivider
@@ -98,8 +67,7 @@ export default function PressSection() {
         </div>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          Hành trình của Hoa Theo Mùa được ghi nhận và đồng hành cùng nhiều cơ quan báo chí uy tín trên cả nước — niềm
-          tự hào để chúng tôi tiếp tục lan toả vẻ đẹp Việt.
+          {t('about.press.description')}
         </p>
       </motion.div>
 
@@ -130,9 +98,11 @@ export default function PressSection() {
             </motion.div>
 
             <div className='min-w-0 flex-1 space-y-0.5'>
-              <p className='truncate font-title text-xs font-bold text-primary sm:text-sm'>{press.name}</p>
+              <p className='truncate font-title text-xs font-bold text-primary sm:text-sm'>
+                {t(`about.press.items.${press.id}.name`)}
+              </p>
               <p className='line-clamp-2 text-[0.625rem] leading-snug text-foreground sm:text-[0.6875rem]'>
-                {press.headline}
+                {t(`about.press.items.${press.id}.headline`)}
               </p>
             </div>
 
@@ -157,13 +127,37 @@ export default function PressSection() {
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           className='font-title text-base font-bold text-primary sm:text-lg lg:text-xl'
         >
-          Cảm ơn bạn đã đồng hành cùng Hoa Theo Mùa
+          {t('about.press.footer.thankYou')}
         </motion.p>
 
-        <p className='max-w-2xl text-xs leading-relaxed text-foreground'>
-          Mỗi bó hoa là một câu chuyện, mỗi câu chuyện là một cảm xúc. Chúng tôi tin rằng vẻ đẹp Việt sẽ được lan toả xa
-          hơn nữa với sự yêu thương của bạn.
-        </p>
+        <p className='max-w-2xl text-xs leading-relaxed text-foreground'>{t('about.press.footer.message')}</p>
+
+        <motion.div
+          whileHover={{ y: -5, scale: 1.06 }}
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+          className='group relative'
+        >
+          <motion.span
+            aria-hidden='true'
+            animate={{ opacity: [0.45, 0.85, 0.45], scale: [1, 1.08, 1] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+            className='pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-primary/35 blur-xl'
+          />
+          <Button
+            asChild
+            size='lg'
+            className='relative gap-2 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/22%)] ring-1 ring-primary/20 transition-shadow hover:shadow-[0_1rem_2.4rem_rgb(81_108_108/32%)]'
+          >
+            <Link href='/products'>
+              <HugeiconsIcon
+                icon={ShoppingBag01Icon}
+                className='size-4 transition-transform duration-300 group-hover:-rotate-12 group-hover:scale-125'
+              />
+              {t('about.press.footer.productsCta')}
+            </Link>
+          </Button>
+        </motion.div>
       </div>
     </section>
   )
