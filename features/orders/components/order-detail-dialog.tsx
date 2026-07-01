@@ -63,7 +63,6 @@ export default function OrderDetailDialog({ order, open, onOpenChange }: OrderDe
   const nhanhOrderId = order.nhanhOrderId
   const qrCodeUrl = orderDetail?.qrCodeUrl ?? null
   const qrDetails = useMemo(() => parseQrDetails(qrCodeUrl), [qrCodeUrl])
-  const transaction = orderDetail?.transaction ?? null
   const items = orderDetail?.details ?? []
   const itemsSubtotal = items.reduce((sum, item) => sum + item.price * item.number, 0)
 

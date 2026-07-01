@@ -4,30 +4,19 @@ import { Spinner } from '@/components/ui/spinner'
 import type { Address } from '@/features/addresses/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { CheckoutFields } from '../checkout-fields'
-import type { TaxBusinessInfo } from '../../types'
-
-type LookupState = 'idle' | 'loading' | 'found' | 'not_found' | 'error'
 
 interface StepPersonalProps {
   addresses: Address[]
   isLoadingAddresses: boolean
   selectedAddressId: string
   onSelectAddress: (id: string) => void
-  taxBusinessInfo: TaxBusinessInfo | null
-  taxBusinessLookupState: LookupState
-  onTaxBusinessInfoChange: (info: TaxBusinessInfo | null) => void
-  onTaxBusinessLookupStateChange: (state: LookupState) => void
 }
 
 export function StepPersonal({
   addresses,
   isLoadingAddresses,
   selectedAddressId,
-  onSelectAddress,
-  taxBusinessInfo,
-  taxBusinessLookupState,
-  onTaxBusinessInfoChange,
-  onTaxBusinessLookupStateChange
+  onSelectAddress
 }: StepPersonalProps) {
   const { t } = useTranslation()
 
@@ -47,10 +36,6 @@ export function StepPersonal({
           addresses={addresses}
           selectedAddressId={selectedAddressId}
           onSelectAddress={onSelectAddress}
-          taxBusinessInfo={taxBusinessInfo}
-          taxBusinessLookupState={taxBusinessLookupState}
-          onTaxBusinessInfoChange={onTaxBusinessInfoChange}
-          onTaxBusinessLookupStateChange={onTaxBusinessLookupStateChange}
         />
       )}
     </section>

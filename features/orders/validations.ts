@@ -1,8 +1,13 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
-import { createPhoneNumberSchema } from '@/shared/validations'
+import {
+  createOptionalEmailSchema,
+  createOptionalPhoneNumberSchema,
+  createPhoneNumberSchema
+} from '@/shared/validations'
 import z from 'zod'
+import { InvoiceType } from './types'
 
-export const createCheckoutSchema = (t: TranslationFunction) => {
+export const createEstimateSchema = (t: TranslationFunction) => {
   const requiredFor = (field: string) => t('common.validation.required', { field })
 
   return z.object({
@@ -26,9 +31,51 @@ export const createCheckoutSchema = (t: TranslationFunction) => {
     longitude: z.number(),
     mapId: z.string(),
     orderTime: z.string().nullable(),
-    taxCode: z.string().trim().optional(),
     tagIds: z.array(z.number()).max(1)
   })
 }
 
+export const createCheckoutSchema = (t: TranslationFunction) => {
+  const requiredFor = (field: string) => t('common.validation.required', { field })
+
+  return createEstimateSchema(t)
+    .extend({
+      taxCode: z.string().trim().nullable(),
+      identityNumber: z.string().trim().max(20).nullable(),
+      receiptFullName: z.string().trim().max(100).nullable(),
+      receiptPhoneNumber: createOptionalPhoneNumberSchema(t).nullable(),
+      receiptAddress: z.string().trim().max(255).nullable(),
+      receiptEmail: createOptionalEmailSchema(t).nullable(),
+      isExportInvoice: z.boolean(),
+      invoiceType: z.enum(InvoiceType).nullable()
+    })
+    .superRefine((data, ctx) => {
+      if (!data.isExportInvoice) return
+
+      const requireField = (field: keyof typeof data, label: string) => {
+        const value = data[field]
+        if (typeof value !== 'string' || value.trim() === '') {
+          ctx.addIssue({
+            code: 'custom',
+            path: [field],
+            message: requiredFor(label)
+          })
+        }
+      }
+
+      if (data.invoiceType === InvoiceType.Business) {
+        requireField('taxCode', t('orders.checkout.taxCodeLabel'))
+        requireField('receiptEmail', t('orders.checkout.receiptEmail'))
+        requireField('receiptPhoneNumber', t('orders.checkout.receiptPhoneNumber'))
+      } else if (data.invoiceType === InvoiceType.Personal) {
+        requireField('identityNumber', t('orders.checkout.identityNumber'))
+        requireField('receiptFullName', t('orders.checkout.receiptFullName'))
+        requireField('receiptAddress', t('orders.checkout.receiptAddress'))
+        requireField('receiptEmail', t('orders.checkout.receiptEmail'))
+        requireField('receiptPhoneNumber', t('orders.checkout.receiptPhoneNumber'))
+      }
+    })
+}
+
+export type EstimateFormValues = z.infer<ReturnType<typeof createEstimateSchema>>
 export type CheckoutFormValues = z.infer<ReturnType<typeof createCheckoutSchema>>

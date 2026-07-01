@@ -568,6 +568,10 @@
     }
   },
   "orders": {
+    "invoiceType": {
+      "Personal": "Cá nhân và HKD",
+      "Business": "Doanh nghiệp"
+    },
     "checkout": {
       "title": "Thanh toán",
       "description": "Vui lòng điền thông tin giao hàng để hoàn tất đơn của bạn.",
@@ -586,7 +590,19 @@
       "wardPlaceholder": "Chọn phường / xã",
       "wardSearchPlaceholder": "Tìm phường / xã",
       "taxCode": "Mã số thuế (không bắt buộc)",
+      "taxCodeLabel": "Mã số thuế",
       "taxCodePlaceholder": "Nhập mã số thuế nếu có",
+      "identityNumber": "CCCD/CMND",
+      "receiptFullName": "Họ và tên người nhận hoá đơn",
+      "receiptPhoneNumber": "Số điện thoại nhận hoá đơn",
+      "receiptAddress": "Địa chỉ nhận hoá đơn",
+      "receiptEmail": "Email nhận hoá đơn",
+      "isExportInvoice": "Xuất hoá đơn",
+      "invoiceType": "Loại hoá đơn",
+      "invoiceTypePersonal": "Cá nhân",
+      "invoiceTypeBusiness": "Doanh nghiệp",
+      "invoiceTitle": "Hoá đơn",
+      "invoiceDescription": "Yêu cầu xuất hoá đơn VAT cho đơn hàng này (tuỳ chọn).",
       "savedAddress": "Địa chỉ đã lưu",
       "savedAddressPlaceholder": "Chọn địa chỉ đã lưu",
       "savedAddressSearchPlaceholder": "Tìm địa chỉ đã lưu",
@@ -745,7 +761,9 @@
       "about": "Giới thiệu",
       "news": "Tin tức",
       "recruitment": "Tuyển dụng",
-      "contact": "Liên hệ"
+      "contact": "Liên hệ",
+      "cart": "Giỏ hàng",
+      "orders": "Đơn hàng"
     },
     "aria": {
       "mainNav": "Điều hướng chính",

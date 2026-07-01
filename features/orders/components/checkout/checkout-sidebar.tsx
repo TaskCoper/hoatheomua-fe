@@ -104,7 +104,9 @@ export function CheckoutSidebar({
           {address ? <SidebarRow label={t('orders.checkout.sidebar.address')} value={address} multiline /> : null}
           {orderTimeLabel ? <SidebarRow label={t('orders.checkout.orderTime')} value={orderTimeLabel} /> : null}
           {deliveryTimeLabel ? <SidebarRow label={t('orders.checkout.tag')} value={deliveryTimeLabel} /> : null}
-          {extraLines?.map((line) => <SidebarRow key={line.label} label={line.label} value={line.value} />)}
+          {extraLines?.map((line) => (
+            <SidebarRow key={line.label} label={line.label} value={line.value} />
+          ))}
         </dl>
 
         <div className='mt-5 border-t border-border/70 pt-4'>

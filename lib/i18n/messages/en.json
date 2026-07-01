@@ -568,6 +568,10 @@
     }
   },
   "orders": {
+    "invoiceType": {
+      "Personal": "Individual or Household Business",
+      "Business": "Company"
+    },
     "checkout": {
       "title": "Checkout",
       "description": "Fill in your delivery details to complete the order.",
@@ -586,7 +590,19 @@
       "wardPlaceholder": "Select ward",
       "wardSearchPlaceholder": "Search ward",
       "taxCode": "Tax code (optional)",
+      "taxCodeLabel": "Tax code",
       "taxCodePlaceholder": "Enter tax code if any",
+      "identityNumber": "Identity number",
+      "receiptFullName": "Receipt full name",
+      "receiptPhoneNumber": "Receipt phone number",
+      "receiptAddress": "Receipt address",
+      "receiptEmail": "Receipt email",
+      "isExportInvoice": "Export invoice",
+      "invoiceType": "Invoice type",
+      "invoiceTypePersonal": "Personal",
+      "invoiceTypeBusiness": "Business",
+      "invoiceTitle": "Invoice",
+      "invoiceDescription": "Request a VAT invoice for this order (optional).",
       "savedAddress": "Saved address",
       "savedAddressPlaceholder": "Select a saved address",
       "savedAddressSearchPlaceholder": "Search saved addresses",
@@ -745,7 +761,9 @@
       "about": "About",
       "news": "News",
       "recruitment": "Careers",
-      "contact": "Contact"
+      "contact": "Contact",
+      "cart": "Cart",
+      "orders": "Orders"
     },
     "aria": {
       "mainNav": "Main navigation",
