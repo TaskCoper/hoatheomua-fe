@@ -2,13 +2,13 @@
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import CheckoutDialog from '@/features/orders/components/checkout-dialog'
 import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { Link } from '@/lib/i18n/navigation'
+import { Link, useRouter } from '@/lib/i18n/navigation'
 import { type CartItem, useCartStore } from '@/stores/cart.store'
+import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import {
   Delete02Icon,
   FlowerIcon,
@@ -68,6 +68,8 @@ const cardItem: Variants = {
 export default function CartPage() {
   const { t } = useTranslation()
 
+  const router = useRouter()
+  const setCheckoutIntent = useCheckoutIntentStore((state) => state.setIntent)
   const locale = useLocale()
   const hasHydrated = useCartHydrated()
   const items = useCartStore((state) => state.items)
@@ -335,18 +337,24 @@ export default function CartPage() {
 
             <p className='text-xs leading-relaxed text-muted-foreground'>{t('cart.summary.shippingNote')}</p>
 
-            <CheckoutDialog items={selectedCartItems}>
-              <motion.div
-                whileHover={!noneChecked ? { y: -2, scale: 1.02 } : undefined}
-                whileTap={!noneChecked ? { scale: 0.97 } : undefined}
-                transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+            <motion.div
+              whileHover={!noneChecked ? { y: -2, scale: 1.02 } : undefined}
+              whileTap={!noneChecked ? { scale: 0.97 } : undefined}
+              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+            >
+              <Button
+                disabled={noneChecked}
+                className='w-full'
+                size='lg'
+                onClick={() => {
+                  setCheckoutIntent(selectedCartItems, 'cart')
+                  router.push('/checkout')
+                }}
               >
-                <Button disabled={noneChecked} className='w-full' size='lg'>
-                  <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                  {t('cart.actions.checkout')}
-                </Button>
-              </motion.div>
-            </CheckoutDialog>
+                <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
+                {t('cart.actions.checkout')}
+              </Button>
+            </motion.div>
 
             {noneChecked && <p className='text-center text-xs text-muted-foreground'>{t('cart.summary.empty')}</p>}
           </motion.div>

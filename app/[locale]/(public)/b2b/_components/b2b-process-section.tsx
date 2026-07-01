@@ -1,38 +1,38 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { DeliveryTruck01Icon, Note01Icon, PaintBoardIcon, Task01Icon } from '@hugeicons/core-free-icons'
+import { DeliveryTruck01Icon, Note01Icon, PaintBoardIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 
 const STEPS = [
   {
-    id: 'brief',
+    id: 'listen',
     icon: Note01Icon,
-    labelKey: 'b2b.process.steps.brief.label',
-    titleKey: 'b2b.process.steps.brief.title',
-    descriptionKey: 'b2b.process.steps.brief.description'
+    labelKey: 'b2b.process.steps.listen.label',
+    titleKey: 'b2b.process.steps.listen.title',
+    descriptionKey: 'b2b.process.steps.listen.description'
   },
   {
-    id: 'proposal',
+    id: 'propose',
     icon: PaintBoardIcon,
-    labelKey: 'b2b.process.steps.proposal.label',
-    titleKey: 'b2b.process.steps.proposal.title',
-    descriptionKey: 'b2b.process.steps.proposal.description'
+    labelKey: 'b2b.process.steps.propose.label',
+    titleKey: 'b2b.process.steps.propose.title',
+    descriptionKey: 'b2b.process.steps.propose.description'
   },
   {
-    id: 'production',
-    icon: Task01Icon,
-    labelKey: 'b2b.process.steps.production.label',
-    titleKey: 'b2b.process.steps.production.title',
-    descriptionKey: 'b2b.process.steps.production.description'
+    id: 'sample',
+    icon: SparklesIcon,
+    labelKey: 'b2b.process.steps.sample.label',
+    titleKey: 'b2b.process.steps.sample.title',
+    descriptionKey: 'b2b.process.steps.sample.description'
   },
   {
-    id: 'delivery',
+    id: 'produce',
     icon: DeliveryTruck01Icon,
-    labelKey: 'b2b.process.steps.delivery.label',
-    titleKey: 'b2b.process.steps.delivery.title',
-    descriptionKey: 'b2b.process.steps.delivery.description'
+    labelKey: 'b2b.process.steps.produce.label',
+    titleKey: 'b2b.process.steps.produce.title',
+    descriptionKey: 'b2b.process.steps.produce.description'
   }
 ] as const
 
@@ -61,8 +61,15 @@ export default function B2BProcessSection() {
         whileInView='visible'
         viewport={{ once: true, margin: '-80px' }}
         variants={fadeUp}
-        className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
+        className='mx-auto w-full max-w-7xl space-y-1 sm:space-y-1.5 md:space-y-2'
       >
+        <div className='flex justify-center'>
+          <span className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-primary ring-1 ring-primary/15 sm:text-xs'>
+            <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
+            {t('b2b.process.eyebrow')}
+          </span>
+        </div>
+
         <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
           {t('b2b.process.title')}
         </h2>
@@ -118,6 +125,7 @@ export default function B2BProcessSection() {
               <h3 className='font-title text-base font-bold leading-tight text-primary sm:text-lg'>
                 {t(step.titleKey)}
               </h3>
+              {/* TODO(b2b): confirm step descriptions with Founder before launch */}
               <p className='text-xs leading-relaxed text-foreground'>{t(step.descriptionKey)}</p>
             </div>
           </motion.li>

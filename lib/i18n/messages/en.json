@@ -563,7 +563,7 @@
       "title": "Order summary",
       "selected": "{count} selected of {total}",
       "subtotal": "Subtotal",
-      "shippingNote": "Shipping fees and discounts are calculated at checkout.",
+      "shippingNote": "Shipping fees are calculated at checkout.",
       "empty": "Select items to checkout."
     }
   },
@@ -571,7 +571,7 @@
     "checkout": {
       "title": "Checkout",
       "description": "Fill in your delivery details to complete the order.",
-      "submit": "Place order",
+      "submit": "View cost",
       "cancel": "Cancel",
       "fullName": "Full name",
       "fullNamePlaceholder": "Recipient's full name",
@@ -585,6 +585,8 @@
       "ward": "Ward",
       "wardPlaceholder": "Select ward",
       "wardSearchPlaceholder": "Search ward",
+      "taxCode": "Tax code (optional)",
+      "taxCodePlaceholder": "Enter tax code if any",
       "savedAddress": "Saved address",
       "savedAddressPlaceholder": "Select a saved address",
       "savedAddressSearchPlaceholder": "Search saved addresses",
@@ -592,6 +594,9 @@
       "remarksPlaceholder": "Notes for the seller (optional)",
       "orderTime": "Delivery date",
       "orderTimePlaceholder": "Pick a date for later delivery",
+      "tag": "Delivery time",
+      "tagPlaceholder": "Select a delivery time range",
+      "tagNone": "No preference",
       "comboboxEmpty": "No results",
       "emptyCart": "Your cart is empty.",
       "reviewTitle": "Review your order",
@@ -606,14 +611,54 @@
       "shippingEmpty": "No shipping services available for this address.",
       "shippingMeta": "{km} km · {min} min",
       "bestPrice": "Best price",
+      "taxBusinessHeading": "Tax code information",
+      "taxBusinessId": "Tax code",
+      "taxBusinessName": "Business name",
+      "taxBusinessAddress": "Address",
+      "taxBusinessLoading": "Looking up tax code information...",
+      "taxBusinessHint": "Enter a tax code if available to look it up automatically.",
+      "taxBusinessNotFound": "No business information found for this tax code.",
+      "taxBusinessLookupError": "Unable to look up tax code information.",
       "subtotal": "Subtotal",
+      "vat": "VAT 8%",
       "shippingFee": "Shipping fee",
       "total": "Total",
-      "back": "Back to edit",
+      "back": "Back",
       "confirm": "Confirm order",
       "confirmedToast": "Order confirmed",
       "estimateError": "Could not estimate the order.",
-      "createError": "Could not place the order."
+      "createError": "Could not place the order.",
+      "cancelBooking": "Cancel checkout",
+      "stepPersonal": "Personal Details",
+      "stepPayment": "Payment",
+      "stepComplete": "Complete",
+      "stepPersonalDescription": "Fill in the recipient and delivery details for this order.",
+      "paymentTitle": "Payment method",
+      "paymentDescription": "We currently support bank transfer only. Payment instructions will be shown after you confirm.",
+      "bankTransferTitle": "Bank transfer",
+      "bankTransferHint": "You'll receive our bank details and a QR code to complete payment after placing the order.",
+      "shippingDescription": "Choose a delivery service from Ahamove.",
+      "paymentNote": "Your order will be held until payment is received. Please transfer within 24 hours.",
+      "cancellationTitle": "Cancellation policy",
+      "cancellationBody": "We understand plans can change. You may cancel or modify your order up to 12 hours before the scheduled delivery time. After that, cancellation fees may apply.",
+      "completeTitle": "Order placed successfully",
+      "completeBody": "Thank you for your order. We've sent you a confirmation and will notify you when the delivery is on the way.",
+      "completeViewOrders": "View my orders",
+      "completeContinueShopping": "Continue shopping",
+      "sidebar": {
+        "summaryTitle": "Summary",
+        "priceTitle": "Price details",
+        "totalItems": "Total items",
+        "itemsCount": "{count} item(s)",
+        "address": "Delivery address",
+        "goToPayment": "Continue to payment",
+        "payForBooking": "Pay for my order",
+        "viewOrders": "View my orders",
+        "termsPrefix": "By clicking this, I agree to Hoa Theo Mùa",
+        "termsLink": "Terms & Conditions",
+        "termsAnd": "and",
+        "privacyLink": "Privacy Policy"
+      }
     },
     "list": {
       "title": "My orders",
@@ -626,6 +671,9 @@
       "orderId": "Order ID",
       "trackNumber": "Tracking number",
       "createdAt": "Placed at",
+      "nhanhOrderId": "Nhanh order ID",
+      "ahamoveOrderId": "Ahamove order ID",
+      "transactionDate": "Paid at",
       "trackNhanh": "Track on Nhanh",
       "trackAhamove": "Track on Ahamove",
       "status": {
@@ -1284,31 +1332,58 @@
   "b2b": {
     "hero": {
       "eyebrow": "Hoa Theo Mùa for Business",
-      "title": "Floral Partnerships For Modern Businesses",
-      "subtitle": "From boardrooms to ballrooms - we design blooming experiences for hotels, offices and brands across Vietnam.",
+      "title": "A Refined Floral Partner For Businesses & Organizations",
+      "subtitle": "From boardrooms to grand lobbies — we craft floral experiences for hotels, offices and brands that value craft and consistency.",
+      "audienceLine": "For 4–5 star hotels, offices and brands looking for a long-term floral partner.",
       "primaryCta": "Request a quote",
       "secondaryCta": "Talk to our team",
-      "imageAlt": "Premium corporate floral arrangement",
+      "imageAlt": "Premium corporate floral arrangement"
+    },
+    "trustBar": {
+      "eyebrow": "Trusted by leading brands",
       "stats": {
         "clients": {
-          "value": "200+",
+          "value": "50+",
           "label": "Corporate clients"
         },
         "hotels": {
-          "value": "12+",
-          "label": "Five-star hotels"
+          "value": "5+",
+          "label": "International 4–5 star hotels"
         },
         "events": {
-          "value": "1,500+",
+          "value": "200+",
           "label": "Events delivered"
-        },
-        "cities": {
-          "value": "3",
-          "label": "Cities served"
-        },
-        "support": {
-          "value": "24/7",
-          "label": "Support"
+        }
+      },
+      "logos": {
+        "ariaLabel": "Featured clients and partners",
+        "groups": {
+          "hospitality": {
+            "label": "Hospitality",
+            "items": {
+              "indigo": { "name": "Indigo Saigon Hotel" },
+              "fusion": { "name": "Fusion Saigon Hotel" },
+              "eastin": { "name": "Eastin Saigon Hotel" }
+            }
+          },
+          "finance": {
+            "label": "Finance & Banking",
+            "items": {
+              "shinhan": { "name": "Shinhan Bank" },
+              "mbbank": { "name": "MB Bank" },
+              "woori": { "name": "Woori Bank" }
+            }
+          },
+          "enterprise": {
+            "label": "Enterprise — Retail — Construction",
+            "items": {
+              "sevenEleven": { "name": "Seven-Eleven" },
+              "datxanh": { "name": "Đất Xanh" },
+              "gsenc": { "name": "GS E&C" },
+              "tancang": { "name": "Tân Cảng Sài Gòn" },
+              "glex": { "name": "Glex Group" }
+            }
+          }
         }
       }
     },
@@ -1316,137 +1391,187 @@
       "title": "Services Built For Business",
       "description": "Whether you need a single boardroom centerpiece or a year-long hospitality program, every service is tailored to your brand and venue.",
       "explore": "Discuss this service",
+      "viewPackages": "See reception packages",
       "items": {
-        "corporateEvents": {
-          "tag": "Events",
-          "name": "Corporate Events",
-          "description": "Conferences, galas, product launches and award nights - full floral direction from stage to lobby."
+        "outsourced": {
+          "tag": "Hospitality",
+          "name": "Outsourced Florist Department",
+          "description": "End-to-end floral operations for 4–5 star hotels — lobby, F&B, VIP rooms — run as your in-house flower team, without you keeping one."
+        },
+        "eventsMice": {
+          "tag": "Events & MICE",
+          "name": "Openings, Events & MICE",
+          "description": "Conferences, galas, product launches and showroom openings — full floral direction from stage and ballroom to ribbon-cutting podium."
         },
         "officeSubscription": {
           "tag": "Subscription",
-          "name": "Office Subscriptions",
-          "description": "Weekly or bi-weekly fresh-flower rotations that keep reception desks and meeting rooms alive."
+          "name": "Recurring Office Flowers",
+          "description": "Weekly or bi-weekly fresh-flower rotation on a long-term contract — keeps reception, lobbies and meeting rooms always alive."
         },
-        "hospitality": {
-          "tag": "Hospitality",
-          "name": "Hotel & Restaurant Styling",
-          "description": "Lobby arrangements, dining centerpieces and seasonal styling for hotels, restaurants and lounges."
-        },
-        "weddings": {
-          "tag": "Private events",
-          "name": "Weddings & Private Events",
-          "description": "End-to-end design for ceremonies, receptions and milestone celebrations at premium venues."
-        },
-        "gifting": {
+        "corporateGifts": {
           "tag": "Gifting",
-          "name": "Corporate Gifting",
-          "description": "Curated client and employee gifts delivered at scale - from Tết hampers to Women's Day bouquets."
+          "name": "Corporate Gifts",
+          "description": "Fresh-flower gifting for clients and employees — designed to fit each company's specific occasion and budget."
         },
-        "grandOpening": {
-          "tag": "Activation",
-          "name": "Brand Activations & Openings",
-          "description": "Showroom launches, ribbon arrangements and on-brand installations that turn heads on day one."
+        "brandExperience": {
+          "tag": "Brand experience",
+          "name": "Brand Experiences With Flowers",
+          "description": "Floral workshops, mindful flower mini-events, VIP customer and partner care — flowers as an emotional touchpoint, not just decor."
+        }
+      }
+    },
+    "caseStudies": {
+      "title": "Proven With Premium Partners",
+      "description": "A closer look at one of our long-running hospitality engagements.",
+      "categories": {
+        "weekly": "Weekly flowers",
+        "event": "Event flowers",
+        "room": "Guest area flowers"
+      },
+      "indigo": {
+        "logoAlt": "Indigo Saigon Hotel",
+        "badge": "5-star international hotel — IHG Group",
+        "summary": "For over a year, Hoa Theo Mùa has run the full floral programme at Indigo Saigon Hotel — across the lobby, meeting and event spaces, and F&B — with weekly rotations. Instead of keeping an in-house florist team, the hotel hands the whole flow to a single partner: seasonal design, sourcing, daily care and replacement — so every space a guest walks through stays on brand and on standard.",
+        "quote": "The Hoa Theo Mùa team brings ideas to life across every space in the hotel — guests and our leadership both notice.",
+        "quoteAuthor": "Nicole Đoàn",
+        "quoteRole": "Marketing Manager, Indigo Saigon Hotel",
+        "images": {
+          "gifts": "Hoa Theo Mùa holiday installation at the Indigo Saigon Hotel entrance",
+          "winterTable": "Winter side-table arrangement in the F&B area",
+          "orchidVase": "Yellow cymbidium orchid arrangement for the guest corridor",
+          "lotusSinger": "Lotus arrangement on a vintage display table",
+          "banquetCenterpiece": "Banquet centerpiece with lotus and gold accents for a gala event",
+          "banquetDetail": "Close-up detail of the banquet table styling"
         }
       }
     },
     "packages": {
-      "title": "Partnership Packages",
-      "description": "Three starting points for partners who want predictable floral programs - every plan is fully customizable.",
-      "popular": "Most popular",
+      "title": "Reception Orchid Packages",
+      "description": "Three options for reception and office spaces — efficient, convenient, premium. Every package includes full care and replacement.",
+      "popular": "Most chosen",
       "fromLabel": "From",
-      "cta": "Get this package",
-      "monthlySuffix": "/month",
-      "customLabel": "Custom",
+      "cta": "Choose this package",
+      "quarterlySuffix": "/quarter",
       "items": {
-        "boutique": {
-          "name": "Boutique",
-          "tagline": "For boutique offices and growing brands",
-          "price": "8,000,000đ",
+        "nhuY": {
+          "name": "Như Ý",
+          "target": "Small reception desks and starter offices",
+          "price": "2,595,000đ",
           "features": {
-            "rotation": "Bi-weekly fresh-flower rotation",
-            "arrangements": "1 medium arrangement per drop",
-            "location": "Service for 1 location",
-            "manager": "Dedicated account manager",
-            "support": "Business-hours support"
+            "pots": "4 fresh orchid pots",
+            "area": "Under 20m², desk 1.2–1.6m",
+            "potSize": "30W x 50H",
+            "locations": "1 location",
+            "care": "Full 3-month care & replacement"
           }
         },
-        "atelier": {
-          "name": "Atelier",
-          "tagline": "For multi-location teams and lifestyle brands",
-          "price": "25,000,000đ",
+        "locPhat": {
+          "name": "Lộc Phát",
+          "target": "Mid-size offices that want a striking signature touch",
+          "price": "3,995,000đ",
           "features": {
-            "rotation": "Weekly fresh-flower rotation",
-            "arrangements": "3 medium–large arrangements per drop",
-            "location": "Service for up to 3 locations",
-            "seasonal": "Seasonal upgrade for holidays",
-            "priority": "Priority on-call support"
+            "pots": "4 fresh orchid pots",
+            "area": "25–40m², desk 1.8–2.4m",
+            "potSize": "45W x 60H",
+            "locations": "1 location",
+            "care": "Full 3-month care & replacement"
           }
         },
-        "signature": {
-          "name": "Signature",
-          "tagline": "For hotels, hospitality groups and flagship venues",
-          "price": "Custom",
+        "thinhVuong": {
+          "name": "Thịnh Vượng",
+          "target": "Larger receptions and statement-making concierge counters",
+          "price": "6,995,000đ",
           "features": {
-            "rotation": "Daily or weekly rotation",
-            "installations": "Signature installations & feature pieces",
-            "onSite": "On-site florist team for events",
-            "branding": "Brand-color & seasonal customization",
-            "support": "Dedicated WhatsApp / Zalo line"
+            "pots": "4 fresh orchid pots",
+            "area": "45–60m², counter 2.6–3.6m",
+            "potSize": "60W x 80H",
+            "locations": "1 location",
+            "care": "Full 3-month care & replacement"
           }
         }
       }
     },
     "advantages": {
+      "eyebrow": "Hoa Theo Mùa for Business",
       "title": "Why Partners Choose Hoa Theo Mùa",
-      "description": "We pair the craftsmanship of a boutique florist with the operational reliability your business needs.",
+      "description": "The craft of a boutique florist paired with the operational reliability your business needs.",
       "items": {
-        "account": {
-          "title": "Dedicated Account Manager",
-          "description": "One florist who knows your brand, your calendar and your venue - every brief flows through them."
+        "onTime": {
+          "title": "On Time, On Quality",
+          "description": "One delivery or a hundred, flowers arrive on schedule and at full freshness — so every event stays flawless."
         },
-        "delivery": {
-          "title": "Citywide Same-Day Delivery",
-          "description": "HCM, Hà Nội and Đà Nẵng - covered with refrigerated vehicles and on-time SLAs."
+        "singlePoc": {
+          "title": "One Single Point Of Contact",
+          "description": "A dedicated florist stays with you end-to-end — knows your brand, your calendar, and your specific requirements."
         },
-        "natural": {
-          "title": "100% Natural Sourcing",
-          "description": "Stems hand-picked daily from trusted farms - only blooms that meet our quality bar leave the studio."
+        "brandAligned": {
+          "title": "Designs Aligned With Your Brand",
+          "description": "Every arrangement is created to reflect the exact spirit your brand wants to express."
         },
-        "scale": {
-          "title": "Scalable Production",
-          "description": "Hundreds of arrangements per week without compromising the finish - ready for product launches and gala nights."
+        "transparent": {
+          "title": "Transparent Operations, Lasting Trust",
+          "description": "Clear contracts, clean invoicing and a transparent payment flow — built for long-term partnerships."
         }
       }
     },
     "process": {
-      "title": "How We Work Together",
-      "description": "A simple four-step flow that keeps your event on-brand, on-time and on-budget.",
+      "eyebrow": "How We Work",
+      "title": "Our Partnership Process",
+      "description": "Four simple steps that guarantee the three rights: right brand spirit — right schedule — right budget.",
       "steps": {
-        "brief": {
-          "label": "Step 01",
-          "title": "Brief",
-          "description": "We meet you (or your event team) to understand the venue, the audience and the feeling you want guests to leave with."
+        "listen": {
+          "label": "STEP 01",
+          "title": "Listen To Your Needs",
+          "description": "We meet you to understand the venue, audience and feeling you want guests to leave with."
         },
-        "proposal": {
-          "label": "Step 02",
-          "title": "Proposal",
-          "description": "Curated mood boards, flower palette and a transparent quote - usually within 48 hours."
+        "propose": {
+          "label": "STEP 02",
+          "title": "Propose Ideas",
+          "description": "Mood boards, a flower palette and a transparent quote — usually within 48 hours."
         },
-        "production": {
-          "label": "Step 03",
-          "title": "Production",
-          "description": "Stems arrive at our studio, get conditioned overnight and are arranged by our florists the morning of delivery."
+        "sample": {
+          "label": "STEP 03",
+          "title": "Build A Sample",
+          "description": "We produce a sample piece so you can see, feel and confirm before full production."
         },
-        "delivery": {
-          "label": "Step 04",
-          "title": "Delivery & Set-up",
-          "description": "Refrigerated transport, on-site installation, and a final walk-through before guests arrive."
+        "produce": {
+          "label": "STEP 04",
+          "title": "Run Production",
+          "description": "We source, condition and arrange every piece — then deliver, install and walk through on the day."
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Quick answers to what corporate buyers usually ask before getting in touch.",
+      "items": {
+        "moq": {
+          "question": "What's the minimum order quantity (MOQ) for corporate contracts?",
+          "answer": "Our reception orchid packages start from one location per quarter. For events and outsourced hospitality programmes, MOQ is set per scope — we'll confirm during the briefing call."
+        },
+        "contractTerm": {
+          "question": "What's the minimum contract length?",
+          "answer": "Reception orchid packages run for 3 months (one quarter) per cycle. Outsourced hospitality programmes are typically signed for 12 months."
+        },
+        "coverage": {
+          "question": "Which cities do you currently serve?",
+          "answer": "We deliver across Ho Chi Minh City, Hanoi and Da Nang. For other cities, we can quote a custom logistics plan."
+        },
+        "invoicing": {
+          "question": "Do you issue VAT invoices and contracts for businesses?",
+          "answer": "Yes — every B2B engagement comes with a signed contract and a VAT-compliant invoice issued to your company entity."
+        },
+        "flexibility": {
+          "question": "Can we reschedule or pause a recurring delivery?",
+          "answer": "Yes. With at least 48 hours' notice we can shift the next delivery window, swap dates around holidays, or pause a cycle — your account manager will handle it."
         }
       }
     },
     "cta": {
+      "eyebrow": "B2B",
+      "subEyebrow": "Hoa Theo Mùa for Business",
       "title": "Let's create something blooming together",
-      "description": "Tell us about your project - we'll get back within 4 working hours with first ideas and a clear next step.",
+      "description": "Tell us about your project — we'll get back within 4 working hours with first ideas and a clear next step.",
       "callLabel": "Hotline",
       "callValue": "0983 024 353",
       "emailLabel": "Partnerships",

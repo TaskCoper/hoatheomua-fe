@@ -351,3 +351,9 @@ export interface ProductsSignatureConfigItem {
     validations: []
   }
 }
+
+// Order tags
+export interface OrderTag {
+  value: number[]
+  options: { label: string; value: number }[]
+}

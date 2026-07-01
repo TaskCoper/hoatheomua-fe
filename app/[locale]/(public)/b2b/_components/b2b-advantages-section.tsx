@@ -1,34 +1,34 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { DeliveryTruck01Icon, Flower2Icon, HandHeartIcon, Leaf01Icon } from '@hugeicons/core-free-icons'
+import { Calendar03Icon, HandHeartIcon, Note01Icon, PaintBoardIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 
 const ADVANTAGES = [
   {
-    id: 'account',
+    id: 'onTime',
+    icon: Calendar03Icon,
+    titleKey: 'b2b.advantages.items.onTime.title',
+    descriptionKey: 'b2b.advantages.items.onTime.description'
+  },
+  {
+    id: 'singlePoc',
     icon: HandHeartIcon,
-    titleKey: 'b2b.advantages.items.account.title',
-    descriptionKey: 'b2b.advantages.items.account.description'
+    titleKey: 'b2b.advantages.items.singlePoc.title',
+    descriptionKey: 'b2b.advantages.items.singlePoc.description'
   },
   {
-    id: 'delivery',
-    icon: DeliveryTruck01Icon,
-    titleKey: 'b2b.advantages.items.delivery.title',
-    descriptionKey: 'b2b.advantages.items.delivery.description'
+    id: 'brandAligned',
+    icon: PaintBoardIcon,
+    titleKey: 'b2b.advantages.items.brandAligned.title',
+    descriptionKey: 'b2b.advantages.items.brandAligned.description'
   },
   {
-    id: 'natural',
-    icon: Leaf01Icon,
-    titleKey: 'b2b.advantages.items.natural.title',
-    descriptionKey: 'b2b.advantages.items.natural.description'
-  },
-  {
-    id: 'scale',
-    icon: Flower2Icon,
-    titleKey: 'b2b.advantages.items.scale.title',
-    descriptionKey: 'b2b.advantages.items.scale.description'
+    id: 'transparent',
+    icon: Note01Icon,
+    titleKey: 'b2b.advantages.items.transparent.title',
+    descriptionKey: 'b2b.advantages.items.transparent.description'
   }
 ] as const
 
@@ -63,8 +63,15 @@ export default function B2BAdvantagesSection() {
         whileInView='visible'
         viewport={{ once: true, margin: '-80px' }}
         variants={fadeUp}
-        className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
+        className='mx-auto w-full max-w-7xl space-y-1 sm:space-y-1.5 md:space-y-2'
       >
+        <div className='flex justify-center'>
+          <span className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-primary ring-1 ring-primary/15 sm:text-xs'>
+            <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
+            {t('b2b.advantages.eyebrow')}
+          </span>
+        </div>
+
         <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
           {t('b2b.advantages.title')}
         </h2>

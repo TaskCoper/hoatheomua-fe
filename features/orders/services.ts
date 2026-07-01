@@ -9,7 +9,8 @@ import type {
   OrderDetail,
   OrderStatus,
   ShippingLocation,
-  ShippingLocationType
+  ShippingLocationType,
+  TaxBusinessInfo
 } from './types'
 
 interface GetOrderShippingLocationsBody {
@@ -22,6 +23,27 @@ const COMBINING_MARKS = /[̀-ͯ]/g
 
 const normalizeAddress = (value: string): string =>
   value.normalize('NFD').replace(COMBINING_MARKS, '').toLowerCase().replace(/\s+/g, ' ').trim()
+
+const normalizeTaxBusinessInfo = (response: unknown): TaxBusinessInfo | null => {
+  const candidate =
+    response && typeof response === 'object' ? ((response as { data?: unknown }).data ?? response) : null
+
+  if (!candidate || typeof candidate !== 'object') {
+    return null
+  }
+
+  const raw = candidate as Partial<TaxBusinessInfo>
+
+  if (!raw.id || !raw.name || !raw.address) {
+    return null
+  }
+
+  return {
+    id: String(raw.id),
+    name: String(raw.name),
+    address: String(raw.address)
+  }
+}
 
 export const pickBestGeocodeResult = (inputAddress: string, response?: GeoResponse): GeoResult | null => {
   if (!response || response.status !== 'OK' || response.results.length === 0) {
@@ -57,6 +79,12 @@ class OrderService {
     >(`v1/ahamove/estimate`, body)
 
     return data.value
+  }
+
+  lookupTaxCode = async ({ taxCode }: { taxCode: string }) => {
+    const { data } = await axios.get<unknown>(`https://api.vietqr.io/v2/business/${encodeURIComponent(taxCode)}`)
+
+    return normalizeTaxBusinessInfo(data)
   }
 
   createOrder = async ({ body }: { body: CheckoutPayload }) => {
