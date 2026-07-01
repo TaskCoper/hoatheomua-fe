@@ -2,7 +2,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import flowerImage from '@/public/images/flower.png'
 import pedalsRight from '@/public/images/pedals-right.png'
@@ -10,6 +9,7 @@ import { FavouriteIcon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useMemo } from 'react'
+import { useGetJobDescriptions } from '../hooks/use-get-job-descriptions'
 import type { RecruitmentFilters } from '../types'
 
 const jobTypeGroup = {
@@ -36,17 +36,17 @@ type LocationItem = {
 }
 type SidebarFilterItem = JobTypeItem | LocationItem
 
-const getUniqueCities = (addresses: { city?: string | null }[]) => {
-  const cities = new Map<string, string>()
+const getUniqueLocations = (jobDescriptions: { location?: string | null }[]) => {
+  const locations = new Map<string, string>()
 
-  addresses.forEach((address) => {
-    const city = address.city?.trim()
-    if (!city) return
+  jobDescriptions.forEach((job) => {
+    const location = job.location?.trim()
+    if (!location) return
 
-    cities.set(city.toLowerCase(), city)
+    locations.set(location.toLowerCase(), location)
   })
 
-  return Array.from(cities.values())
+  return Array.from(locations.values())
 }
 
 const getItemLabel = (item: SidebarFilterItem, t: ReturnType<typeof useTranslation>['t']) => {
@@ -74,21 +74,22 @@ type RecruitmentSidebarProps = {
 
 export default function RecruitmentSidebar({ filters, onFilterChange }: RecruitmentSidebarProps) {
   const { t } = useTranslation()
-  const { addresses } = useGetAddresses({ enabled: true })
+  const { jobDescriptions } = useGetJobDescriptions()
+  const jobs = jobDescriptions.value.items
 
   const groups = useMemo(
     () => [
       ...baseGroups,
       {
         titleKey: 'recruitment.sidebar.groups.location.title' as const,
-        items: getUniqueCities(addresses).map((city) => ({
-          label: city,
+        items: getUniqueLocations(jobs).map((location) => ({
+          label: location,
           filterKey: 'location' as const,
-          value: city
+          value: location
         }))
       }
     ],
-    [addresses]
+    [jobs]
   )
 
   const isFilterChecked = (item: SidebarFilterItem) => {

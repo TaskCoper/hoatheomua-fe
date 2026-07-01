@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import type { I18nKey } from '@/lib/i18n/types'
 import { Briefcase01Icon, Building02Icon, Money03Icon, Search01Icon } from '@hugeicons/core-free-icons'
@@ -11,19 +10,20 @@ import type { FormEvent } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
+import { useGetJobDescriptions } from '../hooks/use-get-job-descriptions'
 import type { RecruitmentFilters } from '../types'
 
-const getUniqueCities = (addresses: { city?: string | null }[]) => {
-  const cities = new Map<string, string>()
+const getUniqueLocations = (jobDescriptions: { location?: string | null }[]) => {
+  const locations = new Map<string, string>()
 
-  addresses.forEach((address) => {
-    const city = address.city?.trim()
-    if (!city) return
+  jobDescriptions.forEach((job) => {
+    const location = job.location?.trim()
+    if (!location) return
 
-    cities.set(city.toLowerCase(), city)
+    locations.set(location.toLowerCase(), location)
   })
 
-  return Array.from(cities.values())
+  return Array.from(locations.values())
 }
 
 const baseFilters = [
@@ -73,7 +73,8 @@ type FilterSectionProps = {
 
 export default function FilterSection({ filters: selectedFilters, onFilterChange, onSearchTitle }: FilterSectionProps) {
   const { t } = useTranslation()
-  const { addresses } = useGetAddresses({ enabled: true })
+  const { jobDescriptions } = useGetJobDescriptions()
+  const jobs = jobDescriptions.value.items
   const [draftTitle, setDraftTitle] = useState(selectedFilters.title)
   const [debouncedTitle] = useDebounce(draftTitle, 500)
 
@@ -84,13 +85,13 @@ export default function FilterSection({ filters: selectedFilters, onFilterChange
 
         return {
           ...filter,
-          values: getUniqueCities(addresses).map((city) => ({
-            value: city,
-            label: city
+          values: getUniqueLocations(jobs).map((location) => ({
+            value: location,
+            label: location
           }))
         }
       }),
-    [addresses]
+    [jobs]
   )
 
   useEffect(() => {
