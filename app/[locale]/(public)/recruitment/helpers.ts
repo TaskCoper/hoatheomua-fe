@@ -16,13 +16,14 @@ const hasValidSalaryValue = (value: number) => Number.isFinite(value) && value >
 const compactCurrencyUnits = [
   { value: 1_000_000_000, label: 'tỷ' },
   { value: 1_000_000, label: 'triệu' },
-  { value: 1_000, label: 'ngàn' }
+  { value: 1_000, label: 'ngàn' },
+  { value: 1, label: 'đồng' }
 ] as const
 
 const compactNumberFormatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 })
 const numberFormatter = new Intl.NumberFormat('vi-VN')
 
-const formatCurrency = (value: number) => {
+export const formatCurrency = (value: number) => {
   const unit = compactCurrencyUnits.find((item) => Math.abs(value) >= item.value)
 
   if (!unit) {
@@ -32,7 +33,11 @@ const formatCurrency = (value: number) => {
   return `${compactNumberFormatter.format(value / unit.value)} ${unit.label}`
 }
 
-const normalizeEmploymentType = (employmentType: string) => employmentType.trim().toLowerCase().replace(/[\s_-]/g, '')
+const normalizeEmploymentType = (employmentType: string) =>
+  employmentType
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]/g, '')
 
 export const getJobAvatarFallback = (title: string) => {
   const normalizedTitle = title.trim()
@@ -40,11 +45,7 @@ export const getJobAvatarFallback = (title: string) => {
   return normalizedTitle.charAt(0).toUpperCase() || 'H'
 }
 
-export const formatJobSalary = ({ salaryMin, salaryMax, salaryNegotiable }: Job) => {
-  if (salaryNegotiable) {
-    return 'Negotiable'
-  }
-
+export const formatJobSalary = ({ salaryMin, salaryMax }: Job) => {
   const hasMin = hasValidSalaryValue(salaryMin)
   const hasMax = hasValidSalaryValue(salaryMax)
 

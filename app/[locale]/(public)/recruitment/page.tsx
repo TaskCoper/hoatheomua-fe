@@ -5,9 +5,10 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import type { SearchParams } from 'nuqs/server'
 import RecruitmentView from './_components/recruitment-view'
-import { jobsListQuery } from './queries'
-import { buildRecruitmentJsonLd, generateRecruitmentMetadata } from './_seo'
 import { loadRecruitmentSearch, toJobDescriptionParam } from './_search-params'
+import { buildRecruitmentJsonLd, generateRecruitmentMetadata } from './_seo'
+import { jobsListQuery } from './queries'
+import { getCachedJobs } from './queries.server'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
@@ -23,10 +24,13 @@ export default async function RecruitmentPage({
 }) {
   const { locale } = await params
   const search = await loadRecruitmentSearch(searchParams)
+  const jobParams = toJobDescriptionParam(search)
   const queryClient = getQueryClient()
+  const options = jobsListQuery(jobParams, locale)
 
   try {
-    await queryClient.prefetchQuery(jobsListQuery(toJobDescriptionParam(search), locale))
+    const data = await getCachedJobs(jobParams, locale)
+    queryClient.setQueryData(options.queryKey, data)
   } catch (error) {
     console.error('[SSR] recruitment list prefetch failed:', error)
   }
@@ -34,6 +38,7 @@ export default async function RecruitmentPage({
   return (
     <>
       <JsonLd data={buildRecruitmentJsonLd(locale)} />
+
       <HydrationBoundary state={dehydrate(queryClient)}>
         <RecruitmentView />
       </HydrationBoundary>

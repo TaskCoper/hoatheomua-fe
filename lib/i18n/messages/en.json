@@ -304,9 +304,14 @@
     }
   },
   "recruitment": {
+    "hero": {
+      "title": "Grow your career with us",
+      "description": "Join a team that treats every bloom — and every teammate — with care."
+    },
     "filter": {
       "positionPlaceholder": "Search by position",
       "search": "Search jobs",
+      "reset": "Reset filters",
       "branch": {
         "placeholder": "All branches",
         "options": {
@@ -325,6 +330,8 @@
       },
       "salary": {
         "placeholder": "All salary ranges",
+        "min": "Min",
+        "max": "Max",
         "options": {
           "below8": "Under 8 million",
           "range8To12": "8 - 12 million",
@@ -387,7 +394,9 @@
       "actions": {
         "save": "Save job",
         "share": "Share job",
-        "apply": "Apply now"
+        "apply": "Apply now",
+        "viewMore": "View more",
+        "viewLess": "View less"
       },
       "posted": "Posted {time}",
       "sections": {
@@ -403,14 +412,17 @@
       "cancel": "Cancel",
       "submit": "Submit application",
       "addAttachment": "Add",
-      "attachmentPlaceholder": "CV or portfolio URL",
+      "attachmentPlaceholder": "Upload CV or portfolio",
+      "uploadAttachment": "Upload attachment",
+      "uploadedAttachment": "Attachment uploaded",
       "removeAttachment": "Remove attachment",
       "fields": {
         "roleTitle": "Role title",
         "coverLetter": "Cover letter",
         "attachments": "Attachments"
       }
-    }
+    },
+    "negotiable": "Negotiable"
   },
   "dataTable": {
     "table": {

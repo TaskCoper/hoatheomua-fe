@@ -17,7 +17,7 @@ export const useGetJobDescriptions = ({
   const locale = useLocale()
   const {
     data: jobDescriptions = getDefaultPaginationResponse<Job>(),
-    isLoading: isLoadingJobDescription,
+    isLoading: isLoadingJobDescriptions,
     isError
   } = useQuery({
     ...jobsListQuery({ pageIndex, pageSize, title, location, employmentType, salaryMin, salaryMax }, locale),
@@ -26,7 +26,7 @@ export const useGetJobDescriptions = ({
 
   return {
     jobDescriptions,
-    isLoadingJobDescription,
+    isLoadingJobDescriptions,
     isError
   }
 }
