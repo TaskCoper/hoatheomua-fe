@@ -2,6 +2,7 @@
 
 import { DAILY_FLOWER_CATEGORY_IDS, VASE_CATEGORY_IDS } from '@/features/products/constants'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { BANNER_SLOTS } from '@/types/config.type'
 import { motion, type Variants } from 'motion/react'
 import dynamic from 'next/dynamic'
 import ProductsCatalogSection from './products-catalog-section'
@@ -51,7 +52,7 @@ export default function ProductsContent() {
         categoryIds={VASE_CATEGORY_IDS}
       />
 
-      <ProductsPromiseSection />
+      <ProductsPromiseSection slot={BANNER_SLOTS.products} />
 
       <FloatingPetals />
     </div>

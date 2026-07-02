@@ -1,12 +1,14 @@
 import { DAILY_FLOWER_CATEGORY_IDS, DEFAULT_PRODUCT_SORT, VASE_CATEGORY_IDS } from '@/features/products/constants'
 import { productListQuery } from '@/features/products/queries'
+import { getCachedProducts } from '@/features/products/queries.server'
 import { buildProductsCollectionJsonLd, generateProductsListMetadata } from '@/features/products/seo'
-import type { Product, ProductListResponse } from '@/features/products/types'
+import type { Product } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
+import { setRequestLocale } from 'next-intl/server'
 import ProductsContent from './_components/products-content'
 
 const PRODUCTS_PAGE_SIZE = 12
@@ -19,20 +21,25 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 
 export default async function ProductsPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
-  const options = productListQuery(
-    {
-      size: PRODUCTS_PAGE_SIZE,
-      categoryIds: [...VASE_CATEGORY_IDS, ...DAILY_FLOWER_CATEGORY_IDS],
-      sort: DEFAULT_PRODUCT_SORT
-    },
-    locale
-  )
+  setRequestLocale(locale)
+
+  const listParams = {
+    size: PRODUCTS_PAGE_SIZE,
+    categoryIds: [...VASE_CATEGORY_IDS, ...DAILY_FLOWER_CATEGORY_IDS],
+    sort: DEFAULT_PRODUCT_SORT
+  }
+  const options = productListQuery(listParams, locale)
   const queryClient = getQueryClient()
 
-  await queryClient.prefetchQuery(options)
+  let initialItems: Product[] = []
 
-  const cached = queryClient.getQueryData<ProductListResponse>(options.queryKey)
-  const initialItems = (cached?.value?.data ?? []) as Product[]
+  try {
+    const data = await getCachedProducts(listParams, locale)
+    queryClient.setQueryData(options.queryKey, data)
+    initialItems = (data.value?.data ?? []) as Product[]
+  } catch (error) {
+    console.error('[SSR] products list prefetch failed:', error)
+  }
 
   return (
     <>

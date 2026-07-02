@@ -1,7 +1,9 @@
 'use client'
 
+import ConfigurableBanner from '@/app/[locale]/(public)/_components/configurable-banner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import saleBanner from '@/public/images/sale-banner.png'
+import { type BannerSlot } from '@/types/config.type'
 import { DeliveryTruck01Icon, Flower2Icon, MessageMultiple02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -40,8 +42,16 @@ const cardItem: Variants = {
   visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 160, damping: 16 } }
 }
 
-export default function ProductsPromiseSection() {
+type ProductsPromiseSectionProps = {
+  slot?: BannerSlot
+}
+
+export default function ProductsPromiseSection({ slot }: ProductsPromiseSectionProps = {}) {
   const { t } = useTranslation()
+  const bannerAlt = t('products.promise.bannerAlt')
+  const bannerClassName =
+    'w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-primary/5'
+  const bannerSizes = '(min-width: 1280px) 1200px, 100vw'
 
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4 pb-12'>
@@ -54,14 +64,24 @@ export default function ProductsPromiseSection() {
         transition={{ type: 'spring', stiffness: 220, damping: 18 }}
         className='mx-auto w-full max-w-7xl'
       >
-        <Image
-          src={saleBanner}
-          alt={t('products.promise.bannerAlt')}
-          className='w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-primary/5'
-          sizes='(min-width: 1280px) 1200px, 100vw'
-          loading='lazy'
-          quality={65}
-        />
+        {slot ? (
+          <ConfigurableBanner
+            slot={slot}
+            fallbackSrc={saleBanner}
+            fallbackAlt={bannerAlt}
+            className={bannerClassName}
+            sizes={bannerSizes}
+          />
+        ) : (
+          <Image
+            src={saleBanner}
+            alt={bannerAlt}
+            className={bannerClassName}
+            sizes={bannerSizes}
+            loading='lazy'
+            quality={65}
+          />
+        )}
       </motion.div>
 
       <motion.div

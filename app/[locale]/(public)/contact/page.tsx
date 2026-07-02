@@ -12,6 +12,8 @@ import Image from 'next/image'
 import { SparkleDivider } from '../_components/sparkle-dividier'
 import ContactForm from './_components/contact-form'
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
   return generateContactMetadata(locale)
