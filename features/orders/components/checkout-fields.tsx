@@ -1,14 +1,20 @@
 'use client'
 
-import { DatePickerField } from '@/components/date-picker-field'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { Address } from '@/features/addresses/types'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { useEffect, useMemo } from 'react'
+import { cn } from '@/shared/utils'
+import { Calendar03Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { useEffect, useMemo, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { useDebounce } from 'use-debounce'
 import { useGetLatLng } from '../hooks/use-get-lat-lng'
@@ -27,7 +33,15 @@ interface CheckoutFieldsProps {
 
 export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }: CheckoutFieldsProps) {
   const { t } = useTranslation()
+  const { formatDate } = useDateFormat()
   const { control, setValue, watch } = useFormContext<CheckoutFormValues>()
+  const [orderTimeOpen, setOrderTimeOpen] = useState(false)
+
+  const minOrderDate = useMemo(() => new Date(new Date().setHours(0, 0, 0, 0)), [])
+  const maxOrderDate = useMemo(
+    () => new Date(new Date(new Date().setHours(23, 59, 59, 999)).getTime() + 7 * 24 * 60 * 60 * 1000),
+    []
+  )
 
   const cityCodeForm = watch('cityCode')
   const wardCodeForm = watch('wardCode')
@@ -250,12 +264,85 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
         </>
       )}
 
-      <DatePickerField<CheckoutFormValues>
+      <Controller
         name='orderTime'
-        label='orders.checkout.orderTime'
-        placeholder='orders.checkout.orderTimePlaceholder'
-        minDate={new Date(new Date().setHours(0, 0, 0, 0))}
-        maxDate={new Date(new Date(new Date().setHours(23, 59, 59, 999)).getTime() + 7 * 24 * 60 * 60 * 1000)}
+        control={control}
+        render={({ field, fieldState }) => {
+          const selectedDate = field.value > 0 ? new Date(field.value * 1000) : undefined
+          const displayDate = selectedDate ?? new Date()
+
+          return (
+            <Field data-invalid={fieldState.invalid} className='gap-1'>
+              <FieldLabel htmlFor={field.name} className='gap-0.5'>
+                {t('orders.checkout.orderTime')}
+                <span className='text-xs text-muted-foreground'>({t('common.ui.optional')})</span>
+              </FieldLabel>
+
+              <Popover open={orderTimeOpen} onOpenChange={setOrderTimeOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    id={field.name}
+                    variant='outline'
+                    role='combobox'
+                    aria-expanded={orderTimeOpen}
+                    aria-invalid={fieldState.invalid}
+                    className={cn(
+                      'w-full justify-between px-3 text-left font-normal',
+                      fieldState.invalid && 'border-destructive focus-visible:ring-destructive'
+                    )}
+                  >
+                    <span className='flex items-center gap-2 truncate'>
+                      <HugeiconsIcon icon={Calendar03Icon} strokeWidth={2} className='size-4 opacity-50' />
+                      {formatDate(displayDate, 'dateLong')}
+                    </span>
+
+                    {field.value > 0 && (
+                      <div
+                        role='button'
+                        tabIndex={0}
+                        className='cursor-pointer rounded-sm hover:bg-accent hover:text-accent-foreground'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          field.onChange(0)
+                        }}
+                      >
+                        <HugeiconsIcon
+                          icon={CancelCircleIcon}
+                          strokeWidth={2}
+                          className='size-4 opacity-50 hover:opacity-100'
+                        />
+                        <span className='sr-only'>{t('common.button.clear')}</span>
+                      </div>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  sideOffset={8}
+                  className='max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-auto overflow-y-auto p-0'
+                  align='start'
+                >
+                  <Calendar
+                    mode='single'
+                    selected={selectedDate}
+                    onSelect={(date) => {
+                      field.onChange(date ? Math.floor(date.getTime() / 1000) : 0)
+                      setOrderTimeOpen(false)
+                    }}
+                    disabled={[{ before: minOrderDate }, { after: maxOrderDate }]}
+                    startMonth={minOrderDate}
+                    endMonth={maxOrderDate}
+                    captionLayout='dropdown'
+                    defaultMonth={displayDate}
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
+            </Field>
+          )
+        }}
       />
 
       <Controller

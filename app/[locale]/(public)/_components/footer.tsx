@@ -2,10 +2,15 @@
 
 import { useGetCompanyAddress } from '@/hooks/use-get-company-address'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { useLocale, useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
-import { CompanyConfigItem, ContactConfigItem } from '@/types/config.type'
+import {
+  CompanyConfigItem,
+  ContactConfigItem,
+  FeaturedCollection,
+  FeaturedCollectionConfigItem
+} from '@/types/config.type'
 import { Facebook01Icon, InstagramIcon, Mail01Icon, MessageMultiple01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
@@ -19,22 +24,15 @@ const POLICIES = [
   { labelKey: 'footer.policies.delivery', href: '/delivery' }
 ] as const
 
-const FEATURED_PRODUCTS = [
-  'footer.featured.birthday',
-  'footer.featured.opening',
-  'footer.featured.march8',
-  'footer.featured.oct20',
-  'footer.featured.nov20',
-  'footer.featured.noel',
-  'footer.featured.feb27',
-  'footer.featured.business',
-  'footer.featured.orchid'
-] as const
-
 export default function Footer() {
   const { t } = useTranslation()
+  const locale = useLocale()
   const { configs: companyConfigs } = useGetPublicConfigs<CompanyConfigItem>({ group: 'company' })
   const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
+  const { configs: featuredProductConfigs } = useGetPublicConfigs<FeaturedCollectionConfigItem>({
+    group: 'products',
+    key: 'products.featured'
+  })
 
   const { companyAddress } = useGetCompanyAddress()
 
@@ -47,6 +45,18 @@ export default function Footer() {
   const instagram = contactConfigs.find((c) => c.key === 'contact.instagram')
   const phone = contactConfigs.find((c) => c.key === 'contact.phone')
   const email = contactConfigs.find((c) => c.key === 'contact.email')
+
+  const featuredConfig = featuredProductConfigs.find((c) => c.key === 'products.featured')
+  const featuredCards = useMemo(() => {
+    const raw = featuredConfig?.value.value
+    if (!raw) return []
+    try {
+      const parsed = JSON.parse(raw) as FeaturedCollection
+      return parsed.cards.filter((card) => card.enabled)
+    } catch {
+      return []
+    }
+  }, [featuredConfig])
 
   const SOCIALS = useMemo(() => {
     return [
@@ -114,12 +124,12 @@ export default function Footer() {
           <div className='space-y-2 lg:col-span-2'>
             <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.featuredHeading')}</h2>
             <ul className='space-y-2 text-xs sm:text-sm text-foreground'>
-              {FEATURED_PRODUCTS.map((key) => (
-                <li key={key} className='flex items-center gap-2'>
+              {featuredCards.map((card) => (
+                <li key={card.id} className='flex items-center gap-2'>
                   <span className='inline-block size-1.5 shrink-0 rounded-full bg-primary' aria-hidden='true' />
-                  <a href='#' className='transition-colors hover:text-primary'>
-                    {t(key)}
-                  </a>
+                  <Link href={`/featured/${card.id}`} className='transition-colors hover:text-primary'>
+                    {card.name[locale] || card.name.vi}
+                  </Link>
                 </li>
               ))}
             </ul>

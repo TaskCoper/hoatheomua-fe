@@ -152,6 +152,8 @@
       "required": "{field} là bắt buộc.",
       "minLength": "{field} phải có ít nhất {min} ký tự.",
       "maxLength": "{field} không được vượt quá {max} ký tự.",
+      "arrayMin": "{field} phải chọn ít nhất {min} mục.",
+      "arrayMax": "{field} không được chọn quá {max} mục.",
       "phoneNumber": "Số điện thoại phải có 10 hoặc 11 chữ số và bắt đầu bằng 0.",
       "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái in hoa, 1 số và 1 ký tự đặc biệt.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",

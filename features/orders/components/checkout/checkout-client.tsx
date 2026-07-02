@@ -66,7 +66,7 @@ export function CheckoutClient() {
   const watchedIsExportInvoice = useWatch({ control: methods.control, name: 'isExportInvoice' })
 
   const summaryAddress = [watchedAddressLine, watchedWard, watchedCity].filter(Boolean).join(', ')
-  const summaryOrderTime = watchedOrderTime ? formatDate(new Date(watchedOrderTime), 'dateLong') : undefined
+  const summaryOrderTime = formatDate(watchedOrderTime > 0 ? new Date(watchedOrderTime * 1000) : new Date(), 'dateLong')
   const selectedTagId = watchedTagIds?.[0]
   const summaryDeliveryTime =
     selectedTagId !== undefined ? orderTags?.options?.find((o) => o.value === selectedTagId)?.label : undefined

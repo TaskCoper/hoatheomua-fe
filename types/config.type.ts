@@ -246,6 +246,17 @@ export interface MainlineCollection {
 
 export type MainlineCollectionConfigItem = JsonConfigItem<'products.mainline', 'products'>
 
+// Featured
+export type FeaturedCard = OccasionCard
+
+export interface FeaturedCollection {
+  section: CollectionSection
+  hasCampaigns: boolean
+  cards: FeaturedCard[]
+}
+
+export type FeaturedCollectionConfigItem = JsonConfigItem<'products.featured', 'products'>
+
 // Feedbacks
 export type FeedbackSource = 'messenger' | 'zalo' | 'other'
 

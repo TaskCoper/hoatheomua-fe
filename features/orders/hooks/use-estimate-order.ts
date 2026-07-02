@@ -18,7 +18,7 @@ const defaultValues: CheckoutFormValues = {
   latitude: 0,
   longitude: 0,
   mapId: '',
-  orderTime: null,
+  orderTime: 0,
   tagIds: [],
   taxCode: null,
   identityNumber: null,

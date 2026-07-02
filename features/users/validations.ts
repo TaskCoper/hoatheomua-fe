@@ -138,12 +138,27 @@ export const createUpdateMeSchema = (t: TranslationFunction) =>
           error: t('common.validation.maxLength', { field: t('profile.lastName'), max: 100 }),
         }),
       email: createEmailSchema(t),
-      avatar: z.string().trim().max(500),
-      coverImageUrl: z.string().trim().max(500),
+      avatar: z
+        .string()
+        .trim()
+        .max(500, { error: t('common.validation.maxLength', { field: t('profile.avatar'), max: 500 }) }),
+      coverImageUrl: z
+        .string()
+        .trim()
+        .max(500, { error: t('common.validation.maxLength', { field: t('profile.coverImageUrl'), max: 500 }) }),
       phoneNumber: createOptionalPhoneNumberSchema(t),
-      address: z.string().trim().max(255),
-      city: z.string().trim().max(100),
-      state: z.string().trim().max(100),
+      address: z
+        .string()
+        .trim()
+        .max(255, { error: t('common.validation.maxLength', { field: t('profile.address'), max: 255 }) }),
+      city: z
+        .string()
+        .trim()
+        .max(100, { error: t('common.validation.maxLength', { field: t('profile.city'), max: 100 }) }),
+      state: z
+        .string()
+        .trim()
+        .max(100, { error: t('common.validation.maxLength', { field: t('profile.state'), max: 100 }) }),
       timeZone: z
         .string()
         .trim()
@@ -223,8 +238,8 @@ export const resetPassWordFormValue = (t: TranslationFunction) => {
 export const verifyCodeSchema = (t: TranslationFunction) => {
   return z
     .object({
-      email: z.email(t('common.validation.email')).trim(),
-      code: z.string().trim().min(6, t('common.validation.email'))
+      email: z.email({ error: t('common.validation.email') }).trim(),
+      code: z.string().trim().min(6, { error: t('common.validation.code') })
     })
     .strict()
 }

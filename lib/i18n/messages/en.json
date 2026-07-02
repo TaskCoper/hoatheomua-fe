@@ -152,6 +152,8 @@
       "required": "{field} is required.",
       "minLength": "{field} must be at least {min} characters.",
       "maxLength": "{field} must be no more than {max} characters.",
+      "arrayMin": "{field} must have at least {min} items.",
+      "arrayMax": "{field} must have no more than {max} items.",
       "phoneNumber": "Phone number must be 10 or 11 digits and start with 0.",
       "passwordStrength": "Use at least 1 uppercase letter, 1 number, and 1 special character.",
       "passwordMismatch": "Confirm password does not match.",
