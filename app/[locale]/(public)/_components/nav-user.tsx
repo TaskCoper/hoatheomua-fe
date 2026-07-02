@@ -60,74 +60,72 @@ export default function NavUser({ user }: NavUserProps) {
   }
 
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Avatar className='size-7 ring-2 ring-primary ring-offset-1 rounded-full cursor-pointer mr-0.5'>
-            <AvatarImage src={user?.avatar || undefined} alt={user?.email} />
-            <AvatarFallback className='rounded-full text-xs'>
-              {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className='w-(--radix-dropdown-menu-trigger-width) min-w-60 mt-1'
-          side='bottom'
-          align='end'
-          sideOffset={8}
-        >
-          <DropdownMenuLabel className='px-3 font-normal'>
-            <div className='flex items-center gap-3 text-left text-sm'>
-              <Avatar className='size-6 border ring-primary ring-offset-2 ring-2 rounded-full'>
-                <AvatarImage src={user?.avatar || undefined} alt={user?.email} />
-                <AvatarFallback className='rounded-lg text-xs'>
-                  {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
-                </AvatarFallback>
-              </Avatar>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-medium'>
-                  {user?.firstName} {user?.lastName}
-                </span>
-                <span className='truncate text-xs'>{user?.email}</span>
-              </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Avatar className='size-7 ring-2 ring-primary ring-offset-1 rounded-full cursor-pointer mr-0.5'>
+          <AvatarImage src={user?.avatar || undefined} alt={user?.email} />
+          <AvatarFallback className='rounded-full text-xs'>
+            {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className='w-(--radix-dropdown-menu-trigger-width) min-w-60 mt-1'
+        side='bottom'
+        align='end'
+        sideOffset={8}
+      >
+        <DropdownMenuLabel className='px-3 font-normal'>
+          <div className='flex items-center gap-3 text-left text-sm'>
+            <Avatar className='size-6 border ring-primary ring-offset-2 ring-2 rounded-full'>
+              <AvatarImage src={user?.avatar || undefined} alt={user?.email} />
+              <AvatarFallback className='rounded-lg text-xs'>
+                {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
+              </AvatarFallback>
+            </Avatar>
+            <div className='grid flex-1 text-left text-sm leading-tight'>
+              <span className='truncate font-medium'>
+                {user?.firstName} {user?.lastName}
+              </span>
+              <span className='truncate text-xs'>{user?.email}</span>
             </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              className='px-2 py-1.5 cursor-pointer'
-              disabled={!user?.isEmailVerified}
-              onSelect={() => router.push(`/users/${user?.slug}`)}
-            >
-              <HugeiconsIcon icon={UserCircle02Icon} className='shrink-0 size-4.5' />
-              {t('account.account')}
-            </DropdownMenuItem>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className='px-2 py-1.5 cursor-pointer'>
-                <HugeiconsIcon icon={GlobalIcon} className='shrink-0 size-4.5' />
-                {t('account.language')}
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent>
-                  <DropdownMenuRadioGroup value={locale} onValueChange={handleLanguageChange}>
-                    <DropdownMenuRadioItem className='cursor-pointer' value='en'>
-                      {t('language.english')}
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem className='cursor-pointer' value='vi'>
-                      {t('language.vietnamese')}
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className='px-2 py-1.5 cursor-pointer' onClick={() => signOut()} disabled={isSigningOut}>
-            <HugeiconsIcon icon={Logout03Icon} className='shrink-0 size-4.5' />
-            {t('account.logout')}
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            className='px-2 py-1.5 cursor-pointer'
+            disabled={!user?.isEmailVerified}
+            onSelect={() => router.push(`/users/${user?.slug}`)}
+          >
+            <HugeiconsIcon icon={UserCircle02Icon} className='shrink-0 size-4.5' />
+            {t('account.account')}
           </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className='px-2 py-1.5 cursor-pointer'>
+              <HugeiconsIcon icon={GlobalIcon} className='shrink-0 size-4.5' />
+              {t('account.language')}
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup value={locale} onValueChange={handleLanguageChange}>
+                  <DropdownMenuRadioItem className='cursor-pointer' value='en'>
+                    {t('language.english')}
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem className='cursor-pointer' value='vi'>
+                    {t('language.vietnamese')}
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className='px-2 py-1.5 cursor-pointer' onClick={() => signOut()} disabled={isSigningOut}>
+          <HugeiconsIcon icon={Logout03Icon} className='shrink-0 size-4.5' />
+          {t('account.logout')}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

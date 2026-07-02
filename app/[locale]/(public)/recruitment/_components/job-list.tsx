@@ -1,9 +1,13 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { ChevronLeftIcon, ChevronRightIcon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
 
 import type { Job } from '../types'
 import JobCard from './job-card'
@@ -13,7 +17,6 @@ type JobListProps = {
   selectedJobId: string
   onSelectJob: (jobId: string) => void
   isLoading: boolean
-  isError: boolean
   pageIndex: number
   pageSize: number
   totalCount: number
@@ -22,45 +25,20 @@ type JobListProps = {
   onPageChange: (page: number) => void
 }
 
-const getVisiblePages = (pageIndex: number, pageCount: number) => {
-  const pages = Array.from(new Set([1, pageIndex - 1, pageIndex, pageIndex + 1, pageCount]))
-    .filter((page) => page >= 1 && page <= pageCount)
-    .sort((a, b) => a - b)
+const buildPageList = (current: number, total: number): Array<number | 'ellipsis'> => {
+  if (total <= 1) return [1]
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
 
-  return pages.reduce<Array<number | 'ellipsis'>>((acc, page, index) => {
-    const previousPage = pages[index - 1]
+  const pages: Array<number | 'ellipsis'> = [1]
+  if (current > 3) pages.push('ellipsis')
 
-    if (previousPage && page - previousPage > 1) {
-      acc.push('ellipsis')
-    }
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  for (let i = start; i <= end; i++) pages.push(i)
 
-    acc.push(page)
-    return acc
-  }, [])
-}
-
-function JobListSkeleton() {
-  return (
-    <div className='w-full space-y-4'>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Card key={index} className='w-full gap-0 border border-primary/15 bg-card py-0 shadow-md shadow-primary/10'>
-          <CardContent className='flex items-start gap-4 p-4'>
-            <Skeleton className='size-16 rounded-3xl' />
-            <div className='min-w-0 flex-1 space-y-4'>
-              <div className='space-y-2'>
-                <Skeleton className='h-5 w-3/4' />
-                <Skeleton className='h-4 w-1/2' />
-              </div>
-              <div className='flex gap-2'>
-                <Skeleton className='h-6 w-24 rounded-full' />
-                <Skeleton className='h-6 w-20 rounded-full' />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  )
+  if (current < total - 2) pages.push('ellipsis')
+  pages.push(total)
+  return pages
 }
 
 export default function JobList({
@@ -68,7 +46,6 @@ export default function JobList({
   selectedJobId,
   onSelectJob,
   isLoading,
-  isError,
   pageIndex,
   pageSize,
   totalCount,
@@ -77,96 +54,89 @@ export default function JobList({
   onPageChange
 }: JobListProps) {
   const { t } = useTranslation()
-  const pageCount = Math.ceil(totalCount / pageSize)
-  const visiblePages = getVisiblePages(pageIndex, pageCount)
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
+  const pageList = buildPageList(pageIndex, totalPages)
 
-  if (isLoading && jobs.length === 0) {
-    return (
-      <section className='w-full min-w-0 space-y-4'>
-        <JobListSkeleton />
-      </section>
-    )
+  const goTo = (next: number) => {
+    if (isLoading || next === pageIndex || next < 1 || next > totalPages) return
+    onPageChange(next)
   }
 
-  if (isError) {
-    return (
-      <section className='w-full min-w-0 space-y-4'>
-        <Card className='border border-primary/10 bg-card text-center shadow-sm shadow-primary/5'>
-          <CardContent className='p-8 text-sm text-muted-foreground'>{t('error.somethingWentWrong')}</CardContent>
-        </Card>
-      </section>
-    )
+  const handlePrevious = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    if (!hasPreviousPage) return
+    goTo(pageIndex - 1)
   }
 
-  if (!isLoading && jobs.length === 0) {
-    return (
-      <section className='w-full min-w-0 space-y-4'>
-        <Card className='border border-primary/10 bg-card text-center shadow-sm shadow-primary/5'>
-          <CardContent className='p-8 text-sm text-muted-foreground'>{t('dataTable.table.noResults')}</CardContent>
-        </Card>
-      </section>
-    )
+  const handleNext = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    if (!hasNextPage) return
+    goTo(pageIndex + 1)
+  }
+
+  const handlePageClick = (page: number) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    goTo(page)
   }
 
   return (
     <section className='w-full min-w-0 space-y-4'>
-      <div className='w-full space-y-4'>
+      <div className='w-full space-y-2'>
         {jobs.map((job) => (
           <JobCard key={job.id} job={job} isSelected={job.id === selectedJobId} onClick={() => onSelectJob(job.id)} />
         ))}
       </div>
 
-      {pageCount > 1 ? (
-        <div className='flex items-center justify-center gap-2 pt-2'>
-          <Button
-            type='button'
-            variant='ghost'
-            size='icon-sm'
-            disabled={!hasPreviousPage || isLoading}
-            onClick={() => onPageChange(pageIndex - 1)}
-            className='transform-gpu transition-all duration-500 ease-out hover:-translate-y-0.5 hover:bg-primary/5 hover:text-primary active:translate-y-0 active:scale-[0.98]'
-            aria-label={t('recruitment.pagination.previous')}
-          >
-            <HugeiconsIcon icon={ChevronLeftIcon} strokeWidth={1.8} className='size-4' />
-          </Button>
-          {visiblePages.map((page, index) =>
-            page === 'ellipsis' ? (
-              <span key={`ellipsis-${index}`} className='px-2 text-sm text-muted-foreground'>
-                ...
-              </span>
+      <Pagination className='pt-2'>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href='#'
+              text={t('recruitment.pagination.previous')}
+              aria-disabled={!hasPreviousPage || isLoading}
+              className={!hasPreviousPage || isLoading ? 'pointer-events-none opacity-50' : undefined}
+              onClick={handlePrevious}
+            />
+          </PaginationItem>
+
+          {pageList.map((entry, index) =>
+            entry === 'ellipsis' ? (
+              <PaginationItem key={`ellipsis-${index}`}>
+                <PaginationEllipsis />
+              </PaginationItem>
             ) : (
-              <Button
-                type='button'
-                key={page}
-                variant={page === pageIndex ? 'default' : 'outline'}
-                size='icon-sm'
-                disabled={isLoading}
-                onClick={() => onPageChange(page)}
-                className={
-                  page === pageIndex
-                    ? 'transform-gpu transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
-                    : 'transform-gpu border-border/70 bg-card transition-all duration-500 ease-out hover:-translate-y-0.5 hover:border-primary/25 hover:bg-primary/5 hover:text-primary active:translate-y-0 active:scale-[0.98]'
-                }
-                aria-label={t('recruitment.pagination.page', { page })}
-                aria-current={page === pageIndex ? 'page' : undefined}
-              >
-                {page}
-              </Button>
+              <PaginationItem key={entry}>
+                <PaginationLink
+                  href='#'
+                  isActive={entry === pageIndex}
+                  aria-disabled={isLoading}
+                  aria-label={t('recruitment.pagination.page', { page: entry })}
+                  className={
+                    isLoading && entry !== pageIndex
+                      ? 'pointer-events-none opacity-50'
+                      : entry === pageIndex
+                        ? 'pointer-events-none bg-primary text-primary-foreground'
+                        : undefined
+                  }
+                  onClick={handlePageClick(entry)}
+                >
+                  {entry}
+                </PaginationLink>
+              </PaginationItem>
             )
           )}
-          <Button
-            type='button'
-            variant='ghost'
-            size='icon-sm'
-            disabled={!hasNextPage || isLoading}
-            onClick={() => onPageChange(pageIndex + 1)}
-            className='transform-gpu transition-all duration-500 ease-out hover:-translate-y-0.5 hover:bg-primary/5 hover:text-primary active:translate-y-0 active:scale-[0.98]'
-            aria-label={t('recruitment.pagination.next')}
-          >
-            <HugeiconsIcon icon={ChevronRightIcon} strokeWidth={1.8} className='size-4' />
-          </Button>
-        </div>
-      ) : null}
+
+          <PaginationItem>
+            <PaginationNext
+              href='#'
+              text={t('recruitment.pagination.next')}
+              aria-disabled={!hasNextPage || isLoading}
+              className={!hasNextPage || isLoading ? 'pointer-events-none opacity-50' : undefined}
+              onClick={handleNext}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </section>
   )
 }

@@ -27,20 +27,33 @@ export interface Order {
   updateAt: null
 }
 
+export interface OrderTransaction {
+  transferAmount: number
+  code: string
+  gateway: string
+  transactionDate: string
+}
+
 export interface OrderDetail {
   orderId: string
   status: OrderStatus
   trackNumber: string
-  details: OrderItem[]
   ahahaMoveOrderId: string | null
   ahahaMoveTrackingUrl: string | null
+  remark: string | null
+  taxCode: string | null
+  orderTime: number
+  tagsId: number[]
+  identityNumber: string | null
+  invoiceType: InvoiceType | null
+  isExportInvoice: boolean
+  receiptAddress: string | null
+  receiptEmail: string | null
+  receiptFullName: string | null
+  receiptPhoneNumber: string | null
   qrCodeUrl: string | null
-  transaction: {
-    transferAmount: number
-    code: string
-    gateway: string
-    transactionDate: string
-  } | null
+  transaction: OrderTransaction | null
+  details: OrderItem[]
 }
 
 export interface OrderItem {
@@ -55,7 +68,21 @@ export interface OrderItem {
   height: number
 }
 
-export interface CheckoutPayload {
+export const InvoiceType = {
+  Personal: 'Personal',
+  Business: 'Business'
+} as const
+
+export type InvoiceType = (typeof InvoiceType)[keyof typeof InvoiceType]
+
+export const InvoiceTypeLabel: Record<InvoiceType, I18nKey> = {
+  [InvoiceType.Personal]: 'orders.invoiceType.Personal',
+  [InvoiceType.Business]: 'orders.invoiceType.Business'
+} as const
+
+export type InvoiceTypeLabel = (typeof InvoiceTypeLabel)[keyof typeof InvoiceTypeLabel]
+
+export interface EstimatePayload {
   latitude: number
   longitude: number
   address: string
@@ -64,9 +91,19 @@ export interface CheckoutPayload {
   phone: string
   remarks: string
   orderTime: number
-  taxCode: string
   items: { itemId: string; number: number }[]
   tagIds: number[]
+}
+
+export interface CheckoutPayload extends EstimatePayload {
+  taxCode: string | null
+  identityNumber: string | null
+  receiptFullName: string | null
+  receiptPhoneNumber: string | null
+  receiptAddress: string | null
+  receiptEmail: string | null
+  isExportInvoice: boolean
+  invoiceType: InvoiceType | null
 }
 
 export interface TaxBusinessInfo {

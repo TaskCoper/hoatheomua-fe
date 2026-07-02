@@ -9,6 +9,12 @@ export const createEmailSchema = (t: TranslationFunction) => {
     .toLowerCase()
 }
 
+export const createOptionalEmailSchema = (t: TranslationFunction) =>
+  z
+    .string()
+    .trim()
+    .refine((v) => v === '' || z.email().safeParse(v).success, { error: t('common.validation.email') })
+
 export const VN_LOCAL_PHONE_REGEX = /^0\d{9,10}$/
 
 export const createPhoneNumberSchema = (t: TranslationFunction, fieldLabel: string) =>

@@ -304,9 +304,14 @@
     }
   },
   "recruitment": {
+    "hero": {
+      "title": "Cùng chúng tôi vun đắp sự nghiệp",
+      "description": "Gia nhập đội ngũ luôn trân trọng từng cành hoa và từng đồng đội."
+    },
     "filter": {
       "positionPlaceholder": "Tìm theo vị trí",
       "search": "Tìm việc",
+      "reset": "Đặt lại bộ lọc",
       "branch": {
         "placeholder": "Tất cả chi nhánh",
         "options": {
@@ -325,6 +330,8 @@
       },
       "salary": {
         "placeholder": "Tất cả mức lương",
+        "min": "Tối thiểu",
+        "max": "Tối đa",
         "options": {
           "below8": "Dưới 8 triệu",
           "range8To12": "8 - 12 triệu",
@@ -387,7 +394,9 @@
       "actions": {
         "save": "Lưu tin tuyển dụng",
         "share": "Chia sẻ tin tuyển dụng",
-        "apply": "Ứng tuyển ngay"
+        "apply": "Ứng tuyển ngay",
+        "viewMore": "Xem thêm",
+        "viewLess": "Thu gọn"
       },
       "posted": "Đăng tuyển {time}",
       "sections": {
@@ -403,14 +412,17 @@
       "cancel": "Hủy",
       "submit": "Gửi ứng tuyển",
       "addAttachment": "Thêm",
-      "attachmentPlaceholder": "URL CV hoặc portfolio",
+      "attachmentPlaceholder": "Tải lên CV hoặc portfolio",
+      "uploadAttachment": "Tải tệp lên",
+      "uploadedAttachment": "Đã tải tệp lên",
       "removeAttachment": "Xóa tệp đính kèm",
       "fields": {
         "roleTitle": "Vị trí ứng tuyển",
         "coverLetter": "Thư giới thiệu",
         "attachments": "Tệp đính kèm"
       }
-    }
+    },
+    "negotiable": "Có thể thương lượng"
   },
   "dataTable": {
     "table": {
@@ -568,6 +580,10 @@
     }
   },
   "orders": {
+    "invoiceType": {
+      "Personal": "Cá nhân và HKD",
+      "Business": "Doanh nghiệp"
+    },
     "checkout": {
       "title": "Thanh toán",
       "description": "Vui lòng điền thông tin giao hàng để hoàn tất đơn của bạn.",
@@ -586,7 +602,19 @@
       "wardPlaceholder": "Chọn phường / xã",
       "wardSearchPlaceholder": "Tìm phường / xã",
       "taxCode": "Mã số thuế (không bắt buộc)",
+      "taxCodeLabel": "Mã số thuế",
       "taxCodePlaceholder": "Nhập mã số thuế nếu có",
+      "identityNumber": "CCCD/CMND",
+      "receiptFullName": "Họ và tên người nhận hoá đơn",
+      "receiptPhoneNumber": "Số điện thoại nhận hoá đơn",
+      "receiptAddress": "Địa chỉ nhận hoá đơn",
+      "receiptEmail": "Email nhận hoá đơn",
+      "isExportInvoice": "Xuất hoá đơn",
+      "invoiceType": "Loại hoá đơn",
+      "invoiceTypePersonal": "Cá nhân",
+      "invoiceTypeBusiness": "Doanh nghiệp",
+      "invoiceTitle": "Hoá đơn",
+      "invoiceDescription": "Yêu cầu xuất hoá đơn VAT cho đơn hàng này (tuỳ chọn).",
       "savedAddress": "Địa chỉ đã lưu",
       "savedAddressPlaceholder": "Chọn địa chỉ đã lưu",
       "savedAddressSearchPlaceholder": "Tìm địa chỉ đã lưu",
@@ -697,7 +725,26 @@
       "detail": {
         "title": "Chi tiết đơn hàng",
         "description": "Xem thông tin đơn hàng đã thanh toán.",
-        "openHint": "Nhấn để xem chi tiết đơn hàng"
+        "openHint": "Nhấn để xem chi tiết đơn hàng",
+        "backToOrders": "Quay lại danh sách đơn hàng",
+        "breadcrumbList": "Đơn hàng của tôi",
+        "breadcrumbCurrent": "Chi tiết",
+        "notFoundTitle": "Không tìm thấy đơn hàng",
+        "notFoundDescription": "Đơn hàng bạn đang tìm không tồn tại hoặc bạn không có quyền xem.",
+        "backToOrdersCta": "Về trang đơn hàng",
+        "summaryHeading": "Tóm tắt đơn hàng",
+        "customerHeading": "Thông tin khách hàng",
+        "recipientHeading": "Thông tin nhận hàng",
+        "invoiceHeading": "Thông tin hoá đơn",
+        "invoiceNotRequested": "Không xuất hoá đơn",
+        "identityNumber": "CCCD/CMND",
+        "timelineHeading": "Nhật ký đơn hàng",
+        "timelineCreated": "Tạo đơn hàng",
+        "timelinePaid": "Xác nhận thanh toán",
+        "timelineDelivery": "Ngày giao dự kiến",
+        "remarksHeading": "Ghi chú của khách",
+        "trackingHeading": "Theo dõi đơn hàng",
+        "noValue": "—"
       }
     }
   },
@@ -745,7 +792,9 @@
       "about": "Giới thiệu",
       "news": "Tin tức",
       "recruitment": "Tuyển dụng",
-      "contact": "Liên hệ"
+      "contact": "Liên hệ",
+      "cart": "Giỏ hàng",
+      "orders": "Đơn hàng"
     },
     "aria": {
       "mainNav": "Điều hướng chính",

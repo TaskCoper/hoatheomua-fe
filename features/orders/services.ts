@@ -3,6 +3,7 @@ import axios from 'axios'
 import { AhamoveResult, ProductNhanhResult } from './ahamove.type'
 import type {
   CheckoutPayload,
+  EstimatePayload,
   GeoResponse,
   GeoResult,
   Order,
@@ -70,7 +71,7 @@ class OrderService {
     return data
   }
 
-  estimateOrder = async ({ body }: { body: CheckoutPayload }) => {
+  estimateOrder = async ({ body }: { body: EstimatePayload }) => {
     const { data } = await api.post<
       BaseResponse<{
         ahamoveResult: AhamoveResult[]

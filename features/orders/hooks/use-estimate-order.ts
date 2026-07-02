@@ -19,8 +19,15 @@ const defaultValues: CheckoutFormValues = {
   longitude: 0,
   mapId: '',
   orderTime: null,
-  taxCode: '',
-  tagIds: []
+  tagIds: [],
+  taxCode: null,
+  identityNumber: null,
+  receiptFullName: null,
+  receiptPhoneNumber: null,
+  receiptAddress: null,
+  receiptEmail: null,
+  isExportInvoice: false,
+  invoiceType: null
 }
 
 export const useEstimateOrder = () => {

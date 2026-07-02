@@ -304,9 +304,14 @@
     }
   },
   "recruitment": {
+    "hero": {
+      "title": "Grow your career with us",
+      "description": "Join a team that treats every bloom — and every teammate — with care."
+    },
     "filter": {
       "positionPlaceholder": "Search by position",
       "search": "Search jobs",
+      "reset": "Reset filters",
       "branch": {
         "placeholder": "All branches",
         "options": {
@@ -325,6 +330,8 @@
       },
       "salary": {
         "placeholder": "All salary ranges",
+        "min": "Min",
+        "max": "Max",
         "options": {
           "below8": "Under 8 million",
           "range8To12": "8 - 12 million",
@@ -387,7 +394,9 @@
       "actions": {
         "save": "Save job",
         "share": "Share job",
-        "apply": "Apply now"
+        "apply": "Apply now",
+        "viewMore": "View more",
+        "viewLess": "View less"
       },
       "posted": "Posted {time}",
       "sections": {
@@ -403,14 +412,17 @@
       "cancel": "Cancel",
       "submit": "Submit application",
       "addAttachment": "Add",
-      "attachmentPlaceholder": "CV or portfolio URL",
+      "attachmentPlaceholder": "Upload CV or portfolio",
+      "uploadAttachment": "Upload attachment",
+      "uploadedAttachment": "Attachment uploaded",
       "removeAttachment": "Remove attachment",
       "fields": {
         "roleTitle": "Role title",
         "coverLetter": "Cover letter",
         "attachments": "Attachments"
       }
-    }
+    },
+    "negotiable": "Negotiable"
   },
   "dataTable": {
     "table": {
@@ -568,6 +580,10 @@
     }
   },
   "orders": {
+    "invoiceType": {
+      "Personal": "Individual or Household Business",
+      "Business": "Company"
+    },
     "checkout": {
       "title": "Checkout",
       "description": "Fill in your delivery details to complete the order.",
@@ -586,7 +602,19 @@
       "wardPlaceholder": "Select ward",
       "wardSearchPlaceholder": "Search ward",
       "taxCode": "Tax code (optional)",
+      "taxCodeLabel": "Tax code",
       "taxCodePlaceholder": "Enter tax code if any",
+      "identityNumber": "Identity number",
+      "receiptFullName": "Receipt full name",
+      "receiptPhoneNumber": "Receipt phone number",
+      "receiptAddress": "Receipt address",
+      "receiptEmail": "Receipt email",
+      "isExportInvoice": "Export invoice",
+      "invoiceType": "Invoice type",
+      "invoiceTypePersonal": "Personal",
+      "invoiceTypeBusiness": "Business",
+      "invoiceTitle": "Invoice",
+      "invoiceDescription": "Request a VAT invoice for this order (optional).",
       "savedAddress": "Saved address",
       "savedAddressPlaceholder": "Select a saved address",
       "savedAddressSearchPlaceholder": "Search saved addresses",
@@ -697,7 +725,26 @@
       "detail": {
         "title": "Order details",
         "description": "Review the information for this paid order.",
-        "openHint": "Tap to view order details"
+        "openHint": "Tap to view order details",
+        "backToOrders": "Back to orders",
+        "breadcrumbList": "My orders",
+        "breadcrumbCurrent": "Details",
+        "notFoundTitle": "Order not found",
+        "notFoundDescription": "We couldn't find this order, or you don't have permission to view it.",
+        "backToOrdersCta": "Go back to my orders",
+        "summaryHeading": "Order summary",
+        "customerHeading": "Customer info",
+        "recipientHeading": "Delivery details",
+        "invoiceHeading": "Invoice info",
+        "invoiceNotRequested": "No invoice requested",
+        "identityNumber": "Identity number",
+        "timelineHeading": "Timeline",
+        "timelineCreated": "Order created",
+        "timelinePaid": "Payment confirmed",
+        "timelineDelivery": "Scheduled delivery",
+        "remarksHeading": "Customer notes",
+        "trackingHeading": "Tracking",
+        "noValue": "—"
       }
     }
   },
@@ -745,7 +792,9 @@
       "about": "About",
       "news": "News",
       "recruitment": "Careers",
-      "contact": "Contact"
+      "contact": "Contact",
+      "cart": "Cart",
+      "orders": "Orders"
     },
     "aria": {
       "mainNav": "Main navigation",

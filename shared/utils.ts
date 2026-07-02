@@ -59,25 +59,31 @@ export function getDefaultPaginationResponse<T>(): BasePaginationResponse<T> {
   return defaultPaginationResponse as BasePaginationResponse<T>
 }
 
+const NAMED_HTML_ENTITIES: Record<string, string> = {
+  nbsp: ' ',
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'"
+}
+
+const decodeHtmlEntities = (input: string): string =>
+  input.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity: string) => {
+    if (entity[0] === '#') {
+      const codePoint = entity[1] === 'x' || entity[1] === 'X' ? parseInt(entity.slice(2), 16) : Number(entity.slice(1))
+      return Number.isFinite(codePoint) ? String.fromCodePoint(codePoint) : match
+    }
+    return NAMED_HTML_ENTITIES[entity.toLowerCase()] ?? match
+  })
+
 export const getFirstParagraphTextFromHtml = (html: string | null | undefined): string => {
   if (!html) return ''
 
-  try {
-    if (typeof DOMParser !== 'undefined') {
-      const document = new DOMParser().parseFromString(html, 'text/html')
-      const firstParagraph = document.querySelector('p')
-
-      return firstParagraph?.textContent?.replace(/\s+/g, ' ').trim() ?? ''
-    }
-  } catch {
-    // fall through to regex-based fallback
-  }
-
   const firstParagraphMatch = html.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i)
-  const fallbackContent = firstParagraphMatch?.[1] ?? ''
+  const inner = firstParagraphMatch?.[1] ?? ''
 
-  return fallbackContent
-    .replace(/<[^>]*>/g, ' ')
+  return decodeHtmlEntities(inner.replace(/<[^>]*>/g, ' '))
     .replace(/\s+/g, ' ')
     .trim()
 }
