@@ -13,50 +13,10 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import 'yet-another-react-lightbox/styles.css'
 
-const PHOTOS = [
-  {
-    id: 'gifts',
-    src: '/images/b2b/case-studies/indigo/01-gifts.jpg',
-    altKey: 'b2b.caseStudies.indigo.images.gifts',
-    category: 'event'
-  },
-  {
-    id: 'winterTable',
-    src: '/images/b2b/case-studies/indigo/02-winter-table.jpg',
-    altKey: 'b2b.caseStudies.indigo.images.winterTable',
-    category: 'weekly'
-  },
-  {
-    id: 'orchidVase',
-    src: '/images/b2b/case-studies/indigo/03-orchid-vase.jpg',
-    altKey: 'b2b.caseStudies.indigo.images.orchidVase',
-    category: 'room'
-  },
-  {
-    id: 'lotusSinger',
-    src: '/images/b2b/case-studies/indigo/04-lotus-singer.jpg',
-    altKey: 'b2b.caseStudies.indigo.images.lotusSinger',
-    category: 'room'
-  },
-  {
-    id: 'banquetCenterpiece',
-    src: '/images/b2b/case-studies/indigo/05-banquet-centerpiece.jpg',
-    altKey: 'b2b.caseStudies.indigo.images.banquetCenterpiece',
-    category: 'event'
-  },
-  {
-    id: 'banquetDetail',
-    src: '/images/b2b/case-studies/indigo/06-banquet-detail.jpg',
-    altKey: 'b2b.caseStudies.indigo.images.banquetDetail',
-    category: 'event'
-  }
-] as const
-
-const CATEGORY_LABEL_KEY = {
-  weekly: 'b2b.caseStudies.categories.weekly',
-  event: 'b2b.caseStudies.categories.event',
-  room: 'b2b.caseStudies.categories.room'
-} as const
+const PHOTOS = Array.from({ length: 18 }, (_, i) => {
+  const num = String(i + 1).padStart(2, '0')
+  return { id: num, src: `/images/b2b/case-studies/indigo/${num}.jpg` }
+})
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -68,19 +28,19 @@ const cardStagger: Variants = {
   visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } }
 }
 
-const photoItem: Variants = {
-  hidden: { opacity: 0, y: 30, scale: 0.96 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 160, damping: 18 } }
-}
-
 export default function B2BCaseStudySection() {
   const { t } = useTranslation()
   const [lightboxIndex, setLightboxIndex] = useState(-1)
 
+  const hotelName = t('b2b.caseStudies.indigo.logoAlt')
   const slides = PHOTOS.map((photo) => ({
     src: photo.src,
-    alt: t(photo.altKey)
+    alt: `${hotelName} — ${photo.id}`
   }))
+  const MIN_ITEMS_PER_SET = 10
+  const repeatsPerSet = Math.max(1, Math.ceil(MIN_ITEMS_PER_SET / PHOTOS.length))
+  const oneSet = Array.from({ length: repeatsPerSet * PHOTOS.length }, (_, i) => PHOTOS[i % PHOTOS.length])
+  const marqueeItems = [...oneSet, ...oneSet]
 
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
@@ -124,9 +84,7 @@ export default function B2BCaseStudySection() {
               </span>
             </div>
 
-            <p className='text-xs leading-relaxed text-foreground sm:text-sm'>
-              {t('b2b.caseStudies.indigo.summary')}
-            </p>
+            <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{t('b2b.caseStudies.indigo.summary')}</p>
           </motion.div>
 
           <motion.figure
@@ -152,35 +110,36 @@ export default function B2BCaseStudySection() {
         </div>
 
         <motion.div
-          variants={cardStagger}
-          className='mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3'
+          variants={fadeUp}
+          className='group relative mt-6 -mx-5 sm:-mx-6 lg:-mx-8 overflow-hidden'
+          style={{
+            maskImage: 'linear-gradient(to right, transparent, black 6%, black 94%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black 6%, black 94%, transparent)'
+          }}
         >
-          {PHOTOS.map((photo, index) => (
-            <motion.button
-              type='button'
-              key={photo.id}
-              variants={photoItem}
-              whileHover={{ y: -4 }}
-              transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-              onClick={() => setLightboxIndex(index)}
-              aria-label={t(photo.altKey)}
-              className='group relative block overflow-hidden rounded-2xl ring-1 ring-foreground/5 shadow-[0_0.4rem_1rem_rgb(81_108_108/8%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
-            >
-              <div className='relative aspect-[4/3]'>
+          <div
+            className='flex w-max items-center gap-3 sm:gap-4 animate-marquee group-hover:[animation-play-state:paused]'
+            style={{ animationDuration: `${Math.max(40, oneSet.length * 5.5)}s` }}
+          >
+            {marqueeItems.map((photo, index) => (
+              <button
+                type='button'
+                key={`${photo.id}-${index}`}
+                onClick={() => setLightboxIndex(index % PHOTOS.length)}
+                aria-label={`${hotelName} — ${photo.id}`}
+                className='relative block shrink-0 h-40 sm:h-48 md:h-56 lg:h-64 aspect-4/3 overflow-hidden rounded-2xl ring-1 ring-foreground/5 shadow-[0_0.4rem_1rem_rgb(81_108_108/8%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+              >
                 <Image
                   src={photo.src}
-                  alt={t(photo.altKey)}
+                  alt={`${hotelName} — ${photo.id}`}
                   fill
-                  className='object-cover transition-transform duration-500 group-hover:scale-105'
-                  sizes='(min-width: 1024px) 24rem, (min-width: 640px) 50vw, 100vw'
+                  className='object-cover transition-transform duration-500 hover:scale-105'
+                  sizes='(min-width: 1024px) 22rem, (min-width: 640px) 18rem, 14rem'
                   quality={70}
                 />
-                <span className='absolute left-2 top-2 inline-flex items-center rounded-full bg-card/90 px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-primary ring-1 ring-primary/10 backdrop-blur-sm'>
-                  {t(CATEGORY_LABEL_KEY[photo.category])}
-                </span>
-              </div>
-            </motion.button>
-          ))}
+              </button>
+            ))}
+          </div>
         </motion.div>
       </motion.article>
 
