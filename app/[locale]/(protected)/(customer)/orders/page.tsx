@@ -2,8 +2,6 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import OrderDetailDialog from '@/features/orders/components/order-detail-dialog'
-import OrderQrDialog from '@/features/orders/components/order-qr-dialog'
 import { useGetOrders } from '@/features/orders/hooks/use-get-orders'
 import { OrderStatus, type Order } from '@/features/orders/types'
 import { useDateFormat } from '@/lib/date'
@@ -21,7 +19,6 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { useState } from 'react'
 import { SparkleDivider } from '../../../(public)/_components/sparkle-dividier'
 
 const fadeUp: Variants = {
@@ -43,8 +40,6 @@ export default function OrdersPage() {
   const { t } = useTranslation()
   const { formatDateTime } = useDateFormat()
   const { orders, isLoadingOrders } = useGetOrders()
-
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
   const items = orders?.value?.items ?? []
   const totalCount = orders?.value?.totalCount ?? items.length
@@ -107,35 +102,9 @@ export default function OrdersPage() {
         className='mx-auto mt-8 grid w-full max-w-4xl gap-3'
       >
         {items.map((order) => (
-          <OrderRow
-            key={order.orderId}
-            order={order}
-            t={t}
-            formatDateTime={formatDateTime}
-            onOpen={() => setSelectedOrder(order)}
-          />
+          <OrderRow key={order.orderId} order={order} t={t} formatDateTime={formatDateTime} />
         ))}
       </motion.ul>
-
-      {selectedOrder ? (
-        selectedOrder.status === OrderStatus.Paid ? (
-          <OrderDetailDialog
-            order={selectedOrder}
-            open
-            onOpenChange={(next) => {
-              if (!next) setSelectedOrder(null)
-            }}
-          />
-        ) : (
-          <OrderQrDialog
-            orderId={selectedOrder.orderId}
-            open
-            onOpenChange={(next) => {
-              if (!next) setSelectedOrder(null)
-            }}
-          />
-        )
-      ) : null}
     </section>
   )
 }
@@ -178,115 +147,90 @@ interface OrderRowProps {
   order: Order
   t: ReturnType<typeof useTranslation>['t']
   formatDateTime: ReturnType<typeof useDateFormat>['formatDateTime']
-  onOpen: () => void
 }
 
-function OrderRow({ order, t, formatDateTime, onOpen }: OrderRowProps) {
+function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
   const isPaid = order.status === OrderStatus.Paid
   const isPending = order.status === OrderStatus.Pending
   const statusLabel = isPaid ? t('orders.list.status.Paid') : t('orders.list.status.Pending')
-
-  const handleClick = onOpen
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLLIElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault()
-      onOpen()
-    }
-  }
 
   return (
     <motion.li
       variants={cardItem}
       whileHover={{ y: -4, scale: 1.005 }}
       transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-      role='button'
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      aria-label={isPending ? t('orders.list.qr.title') : t('orders.list.detail.title')}
       className={cn(
-        'group relative flex cursor-pointer flex-col gap-4 overflow-hidden rounded-3xl bg-card p-2 outline-none shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-visible:ring-2 focus-visible:ring-ring/40 sm:flex-row sm:items-center sm:p-3'
+        'group relative overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] focus-within:ring-2 focus-within:ring-ring/40'
       )}
     >
-      <div className='min-w-0 flex-1'>
-        <div className='flex flex-wrap items-center justify-between gap-2'>
-          <div className='flex items-center gap-2'>
-            <span className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
-              {t('orders.list.orderId')}
+      <Link
+        href={`/orders/${order.orderId}`}
+        aria-label={isPending ? t('orders.list.qr.title') : t('orders.list.detail.title')}
+        className='flex flex-col gap-4 p-2 outline-none sm:flex-row sm:items-center sm:p-3'
+      >
+        <div className='min-w-0 flex-1'>
+          <div className='flex flex-wrap items-center justify-between gap-2'>
+            <div className='flex items-center gap-2'>
+              <span className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
+                {t('orders.list.orderId')}
+              </span>
+              <span className='font-mono text-sm font-bold text-primary'>{order.orderId.slice(0, 8)}</span>
+            </div>
+
+            <Badge
+              variant='outline'
+              className={cn(
+                'gap-1 rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider',
+                isPaid ? 'border-leaf/30 bg-leaf/10 text-leaf' : 'border-warning/40 bg-warning/10 text-warning'
+              )}
+            >
+              <HugeiconsIcon
+                icon={isPaid ? CheckmarkCircle02Icon : TimeQuarterPassIcon}
+                strokeWidth={2}
+                className='size-3'
+              />
+              {statusLabel}
+            </Badge>
+          </div>
+
+          <dl className='flex flex-wrap items-center gap-x-3 gap-y-1'>
+            <div className='flex items-center gap-1 text-xs text-muted-foreground'>
+              <dt className='shrink-0 font-medium'>{t('orders.list.createdAt')}:</dt>
+              <dd className='truncate font-medium text-foreground/90'>
+                {order.createAt ? formatDateTime(order.createAt, 'dateTimeShort') : '—'}
+              </dd>
+            </div>
+            <div className='flex items-center gap-1 text-xs text-muted-foreground'>
+              <dt className='shrink-0 font-medium'>{t('orders.checkout.orderTime')}:</dt>
+              <dd className='truncate font-medium text-foreground/90'>
+                {order.orderTime > 0
+                  ? formatDateTime(order.orderTime * 1000, 'dateShort')
+                  : t('orders.checkout.deliverNow')}
+              </dd>
+            </div>
+          </dl>
+
+          <div className='mt-3 flex flex-wrap items-center gap-2'>
+            <span className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary ring-1 ring-primary/15'>
+              <HugeiconsIcon icon={isPending ? QrCodeIcon : InvoiceIcon} strokeWidth={2} className='size-3.5' />
+              {isPending ? t('orders.list.qr.openHint') : t('orders.list.detail.openHint')}
             </span>
-            <span className='font-mono text-sm font-bold text-primary'>{order.orderId.slice(0, 8)}</span>
-          </div>
 
-          <Badge
-            variant='outline'
-            className={cn(
-              'gap-1 rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider',
-              isPaid ? 'border-leaf/30 bg-leaf/10 text-leaf' : 'border-warning/40 bg-warning/10 text-warning'
-            )}
-          >
-            <HugeiconsIcon
-              icon={isPaid ? CheckmarkCircle02Icon : TimeQuarterPassIcon}
-              strokeWidth={2}
-              className='size-3'
-            />
-            {statusLabel}
-          </Badge>
+            {isPaid && order.ahahaMoveTrackingUrl ? (
+              <a
+                href={order.ahahaMoveTrackingUrl}
+                target='_blank'
+                rel='noreferrer noopener'
+                onClick={(event) => event.stopPropagation()}
+                className='inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
+              >
+                <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
+                {t('orders.list.trackAhamove')}
+              </a>
+            ) : null}
+          </div>
         </div>
-
-        <dl className='flex flex-wrap items-center gap-x-3 gap-y-1'>
-          <div className='flex items-center gap-1 text-xs text-muted-foreground'>
-            <dt className='shrink-0 font-medium'>{t('orders.list.createdAt')}:</dt>
-            <dd className='truncate font-medium text-foreground/90'>
-              {order.createAt ? formatDateTime(order.createAt, 'dateTimeShort') : '—'}
-            </dd>
-          </div>
-          <div className='flex items-center gap-1 text-xs text-muted-foreground'>
-            <dt className='shrink-0 font-medium'>{t('orders.checkout.orderTime')}:</dt>
-            <dd className='truncate font-medium text-foreground/90'>
-              {order.orderTime > 0
-                ? formatDateTime(order.orderTime * 1000, 'dateShort')
-                : t('orders.checkout.deliverNow')}
-            </dd>
-          </div>
-        </dl>
-
-        <div className='flex flex-wrap items-center gap-2 mt-3'>
-          {isPending ? (
-            <motion.span
-              whileHover={{ x: 2 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-              className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary ring-1 ring-primary/15'
-            >
-              <HugeiconsIcon icon={QrCodeIcon} strokeWidth={2} className='size-3.5' />
-              {t('orders.list.qr.openHint')}
-            </motion.span>
-          ) : (
-            <motion.span
-              whileHover={{ x: 2 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-              className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary ring-1 ring-primary/15'
-            >
-              <HugeiconsIcon icon={InvoiceIcon} strokeWidth={2} className='size-3.5' />
-              {t('orders.list.detail.openHint')}
-            </motion.span>
-          )}
-
-          {isPaid && order.ahahaMoveTrackingUrl ? (
-            <motion.a
-              whileHover={{ x: 2 }}
-              transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-              href={order.ahahaMoveTrackingUrl}
-              target='_blank'
-              rel='noreferrer noopener'
-              onClick={(event) => event.stopPropagation()}
-              className='inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
-            >
-              <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
-              {t('orders.list.trackAhamove')}
-            </motion.a>
-          ) : null}
-        </div>
-      </div>
+      </Link>
     </motion.li>
   )
 }

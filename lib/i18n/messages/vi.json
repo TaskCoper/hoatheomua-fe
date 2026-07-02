@@ -713,7 +713,26 @@
       "detail": {
         "title": "Chi tiết đơn hàng",
         "description": "Xem thông tin đơn hàng đã thanh toán.",
-        "openHint": "Nhấn để xem chi tiết đơn hàng"
+        "openHint": "Nhấn để xem chi tiết đơn hàng",
+        "backToOrders": "Quay lại danh sách đơn hàng",
+        "breadcrumbList": "Đơn hàng của tôi",
+        "breadcrumbCurrent": "Chi tiết",
+        "notFoundTitle": "Không tìm thấy đơn hàng",
+        "notFoundDescription": "Đơn hàng bạn đang tìm không tồn tại hoặc bạn không có quyền xem.",
+        "backToOrdersCta": "Về trang đơn hàng",
+        "summaryHeading": "Tóm tắt đơn hàng",
+        "customerHeading": "Thông tin khách hàng",
+        "recipientHeading": "Thông tin nhận hàng",
+        "invoiceHeading": "Thông tin hoá đơn",
+        "invoiceNotRequested": "Không xuất hoá đơn",
+        "identityNumber": "CCCD/CMND",
+        "timelineHeading": "Nhật ký đơn hàng",
+        "timelineCreated": "Tạo đơn hàng",
+        "timelinePaid": "Xác nhận thanh toán",
+        "timelineDelivery": "Ngày giao dự kiến",
+        "remarksHeading": "Ghi chú của khách",
+        "trackingHeading": "Theo dõi đơn hàng",
+        "noValue": "—"
       }
     }
   },

@@ -27,20 +27,33 @@ export interface Order {
   updateAt: null
 }
 
+export interface OrderTransaction {
+  transferAmount: number
+  code: string
+  gateway: string
+  transactionDate: string
+}
+
 export interface OrderDetail {
   orderId: string
   status: OrderStatus
   trackNumber: string
-  details: OrderItem[]
   ahahaMoveOrderId: string | null
   ahahaMoveTrackingUrl: string | null
+  remark: string | null
+  taxCode: string | null
+  orderTime: number
+  tagsId: number[]
+  identityNumber: string | null
+  invoiceType: InvoiceType | null
+  isExportInvoice: boolean
+  receiptAddress: string | null
+  receiptEmail: string | null
+  receiptFullName: string | null
+  receiptPhoneNumber: string | null
   qrCodeUrl: string | null
-  transaction: {
-    transferAmount: number
-    code: string
-    gateway: string
-    transactionDate: string
-  } | null
+  transaction: OrderTransaction | null
+  details: OrderItem[]
 }
 
 export interface OrderItem {
@@ -62,7 +75,7 @@ export const InvoiceType = {
 
 export type InvoiceType = (typeof InvoiceType)[keyof typeof InvoiceType]
 
-export const InvoiceTypeLabel: Record<InvoiceType, string> = {
+export const InvoiceTypeLabel: Record<InvoiceType, I18nKey> = {
   [InvoiceType.Personal]: 'orders.invoiceType.Personal',
   [InvoiceType.Business]: 'orders.invoiceType.Business'
 } as const

@@ -3,7 +3,7 @@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
-import { BankIcon, InformationCircleIcon } from '@hugeicons/core-free-icons'
+import { BankIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import type { AhamoveResult } from '../../ahamove.type'
 import type { TaxBusinessInfo } from '../../types'
@@ -116,10 +116,10 @@ export function StepPayment({
         />
       </section>
 
-      <div className='flex items-start gap-2 rounded-2xl bg-secondary/30 px-4 py-3 text-xs text-muted-foreground'>
+      {/* <div className='flex items-start gap-2 rounded-2xl bg-secondary/30 px-4 py-3 text-xs text-muted-foreground'>
         <HugeiconsIcon icon={InformationCircleIcon} strokeWidth={2} className='mt-0.5 size-4 shrink-0' />
         <p>{t('orders.checkout.paymentNote')}</p>
-      </div>
+      </div> */}
     </div>
   )
 }

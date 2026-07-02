@@ -713,7 +713,26 @@
       "detail": {
         "title": "Order details",
         "description": "Review the information for this paid order.",
-        "openHint": "Tap to view order details"
+        "openHint": "Tap to view order details",
+        "backToOrders": "Back to orders",
+        "breadcrumbList": "My orders",
+        "breadcrumbCurrent": "Details",
+        "notFoundTitle": "Order not found",
+        "notFoundDescription": "We couldn't find this order, or you don't have permission to view it.",
+        "backToOrdersCta": "Go back to my orders",
+        "summaryHeading": "Order summary",
+        "customerHeading": "Customer info",
+        "recipientHeading": "Delivery details",
+        "invoiceHeading": "Invoice info",
+        "invoiceNotRequested": "No invoice requested",
+        "identityNumber": "Identity number",
+        "timelineHeading": "Timeline",
+        "timelineCreated": "Order created",
+        "timelinePaid": "Payment confirmed",
+        "timelineDelivery": "Scheduled delivery",
+        "remarksHeading": "Customer notes",
+        "trackingHeading": "Tracking",
+        "noValue": "—"
       }
     }
   },
