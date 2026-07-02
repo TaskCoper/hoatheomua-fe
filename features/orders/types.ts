@@ -51,6 +51,10 @@ export interface OrderDetail {
   receiptEmail: string | null
   receiptFullName: string | null
   receiptPhoneNumber: string | null
+  shippingFee: number
+  productFee: number
+  totalFee: number
+  vatFee: number
   qrCodeUrl: string | null
   transaction: OrderTransaction | null
   details: OrderItem[]

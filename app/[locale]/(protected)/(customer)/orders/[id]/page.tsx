@@ -14,6 +14,7 @@ import { Link } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import {
   ArrowLeft02Icon,
+  BankIcon,
   CalendarCheckOut01Icon,
   CheckmarkCircle02Icon,
   DeliveryTruck02Icon,
@@ -151,9 +152,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   const qrDetails = useMemo(() => parseQrDetails(order.qrCodeUrl), [order.qrCodeUrl])
 
   const items = order.details ?? []
-  const itemsSubtotal = items.reduce((sum, item) => sum + item.price * item.number, 0)
-  const totalAmount = order.transaction?.transferAmount ?? qrDetails?.amount ?? itemsSubtotal
-
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.itemId))), [items])
 
   const productQueries = useQueries({
@@ -310,27 +308,44 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
 
             <SectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm'>
-                <SummaryRow label={t('orders.checkout.subtotal')} value={formatVnd(itemsSubtotal)} />
-                {order.transaction?.gateway ? (
-                  <SummaryRow
-                    label={t('orders.list.qr.bank')}
-                    value={order.transaction.gateway}
-                    valueClassName='font-medium'
-                  />
-                ) : null}
-                {order.transaction?.code ? (
-                  <SummaryRow
-                    label={t('orders.list.qr.content')}
-                    value={<span className='font-mono text-xs'>{order.transaction.code}</span>}
-                  />
+                <SummaryRow label={t('orders.checkout.subtotal')} value={formatVnd(order.productFee)} />
+                <SummaryRow label={t('orders.checkout.shippingFee')} value={formatVnd(order.shippingFee)} />
+                {order.vatFee > 0 ? (
+                  <SummaryRow label={t('orders.checkout.vat')} value={formatVnd(order.vatFee)} />
                 ) : null}
               </dl>
 
               <div className='mt-3 flex items-baseline justify-between gap-2 border-t border-border/60 pt-3'>
                 <dt className='text-sm font-semibold'>{t('orders.checkout.total')}</dt>
-                <dd className='font-title text-2xl font-bold text-primary'>{formatVnd(totalAmount)}</dd>
+                <dd className='font-title text-2xl font-bold text-primary'>{formatVnd(order.totalFee)}</dd>
               </div>
             </SectionCard>
+
+            {isPaid && order.transaction ? (
+              <SectionCard icon={BankIcon} title={t('orders.list.qr.detailsTitle')}>
+                <dl className='space-y-2 text-sm'>
+                  {order.transaction.gateway ? (
+                    <DetailRow label={t('orders.list.qr.bank')} value={order.transaction.gateway} />
+                  ) : null}
+                  {order.transaction.code ? (
+                    <DetailRow
+                      label={t('orders.list.qr.content')}
+                      value={<span className='font-mono text-xs'>{order.transaction.code}</span>}
+                    />
+                  ) : null}
+                  <DetailRow
+                    label={t('orders.list.transactionDate')}
+                    value={formatDateTime(order.transaction.transactionDate, 'dateTimeMedium')}
+                  />
+                  <DetailRow
+                    label={t('orders.checkout.total')}
+                    value={
+                      <span className='font-semibold text-primary'>{formatVnd(order.transaction.transferAmount)}</span>
+                    }
+                  />
+                </dl>
+              </SectionCard>
+            ) : null}
 
             {!isPaid && order.qrCodeUrl ? (
               <SectionCard
@@ -507,19 +522,11 @@ function SectionCard({ icon, title, aside, children }: SectionCardProps) {
   )
 }
 
-function SummaryRow({
-  label,
-  value,
-  valueClassName
-}: {
-  label: string
-  value: React.ReactNode
-  valueClassName?: string
-}) {
+function SummaryRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className='flex items-baseline justify-between gap-3'>
       <dt className='text-muted-foreground'>{label}</dt>
-      <dd className={cn('wrap-break-word text-right font-medium text-foreground', valueClassName)}>{value}</dd>
+      <dd className='wrap-break-word text-right font-medium text-foreground'>{value}</dd>
     </div>
   )
 }
