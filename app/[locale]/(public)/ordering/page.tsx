@@ -7,6 +7,8 @@ import PolicySection from '../_components/policy-section'
 import { ORDERING_CONTENT } from './_content'
 import { buildOrderingJsonLd, generateOrderingMetadata } from './_seo'
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
   return generateOrderingMetadata(locale)

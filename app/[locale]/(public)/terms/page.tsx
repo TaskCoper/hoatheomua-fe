@@ -7,6 +7,8 @@ import PolicySection from '../_components/policy-section'
 import { TERMS_CONTENT } from './_content'
 import { buildTermsJsonLd, generateTermsMetadata } from './_seo'
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
   return generateTermsMetadata(locale)

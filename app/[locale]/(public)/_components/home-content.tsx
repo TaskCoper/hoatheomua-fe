@@ -2,9 +2,10 @@
 
 import bannerOne from '@/public/images/banner-one.png'
 import saleBanner from '@/public/images/sale-banner.png'
+import { BANNER_SLOTS } from '@/types/config.type'
 import { motion, type Variants } from 'motion/react'
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
+import ConfigurableBanner from './configurable-banner'
 import CriteriaSection from './criteria-section'
 import ShopFreshFlowersSection from './shop-fresh-flowers-section'
 import SignatureBouquetsSection from './signature-bouquets-section'
@@ -17,6 +18,9 @@ const bannerReveal: Variants = {
   hidden: { opacity: 0, y: 36, scale: 0.96 },
   visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 120, damping: 18 } }
 }
+
+const bannerWrapperClass = 'mx-auto w-full max-w-7xl px-4 mt-4 sm:mt-6 md:mt-8 lg:mt-10'
+const bannerImageClass = 'w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg'
 
 export default function HomeContent() {
   return (
@@ -32,15 +36,14 @@ export default function HomeContent() {
         variants={bannerReveal}
         whileHover={{ y: -8, scale: 1.015 }}
         transition={{ type: 'spring', stiffness: 220, damping: 18 }}
-        className='mx-auto w-full max-w-7xl px-4 mt-4 sm:mt-6 md:mt-8 lg:mt-10'
+        className={bannerWrapperClass}
       >
-        <Image
-          src={bannerOne}
-          alt='Bộ sưu tập hoa tươi Hoa Theo Mùa'
-          className='w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-secondary/80'
+        <ConfigurableBanner
+          slot={BANNER_SLOTS.homeCollection}
+          fallbackSrc={bannerOne}
+          fallbackAlt='Bộ sưu tập hoa tươi Hoa Theo Mùa'
+          className={`${bannerImageClass} border-2 border-secondary/80`}
           sizes='(min-width: 1280px) 1200px, 100vw'
-          loading='lazy'
-          quality={65}
         />
       </motion.div>
 
@@ -53,15 +56,14 @@ export default function HomeContent() {
         variants={bannerReveal}
         whileHover={{ y: -8, scale: 1.015 }}
         transition={{ type: 'spring', stiffness: 220, damping: 18 }}
-        className='mx-auto w-full max-w-7xl px-4 mt-4 sm:mt-6 md:mt-8 lg:mt-10'
+        className={bannerWrapperClass}
       >
-        <Image
-          src={saleBanner}
-          alt='Ưu đãi hoa tươi Hoa Theo Mùa'
-          className='w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-primary/5'
+        <ConfigurableBanner
+          slot={BANNER_SLOTS.homeSale}
+          fallbackSrc={saleBanner}
+          fallbackAlt='Ưu đãi hoa tươi Hoa Theo Mùa'
+          className={`${bannerImageClass} border-2 border-primary/5`}
           sizes='(min-width: 1280px) 1200px, 100vw'
-          loading='lazy'
-          quality={65}
         />
       </motion.div>
 

@@ -7,6 +7,8 @@ import PolicySection from '../_components/policy-section'
 import { PRIVACY_CONTENT } from './_content'
 import { buildPrivacyJsonLd, generatePrivacyMetadata } from './_seo'
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
   return generatePrivacyMetadata(locale)

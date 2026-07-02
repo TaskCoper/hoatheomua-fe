@@ -1,5 +1,6 @@
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import { productListQuery } from '@/features/products/queries'
+import { getCachedProducts } from '@/features/products/queries.server'
 import { routing, type Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
@@ -28,16 +29,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
   setRequestLocale(locale)
 
   const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(
-    productListQuery(
-      {
-        size: SIGNATURE_BOUQUETS_SIZE,
-        categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
-        sort: DEFAULT_PRODUCT_SORT
-      },
-      locale
-    )
-  )
+  const listParams = {
+    size: SIGNATURE_BOUQUETS_SIZE,
+    categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
+    sort: DEFAULT_PRODUCT_SORT
+  }
+  const options = productListQuery(listParams, locale)
+
+  try {
+    const data = await getCachedProducts(listParams, locale)
+    queryClient.setQueryData(options.queryKey, data)
+  } catch (error) {
+    console.error('[SSR] home signature bouquets prefetch failed:', error)
+  }
 
   return (
     <>

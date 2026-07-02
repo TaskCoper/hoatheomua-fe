@@ -2,7 +2,7 @@
 
 import type { ProductDetail } from '@/features/products/types'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
-import { ProductSignatureMap, ProductsSignatureConfigItem } from '@/types/config.type'
+import { BANNER_SLOTS, ProductSignatureMap, ProductsSignatureConfigItem } from '@/types/config.type'
 import { useState } from 'react'
 import FloatingPetals from '../../../_components/floating-petals'
 import ProductsPromiseSection from '../../_components/products-promise-section'
@@ -99,7 +99,7 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
         </div>
       </section>
 
-      <ProductsPromiseSection />
+      <ProductsPromiseSection slot={BANNER_SLOTS.product} />
 
       <FloatingPetals />
     </div>

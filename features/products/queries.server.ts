@@ -1,9 +1,21 @@
 import 'server-only'
 
 import { getQueryClient } from '@/lib/react-query-client'
+import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 import { fetchProductDetail, productListQuery } from './queries'
+import type { ProductListParams } from './services'
+import productService from './services'
 import type { ProductListResponse } from './types'
+
+export const PRODUCTS_CACHE_TAG = 'products'
+
+export const getCachedProducts = (params: ProductListParams, locale: string) =>
+  unstable_cache(
+    () => productService.getProducts({ ...params, locale }),
+    ['products-list', locale, JSON.stringify(params)],
+    { tags: [PRODUCTS_CACHE_TAG], revalidate: 60 }
+  )()
 
 /**
  * Returns the most-recent product IDs as strings, suitable for

@@ -1,3 +1,43 @@
+// Shared primitives
+export interface LocalizedText {
+  vi: string
+  en: string
+}
+
+export interface ConfigOption {
+  label: string
+  value: string
+}
+
+export interface ConfigValidation {
+  url?: boolean
+  email?: boolean
+}
+
+export interface CollectionSection {
+  title: LocalizedText
+  description: LocalizedText
+  enabled: boolean
+}
+
+/**
+ * Generic wrapper for configs whose value is a JSON-encoded string
+ * (Occasions, Mainline, Feedbacks, Products signature, etc.).
+ * Parse `value.value` into the collection shape before rendering.
+ */
+export interface JsonConfigItem<K extends string, G extends string, R extends boolean = false> {
+  key: K
+  value: {
+    group: G
+    label: string
+    value: string
+    options: []
+    required: R
+    inputType: 'json'
+    validations: []
+  }
+}
+
 // Company
 export type CompanyConfigKey =
   | 'company.director'
@@ -12,23 +52,14 @@ export type CompanyConfigGroup = 'company'
 
 export type CompanyConfigInputType = 'text' | 'file' | 'multiSelect'
 
-export interface CompanyConfigOption {
-  label: string
-  value: string
-}
-
-export interface CompanyConfigValidation {
-  url?: boolean
-}
-
 interface BaseCompanyConfigValue {
   group: CompanyConfigGroup
   label: string
-  options: CompanyConfigOption[]
+  options: ConfigOption[]
   required: boolean
   inputType: CompanyConfigInputType
   description?: string
-  validations: CompanyConfigValidation[]
+  validations: ConfigValidation[]
 }
 
 export type CompanyConfigItem =
@@ -79,7 +110,7 @@ export type CompanyConfigItem =
         value: string[]
         inputType: 'multiSelect'
         required: true
-        options: CompanyConfigOption[]
+        options: ConfigOption[]
         validations: []
       }
     }
@@ -116,25 +147,15 @@ export type ContactConfigGroup = 'contact'
 
 export type ContactConfigInputType = 'text'
 
-export interface ContactConfigOption {
-  label: string
-  value: string
-}
-
-export interface ContactConfigValidation {
-  email?: boolean
-  url?: boolean
-}
-
 interface BaseContactConfigValue {
   group: ContactConfigGroup
   label: string
   value: string
-  options: ContactConfigOption[]
+  options: ConfigOption[]
   required: boolean
   inputType: ContactConfigInputType
   description?: string
-  validations: ContactConfigValidation[]
+  validations: ConfigValidation[]
 }
 
 export type ContactConfigItem =
@@ -182,23 +203,6 @@ export type ContactConfigItem =
     }
 
 // Occasions
-export type OccasionsConfigKey = 'products.occasions'
-
-export type OccasionsConfigGroup = 'products'
-
-export type OccasionsConfigInputType = 'json'
-
-export interface LocalizedText {
-  vi: string
-  en: string
-}
-
-export interface OccasionsCollectionSection {
-  title: LocalizedText
-  description: LocalizedText
-  enabled: boolean
-}
-
 export interface OccasionCampaign {
   id: string
   campaignName: LocalizedText
@@ -226,73 +230,23 @@ export interface OccasionCard extends BaseCard {
 }
 
 export interface OccasionsCollection {
-  section: OccasionsCollectionSection
+  section: CollectionSection
   cards: OccasionCard[]
 }
 
-export interface OccasionsCollectionConfigItem {
-  key: OccasionsConfigKey
-  value: {
-    group: OccasionsConfigGroup
-    label: string
-    value: string
-    options: []
-    required: false
-    inputType: OccasionsConfigInputType
-    validations: []
-  }
-}
+export type OccasionsCollectionConfigItem = JsonConfigItem<'products.occasions', 'products'>
 
 // Mainline
-export type MainlineConfigKey = 'products.mainline'
-
-export type MainlineConfigGroup = 'products'
-
-export type MainlineConfigInputType = 'json'
-
 export type MainlineCard = BaseCard
 
 export interface MainlineCollection {
-  section: OccasionsCollectionSection
+  section: CollectionSection
   cards: MainlineCard[]
 }
 
-export interface MainlineCollectionConfigItem {
-  key: MainlineConfigKey
-  value: {
-    group: MainlineConfigGroup
-    label: string
-    value: string
-    options: []
-    required: false
-    inputType: MainlineConfigInputType
-    validations: []
-  }
-}
+export type MainlineCollectionConfigItem = JsonConfigItem<'products.mainline', 'products'>
 
 // Feedbacks
-export type FeedbacksConfigKey = 'feedbacks.collection'
-
-export type FeedbacksConfigGroup = 'feedbacks'
-
-export type FeedbacksConfigInputType = 'json'
-
-export interface FeedbacksConfigOption {
-  label: string
-  value: string
-}
-
-export interface FeedbacksConfigValidation {
-  url?: boolean
-  email?: boolean
-}
-
-export interface FeedbacksCollectionSection {
-  title: LocalizedText
-  description: LocalizedText
-  enabled: boolean
-}
-
 export type FeedbackSource = 'messenger' | 'zalo' | 'other'
 
 export interface FeedbackItem {
@@ -311,49 +265,86 @@ export interface FeedbackItem {
 }
 
 export interface FeedbacksCollection {
-  section: FeedbacksCollectionSection
+  section: CollectionSection
   items: FeedbackItem[]
 }
 
-export interface FeedbacksCollectionConfigItem {
-  key: FeedbacksConfigKey
-  value: {
-    group: FeedbacksConfigGroup
-    label: string
-    value: string
-    options: []
-    required: false
-    inputType: FeedbacksConfigInputType
-    validations: []
-  }
-}
+export type FeedbacksCollectionConfigItem = JsonConfigItem<'feedbacks.collection', 'feedbacks'>
 
 // Products
-export type ProductsConfigKey = 'products.signature'
-
-export type ProductsConfigGroup = 'products'
-
-export type ProductsConfigInputType = 'json'
-
 export interface ProductSignatureMap {
   [productId: string]: string
 }
 
-export interface ProductsSignatureConfigItem {
-  key: ProductsConfigKey
-  value: {
-    group: ProductsConfigGroup
-    label: string
-    value: string
-    options: []
-    required: true
-    inputType: ProductsConfigInputType
-    validations: []
-  }
-}
+export type ProductsSignatureConfigItem = JsonConfigItem<'products.signature', 'products', true>
 
 // Order tags
 export interface OrderTag {
   value: number[]
   options: { label: string; value: number }[]
+}
+
+// Banners
+export type BannersConfigKey = 'banners.collection'
+
+export type BannersConfigGroup = 'banners'
+
+export type BannersConfigInputType = 'json'
+
+export type BannersConfigKind = 'content'
+
+export const BANNER_SLOTS = {
+  homeCollection: 'home.collection',
+  homeSale: 'home.sale',
+  products: 'products',
+  product: 'product'
+} as const
+
+export type BannerSlotKnown = (typeof BANNER_SLOTS)[keyof typeof BANNER_SLOTS]
+
+export type BannerSlot = BannerSlotKnown | (string & {})
+
+export interface BannersCollectionSection {
+  enabled: boolean
+}
+
+export interface BannerItem {
+  id: string
+  slot: BannerSlot
+  image: string
+  href: string
+  openInNewTab: boolean
+  alt: LocalizedText
+  enabled: boolean
+}
+
+export interface BannersCollection {
+  section: BannersCollectionSection
+  items: BannerItem[]
+}
+
+export interface BannersCollectionConfigValue {
+  group: BannersConfigGroup
+  label: string
+
+  /**
+   * Backend stores this as JSON string.
+   * Parse it into BannersCollection before rendering/editing.
+   */
+  value: string
+
+  options: []
+  required: false
+  inputType: BannersConfigInputType
+  validations: []
+}
+
+export interface BannersCollectionConfigItem {
+  id: string
+  key: BannersConfigKey
+  group: BannersConfigGroup
+  isPublic: boolean
+  value: BannersCollectionConfigValue
+  kind: BannersConfigKind
+  userId: string
 }

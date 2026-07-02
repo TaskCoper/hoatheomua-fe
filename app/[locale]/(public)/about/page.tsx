@@ -11,6 +11,8 @@ import AboutTestimonialsSection from './_components/about-testimonials-section'
 import AboutVisionMissionSection from './_components/about-vision-mission-section'
 import { buildAboutJsonLd, generateAboutMetadata } from './_seo'
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
   return generateAboutMetadata(locale)

@@ -13,6 +13,8 @@ import B2BServicesSection from './_components/b2b-services-section'
 import B2BTrustBarSection from './_components/b2b-trust-bar-section'
 import { buildB2BJsonLd, generateB2BMetadata } from './_seo'
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
   return generateB2BMetadata(locale)
