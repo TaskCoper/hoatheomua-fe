@@ -10,5 +10,5 @@ export const getCachedJobs = (params: JobDescriptionParam, locale: string) =>
   unstable_cache(
     () => jobDescriptionService.getJobDescriptions(params),
     ['recruitment-list', locale, JSON.stringify(params)],
-    { tags: [RECRUITMENT_CACHE_TAG], revalidate: 60 }
+    { tags: [RECRUITMENT_CACHE_TAG], revalidate: 600 }
   )()

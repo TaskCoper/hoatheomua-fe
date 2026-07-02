@@ -16,7 +16,7 @@ export const buildEstimatePayload = (
     fullName: values.fullName,
     phone: values.phone,
     remarks: values.remarks,
-    orderTime: values.orderTime ? Math.floor(new Date(values.orderTime).getTime() / 1000) : 0,
+    orderTime: values.orderTime,
     items: items.map((item) => ({
       itemId: String(item.productId),
       number: item.quantity
