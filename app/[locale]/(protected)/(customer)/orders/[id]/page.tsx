@@ -2,15 +2,27 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 import { Spinner } from '@/components/ui/spinner'
+import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useGetOrder } from '@/features/orders/hooks/use-get-order'
 import { useGetOrderStatus } from '@/features/orders/hooks/use-get-order-status'
 import { InvoiceType, InvoiceTypeLabel, OrderStatus, type OrderDetail } from '@/features/orders/types'
 import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
+import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { Link } from '@/lib/i18n/navigation'
+import { Link, useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import {
   ArrowLeft02Icon,
@@ -36,7 +48,8 @@ import { useQueries, useQueryClient } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 
 const vndFormatter = new Intl.NumberFormat('vi-VN', {
   style: 'currency',
@@ -146,12 +159,44 @@ interface OrderDetailContentProps {
 
 function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProps) {
   const locale = useLocale()
+  const router = useRouter()
   const isPaid = order.status === OrderStatus.Paid
+  const isPendingOrder = order.status === OrderStatus.Pending
   const statusLabel = isPaid ? t('orders.list.status.Paid') : t('orders.list.status.Pending')
+
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
+  const { cancelOrder, isCancellingOrder } = useCancelOrder()
+
+  const handleConfirmCancel = () => {
+    cancelOrder(
+      { id: order.orderId },
+      {
+        onSuccess: () => {
+          toast.success(t('orders.list.detail.cancelSuccess'))
+          setIsCancelDialogOpen(false)
+          router.push('/orders')
+        },
+        onError: () => {
+          toast.error(t('orders.list.detail.cancelError'))
+        }
+      }
+    )
+  }
+
+  const { orderTags } = useGetOrderTags()
+  const deliveryTagLabel = useMemo(() => {
+    const options = orderTags?.options
+    if (!options?.length || !order.tagsId?.length) {
+      return null
+    }
+    const byValue = new Map(options.map((opt) => [opt.value, opt.label]))
+    const labels = order.tagsId.map((id) => byValue.get(id)).filter(Boolean) as string[]
+    return labels.length ? labels.join(', ') : null
+  }, [orderTags, order.tagsId])
 
   const qrDetails = useMemo(() => parseQrDetails(order.qrCodeUrl), [order.qrCodeUrl])
 
-  const items = order.details ?? []
+  const items = useMemo(() => order.details ?? [], [order.details])
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.itemId))), [items])
 
   const productQueries = useQueries({
@@ -229,7 +274,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
             <Badge
               variant='outline'
               className={cn(
-                'gap-1 rounded-full px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-wider',
+                'gap-1 rounded-full px-2 py-1 text-[0.7rem] font-semibold tracking-wider',
                 isPaid ? 'border-leaf/30 bg-leaf/10 text-leaf' : 'border-warning/40 bg-warning/10 text-warning'
               )}
             >
@@ -438,15 +483,13 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               <SectionCard icon={UserIcon} title={t('orders.list.detail.recipientHeading')}>
                 <ul className='space-y-3 text-sm'>
                   {recipientRows.map((row) => (
-                    <li key={row.label} className='flex items-start gap-2.5'>
+                    <li key={row.label} className='flex items-center gap-2.5'>
                       <span className='mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
                         <HugeiconsIcon icon={row.icon} strokeWidth={1.75} className='size-3.5' />
                       </span>
                       <div className='min-w-0'>
-                        <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
-                          {row.label}
-                        </p>
-                        <p className='wrap-break-word font-medium text-foreground'>{row.value}</p>
+                        <p className='text-[0.7rem] font-medium text-muted-foreground'>{row.label}</p>
+                        <p className='wrap-break-word font-semibold text-foreground'>{row.value}</p>
                       </div>
                     </li>
                   ))}
@@ -472,11 +515,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                   icon={Rocket02Icon}
                   tone='primary'
                   label={t('orders.list.detail.timelineCreated')}
-                  value={
-                    order.orderTime > 0
-                      ? formatDateTime(order.orderTime * 1000, 'dateTimeMedium')
-                      : t('orders.list.detail.noValue')
-                  }
+                  value={formatDateTime(order.createAt, 'dateTimeMedium')}
                   isLast={!order.transaction}
                 />
                 {order.transaction ? (
@@ -486,11 +525,56 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     label={t('orders.list.detail.timelinePaid')}
                     value={formatDateTime(order.transaction.transactionDate, 'dateTimeMedium')}
                     subtitle={formatVnd(order.transaction.transferAmount)}
+                    isLast={false}
+                  />
+                ) : null}
+                {order.transaction ? (
+                  <TimelineItem
+                    icon={DeliveryTruck02Icon}
+                    tone='primary'
+                    label={t('orders.list.detail.timelineDelivery')}
+                    value={
+                      order.orderTime > 0 ? (
+                        <span className='inline-flex flex-wrap items-baseline gap-x-1'>
+                          <span>{formatDateTime(order.orderTime * 1000, 'dateMedium')}</span>
+                          {deliveryTagLabel ? (
+                            <span className='text-xs font-medium text-primary'>({deliveryTagLabel})</span>
+                          ) : null}
+                        </span>
+                      ) : (
+                        t('orders.list.detail.timelineDeliveryImmediate')
+                      )
+                    }
                     isLast
                   />
                 ) : null}
               </ol>
             </SectionCard>
+
+            {isPendingOrder ? (
+              <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant='destructive'>{t('orders.list.detail.cancelCta')}</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{t('orders.list.detail.cancelConfirmTitle')}</DialogTitle>
+                    <DialogDescription>{t('orders.list.detail.cancelConfirmDescription')}</DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant='outline' disabled={isCancellingOrder}>
+                        {t('orders.list.detail.cancelKeep')}
+                      </Button>
+                    </DialogClose>
+                    <Button variant='destructive' onClick={handleConfirmCancel} disabled={isCancellingOrder}>
+                      {isCancellingOrder ? <Spinner className='size-4' /> : null}
+                      {t('orders.list.detail.cancelConfirmCta')}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ) : null}
           </aside>
         </div>
       </div>
@@ -564,9 +648,9 @@ function TimelineItem({ icon, tone, label, value, subtitle, isLast }: TimelineIt
         {!isLast ? <span aria-hidden='true' className='mt-1.5 w-px flex-1 bg-border/60' /> : null}
       </div>
       <div className={cn('min-w-0 flex-1', !isLast && 'pb-5')}>
-        <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>{label}</p>
-        <p className='mt-1 text-sm font-medium text-foreground'>{value}</p>
-        {subtitle ? <p className='mt-1 text-xs font-semibold text-primary'>{subtitle}</p> : null}
+        <p className='text-[0.7rem] font-semibold text-muted-foreground'>{label}</p>
+        <p className='text-xs font-semibold text-foreground/80'>{value}</p>
+        {subtitle ? <p className='mt-1 text-[0.625rem] font-semibold text-primary'>{subtitle}</p> : null}
       </div>
     </li>
   )

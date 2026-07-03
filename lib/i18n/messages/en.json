@@ -708,7 +708,8 @@
       "trackAhamove": "Track on Ahamove",
       "status": {
         "Pending": "Pending",
-        "Paid": "Paid"
+        "Paid": "Paid",
+        "Cancelled": "Cancelled"
       },
       "qr": {
         "title": "Pay this order",
@@ -744,9 +745,17 @@
         "timelineCreated": "Order created",
         "timelinePaid": "Payment confirmed",
         "timelineDelivery": "Scheduled delivery",
+        "timelineDeliveryImmediate": "Immediately after payment",
         "remarksHeading": "Customer notes",
         "trackingHeading": "Tracking",
-        "noValue": "—"
+        "noValue": "—",
+        "cancelCta": "Cancel order",
+        "cancelConfirmTitle": "Cancel this order?",
+        "cancelConfirmDescription": "This will cancel your order and cannot be undone.",
+        "cancelConfirmCta": "Yes, cancel order",
+        "cancelKeep": "Keep order",
+        "cancelSuccess": "Order cancelled",
+        "cancelError": "Could not cancel order"
       }
     }
   },

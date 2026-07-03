@@ -2,14 +2,16 @@ import { I18nKey } from '@/lib/i18n/types'
 
 export const OrderStatus = {
   Pending: 'Pending',
-  Paid: 'Paid'
+  Paid: 'Paid',
+  Cancelled: 'Cancelled'
 } as const
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 export const OrderStatusLabel: Record<OrderStatus, I18nKey> = {
   [OrderStatus.Pending]: 'orders.list.status.Pending',
-  [OrderStatus.Paid]: 'orders.list.status.Paid'
+  [OrderStatus.Paid]: 'orders.list.status.Paid',
+  [OrderStatus.Cancelled]: 'orders.list.status.Cancelled'
 }
 
 export type OrderStatusLabel = (typeof OrderStatusLabel)[keyof typeof OrderStatusLabel]
@@ -37,6 +39,7 @@ export interface OrderTransaction {
 export interface OrderDetail {
   orderId: string
   status: OrderStatus
+  createAt: string
   trackNumber: string
   ahahaMoveOrderId: string | null
   ahahaMoveTrackingUrl: string | null

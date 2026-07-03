@@ -71,6 +71,12 @@ class OrderService {
     return data
   }
 
+  cancelOrder = async ({ id }: { id: string }) => {
+    const { data } = await api.patch(`${this.baseUrl}/${id}/cancel`)
+
+    return data
+  }
+
   estimateOrder = async ({ body }: { body: EstimatePayload }) => {
     const { data } = await api.post<
       BaseResponse<{
