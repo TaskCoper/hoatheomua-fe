@@ -183,14 +183,11 @@ export default function B2BServicesSection() {
                         : 'size-11 bg-primary text-primary-foreground sm:size-12'
                   }`}
                 >
-                  <HugeiconsIcon
-                    icon={service.icon}
-                    className={isFeatured ? 'size-6 sm:size-7' : 'size-5 sm:size-6'}
-                  />
+                  <HugeiconsIcon icon={service.icon} className={isFeatured ? 'size-6 sm:size-7' : 'size-5 sm:size-6'} />
                 </motion.div>
 
                 <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-widest ring-1 ${
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold tracking-wide ring-1 ${
                     isFeatured
                       ? 'bg-primary-foreground/12 text-primary-foreground ring-primary-foreground/25 backdrop-blur-sm sm:text-xs'
                       : service.accent === 'leaf'

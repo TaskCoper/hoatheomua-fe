@@ -283,6 +283,14 @@
   }
 }
 
+@keyframes nav-scroll {
+  to {
+    background-color: color-mix(in srgb, var(--secondary) 30%, transparent);
+    border-bottom-color: color-mix(in srgb, var(--secondary) 40%, transparent);
+    backdrop-filter: blur(12px);
+  }
+}
+
 @keyframes wind-wiggle {
   0%,
   100% {

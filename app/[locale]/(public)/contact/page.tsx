@@ -1,16 +1,15 @@
-import { contactLinks } from '@/features/contact/constants'
 import { buildContactJsonLd, generateContactMetadata } from '@/features/contact/seo'
 import type { Locale } from '@/lib/i18n/routing'
-import { JsonLd } from '@/shared/seo'
 import contactFlowerGarden from '@/public/images/contact-removebg-preview.png'
 import cornerOneFlower from '@/public/images/Corner1_bg_rm.png'
 import cornerTwoFlower from '@/public/images/Corner2_bg_rm.png'
-import { HugeiconsIcon } from '@hugeicons/react'
+import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
 import { SparkleDivider } from '../_components/sparkle-dividier'
 import ContactForm from './_components/contact-form'
+import ContactLinks from './_components/contact-links'
 
 export const revalidate = 3600
 
@@ -96,26 +95,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
                   </div>
                 </div>
 
-                <div className='grid gap-2.5 sm:grid-cols-2 md:max-lg:mx-auto md:max-lg:w-full md:max-lg:max-w-[540px] lg:grid-cols-1 xl:grid-cols-2'>
-                  {contactLinks.map((link) => (
-                    <a
-                      key={link.valueKey}
-                      href={link.href}
-                      className='flex min-h-14 min-w-0 items-center gap-3 rounded-2xl border border-secondary/30 bg-secondary/25 px-3.5 py-2.5 text-foreground shadow-[0_0.35rem_1rem_rgb(81_108_108_/_5%)] transition-colors hover:bg-secondary/35'
-                    >
-                      <span className='grid size-8 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground'>
-                        <HugeiconsIcon icon={link.icon} strokeWidth={2} className='size-4' />
-                      </span>
-
-                      <span className='min-w-0'>
-                        <span className='block text-[0.625rem] font-medium text-muted-foreground'>
-                          {t(link.labelKey)}
-                        </span>
-                        <span className='block truncate text-xs font-semibold text-primary'>{t(link.valueKey)}</span>
-                      </span>
-                    </a>
-                  ))}
-                </div>
+                <ContactLinks />
 
                 <Image
                   src={contactFlowerGarden}

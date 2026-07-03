@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { HotelIcon, QuoteUpIcon } from '@hugeicons/core-free-icons'
+import { QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
@@ -9,8 +9,8 @@ import { useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
-import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
 
 const PHOTOS = Array.from({ length: 18 }, (_, i) => {
@@ -72,16 +72,24 @@ export default function B2BCaseStudySection() {
               {/* TODO(b2b): swap placeholder with Indigo Saigon Hotel SVG when brand team delivers */}
               <div
                 aria-label={t('b2b.caseStudies.indigo.logoAlt')}
-                className='flex h-12 items-center gap-2 rounded-xl bg-secondary/40 px-3 ring-1 ring-primary/10 sm:h-14 sm:px-4'
+                className='flex items-center gap-2 rounded-xl bg-secondary/40 ring-1 ring-primary/10 py-1.5 pl-2 pr-3'
               >
-                <HugeiconsIcon icon={HotelIcon} className='size-5 text-primary' />
-                <span className='font-title text-sm font-bold tracking-tight text-primary sm:text-base'>
-                  {t('b2b.caseStudies.indigo.logoAlt')}
-                </span>
+                <Image
+                  src='/images/b2b/logos/hospitality/indigo.png'
+                  alt={t('b2b.caseStudies.indigo.logoAlt')}
+                  width={35}
+                  height={35}
+                  className='rounded-md'
+                />
+                <div className='flex flex-col -space-y-0.5'>
+                  <span className='font-title text-sm font-bold tracking-tight text-primary sm:text-base'>
+                    {t('b2b.caseStudies.indigo.logoAlt')}
+                  </span>
+                  <span className='text-[0.625rem] font-semibold tracking-wide'>
+                    {t('b2b.caseStudies.indigo.badge')}
+                  </span>
+                </div>
               </div>
-              <span className='inline-flex items-center rounded-full bg-leaf/15 px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-leaf ring-1 ring-leaf/20'>
-                {t('b2b.caseStudies.indigo.badge')}
-              </span>
             </div>
 
             <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{t('b2b.caseStudies.indigo.summary')}</p>
@@ -102,7 +110,7 @@ export default function B2BCaseStudySection() {
               <span className='block font-title text-sm font-bold text-primary sm:text-base'>
                 {t('b2b.caseStudies.indigo.quoteAuthor')}
               </span>
-              <span className='block text-[0.6875rem] font-medium uppercase tracking-widest text-muted-foreground sm:text-xs'>
+              <span className='block text-[0.6875rem] font-medium tracking-wide text-muted-foreground sm:text-xs'>
                 {t('b2b.caseStudies.indigo.quoteRole')}
               </span>
             </figcaption>

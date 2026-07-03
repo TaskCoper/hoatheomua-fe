@@ -93,6 +93,11 @@ const LOGO_GROUPS = [
         id: 'gelex',
         nameKey: 'b2b.trustBar.logos.groups.enterprise.items.gelex.name',
         src: '/images/b2b/logos/enterprise/gelex.png'
+      },
+      {
+        id: 'masan',
+        nameKey: 'b2b.trustBar.logos.groups.enterprise.items.masan.name',
+        src: '/images/b2b/logos/enterprise/masan.png'
       }
     ]
   }
@@ -144,7 +149,7 @@ export default function B2BTrustBarSection() {
         variants={fadeUp}
         className='relative mx-auto mt-5 w-full max-w-7xl space-y-3 sm:space-y-4'
       >
-        <p className='text-center text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground sm:text-xs'>
+        <p className='text-center text-[0.625rem] font-semibold uppercase tracking-wide text-muted-foreground sm:text-xs'>
           {t('b2b.trustBar.eyebrow')}
         </p>
 

@@ -64,7 +64,7 @@ export default function B2BProcessSection() {
         className='mx-auto w-full max-w-7xl space-y-1 sm:space-y-1.5 md:space-y-2'
       >
         <div className='flex justify-center'>
-          <span className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-primary ring-1 ring-primary/15 sm:text-xs'>
+          <span className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-3 py-1 text-[0.625rem] font-semibold tracking-wide text-primary ring-1 ring-primary/15 sm:text-xs'>
             <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
             {t('b2b.process.eyebrow')}
           </span>

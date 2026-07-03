@@ -34,7 +34,7 @@ export default function ForgotPasswordModalPage() {
 
     setIsUserClosing(true)
     closeTimeoutRef.current = setTimeout(() => {
-      router.replace('/')
+      router.back()
     }, EXIT_ANIMATION_MS)
   }
 

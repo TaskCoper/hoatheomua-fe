@@ -29,7 +29,7 @@ export default function SignInProvider() {
               {t('auth.signIn.submit')}
             </Button>
 
-            <Link href='/sign-up' className='block text-center text-sm text-muted-foreground'>
+            <Link href='/sign-up' replace className='block text-center text-sm text-muted-foreground'>
               <Button variant='link'>{t('auth.signIn.signUpPrompt')}</Button>
             </Link>
           </div>

@@ -325,7 +325,13 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
                     mode='single'
                     selected={selectedDate}
                     onSelect={(date) => {
-                      field.onChange(date ? Math.floor(date.getTime() / 1000) : 0)
+                      if (!date) {
+                        field.onChange(0)
+                        setOrderTimeOpen(false)
+                        return
+                      }
+                      const isToday = date.toDateString() === new Date().toDateString()
+                      field.onChange(isToday ? 0 : Math.floor(date.getTime() / 1000))
                       setOrderTimeOpen(false)
                     }}
                     disabled={[{ before: minOrderDate }, { after: maxOrderDate }]}

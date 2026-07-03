@@ -4,11 +4,16 @@ import { useSelectedLayoutSegment } from 'next/navigation'
 import Header from './header'
 import HomeHeader from './home-header'
 
-export default function PublicHeader() {
+interface PublicHeaderProps {
+  homeVideoSrc?: string | null
+  homePosterSrc?: string
+}
+
+export default function PublicHeader({ homeVideoSrc, homePosterSrc }: PublicHeaderProps) {
   const segment = useSelectedLayoutSegment()
 
   if (segment === null) {
-    return <HomeHeader />
+    return <HomeHeader videoSrc={homeVideoSrc} posterSrc={homePosterSrc} />
   }
 
   return <Header />

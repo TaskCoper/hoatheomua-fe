@@ -89,7 +89,7 @@ export default function B2BHeroSection() {
       <div className='relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14'>
         <motion.div variants={containerStagger} className='space-y-5 lg:col-span-8 lg:max-w-2xl'>
           <motion.div variants={fadeUp}>
-            <span className='inline-flex items-center gap-1.5 rounded-full bg-card/95 px-3.5 py-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-primary ring-1 ring-primary/15 shadow-[0_0.25rem_0.75rem_rgb(81_108_108/8%)] sm:text-xs lg:bg-white/12 lg:text-white lg:ring-white/30 lg:shadow-none lg:backdrop-blur-sm'>
+            <span className='inline-flex items-center gap-1.5 rounded-full bg-card/95 px-3.5 py-1.5 text-[0.625rem] font-semibold tracking-wide text-primary ring-1 ring-primary/15 shadow-[0_0.25rem_0.75rem_rgb(81_108_108/8%)] sm:text-xs lg:bg-white/12 lg:text-white lg:ring-white/30 lg:shadow-none lg:backdrop-blur-sm'>
               <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
               {t('b2b.hero.eyebrow')}
             </span>

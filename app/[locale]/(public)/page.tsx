@@ -1,3 +1,4 @@
+import { getCompanyBgVideo } from '@/features/company/queries.server'
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import { productListQuery } from '@/features/products/queries'
 import { getCachedProducts } from '@/features/products/queries.server'
@@ -43,9 +44,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
     console.error('[SSR] home signature bouquets prefetch failed:', error)
   }
 
+  const homeVideoSrc = await getCompanyBgVideo()
+
   return (
     <>
       <JsonLd data={buildHomeJsonLd()} />
+
+      {homeVideoSrc ? <link rel='preload' as='video' href={homeVideoSrc} /> : null}
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <HomeContent />
