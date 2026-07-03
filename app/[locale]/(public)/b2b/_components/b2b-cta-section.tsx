@@ -55,9 +55,6 @@ export default function B2BCtaSection() {
                 <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
                 {t('b2b.cta.eyebrow')}
               </span>
-              <span className='text-[0.625rem] font-medium uppercase tracking-widest text-primary-foreground/70 sm:text-xs'>
-                {t('b2b.cta.subEyebrow')}
-              </span>
             </motion.div>
 
             <motion.h2
@@ -67,10 +64,7 @@ export default function B2BCtaSection() {
               {t('b2b.cta.title')}
             </motion.h2>
 
-            <motion.p
-              variants={fadeUp}
-              className='text-sm leading-relaxed text-primary-foreground/85 sm:text-base'
-            >
+            <motion.p variants={fadeUp} className='text-sm leading-relaxed text-primary-foreground/85 sm:text-base'>
               {t('b2b.cta.description')}
             </motion.p>
 
