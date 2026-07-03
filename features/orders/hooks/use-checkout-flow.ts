@@ -42,6 +42,8 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
       return
     }
 
+    methods.clearErrors()
+
     const parsed = createEstimateSchema(t).safeParse(methods.getValues())
     if (!parsed.success) {
       for (const issue of parsed.error.issues) {

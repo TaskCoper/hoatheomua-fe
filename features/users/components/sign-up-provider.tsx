@@ -26,7 +26,7 @@ export default function SignUpProvider() {
             {isSigningUp ? <Spinner /> : null}
             {t('auth.signUp.submit')}
           </Button>
-          <Link href='/sign-in' className='block text-center text-sm text-muted-foreground'>
+          <Link href='/sign-in' replace className='block text-center text-sm text-muted-foreground'>
             <Button variant='link'>{t('auth.signUp.signUpPrompt')}</Button>
           </Link>
         </div>

@@ -1,9 +1,10 @@
-import NavBar from './nav-bar'
+import NavShell from './nav-shell'
 
 export default function Header() {
   return (
-    <header className='mx-auto w-full max-w-7xl p-2 sm:p-4 lg:p-6'>
-      <NavBar />
-    </header>
+    <>
+      <NavShell />
+      <div aria-hidden='true' className='h-16 sm:h-[4.5rem] lg:h-20' />
+    </>
   )
 }

@@ -93,6 +93,11 @@ const LOGO_GROUPS = [
         id: 'gelex',
         nameKey: 'b2b.trustBar.logos.groups.enterprise.items.gelex.name',
         src: '/images/b2b/logos/enterprise/gelex.png'
+      },
+      {
+        id: 'masan',
+        nameKey: 'b2b.trustBar.logos.groups.enterprise.items.masan.name',
+        src: '/images/b2b/logos/enterprise/masan.png'
       }
     ]
   }

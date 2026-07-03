@@ -71,6 +71,7 @@ export default function SignInForm() {
               </div>
               <Link
                 href='/forgot-password'
+                replace
                 className='text-xs max-sm:min-w-25 font-medium text-primary transition-opacity hover:opacity-80'
               >
                 {t('auth.signIn.forgotPassword')}

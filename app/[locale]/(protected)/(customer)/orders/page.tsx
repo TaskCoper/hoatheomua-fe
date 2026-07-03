@@ -166,9 +166,10 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
       <Link
         href={`/orders/${order.orderId}`}
         aria-label={isPending ? t('orders.list.qr.title') : t('orders.list.detail.title')}
-        className='flex flex-col gap-4 p-2 outline-none sm:flex-row sm:items-center sm:p-3'
-      >
-        <div className='min-w-0 flex-1'>
+        className='absolute inset-0 z-0 rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-ring/40'
+      />
+      <div className='flex flex-col gap-4 p-2 sm:flex-row sm:items-center sm:p-3'>
+        <div className='pointer-events-none min-w-0 flex-1'>
           <div className='flex flex-wrap items-center justify-between gap-2'>
             <div className='flex items-center gap-2'>
               <span className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
@@ -222,7 +223,7 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
                 target='_blank'
                 rel='noreferrer noopener'
                 onClick={(event) => event.stopPropagation()}
-                className='inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
+                className='pointer-events-auto relative z-10 inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
               >
                 <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
                 {t('orders.list.trackAhamove')}
@@ -230,7 +231,7 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
             ) : null}
           </div>
         </div>
-      </Link>
+      </div>
     </motion.li>
   )
 }
