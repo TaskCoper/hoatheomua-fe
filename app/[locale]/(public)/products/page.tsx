@@ -9,10 +9,11 @@ import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
+import { Suspense } from 'react'
 import ProductsContent from './_components/products-content'
 
 const PRODUCTS_PAGE_SIZE = 12
-export const dynamic = 'force-dynamic'
+export const revalidate = 600
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
@@ -46,7 +47,9 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
       <JsonLd data={buildProductsCollectionJsonLd(locale, initialItems)} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProductsContent />
+        <Suspense fallback={null}>
+          <ProductsContent />
+        </Suspense>
       </HydrationBoundary>
     </>
   )

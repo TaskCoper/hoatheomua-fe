@@ -77,6 +77,11 @@ export default function SignatureBouquetsGrid() {
                 key={product.id}
                 className='group relative transition-transform duration-300 ease-out hover:-translate-y-3 hover:scale-[1.035]'
               >
+                <div
+                  aria-hidden='true'
+                  className='pointer-events-none absolute inset-0 rounded-[1.9rem] border border-primary opacity-0 transition-all duration-300 ease-out group-hover:translate-x-1.5 group-hover:translate-y-1.5 group-hover:opacity-100'
+                />
+
                 <Link
                   href={`/products/${product.id}`}
                   className='relative z-10 flex flex-col overflow-hidden rounded-[1.75rem] bg-card shadow-[0_0.8rem_2rem_rgb(81_108_108_/_7%)] transition-shadow duration-300 group-hover:bg-white group-hover:shadow-[0_1rem_2.5rem_rgb(81_108_108_/_16%)]'

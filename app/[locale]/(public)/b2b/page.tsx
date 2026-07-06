@@ -1,3 +1,4 @@
+import ScopedIntlProvider from '@/components/scoped-intl-provider'
 import type { Locale } from '@/lib/i18n/routing'
 import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
@@ -24,7 +25,7 @@ export default async function B2BPage({ params }: { params: Promise<{ locale: Lo
   const { locale } = await params
 
   return (
-    <>
+    <ScopedIntlProvider namespaces={['b2b']}>
       <JsonLd data={buildB2BJsonLd(locale)} />
       <div className='relative overflow-hidden'>
         <FloatingPetals />
@@ -38,6 +39,6 @@ export default async function B2BPage({ params }: { params: Promise<{ locale: Lo
         <B2BFaqSection />
         <B2BCtaSection />
       </div>
-    </>
+    </ScopedIntlProvider>
   )
 }
