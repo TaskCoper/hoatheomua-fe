@@ -122,6 +122,7 @@ export default function FlowersCarousel() {
                       }}
                       sizes='(min-width: 1024px) 320px, (min-width: 768px) 256px, 128px'
                       loading='lazy'
+                      fetchPriority='low'
                       quality={55}
                     />
                   </div>
