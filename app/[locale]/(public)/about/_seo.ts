@@ -1,3 +1,4 @@
+import { getCompanyGpkd, getContactPhone } from '@/features/company/queries.server'
 import type { Locale } from '@/lib/i18n/routing'
 import {
   buildBreadcrumbList,
@@ -54,10 +55,12 @@ const ABOUT_COPY = {
 export const generateAboutMetadata = (locale: Locale): Metadata =>
   buildPageMetadata({ locale, copy: ABOUT_COPY[locale], basePath: ABOUT_BASE_PATH })
 
-export const buildAboutJsonLd = (locale: Locale) => {
+export const buildAboutJsonLd = async (locale: Locale) => {
   const copy = ABOUT_COPY[locale]
   const path = localePath(locale, ABOUT_BASE_PATH)
   const url = localeUrl(locale, ABOUT_BASE_PATH)
+
+  const [taxId, telephone] = await Promise.all([getCompanyGpkd(), getContactPhone()])
 
   return {
     '@context': 'https://schema.org',
@@ -81,7 +84,7 @@ export const buildAboutJsonLd = (locale: Locale) => {
         url: SITE_URL,
         logo: { '@type': 'ImageObject', url: `${SITE_URL}/images/logo.png` },
         foundingDate: '2020-11-12',
-        taxID: '0316581199',
+        taxID: taxId ?? undefined,
         slogan: 'Hà Nội 12 Mùa Hoa',
         description:
           'Thương hiệu hoa tươi cao cấp tại TP. Hồ Chí Minh — mang đến giá trị cảm xúc, bình yên qua từng bó hoa theo mùa.',
@@ -93,7 +96,7 @@ export const buildAboutJsonLd = (locale: Locale) => {
         },
         contactPoint: {
           '@type': 'ContactPoint',
-          telephone: '+84983024353',
+          telephone: telephone ?? undefined,
           contactType: 'customer service',
           areaServed: 'VN',
           availableLanguage: ['Vietnamese', 'English']

@@ -20,10 +20,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
+  const aboutJsonLd = await buildAboutJsonLd(locale)
 
   return (
     <>
-      <JsonLd data={buildAboutJsonLd(locale)} />
+      <JsonLd data={aboutJsonLd} />
 
       <div className='relative overflow-hidden'>
         <FloatingPetals />

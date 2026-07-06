@@ -1,7 +1,7 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import z from 'zod'
 
-const PHONE_NUMBER_REGEX = /^[\d+\s\-()]+$/
+const VN_PHONE_REGEX = /^(?:\+84|0)[3-9]\d{8}$/
 
 export const createContactSchema = (t: TranslationFunction) =>
   z
@@ -42,19 +42,12 @@ export const createContactSchema = (t: TranslationFunction) =>
       phoneNumber: z
         .string()
         .trim()
-        .min(8, {
-          error: t('common.validation.minLength', {
-            field: t('contact.form.phoneNumber'),
-            min: 8
+        .min(1, {
+          error: t('common.validation.required', {
+            field: t('contact.form.phoneNumber')
           })
         })
-        .max(20, {
-          error: t('common.validation.maxLength', {
-            field: t('contact.form.phoneNumber'),
-            max: 20
-          })
-        })
-        .regex(PHONE_NUMBER_REGEX, {
+        .refine((val) => VN_PHONE_REGEX.test(val.replace(/[\s\-().]/g, '')), {
           error: t('common.validation.phoneNumber')
         }),
       topic: z

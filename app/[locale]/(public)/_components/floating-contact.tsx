@@ -1,27 +1,14 @@
 'use client'
 
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { I18nKey } from '@/lib/i18n/types'
+import { ContactConfigItem } from '@/types/config.type'
 import { VolumeHighIcon, VolumeMute02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 
-const CONTACT_CHANNELS = [
-  {
-    key: 'zalo',
-    href: 'https://zalo.me/hoatheomua',
-    src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-4-1.webp',
-    labelKey: 'floatingContact.zalo'
-  },
-  {
-    key: 'messenger',
-    href: 'https://www.facebook.com/messages/t/Hoatheomua.tana',
-    src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-1-1.webp',
-    labelKey: 'floatingContact.messenger'
-  }
-] as const
-
-const MUSIC_SRC = '/music/bg-music.mp3'
 const MUTED_STORAGE_KEY = 'floatingContact.musicMuted'
 const MUTED_CHANGE_EVENT = 'floating-contact:muted-change'
 const AUDIO_MOUNT_DELAY_MS = 4000
@@ -58,11 +45,33 @@ function writeMutedPref(next: boolean) {
   window.dispatchEvent(new Event(MUTED_CHANGE_EVENT))
 }
 
-export default function FloatingContact() {
+export default function FloatingContact({ musicSrc }: { musicSrc?: string | null }) {
   const { t } = useTranslation()
   const audioRef = useRef<HTMLAudioElement>(null)
   const isMuted = useSyncExternalStore(subscribeMutedPref, readMutedPref, getServerMutedPref)
   const [audioMounted, setAudioMounted] = useState(false)
+
+  const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
+  const zalo = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
+  const messenger = contactConfigs.find((item) => item.key === 'contact.messenger')?.value.value
+
+  const CONTACT_CHANNELS = useMemo(
+    () => [
+      {
+        key: 'zalo',
+        href: zalo,
+        src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-4-1.webp',
+        labelKey: 'floatingContact.zalo' as I18nKey
+      },
+      {
+        key: 'messenger',
+        href: messenger,
+        src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-1-1.webp',
+        labelKey: 'floatingContact.messenger' as I18nKey
+      }
+    ],
+    [zalo, messenger]
+  )
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -165,23 +174,27 @@ export default function FloatingContact() {
 
   return (
     <div className='pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6'>
-      {audioMounted ? (
-        <audio ref={audioRef} src={MUSIC_SRC} loop playsInline preload='none' aria-hidden='true' />
-      ) : null}
+      {musicSrc ? (
+        <>
+          {audioMounted ? (
+            <audio ref={audioRef} src={musicSrc} loop playsInline preload='none' aria-hidden='true' />
+          ) : null}
 
-      <button
-        type='button'
-        onClick={toggleMusic}
-        aria-label={musicLabel}
-        aria-pressed={!isMuted}
-        title={musicLabel}
-        className='pointer-events-auto group relative flex size-12 items-center justify-center rounded-full bg-card text-foreground shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
-      >
-        <HugeiconsIcon
-          icon={isMuted ? VolumeMute02Icon : VolumeHighIcon}
-          className='size-6 transition-transform duration-300 group-hover:scale-110 sm:size-7'
-        />
-      </button>
+          <button
+            type='button'
+            onClick={toggleMusic}
+            aria-label={musicLabel}
+            aria-pressed={!isMuted}
+            title={musicLabel}
+            className='pointer-events-auto group relative flex size-12 items-center justify-center rounded-full bg-card text-foreground shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
+          >
+            <HugeiconsIcon
+              icon={isMuted ? VolumeMute02Icon : VolumeHighIcon}
+              className='size-6 transition-transform duration-300 group-hover:scale-110 sm:size-7'
+            />
+          </button>
+        </>
+      ) : null}
 
       {CONTACT_CHANNELS.map((channel) => {
         const label = t(channel.labelKey)

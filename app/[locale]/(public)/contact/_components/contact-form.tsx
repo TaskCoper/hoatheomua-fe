@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
@@ -76,19 +75,15 @@ function ContactFormFields() {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className='gap-1'>
             <FieldLabel htmlFor={field.name}>{t('contact.form.phoneNumber')}</FieldLabel>
-            <InputGroup className='h-9 overflow-hidden rounded-3xl bg-input/40'>
-              <InputGroupAddon align='inline-start' className='border-r border-border/60 px-3.5 text-foreground'>
-                +84
-              </InputGroupAddon>
-              <InputGroupInput
-                {...field}
-                id={field.name}
-                aria-invalid={fieldState.invalid}
-                placeholder={t('contact.form.phoneNumberPlaceholder')}
-                autoComplete='tel'
-                className='h-full flex-1 !border-transparent !bg-transparent px-2.5 py-0 !shadow-none outline-none focus-visible:!border-transparent focus-visible:!ring-0 aria-invalid:!border-transparent aria-invalid:!ring-0 [&:-webkit-autofill]:!shadow-[inset_0_0_0_1000px_transparent] [&:-webkit-autofill]:[-webkit-text-fill-color:inherit]'
-              />
-            </InputGroup>
+            <Input
+              {...field}
+              id={field.name}
+              aria-invalid={fieldState.invalid}
+              placeholder={t('contact.form.phoneNumberPlaceholder')}
+              autoComplete='tel'
+              inputMode='tel'
+              className='h-9 bg-input/40 px-3.5'
+            />
             <div className='min-h-4'>
               {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
             </div>
@@ -149,12 +144,15 @@ export default function ContactForm() {
   const { methods, createContact, isCreatingContact } = useContact()
 
   const onSubmit: SubmitHandler<ContactFormValues> = async (values) => {
+    const digits = values.phoneNumber.replace(/\D/g, '')
+    const local = digits.startsWith('84') ? digits.slice(2) : digits.replace(/^0/, '')
+
     const payload: ContactPayload = {
       fullName: values.fullName,
       email: values.email,
       topic: values.topic,
       content: values.message,
-      phone: `+84${values.phoneNumber.replace(/^\+?84/, '').replace(/\D/g, '')}`
+      phone: `+84${local}`
     }
 
     await createContact({ body: payload })

@@ -33,9 +33,7 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
           title: t('policies.common.contact.title'),
           description: t('policies.common.contact.description'),
           hotlineLabel: t('policies.common.contact.hotlineLabel'),
-          hotlineValue: t('policies.common.contact.hotlineValue'),
-          emailLabel: t('policies.common.contact.emailLabel'),
-          emailValue: t('policies.common.contact.emailValue')
+          emailLabel: t('policies.common.contact.emailLabel')
         }}
       >
         {sections.map((section) => (

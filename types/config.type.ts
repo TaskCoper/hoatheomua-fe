@@ -201,6 +201,14 @@ export type ContactConfigItem =
         validations: [{ url: true }]
       }
     }
+  | {
+      key: 'contact.messenger'
+      value: BaseContactConfigValue & {
+        required: true
+        options: []
+        validations: [{ url: true }]
+      }
+    }
 
 // Occasions
 export interface OccasionCampaign {

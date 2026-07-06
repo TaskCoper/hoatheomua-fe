@@ -40,6 +40,7 @@ export default function Footer() {
   const website = companyConfigs.find((c) => c.key === 'company.website')
   const businessId = companyConfigs.find((c) => c.key === 'company.gpkd')
   const hotlines = companyConfigs.find((c) => c.key === 'company.hotlines')
+  const director = companyConfigs.find((c) => c.key === 'company.director')
 
   const facebook = contactConfigs.find((c) => c.key === 'contact.facebook')
   const instagram = contactConfigs.find((c) => c.key === 'contact.instagram')
@@ -96,7 +97,7 @@ export default function Footer() {
                 {hotlines?.value.options.map((o) => o.value).join(' - ')}
               </p>
               <p>
-                <span className='font-semibold'>{t('footer.directorLabel')}</span> {t('footer.director')}
+                <span className='font-semibold'>{t('footer.directorLabel')}</span> {director?.value.value}
               </p>
               <p>
                 <span className='font-semibold'>{t('footer.websiteLabel')}</span> {website?.value.value}

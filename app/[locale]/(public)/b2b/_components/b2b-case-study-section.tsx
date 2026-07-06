@@ -13,10 +13,34 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
 
-const PHOTOS = Array.from({ length: 18 }, (_, i) => {
-  const num = String(i + 1).padStart(2, '0')
-  return { id: num, src: `/images/b2b/case-studies/indigo/${num}.jpg` }
-})
+const PHOTO_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  '01': { width: 1706, height: 2560 },
+  '02': { width: 1706, height: 2560 },
+  '03': { width: 1926, height: 2568 },
+  '04': { width: 1706, height: 2560 },
+  '05': { width: 2560, height: 1706 },
+  '06': { width: 2560, height: 1706 },
+  '07': { width: 1678, height: 2560 },
+  '08': { width: 2002, height: 2560 },
+  '09': { width: 1706, height: 2560 },
+  '10': { width: 1706, height: 2560 },
+  // '11': { width: 1706, height: 2560 },
+  '12': { width: 1706, height: 2560 },
+  '13': { width: 2560, height: 1706 },
+  '14': { width: 1708, height: 2560 },
+  '15': { width: 1706, height: 2560 },
+  '16': { width: 1920, height: 2560 },
+  '17': { width: 1920, height: 2560 },
+  '18': { width: 832, height: 1248 },
+  '20': { width: 2048, height: 1366 }
+}
+
+const PHOTOS = Object.entries(PHOTO_DIMENSIONS).map(([id, { width, height }]) => ({
+  id,
+  src: `/images/b2b/case-studies/indigo/${id}.jpg`,
+  width,
+  height
+}))
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -126,7 +150,7 @@ export default function B2BCaseStudySection() {
           }}
         >
           <div
-            className='flex w-max items-center gap-3 sm:gap-4 animate-marquee group-hover:[animation-play-state:paused]'
+            className='flex w-max items-center gap-3 sm:gap-4 animate-marquee group-hover:paused'
             style={{ animationDuration: `${Math.max(40, oneSet.length * 5.5)}s` }}
           >
             {marqueeItems.map((photo, index) => (
@@ -135,13 +159,14 @@ export default function B2BCaseStudySection() {
                 key={`${photo.id}-${index}`}
                 onClick={() => setLightboxIndex(index % PHOTOS.length)}
                 aria-label={`${hotelName} — ${photo.id}`}
-                className='relative block shrink-0 h-40 sm:h-48 md:h-56 lg:h-64 aspect-4/3 overflow-hidden rounded-2xl ring-1 ring-foreground/5 shadow-[0_0.4rem_1rem_rgb(81_108_108/8%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+                className='relative block shrink-0 h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden rounded-2xl ring-1 ring-foreground/5 shadow-[0_0.4rem_1rem_rgb(81_108_108/8%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
               >
                 <Image
                   src={photo.src}
                   alt={`${hotelName} — ${photo.id}`}
-                  fill
-                  className='object-cover transition-transform duration-500 hover:scale-105'
+                  width={photo.width}
+                  height={photo.height}
+                  className='h-full w-auto object-cover transition-transform duration-500 hover:scale-105'
                   sizes='(min-width: 1024px) 22rem, (min-width: 640px) 18rem, 14rem'
                   quality={70}
                 />

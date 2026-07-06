@@ -44,11 +44,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
     console.error('[SSR] home signature bouquets prefetch failed:', error)
   }
 
-  const homeVideoSrc = await getCompanyBgVideo()
+  const [homeVideoSrc, homeJsonLd] = await Promise.all([getCompanyBgVideo(), buildHomeJsonLd()])
 
   return (
     <>
-      <JsonLd data={buildHomeJsonLd()} />
+      <JsonLd data={homeJsonLd} />
 
       {homeVideoSrc ? <link rel='preload' as='video' href={homeVideoSrc} /> : null}
 

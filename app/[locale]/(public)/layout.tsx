@@ -1,4 +1,4 @@
-import { getCompanyBgVideo } from '@/features/company/queries.server'
+import { getCompanyBgMusic, getCompanyBgVideo } from '@/features/company/queries.server'
 import RoleGuard from '@/guards/role-guard'
 import { ROLES } from '@/guards/utils'
 import FloatingContact from './_components/floating-contact'
@@ -6,7 +6,7 @@ import Footer from './_components/footer'
 import PublicHeader from './_components/public-header'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  const homeVideoSrc = await getCompanyBgVideo()
+  const [homeVideoSrc, homeMusicSrc] = await Promise.all([getCompanyBgVideo(), getCompanyBgMusic()])
 
   return (
     <RoleGuard allowedRoles={[ROLES.Customer]} allowAnonymous>
@@ -24,7 +24,7 @@ export default async function PublicLayout({ children }: { children: React.React
 
         <Footer />
 
-        <FloatingContact />
+        <FloatingContact musicSrc={homeMusicSrc} />
       </div>
     </RoleGuard>
   )

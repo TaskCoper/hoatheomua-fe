@@ -1,8 +1,10 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import type { ContactConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon, Mail01Icon, PhoneCheckIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -19,6 +21,9 @@ const containerStagger: Variants = {
 
 export default function B2BCtaSection() {
   const { t } = useTranslation()
+  const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
+  const phone = contactConfigs.find((item) => item.key === 'contact.phone')?.value.value
+  const email = contactConfigs.find((item) => item.key === 'contact.email')?.value.value
 
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4 pb-10 sm:pb-12 lg:pb-14'>
@@ -29,7 +34,7 @@ export default function B2BCtaSection() {
         variants={containerStagger}
         className='relative mx-auto w-full max-w-6xl overflow-hidden rounded-[2rem] bg-primary p-6 text-primary-foreground shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:p-8 lg:p-10'
       >
-        <span
+        {/* <span
           aria-hidden='true'
           className='pointer-events-none absolute inset-0 opacity-15'
           style={{
@@ -37,7 +42,7 @@ export default function B2BCtaSection() {
             backgroundRepeat: 'repeat',
             backgroundSize: '16rem'
           }}
-        />
+        /> */}
 
         <motion.span
           aria-hidden='true'
@@ -97,7 +102,7 @@ export default function B2BCtaSection() {
               variants={fadeUp}
               whileHover={{ y: -2 }}
               transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-              href={`tel:${t('b2b.cta.callValue').replace(/\s+/g, '')}`}
+              href={phone ? `tel:${phone.replace(/\s+/g, '')}` : '#'}
               className='flex items-center gap-3 rounded-2xl bg-primary-foreground/10 px-4 py-3 ring-1 ring-primary-foreground/20 transition-colors hover:bg-primary-foreground/15'
             >
               <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-primary-foreground text-primary'>
@@ -108,7 +113,7 @@ export default function B2BCtaSection() {
                   {t('b2b.cta.callLabel')}
                 </span>
                 <span className='block truncate font-title text-base font-bold text-primary-foreground sm:text-lg'>
-                  {t('b2b.cta.callValue')}
+                  {phone}
                 </span>
               </span>
             </motion.a>
@@ -117,7 +122,7 @@ export default function B2BCtaSection() {
               variants={fadeUp}
               whileHover={{ y: -2 }}
               transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-              href={`mailto:${t('b2b.cta.emailValue')}`}
+              href={email ? `mailto:${email}` : '#'}
               className='flex items-center gap-3 rounded-2xl bg-primary-foreground/10 px-4 py-3 ring-1 ring-primary-foreground/20 transition-colors hover:bg-primary-foreground/15'
             >
               <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-primary-foreground text-primary'>
@@ -128,7 +133,7 @@ export default function B2BCtaSection() {
                   {t('b2b.cta.emailLabel')}
                 </span>
                 <span className='block truncate font-title text-base font-bold text-primary-foreground sm:text-lg'>
-                  {t('b2b.cta.emailValue')}
+                  {email}
                 </span>
               </span>
             </motion.a>

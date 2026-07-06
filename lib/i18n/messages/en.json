@@ -154,7 +154,7 @@
       "maxLength": "{field} must be no more than {max} characters.",
       "arrayMin": "{field} must have at least {min} items.",
       "arrayMax": "{field} must have no more than {max} items.",
-      "phoneNumber": "Phone number must be 10 or 11 digits and start with 0.",
+      "phoneNumber": "Invalid Vietnamese phone number (e.g., 0983 024 353).",
       "passwordStrength": "Use at least 1 uppercase letter, 1 number, and 1 special character.",
       "passwordMismatch": "Confirm password does not match.",
       "fixErrors": "Please review the highlighted fields."
@@ -266,7 +266,7 @@
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "phoneNumber": "Phone number",
-      "phoneNumberPlaceholder": "901 234 567",
+      "phoneNumberPlaceholder": "0983 024 353",
       "topic": "Topic",
       "topicPlaceholder": "Choose a topic",
       "topics": {
@@ -826,7 +826,6 @@
     "hotlineLabel": "Hotline:",
     "hotline": "0983024353 – 0931734353",
     "directorLabel": "Director:",
-    "director": "Le Thi Hoa Dao",
     "websiteLabel": "Website:",
     "website": "hoatheomua.net",
     "businessIdLabel": "Business license:",
@@ -1606,25 +1605,33 @@
       "title": "Frequently Asked Questions",
       "description": "Quick answers to what corporate buyers usually ask before getting in touch.",
       "items": {
+        "pricing": {
+          "question": "How is B2B floral service pricing calculated?",
+          "answer": "Pricing depends on three factors: delivery frequency (daily/weekly), the flower selection, and the number of locations. HTM offers packages from essentials to premium — matched to office, hotel or bank budgets. Send your specific requirements via <zalo>Zalo</zalo> and our team will quote within 30 minutes."
+        },
+        "quality": {
+          "question": "How does HTM handle deliveries that don't meet quality standards?",
+          "answer": "Flowers that arrive wilted, off-brief or delivered late are replaced free of charge the same day. This is built into every corporate contract — partner satisfaction is our benchmark."
+        },
         "moq": {
           "question": "What's the minimum order quantity (MOQ) for corporate contracts?",
-          "answer": "Our reception orchid packages start from one location per quarter. For events and outsourced hospitality programmes, MOQ is set per scope — we'll confirm during the briefing call."
+          "answer": "MOQ depends on the service tier your business selects. Send your specific requirements via <zalo>Zalo</zalo> and our team will support you within 30 minutes."
         },
         "contractTerm": {
           "question": "What's the minimum contract length?",
-          "answer": "Reception orchid packages run for 3 months (one quarter) per cycle. Outsourced hospitality programmes are typically signed for 12 months."
+          "answer": "3 months lets your business experience the quality before committing longer — no lock-in if it doesn't feel right."
+        },
+        "customization": {
+          "question": "Can HTM customise flowers to match our brand colours or identity?",
+          "answer": "Yes. We arrange flowers around your brand palette, seasonal reception theme or event concept. Share your logo or colour swatches and our design team will mock up samples before contract signing."
         },
         "coverage": {
-          "question": "Which cities do you currently serve?",
-          "answer": "We deliver across Ho Chi Minh City, Hanoi and Da Nang. For other cities, we can quote a custom logistics plan."
-        },
-        "invoicing": {
-          "question": "Do you issue VAT invoices and contracts for businesses?",
-          "answer": "Yes — every B2B engagement comes with a signed contract and a VAT-compliant invoice issued to your company entity."
+          "question": "Which cities do you currently deliver to?",
+          "answer": "We currently serve Ho Chi Minh City only. For areas outside HCMC, message us on <zalo>Zalo</zalo> and we'll check bespoke delivery options."
         },
         "flexibility": {
           "question": "Can we reschedule or pause a recurring delivery?",
-          "answer": "Yes. With at least 48 hours' notice we can shift the next delivery window, swap dates around holidays, or pause a cycle — your account manager will handle it."
+          "answer": "Yes. Just give us 72 hours' notice via Zalo or email, and HTM will adjust the schedule at no extra cost."
         }
       }
     },
@@ -1634,9 +1641,7 @@
       "title": "Let's create something blooming together",
       "description": "Tell us about your project — we'll get back within 4 working hours with first ideas and a clear next step.",
       "callLabel": "Hotline",
-      "callValue": "0983 024 353",
       "emailLabel": "Partnerships",
-      "emailValue": "b2b@hoatheomua.net",
       "primary": "Send a brief",
       "secondary": "Browse our products"
     }
@@ -1649,9 +1654,7 @@
         "title": "Still have questions? We are here to help.",
         "description": "Our florist concierge is available from 7:00 AM to 6:00 PM every day, weekends included.",
         "hotlineLabel": "Hotline",
-        "hotlineValue": "0931 734 353",
-        "emailLabel": "Email",
-        "emailValue": "sale.hoatheomua@gmail.com"
+        "emailLabel": "Email"
       }
     },
     "terms": {

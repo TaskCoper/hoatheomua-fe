@@ -1,6 +1,8 @@
 'use client'
 
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { Link } from '@/lib/i18n/navigation'
+import type { ContactConfigItem } from '@/types/config.type'
 import { ArrowRight01Icon, HomeIcon, MailValidation01Icon, SmartPhone01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -13,9 +15,7 @@ export type PolicyContactStrings = {
   title: string
   description: string
   hotlineLabel: string
-  hotlineValue: string
   emailLabel: string
-  emailValue: string
 }
 
 type PolicyPageShellProps = {
@@ -49,6 +49,10 @@ export default function PolicyPageShell({
   contact,
   children
 }: PolicyPageShellProps) {
+  const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
+  const hotlineValue = contactConfigs.find((item) => item.key === 'contact.phone')?.value.value ?? ''
+  const emailValue = contactConfigs.find((item) => item.key === 'contact.email')?.value.value ?? ''
+
   return (
     <div className='relative'>
       <motion.section
@@ -146,7 +150,7 @@ export default function PolicyPageShell({
 
             <div className='grid grid-cols-1 gap-2 sm:grid-cols-2 md:gap-2.5'>
               <a
-                href={`tel:${contact.hotlineValue.replace(/\s+/g, '')}`}
+                href={hotlineValue ? `tel:${hotlineValue.replace(/\s+/g, '')}` : '#'}
                 className='group flex items-center gap-2 rounded-2xl bg-primary-foreground/12 px-3 py-2 ring-1 ring-primary-foreground/15 transition-colors hover:bg-primary-foreground/20'
               >
                 <span className='grid size-9 shrink-0 place-items-center rounded-xl bg-primary-foreground/15 text-primary-foreground ring-1 ring-primary-foreground/20'>
@@ -157,13 +161,13 @@ export default function PolicyPageShell({
                     {contact.hotlineLabel}
                   </span>
                   <span className='block whitespace-nowrap text-xs font-bold text-primary-foreground sm:text-sm'>
-                    {contact.hotlineValue}
+                    {hotlineValue}
                   </span>
                 </span>
               </a>
 
               <a
-                href={`mailto:${contact.emailValue}`}
+                href={emailValue ? `mailto:${emailValue}` : '#'}
                 className='group flex items-center gap-2 rounded-2xl bg-primary-foreground/12 px-3 py-2 ring-1 ring-primary-foreground/15 transition-colors hover:bg-primary-foreground/20'
               >
                 <span className='grid size-9 shrink-0 place-items-center rounded-xl bg-primary-foreground/15 text-primary-foreground ring-1 ring-primary-foreground/20'>
@@ -174,7 +178,7 @@ export default function PolicyPageShell({
                     {contact.emailLabel}
                   </span>
                   <span className='block truncate text-xs font-bold text-primary-foreground sm:text-sm'>
-                    {contact.emailValue}
+                    {emailValue}
                   </span>
                 </span>
               </a>
