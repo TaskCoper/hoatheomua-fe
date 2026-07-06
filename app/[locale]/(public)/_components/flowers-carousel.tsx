@@ -1,14 +1,14 @@
 'use client'
 
-import image10 from '@/public/images/10.png'
-import image11 from '@/public/images/11.png'
-import image2 from '@/public/images/2.png'
-import image3 from '@/public/images/3.png'
-import image5 from '@/public/images/5.png'
-import image6 from '@/public/images/6.png'
-import image7 from '@/public/images/7.png'
-import image8 from '@/public/images/8.png'
-import image9 from '@/public/images/9.png'
+import image10 from '@/public/images/10.webp'
+import image11 from '@/public/images/11.webp'
+import image2 from '@/public/images/2.webp'
+import image3 from '@/public/images/3.webp'
+import image5 from '@/public/images/5.webp'
+import image6 from '@/public/images/6.webp'
+import image7 from '@/public/images/7.webp'
+import image8 from '@/public/images/8.webp'
+import image9 from '@/public/images/9.webp'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Image from 'next/image'
@@ -120,9 +120,9 @@ export default function FlowersCarousel() {
                         height: imageSize,
                         transition: `width 550ms ${EASE}, height 550ms ${EASE}`
                       }}
-                      sizes='(min-width: 1024px) 320px, (min-width: 768px) 240px, (min-width: 640px) 180px, 160px'
+                      sizes='(min-width: 1024px) 460px, (min-width: 768px) 352px, (min-width: 640px) 256px, 208px'
                       loading='lazy'
-                      quality={55}
+                      quality={60}
                     />
                   </div>
 

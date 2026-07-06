@@ -21,10 +21,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
 export default async function ContactPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
   const t = await getTranslations()
+  const contactJsonLd = await buildContactJsonLd(locale)
 
   return (
     <>
-      <JsonLd data={buildContactJsonLd(locale)} />
+      <JsonLd data={contactJsonLd} />
 
       <section className='relative isolate overflow-hidden px-4 pt-5 pb-8 sm:pt-6 sm:pb-10 lg:pt-8 lg:pb-12'>
         <Image

@@ -44,7 +44,7 @@ export const PRODUCTS_LIST_COPY = {
   }
 } satisfies LocaleCopy<ProductsCopy>
 
-export const PRODUCTS_OG_IMAGE_PATH = '/images/banner-one.png'
+export const PRODUCTS_OG_IMAGE_PATH = '/images/hero-poster.jpg'
 export const PRODUCTS_OG_IMAGE_URL = buildOgImageUrl(PRODUCTS_OG_IMAGE_PATH)
 
-export const PRODUCT_DEFAULT_FALLBACK_IMAGE = `${SITE_URL}/images/banner-one.png`
+export const PRODUCT_DEFAULT_FALLBACK_IMAGE = `${SITE_URL}/images/hero-poster.jpg`

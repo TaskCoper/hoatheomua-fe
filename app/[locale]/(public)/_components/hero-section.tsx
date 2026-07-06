@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import slogan from '@/public/images/slogan.png'
+import slogan from '@/public/images/slogan.webp'
 import { StarIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'

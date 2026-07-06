@@ -20,8 +20,6 @@ export const DEFAULT_LOCALE = routing.defaultLocale
  * here updates every page; do NOT redeclare these inline.
  */
 export const BUSINESS_LOGO_URL = `${SITE_URL}/images/logo.png`
-export const BUSINESS_PHONES = ['+84983024353', '+84931734353'] as const
-export const BUSINESS_EMAIL = 'hello@hoatheomua.vn'
 export const BUSINESS_PRICE_RANGE = '₫₫'
 export const BUSINESS_CURRENCIES_ACCEPTED = 'VND'
 export const BUSINESS_PAYMENT_ACCEPTED = 'Cash, Bank Transfer, Credit Card'

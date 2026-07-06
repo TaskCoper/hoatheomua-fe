@@ -15,6 +15,7 @@ import { Facebook01Icon, InstagramIcon, Mail01Icon, MessageMultiple01Icon } from
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useMemo } from 'react'
+import LazyMapEmbed from './lazy-map-embed'
 
 const POLICIES = [
   { labelKey: 'footer.policies.terms', href: '/terms' },
@@ -40,6 +41,7 @@ export default function Footer() {
   const website = companyConfigs.find((c) => c.key === 'company.website')
   const businessId = companyConfigs.find((c) => c.key === 'company.gpkd')
   const hotlines = companyConfigs.find((c) => c.key === 'company.hotlines')
+  const director = companyConfigs.find((c) => c.key === 'company.director')
 
   const facebook = contactConfigs.find((c) => c.key === 'contact.facebook')
   const instagram = contactConfigs.find((c) => c.key === 'contact.instagram')
@@ -81,7 +83,13 @@ export default function Footer() {
       <div className='mx-auto w-full max-w-7xl px-4 pt-6 sm:pt-8 lg:pt-10 xl:px-0'>
         <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6'>
           <div className='space-y-2 lg:col-span-4'>
-            <Image src={logo} alt={t('footer.logoAlt')} className='h-24 w-auto sm:h-28 lg:h-32' />
+            <Image
+              src={logo}
+              alt={t('footer.logoAlt')}
+              sizes='(min-width: 1024px) 128px, (min-width: 640px) 112px, 96px'
+              quality={80}
+              className='h-24 w-auto sm:h-28 lg:h-32'
+            />
             <p className='text-base sm:text-lg font-bold'>{t('footer.company')}</p>
             <div className='space-y-2 text-xs sm:text-sm leading-relaxed text-foreground'>
               <p>
@@ -96,7 +104,7 @@ export default function Footer() {
                 {hotlines?.value.options.map((o) => o.value).join(' - ')}
               </p>
               <p>
-                <span className='font-semibold'>{t('footer.directorLabel')}</span> {t('footer.director')}
+                <span className='font-semibold'>{t('footer.directorLabel')}</span> {director?.value.value}
               </p>
               <p>
                 <span className='font-semibold'>{t('footer.websiteLabel')}</span> {website?.value.value}
@@ -139,12 +147,10 @@ export default function Footer() {
             <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.mapHeading')}</h2>
             <div className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md'>
               {googleMapSrc && (
-                <iframe
+                <LazyMapEmbed
                   src={googleMapSrc}
                   title={t('footer.mapTitle')}
                   className='h-40 w-full sm:h-48 lg:h-44'
-                  loading='lazy'
-                  referrerPolicy='no-referrer-when-downgrade'
                 />
               )}
             </div>

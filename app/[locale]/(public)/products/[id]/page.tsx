@@ -9,6 +9,7 @@ import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import ProductDetailContent from './_components/product-detail-content'
 
 const STATIC_PRODUCT_LIMIT = 50
@@ -49,7 +50,9 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
       <JsonLd data={buildProductDetailJsonLd(locale, product)} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProductDetailContent product={product} />
+        <Suspense fallback={null}>
+          <ProductDetailContent product={product} />
+        </Suspense>
       </HydrationBoundary>
     </>
   )

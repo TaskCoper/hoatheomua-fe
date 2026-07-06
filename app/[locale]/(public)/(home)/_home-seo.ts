@@ -1,3 +1,4 @@
+import { getCompanyGpkd, getCompanyHotlines } from '@/features/company/queries.server'
 import type { Locale } from '@/lib/i18n/routing'
 import {
   buildPageMetadata,
@@ -8,7 +9,6 @@ import {
   BUSINESS_LOGO_URL,
   BUSINESS_OPENING_HOURS,
   BUSINESS_PAYMENT_ACCEPTED,
-  BUSINESS_PHONES,
   BUSINESS_PRICE_RANGE,
   DEFAULT_OG_IMAGE_DIMENSIONS,
   inLanguage,
@@ -23,7 +23,7 @@ import {
 import type { Metadata } from 'next'
 
 const HOME_BASE_PATH = '/'
-const HOME_OG_IMAGE_PATH = '/images/banner-one.png'
+const HOME_OG_IMAGE_PATH = '/images/hero-poster.jpg'
 
 export const HOME_COPY = {
   vi: {
@@ -87,53 +87,57 @@ export const generateHomeMetadata = (locale: Locale): Metadata => {
  * The graph itself is locale-agnostic — `WebSite.inLanguage` lists all supported
  * locales rather than the current one.
  */
-export const buildHomeJsonLd = () => ({
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': ORGANIZATION_ID,
-      name: SITE_NAME,
-      legalName: 'CÔNG TY TNHH HOA THEO MÙA',
-      url: SITE_URL,
-      logo: { '@type': 'ImageObject', url: BUSINESS_LOGO_URL, width: 512, height: 512 },
-      foundingDate: '2020-11-12',
-      founder: { '@type': 'Person', name: 'Lê Thị Hoa Đào', jobTitle: 'Founder & CEO' },
-      taxID: '0316581199',
-      sameAs: [] as string[]
-    },
-    {
-      '@type': 'Florist',
-      '@id': BUSINESS_ID,
-      name: SITE_NAME,
-      image: BUSINESS_LOGO_URL,
-      logo: BUSINESS_LOGO_URL,
-      url: SITE_URL,
-      description:
-        'Hệ thống hoa tươi online tại TP. Hồ Chí Minh chuyên cung cấp hoa tươi cao cấp và giao hoa tận nơi siêu nhanh trong 2 giờ.',
-      telephone: BUSINESS_PHONES,
-      priceRange: BUSINESS_PRICE_RANGE,
-      currenciesAccepted: BUSINESS_CURRENCIES_ACCEPTED,
-      paymentAccepted: BUSINESS_PAYMENT_ACCEPTED,
-      address: BUSINESS_ADDRESS,
-      areaServed: BUSINESS_AREA_SERVED,
-      openingHoursSpecification: BUSINESS_OPENING_HOURS,
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '5',
-        reviewCount: 325,
-        bestRating: '5',
-        worstRating: '1'
+export const buildHomeJsonLd = async () => {
+  const [taxId, hotlines] = await Promise.all([getCompanyGpkd(), getCompanyHotlines()])
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': ORGANIZATION_ID,
+        name: SITE_NAME,
+        legalName: 'CÔNG TY TNHH HOA THEO MÙA',
+        url: SITE_URL,
+        logo: { '@type': 'ImageObject', url: BUSINESS_LOGO_URL, width: 512, height: 512 },
+        foundingDate: '2020-11-12',
+        founder: { '@type': 'Person', name: 'Lê Thị Hoa Đào', jobTitle: 'Founder & CEO' },
+        taxID: taxId ?? undefined,
+        sameAs: [] as string[]
       },
-      founder: { '@id': ORGANIZATION_ID }
-    },
-    {
-      '@type': 'WebSite',
-      '@id': WEBSITE_ID,
-      url: SITE_URL,
-      name: SITE_NAME,
-      publisher: { '@id': ORGANIZATION_ID },
-      inLanguage: SUPPORTED_LOCALES.map(inLanguage)
-    }
-  ]
-})
+      {
+        '@type': 'Florist',
+        '@id': BUSINESS_ID,
+        name: SITE_NAME,
+        image: BUSINESS_LOGO_URL,
+        logo: BUSINESS_LOGO_URL,
+        url: SITE_URL,
+        description:
+          'Hệ thống hoa tươi online tại TP. Hồ Chí Minh chuyên cung cấp hoa tươi cao cấp và giao hoa tận nơi siêu nhanh trong 2 giờ.',
+        telephone: hotlines,
+        priceRange: BUSINESS_PRICE_RANGE,
+        currenciesAccepted: BUSINESS_CURRENCIES_ACCEPTED,
+        paymentAccepted: BUSINESS_PAYMENT_ACCEPTED,
+        address: BUSINESS_ADDRESS,
+        areaServed: BUSINESS_AREA_SERVED,
+        openingHoursSpecification: BUSINESS_OPENING_HOURS,
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: '5',
+          reviewCount: 325,
+          bestRating: '5',
+          worstRating: '1'
+        },
+        founder: { '@id': ORGANIZATION_ID }
+      },
+      {
+        '@type': 'WebSite',
+        '@id': WEBSITE_ID,
+        url: SITE_URL,
+        name: SITE_NAME,
+        publisher: { '@id': ORGANIZATION_ID },
+        inLanguage: SUPPORTED_LOCALES.map(inLanguage)
+      }
+    ]
+  }
+}

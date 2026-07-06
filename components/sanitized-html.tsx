@@ -1,5 +1,7 @@
 'use client'
 
+import '@/styles/tiptap.scss'
+
 import '@/components/tiptap-node/blockquote-node/blockquote-node.scss'
 import '@/components/tiptap-node/code-block-node/code-block-node.scss'
 import '@/components/tiptap-node/heading-node/heading-node.scss'
@@ -11,7 +13,7 @@ import '@/components/tiptap-node/paragraph-node/paragraph-node.scss'
 
 import { useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 import { useMemo, type MouseEvent } from 'react'
 
 interface SanitizedHtmlProps {
@@ -74,6 +76,10 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
 
   const finalHtml = useMemo(() => {
     const cleanHtml = DOMPurify.sanitize(html, PURIFY_CONFIG)
+
+    if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
+      return cleanHtml
+    }
 
     const parser = new DOMParser()
     const doc = parser.parseFromString(cleanHtml, 'text/html')

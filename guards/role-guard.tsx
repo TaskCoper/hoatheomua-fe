@@ -4,6 +4,7 @@ import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useSignOut } from '@/features/users/hooks/use-sign-out'
 import { Role as UserRole } from '@/features/users/types'
 import { useGetUserHomePath } from '@/hooks/use-get-user-home-path'
+import { hasSessionCookieClient } from '@/lib/has-session'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { useEffect, useRef } from 'react'
@@ -33,9 +34,13 @@ export default function RoleGuard({
   const { signOut } = useSignOut()
   const hasSignedOutRef = useRef(false)
 
+  const hasSession = hasSessionCookieClient()
+  const anonymousBypass = allowAnonymous && !hasSession
+
   const isNonCustomer = !!me && me.role !== UserRole.Customer
 
   useEffect(() => {
+    if (anonymousBypass) return
     if (!isNonCustomer || !me || hasSignedOutRef.current) {
       return
     }
@@ -44,14 +49,20 @@ export default function RoleGuard({
     toast.error(t('auth.signIn.customerOnly'))
 
     signOut()
-  }, [isNonCustomer, me, signOut, t])
+  }, [anonymousBypass, isNonCustomer, me, signOut, t])
 
-  const isMissingAuth = !isGettingMe && !me && !allowAnonymous
-  const isWrongRole = !isGettingMe && !!userType && !allowedRoles.includes(userType)
+  const isMissingAuth = !anonymousBypass && !isGettingMe && !me && !allowAnonymous
+  const isWrongRole = !anonymousBypass && !isGettingMe && !!userType && !allowedRoles.includes(userType)
   const isWrongUserRole =
-    !isGettingMe && userType === 'Customer' && !!allowedUserRoles && !!me?.role && !allowedUserRoles.includes(me.role)
+    !anonymousBypass &&
+    !isGettingMe &&
+    userType === 'Customer' &&
+    !!allowedUserRoles &&
+    !!me?.role &&
+    !allowedUserRoles.includes(me.role)
 
   useEffect(() => {
+    if (anonymousBypass) return
     if (isGettingMe || isNonCustomer) return
 
     if (isMissingAuth) {
@@ -80,6 +91,7 @@ export default function RoleGuard({
       router.replace(userHomePath)
     }
   }, [
+    anonymousBypass,
     isGettingMe,
     isMissingAuth,
     isWrongRole,
@@ -94,6 +106,7 @@ export default function RoleGuard({
     isNonCustomer
   ])
 
+  if (anonymousBypass) return <>{children}</>
   if (isGettingMe) return null
   if (isNonCustomer) return null
   if (isMissingAuth || isWrongRole || isWrongUserRole) return null

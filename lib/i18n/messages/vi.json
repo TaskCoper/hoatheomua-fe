@@ -154,7 +154,7 @@
       "maxLength": "{field} không được vượt quá {max} ký tự.",
       "arrayMin": "{field} phải chọn ít nhất {min} mục.",
       "arrayMax": "{field} không được chọn quá {max} mục.",
-      "phoneNumber": "Số điện thoại phải có 10 hoặc 11 chữ số và bắt đầu bằng 0.",
+      "phoneNumber": "Số điện thoại không hợp lệ (ví dụ: 0983 024 353).",
       "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái in hoa, 1 số và 1 ký tự đặc biệt.",
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",
       "fixErrors": "Vui lòng kiểm tra lại các trường thông tin."
@@ -266,7 +266,7 @@
       "email": "Email",
       "emailPlaceholder": "ban@example.com",
       "phoneNumber": "Số điện thoại",
-      "phoneNumberPlaceholder": "901 234 567",
+      "phoneNumberPlaceholder": "0983 024 353",
       "topic": "Chủ đề",
       "topicPlaceholder": "Chọn chủ đề",
       "topics": {
@@ -826,7 +826,6 @@
     "hotlineLabel": "Hotline:",
     "hotline": "0983024353 – 0931734353",
     "directorLabel": "Giám đốc:",
-    "director": "Lê Thị Hoa Đào",
     "websiteLabel": "Website:",
     "website": "hoatheomua.net",
     "businessIdLabel": "GPKD:",
@@ -1606,25 +1605,33 @@
       "title": "Câu Hỏi Thường Gặp",
       "description": "Trả lời nhanh những câu khách doanh nghiệp thường hỏi trước khi liên hệ.",
       "items": {
+        "pricing": {
+          "question": "Chi phí dịch vụ hoa doanh nghiệp được tính như thế nào?",
+          "answer": "Chi phí phụ thuộc vào 3 yếu tố: tần suất giao (hàng ngày/hàng tuần), loại hoa bạn chọn, và số lượng địa điểm. HTM có các gói từ cơ bản đến cao cấp, phù hợp với ngân sách của văn phòng, khách sạn hay ngân hàng. Nhắn cho HTM nhu cầu cụ thể qua <zalo>Zalo</zalo>, đội ngũ tư vấn báo giá trong 30 phút."
+        },
+        "quality": {
+          "question": "Nếu hoa giao không đạt chất lượng, HTM xử lý ra sao?",
+          "answer": "Hoa không tươi, không đúng mẫu hoặc giao trễ — HTM đổi mới miễn phí trong ngày. Đây là cam kết trong mọi hợp đồng doanh nghiệp, sự hài lòng của đối tác là mục tiêu phục vụ của chúng tôi."
+        },
         "moq": {
           "question": "Đơn hàng tối thiểu (MOQ) cho hợp đồng doanh nghiệp là bao nhiêu?",
-          "answer": "Các gói hoa lan lễ tân bắt đầu từ 1 địa điểm cho mỗi quý. Với sự kiện và phòng hoa thuê ngoài cho khách sạn, MOQ được xác định theo phạm vi cụ thể — chúng tôi sẽ trao đổi trong buổi tư vấn đầu tiên."
+          "answer": "MOQ phụ thuộc vào loại hình dịch vụ mà doanh nghiệp chọn. Nhắn cho HTM nhu cầu cụ thể qua <zalo>Zalo</zalo>, đội ngũ tư vấn sẽ hỗ trợ trong 30 phút."
         },
         "contractTerm": {
           "question": "Thời gian hợp đồng tối thiểu là bao lâu?",
-          "answer": "Gói hoa lan lễ tân ký theo từng quý (3 tháng) mỗi chu kỳ. Hợp đồng phòng hoa thuê ngoài cho khách sạn thường ký theo năm (12 tháng)."
+          "answer": "3 tháng là thời gian phù hợp để doanh nghiệp trải nghiệm chất lượng trước khi cam kết dài hơn — không ràng buộc nếu chưa thấy phù hợp."
+        },
+        "customization": {
+          "question": "HTM có thể tùy chỉnh hoa theo màu sắc/thương hiệu công ty không?",
+          "answer": "Có. HTM phối hoa theo màu nhận diện thương hiệu, theo mùa lễ tân hoặc theo concept sự kiện của bạn. Gửi logo hoặc bảng màu, đội thiết kế sẽ lên mẫu trước khi ký hợp đồng."
         },
         "coverage": {
           "question": "Khu vực giao hàng hiện tại gồm những thành phố nào?",
-          "answer": "Chúng tôi phục vụ tại TP. Hồ Chí Minh, Hà Nội và Đà Nẵng. Với các tỉnh thành khác, chúng tôi có thể báo giá phương án vận chuyển riêng."
-        },
-        "invoicing": {
-          "question": "Hoa Theo Mùa có xuất hóa đơn VAT và hợp đồng cho doanh nghiệp không?",
-          "answer": "Có. Mỗi hợp tác B2B đều đi kèm hợp đồng đầy đủ và hóa đơn VAT xuất cho pháp nhân doanh nghiệp."
+          "answer": "Hiện tại HTM chỉ phục vụ tại Thành phố Hồ Chí Minh. Với các khu vực ngoài TP.HCM, nhắn <zalo>Zalo</zalo> để HTM kiểm tra khả năng giao theo yêu cầu riêng."
         },
         "flexibility": {
           "question": "Có thể đổi hoặc tạm dừng lịch giao hoa định kỳ khi cần không?",
-          "answer": "Có. Báo trước ít nhất 48 giờ, chúng tôi có thể dời lịch giao kế tiếp, đổi ngày quanh các dịp lễ hoặc tạm dừng một chu kỳ — quản lý tài khoản sẽ xử lý cho bạn."
+          "answer": "Được. Bạn chỉ cần báo trước 72h qua Zalo hoặc email, HTM điều chỉnh lịch mà không phát sinh phí."
         }
       }
     },
@@ -1634,9 +1641,7 @@
       "title": "Cùng kiến tạo một điều gì đó nở rộ",
       "description": "Kể chúng tôi nghe về dự án của bạn — chúng tôi sẽ phản hồi trong vòng 4 giờ làm việc với ý tưởng đầu tiên và bước tiếp theo rõ ràng.",
       "callLabel": "Hotline",
-      "callValue": "0983 024 353",
       "emailLabel": "Hợp tác",
-      "emailValue": "b2b@hoatheomua.net",
       "primary": "Gửi brief",
       "secondary": "Xem sản phẩm của chúng tôi"
     }
@@ -1649,9 +1654,7 @@
         "title": "Còn thắc mắc? Hoa Theo Mùa luôn ở bên bạn.",
         "description": "Đội ngũ tư vấn lắng nghe và hỗ trợ bạn từ 7h00 đến 18h00 mỗi ngày, kể cả cuối tuần.",
         "hotlineLabel": "Hotline",
-        "hotlineValue": "0931 734 353",
-        "emailLabel": "Email",
-        "emailValue": "sale.hoatheomua@gmail.com"
+        "emailLabel": "Email"
       }
     },
     "terms": {

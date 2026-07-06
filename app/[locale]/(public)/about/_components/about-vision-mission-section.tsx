@@ -35,9 +35,9 @@ export default function AboutVisionMissionSection() {
         whileInView='visible'
         viewport={{ once: true, margin: '-80px' }}
         variants={containerStagger}
-        className='relative mx-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] bg-linear-to-br from-secondary/40 via-card to-secondary/15 p-6 ring-1 ring-foreground/5 shadow-[0_0.8rem_2.4rem_rgb(81_108_108/10%)] sm:p-8 md:p-10 lg:p-12'
+        className='relative mx-auto w-full max-w-5xl overflow-hidden rounded-[2.5rem] bg-linear-to-br from-secondary/70 via-secondary/55 to-secondary/70 p-6 ring-1 ring-primary/10 shadow-[0_1rem_2.8rem_rgb(81_108_108/16%)] sm:p-8 md:p-10 lg:p-12'
       >
-        <span
+        {/* <span
           aria-hidden='true'
           className='pointer-events-none absolute inset-0 opacity-[0.06]'
           style={{
@@ -45,7 +45,7 @@ export default function AboutVisionMissionSection() {
             backgroundRepeat: 'repeat',
             backgroundSize: '14rem'
           }}
-        />
+        /> */}
 
         <motion.div
           variants={quoteIn}
@@ -122,21 +122,11 @@ export default function AboutVisionMissionSection() {
             variants={cardIn}
             whileHover={{ y: -6, scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-            className='group relative flex flex-col gap-3 overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground shadow-[0_0.8rem_2rem_rgb(81_108_108/18%)] sm:p-6'
+            className='group relative flex flex-col gap-3 overflow-hidden rounded-3xl bg-card p-5 ring-1 ring-foreground/5 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] sm:p-6'
           >
             <span
               aria-hidden='true'
-              className='pointer-events-none absolute inset-0 opacity-10'
-              style={{
-                backgroundImage: "url('/images/about/botanical-pattern-sage.png')",
-                backgroundRepeat: 'repeat',
-                backgroundSize: '14rem'
-              }}
-            />
-
-            <span
-              aria-hidden='true'
-              className='pointer-events-none absolute -left-8 -bottom-8 size-32 rounded-full bg-primary-foreground/10 blur-2xl'
+              className='pointer-events-none absolute -left-6 -bottom-6 size-28 rounded-full bg-secondary/40 blur-2xl'
             />
 
             <div className='relative flex items-center gap-3'>
@@ -148,16 +138,16 @@ export default function AboutVisionMissionSection() {
                   scale: { type: 'spring', stiffness: 380, damping: 12 },
                   y: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }
                 }}
-                className='grid size-11 place-items-center rounded-2xl bg-primary-foreground/15 text-primary-foreground ring-1 ring-primary-foreground/25 sm:size-12'
+                className='grid size-11 place-items-center rounded-2xl bg-secondary/70 text-primary ring-1 ring-primary/10 shadow-sm sm:size-12'
               >
                 <HugeiconsIcon icon={HandHeartIcon} className='size-5 sm:size-6' />
               </motion.div>
-              <p className='text-[0.625rem] font-bold uppercase tracking-[0.25em] text-primary-foreground/80 sm:text-xs'>
+              <p className='text-[0.625rem] font-bold uppercase tracking-[0.25em] text-primary/70 sm:text-xs'>
                 {t('about.visionMission.mission.label')}
               </p>
             </div>
 
-            <p className='relative text-sm leading-relaxed text-primary-foreground/95 italic sm:text-base'>
+            <p className='relative text-sm leading-relaxed text-foreground italic sm:text-base'>
               &ldquo;{t('about.visionMission.mission.statement')}&rdquo;
             </p>
           </motion.article>

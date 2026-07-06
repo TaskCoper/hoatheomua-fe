@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import flower from '@/public/images/flower.png'
+import flower from '@/public/images/about-avatar.png'
 import { Calendar03Icon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -119,7 +119,7 @@ export default function AboutHeroSection() {
                 <Image
                   src={flower}
                   alt={t('about.hero.imageAlt')}
-                  className='h-48 w-auto object-contain sm:h-60 lg:h-68'
+                  className='h-62 w-auto object-contain sm:h-72 lg:h-84'
                   sizes='(min-width: 1024px) 17rem, (min-width: 640px) 15rem, 12rem'
                   priority
                   fetchPriority='high'

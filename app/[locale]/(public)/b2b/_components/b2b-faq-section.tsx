@@ -1,14 +1,37 @@
 'use client'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { I18nKey } from '@/lib/i18n/types'
+import type { ContactConfigItem } from '@/types/config.type'
 import { motion, type Variants } from 'motion/react'
+import { useTranslations } from 'next-intl'
 
-const FAQS = [
+type FaqItem = {
+  id: string
+  questionKey: I18nKey
+  answerKey: I18nKey
+  hasZaloLink?: boolean
+}
+
+const FAQS: readonly FaqItem[] = [
+  {
+    id: 'pricing',
+    questionKey: 'b2b.faq.items.pricing.question',
+    answerKey: 'b2b.faq.items.pricing.answer',
+    hasZaloLink: true
+  },
+  {
+    id: 'quality',
+    questionKey: 'b2b.faq.items.quality.question',
+    answerKey: 'b2b.faq.items.quality.answer'
+  },
   {
     id: 'moq',
     questionKey: 'b2b.faq.items.moq.question',
-    answerKey: 'b2b.faq.items.moq.answer'
+    answerKey: 'b2b.faq.items.moq.answer',
+    hasZaloLink: true
   },
   {
     id: 'contractTerm',
@@ -16,21 +39,22 @@ const FAQS = [
     answerKey: 'b2b.faq.items.contractTerm.answer'
   },
   {
-    id: 'coverage',
-    questionKey: 'b2b.faq.items.coverage.question',
-    answerKey: 'b2b.faq.items.coverage.answer'
+    id: 'customization',
+    questionKey: 'b2b.faq.items.customization.question',
+    answerKey: 'b2b.faq.items.customization.answer'
   },
   {
-    id: 'invoicing',
-    questionKey: 'b2b.faq.items.invoicing.question',
-    answerKey: 'b2b.faq.items.invoicing.answer'
+    id: 'coverage',
+    questionKey: 'b2b.faq.items.coverage.question',
+    answerKey: 'b2b.faq.items.coverage.answer',
+    hasZaloLink: true
   },
   {
     id: 'flexibility',
     questionKey: 'b2b.faq.items.flexibility.question',
     answerKey: 'b2b.faq.items.flexibility.answer'
   }
-] as const
+]
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -39,6 +63,28 @@ const fadeUp: Variants = {
 
 export default function B2BFaqSection() {
   const { t } = useTranslation()
+  const rt = useTranslations()
+  const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
+  const zaloUrl = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
+
+  const renderAnswer = (faq: FaqItem) => {
+    if (!faq.hasZaloLink) return t(faq.answerKey)
+    return rt.rich(faq.answerKey, {
+      zalo: (chunks) =>
+        zaloUrl ? (
+          <a
+            href={zaloUrl}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='font-semibold text-primary underline underline-offset-2 hover:text-primary/80'
+          >
+            {chunks}
+          </a>
+        ) : (
+          <span className='font-semibold text-primary'>{chunks}</span>
+        )
+    })
+  }
 
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
@@ -68,7 +114,7 @@ export default function B2BFaqSection() {
           {FAQS.map((faq) => (
             <AccordionItem key={faq.id} value={faq.id}>
               <AccordionTrigger>{t(faq.questionKey)}</AccordionTrigger>
-              <AccordionContent>{t(faq.answerKey)}</AccordionContent>
+              <AccordionContent>{renderAnswer(faq)}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

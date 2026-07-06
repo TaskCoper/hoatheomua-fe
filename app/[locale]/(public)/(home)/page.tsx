@@ -1,4 +1,3 @@
-import { getCompanyBgVideo } from '@/features/company/queries.server'
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import { productListQuery } from '@/features/products/queries'
 import { getCachedProducts } from '@/features/products/queries.server'
@@ -9,7 +8,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import HomeContent from './_components/home-content'
+import HomeContent from '../_components/home-content'
 import { buildHomeJsonLd, generateHomeMetadata } from './_home-seo'
 
 const SIGNATURE_BOUQUETS_SIZE = 6
@@ -44,13 +43,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
     console.error('[SSR] home signature bouquets prefetch failed:', error)
   }
 
-  const homeVideoSrc = await getCompanyBgVideo()
+  const homeJsonLd = await buildHomeJsonLd()
 
   return (
     <>
-      <JsonLd data={buildHomeJsonLd()} />
-
-      {homeVideoSrc ? <link rel='preload' as='video' href={homeVideoSrc} /> : null}
+      <JsonLd data={homeJsonLd} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <HomeContent />

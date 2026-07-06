@@ -127,7 +127,7 @@ export default function B2BPackagesSection() {
                 : 'bg-card ring-1 ring-foreground/5'
             }`}
           >
-            {pkg.featured && (
+            {/* {pkg.featured && (
               <span
                 aria-hidden='true'
                 className='pointer-events-none absolute inset-0 opacity-10'
@@ -137,7 +137,7 @@ export default function B2BPackagesSection() {
                   backgroundSize: '16rem'
                 }}
               />
-            )}
+            )} */}
 
             {pkg.featured && (
               <span className='relative inline-flex w-fit items-center gap-1 rounded-full bg-primary-foreground/15 px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground ring-1 ring-primary-foreground/25'>
@@ -192,9 +192,7 @@ export default function B2BPackagesSection() {
                 {t(pkg.nameKey)}
               </h3>
               <p
-                className={`text-xs leading-relaxed ${
-                  pkg.featured ? 'text-primary-foreground/85' : 'text-foreground'
-                }`}
+                className={`text-xs leading-relaxed ${pkg.featured ? 'text-primary-foreground/85' : 'text-foreground'}`}
               >
                 {t(pkg.targetKey)}
               </p>
@@ -208,9 +206,7 @@ export default function B2BPackagesSection() {
                     className={`mt-0.5 size-4 shrink-0 ${pkg.featured ? 'text-primary-foreground' : 'text-leaf'}`}
                   />
                   <span
-                    className={`leading-relaxed ${
-                      pkg.featured ? 'text-primary-foreground/90' : 'text-foreground'
-                    }`}
+                    className={`leading-relaxed ${pkg.featured ? 'text-primary-foreground/90' : 'text-foreground'}`}
                   >
                     {t(featureKey)}
                   </span>

@@ -146,7 +146,7 @@ export default function BrandValuesSection() {
             className='pointer-events-none absolute inset-0 bg-linear-to-t from-primary via-primary/85 via-30% to-primary/10'
           />
 
-          <span
+          {/* <span
             aria-hidden='true'
             className='pointer-events-none absolute inset-0 opacity-10 mix-blend-overlay'
             style={{
@@ -154,7 +154,7 @@ export default function BrandValuesSection() {
               backgroundRepeat: 'repeat',
               backgroundSize: '16rem'
             }}
-          />
+          /> */}
 
           <motion.span
             aria-hidden='true'

@@ -76,7 +76,7 @@ export default function B2BHeroSection() {
         className='pointer-events-none absolute inset-x-0 top-0 -z-10 h-[80%] bg-[radial-gradient(circle_at_25%_0%,rgb(188_208_199/45%),transparent_55%),radial-gradient(circle_at_85%_15%,rgb(245_220_220/35%),transparent_50%)] lg:hidden'
       />
 
-      <span
+      {/* <span
         aria-hidden='true'
         className='pointer-events-none absolute -top-16 -right-16 -z-10 size-[28rem] opacity-[0.07] lg:hidden'
         style={{
@@ -84,7 +84,7 @@ export default function B2BHeroSection() {
           backgroundRepeat: 'repeat',
           backgroundSize: '14rem'
         }}
-      />
+      /> */}
 
       <div className='relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14'>
         <motion.div variants={containerStagger} className='space-y-5 lg:col-span-8 lg:max-w-2xl'>
