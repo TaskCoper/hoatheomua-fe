@@ -35,7 +35,7 @@ export default function ProductSummary({
 
   specs.push({
     label: t('products.summary.specs.status'),
-    value: inStock ? t('products.summary.specs.inStock') : t('products.summary.specs.outOfStock')
+    value: inStock ? t('products.summary.specs.inStock', { count: available }) : t('products.summary.specs.outOfStock')
   })
 
   return (

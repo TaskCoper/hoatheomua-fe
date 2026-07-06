@@ -1,9 +1,12 @@
 'use client'
 
+import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { BANNER_SLOTS, ProductSignatureMap, ProductsSignatureConfigItem } from '@/types/config.type'
-import { useState } from 'react'
+import { useQueries } from '@tanstack/react-query'
+import { useLocale } from 'next-intl'
+import { useMemo, useState } from 'react'
 import FloatingPetals from '../../../_components/floating-petals'
 import ProductsPromiseSection from '../../_components/products-promise-section'
 import ProductBreadcrumb from './product-breadcrumb'
@@ -15,7 +18,8 @@ import ProductPurchaseBox from './product-purchase-box'
 import ProductSummary from './product-summary'
 
 export default function ProductDetailContent({ product }: { product: ProductDetail }) {
-  const childs = product.childs ?? []
+  const locale = useLocale()
+  const childs = useMemo(() => product.childs ?? [], [product.childs])
   const hasChildren = childs.length > 0
 
   const { configs } = useGetPublicConfigs<ProductsSignatureConfigItem>({ group: 'products', key: 'products.signature' })
@@ -23,10 +27,27 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
   const parsed = JSON.parse(signatureProducts) as ProductSignatureMap
   const landingUrl = parsed[String(product.id)]?.trim() || null
 
-  const [activeChildId, setActiveChildId] = useState<number | null>(hasChildren ? childs[0].id : null)
+  const childQueries = useQueries({
+    queries: childs.map((child) => productDetailQuery(String(child.id), locale))
+  })
 
-  const activeChild = hasChildren ? (childs.find((child) => child.id === activeChildId) ?? childs[0]) : null
+  const freshChilds = useMemo(
+    () =>
+      childs.map((child, index) => {
+        const fetched = childQueries[index]?.data?.value?.data as ProductDetail | undefined
+        return fetched ?? child
+      }),
+    [childs, childQueries]
+  )
+
+  const defaultChild = hasChildren ? (freshChilds.find((child) => child.images?.avatar) ?? freshChilds[0]) : null
+  const [activeChildId, setActiveChildId] = useState<number | null>(defaultChild?.id ?? null)
+
+  const activeChild = hasChildren ? (freshChilds.find((child) => child.id === activeChildId) ?? defaultChild) : null
   const active = activeChild ?? product
+
+  const inventorySource = hasChildren ? activeChild : product
+  const available = inventorySource?.inventory?.available ?? 0
 
   const retail = active.prices?.retail ?? 0
   const oldPrice = active.prices?.old ?? 0
@@ -36,7 +57,6 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
   const content = (active.content ?? product.content ?? '').trim()
   const activeName = active.name ?? product.name ?? ''
   const breadcrumbName = product.name ?? activeName
-  const available = active.inventory?.available ?? 0
   const flatUnits = Object.values(active.units?.list ?? {}).flat()
 
   return (
@@ -50,8 +70,8 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
               <ProductGallery
                 key={active.id}
                 name={activeName}
-                avatar={active.images?.avatar ?? null}
-                others={active.images?.others ?? []}
+                avatar={active.images?.avatar ?? product.images?.avatar ?? null}
+                others={active.images?.others?.length ? active.images.others : (product.images?.others ?? [])}
                 discountPercent={discountPercent}
                 categoryName={active.category?.name ?? product.category?.name ?? null}
               />
@@ -66,12 +86,11 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
               />
 
               {hasChildren ? (
-                <ProductChildSelector childs={childs} activeChildId={activeChildId} onChange={setActiveChildId} />
+                <ProductChildSelector childs={freshChilds} activeChildId={activeChildId} onChange={setActiveChildId} />
               ) : null}
 
               <ProductPurchaseBox
-                productId={product.id}
-                variantId={hasChildren ? active.id : null}
+                productId={hasChildren && activeChild ? activeChild.id : product.id}
                 productName={activeName}
                 available={available}
                 retail={retail}

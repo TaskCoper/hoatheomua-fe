@@ -35,7 +35,6 @@ export const createEstimateSchema = (t: TranslationFunction) => {
     orderTime: z.number(),
     tagIds: z
       .array(z.number())
-      .min(1, { error: t('common.validation.arrayMin', { field: t('orders.checkout.tag'), min: 1 }) })
       .max(1, { error: t('common.validation.arrayMax', { field: t('orders.checkout.tag'), max: 1 }) })
   })
 }

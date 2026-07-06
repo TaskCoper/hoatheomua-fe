@@ -1304,7 +1304,7 @@
         "brand": "Thương hiệu",
         "type": "Loại",
         "status": "Tình trạng",
-        "inStock": "Còn hàng",
+        "inStock": "Còn hàng · {count} sản phẩm",
         "outOfStock": "Hết hàng"
       }
     },

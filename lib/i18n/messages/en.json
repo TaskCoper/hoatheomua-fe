@@ -1304,7 +1304,7 @@
         "brand": "Brand",
         "type": "Type",
         "status": "Status",
-        "inStock": "In stock",
+        "inStock": "In stock · {count} left",
         "outOfStock": "Out of stock"
       }
     },
