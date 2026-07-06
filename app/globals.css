@@ -1,4 +1,3 @@
-@import '../styles/_variables.scss';
 @import '../styles/_keyframe-animations.scss';
 
 @import 'tailwindcss';
@@ -229,10 +228,56 @@
     will-change: transform;
   }
 
+  .float-y {
+    animation: float-y var(--float-duration, 2.8s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    will-change: transform;
+  }
+
+  .banner-drift {
+    animation: banner-drift 9s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 600px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .animate-marquee {
-      animation-play-state: paused;
+    .animate-marquee,
+    .float-y,
+    .banner-drift,
+    .wind-wiggle-left,
+    .wind-wiggle-right {
+      animation: none !important;
     }
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -0.28rem, 0);
+  }
+}
+
+@keyframes banner-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate3d(0, -0.6rem, 0) rotate(0.4deg);
+  }
+  50% {
+    transform: translate3d(0, -0.9rem, 0) rotate(0deg);
+  }
+  75% {
+    transform: translate3d(0, -0.6rem, 0) rotate(-0.4deg);
   }
 }
 
@@ -308,87 +353,4 @@
   78% {
     transform: translate3d(-0.1rem, 0.05rem, 0) rotate(0.9deg) skewX(0.7deg);
   }
-}
-
-.tiptap p.is-editor-empty:first-child::before {
-  @apply text-muted-foreground;
-  content: attr(data-placeholder);
-  float: left;
-  font-size: 0.875rem;
-  font-weight: 400;
-  height: 0;
-  pointer-events: none;
-}
-
-.tiptap {
-  :first-child {
-    margin-top: 0;
-  }
-
-  a {
-    cursor: pointer;
-  }
-}
-
-/* =====================
-   Tiptap viewer extras
-   ===================== */
-.tiptap.ProseMirror {
-  color: var(--foreground);
-}
-
-.tiptap.ProseMirror h1,
-.tiptap.ProseMirror h2,
-.tiptap.ProseMirror h3,
-.tiptap.ProseMirror h4,
-.tiptap.ProseMirror h5,
-.tiptap.ProseMirror h6 {
-  font-family: var(--font-title);
-  color: var(--primary);
-}
-
-/* Tables aren't covered by the tiptap node SCSS; mirror the editor look */
-.tiptap.ProseMirror table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-.tiptap.ProseMirror th,
-.tiptap.ProseMirror td {
-  border: 1px solid var(--border);
-  padding: 0.75rem 1rem;
-  text-align: left;
-  vertical-align: top;
-}
-
-.tiptap.ProseMirror thead th,
-.tiptap.ProseMirror th {
-  background-color: var(--muted);
-  color: var(--foreground);
-  font-weight: 600;
-}
-
-/* Figures and images from CMS HTML */
-.tiptap.ProseMirror figure {
-  margin: 1rem 0;
-}
-
-.tiptap.ProseMirror figcaption {
-  font-size: 0.8125rem;
-  color: var(--muted-foreground);
-  text-align: center;
-  margin-top: 0.5rem;
-}
-
-.tiptap.ProseMirror img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.5rem;
 }

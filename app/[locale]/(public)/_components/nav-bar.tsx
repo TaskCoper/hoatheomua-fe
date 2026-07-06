@@ -70,7 +70,13 @@ export default function NavBar() {
         aria-label={t('header.brand')}
         className='flex flex-col items-center gap-0.5 lg:justify-self-start cursor-pointer'
       >
-        <Image src={logo} alt={t('header.logoAlt')} className='h-10 sm:h-12 lg:h-14 w-auto' />
+        <Image
+          src={logo}
+          alt={t('header.logoAlt')}
+          sizes='(min-width: 1024px) 56px, (min-width: 640px) 48px, 40px'
+          quality={80}
+          className='h-10 sm:h-12 lg:h-14 w-auto'
+        />
       </Link>
 
       <nav
@@ -161,7 +167,7 @@ export default function NavBar() {
           <SheetHeader className='border-b border-secondary'>
             <SheetTitle asChild>
               <Link href='/' aria-label={t('header.brand')} className='flex items-center'>
-                <Image src={logo} alt={t('header.logoAlt')} className='h-8 w-auto' />
+                <Image src={logo} alt={t('header.logoAlt')} sizes='32px' quality={80} className='h-8 w-auto' />
               </Link>
             </SheetTitle>
           </SheetHeader>

@@ -1,0 +1,83 @@
+@import './_variables.scss';
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  font-size: 0.875rem;
+  font-weight: 400;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  a {
+    cursor: pointer;
+  }
+}
+
+/* =====================
+   Tiptap viewer extras
+   ===================== */
+.tiptap.ProseMirror {
+  color: var(--foreground);
+}
+
+.tiptap.ProseMirror h1,
+.tiptap.ProseMirror h2,
+.tiptap.ProseMirror h3,
+.tiptap.ProseMirror h4,
+.tiptap.ProseMirror h5,
+.tiptap.ProseMirror h6 {
+  font-family: var(--font-title);
+  color: var(--primary);
+}
+
+/* Tables aren't covered by the tiptap node SCSS; mirror the editor look */
+.tiptap.ProseMirror table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.tiptap.ProseMirror th,
+.tiptap.ProseMirror td {
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tiptap.ProseMirror thead th,
+.tiptap.ProseMirror th {
+  background-color: var(--muted);
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.tiptap.ProseMirror figure {
+  margin: 1rem 0;
+}
+
+.tiptap.ProseMirror figcaption {
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.tiptap.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}

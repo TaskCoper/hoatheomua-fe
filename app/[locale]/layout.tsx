@@ -12,10 +12,11 @@ import '../globals.css'
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['400', '500', '600', '700'],
-  subsets: ['latin', 'vietnamese'],
+  subsets: ['vietnamese'],
   display: 'swap',
   variable: '--font-sans',
-  preload: true
+  preload: true,
+  fallback: ['system-ui', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif']
 })
 
 const playfairDisplay = Playfair_Display({

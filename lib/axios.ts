@@ -1,3 +1,4 @@
+import { hasSessionCookieClient } from '@/lib/has-session'
 import { isPublicRoutePath } from '@/shared/constants'
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
 
@@ -193,6 +194,12 @@ export const createApiClient = (
         return Promise.reject(error)
       }
 
+      // Anonymous visitors have no session to refresh — short-circuit before
+      // triggering /refresh_token so public pages don't fire a noisy 401.
+      if (!hasSessionCookieClient()) {
+        return Promise.reject(error)
+      }
+
       if (originalRequest._retry) {
         return Promise.reject(error)
       }
@@ -231,7 +238,9 @@ export const createApiClient = (
 }
 
 const AUTH_TOKEN_CODES = {
-  expiredAccessTokenCodes: ['ExpiredAccessToken', 'MissingAccessToken', 'InvalidAccessToken'],
+  // Only these codes justify a silent refresh — MissingAccessToken means the
+  // caller was anonymous, which is not a refresh candidate.
+  expiredAccessTokenCodes: ['ExpiredAccessToken', 'InvalidAccessToken'],
   expiredRefreshTokenCodes: ['InvalidRefreshToken']
 } as const
 

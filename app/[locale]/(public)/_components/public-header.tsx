@@ -1,20 +1,16 @@
 'use client'
 
 import { useSelectedLayoutSegment } from 'next/navigation'
-import Header from './header'
-import HomeHeader from './home-header'
+import NavShell from './nav-shell'
 
-interface PublicHeaderProps {
-  homeVideoSrc?: string | null
-  homePosterSrc?: string
-}
-
-export default function PublicHeader({ homeVideoSrc, homePosterSrc }: PublicHeaderProps) {
+export default function PublicHeader() {
   const segment = useSelectedLayoutSegment()
+  const isHome = segment === null
 
-  if (segment === null) {
-    return <HomeHeader videoSrc={homeVideoSrc} posterSrc={homePosterSrc} />
-  }
-
-  return <Header />
+  return (
+    <>
+      <NavShell />
+      {isHome ? null : <div aria-hidden='true' className='h-16 sm:h-[4.5rem] lg:h-20' />}
+    </>
+  )
 }

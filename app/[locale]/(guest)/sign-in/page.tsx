@@ -2,6 +2,7 @@ import SignInProvider from '@/features/users/components/sign-in-provider'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { Suspense } from 'react'
 
 interface SignInPageProps {
   params: Promise<{ locale: Locale }>
@@ -29,7 +30,9 @@ export default async function SignInPage({ params }: SignInPageProps) {
           <p className='text-sm text-muted-foreground'>{t('description')}</p>
         </div>
 
-        <SignInProvider />
+        <Suspense fallback={null}>
+          <SignInProvider />
+        </Suspense>
       </div>
     </main>
   )

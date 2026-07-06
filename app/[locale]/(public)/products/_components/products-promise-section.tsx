@@ -2,7 +2,7 @@
 
 import ConfigurableBanner from '@/app/[locale]/(public)/_components/configurable-banner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import saleBanner from '@/public/images/sale-banner.png'
+import saleBanner from '@/public/images/sale-banner.webp'
 import { type BannerSlot } from '@/types/config.type'
 import { DeliveryTruck01Icon, Flower2Icon, MessageMultiple02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'

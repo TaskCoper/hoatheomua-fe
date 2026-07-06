@@ -211,8 +211,10 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
             <Image
               src={channel.src}
               alt=''
-              width={56}
-              height={56}
+              width={40}
+              height={40}
+              sizes='(min-width: 640px) 40px, 32px'
+              quality={70}
               aria-hidden='true'
               className='size-8 object-contain transition-transform duration-300 group-hover:scale-110 sm:size-10'
             />

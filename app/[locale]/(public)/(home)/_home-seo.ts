@@ -23,7 +23,7 @@ import {
 import type { Metadata } from 'next'
 
 const HOME_BASE_PATH = '/'
-const HOME_OG_IMAGE_PATH = '/images/banner-one.png'
+const HOME_OG_IMAGE_PATH = '/images/hero-poster.jpg'
 
 export const HOME_COPY = {
   vi: {

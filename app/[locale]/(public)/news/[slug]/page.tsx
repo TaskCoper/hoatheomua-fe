@@ -36,7 +36,13 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale; slug: string }>
 }): Promise<Metadata> {
   const { locale, slug } = await params
-  const article = await getArticle({ identifier: slug, locale })
+  let article: Awaited<ReturnType<typeof getArticle>> | null = null
+  try {
+    article = await getArticle({ identifier: slug, locale })
+  } catch (error) {
+    console.error('[SSR] news article metadata fetch failed:', error)
+    article = null
+  }
   const t = await getTranslations()
 
   return generateNewsDetailMetadata({
@@ -50,7 +56,14 @@ export async function generateMetadata({
 
 export default async function NewsDetailPage({ params }: { params: Promise<{ locale: Locale; slug: string }> }) {
   const { slug, locale } = await params
-  const article = await getArticle({ identifier: slug, locale })
+
+  let article: Awaited<ReturnType<typeof getArticle>> | null = null
+  try {
+    article = await getArticle({ identifier: slug, locale })
+  } catch (error) {
+    console.error('[SSR] news article fetch failed:', error)
+    article = null
+  }
 
   if (!article) {
     notFound()

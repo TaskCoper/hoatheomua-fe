@@ -1,5 +1,7 @@
 'use client'
 
+import '@/styles/tiptap.scss'
+
 import '@/components/tiptap-node/blockquote-node/blockquote-node.scss'
 import '@/components/tiptap-node/code-block-node/code-block-node.scss'
 import '@/components/tiptap-node/heading-node/heading-node.scss'
