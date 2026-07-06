@@ -3,28 +3,50 @@ import { routing } from '@/lib/i18n/routing'
 import ReactQueryProvider from '@/lib/react-query'
 import type { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
-import { setRequestLocale } from 'next-intl/server'
+import { getMessages, setRequestLocale } from 'next-intl/server'
 import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 import '../globals.css'
 
+// Namespaces that are large AND only used inside a single route-tree; they
+// don't need to ship in the initial client bundle on other routes. Individual
+// route layouts add nested providers for these.
+const HEAVY_ROUTE_NAMESPACES = [
+  'about',
+  'admin',
+  'b2b',
+  'careers',
+  'dataTable',
+  'recruitment',
+  'richTextEditor'
+] as const
+
+function pickClientMessages(messages: Record<string, unknown>) {
+  const out: Record<string, unknown> = {}
+  for (const [k, v] of Object.entries(messages)) {
+    if (!(HEAVY_ROUTE_NAMESPACES as readonly string[]).includes(k)) out[k] = v
+  }
+  return out
+}
+
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['400', '500', '600', '700'],
   subsets: ['vietnamese'],
   display: 'swap',
   variable: '--font-sans',
-  preload: true,
+  preload: false,
   fallback: ['system-ui', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif']
 })
 
 const playfairDisplay = Playfair_Display({
-  weight: ['600', '700'],
+  weight: ['700'],
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-title',
-  preload: false
+  preload: false,
+  fallback: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif']
 })
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.net'
@@ -75,11 +97,14 @@ export default async function RootLayout({
 
   setRequestLocale(locale)
 
+  const messages = await getMessages()
+  const clientMessages = pickClientMessages(messages as Record<string, unknown>)
+
   return (
     <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
         <NuqsAdapter>
-          <NextIntlClientProvider>
+          <NextIntlClientProvider messages={clientMessages}>
             <ReactQueryProvider>
               {children}
               {modal}

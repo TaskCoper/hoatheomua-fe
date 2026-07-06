@@ -32,6 +32,7 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
   experimental: {
+    optimizeCss: true,
     optimizePackageImports: [
       'motion',
       '@hugeicons/react',

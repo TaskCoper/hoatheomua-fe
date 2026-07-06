@@ -1,3 +1,4 @@
+import NewsContent from '@/features/articles/components/news-content'
 import { getArticlesQuery } from '@/features/articles/queries'
 import { getCachedArticles } from '@/features/articles/queries.server'
 import { buildNewsCollectionJsonLd, generateNewsListMetadata } from '@/features/articles/seo'
@@ -7,9 +8,9 @@ import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/shared/constants'
 import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
-import NewsContent from '../../../../features/articles/components/news-content'
+import { Suspense } from 'react'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 600
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
@@ -37,9 +38,11 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: L
     <>
       <JsonLd data={buildNewsCollectionJsonLd(locale, initialNews)} />
 
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <NewsContent locale={locale} />
-      </HydrationBoundary>
+      <Suspense fallback={null}>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <NewsContent locale={locale} />
+        </HydrationBoundary>
+      </Suspense>
     </>
   )
 }

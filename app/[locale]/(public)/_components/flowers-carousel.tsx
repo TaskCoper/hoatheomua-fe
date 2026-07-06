@@ -120,9 +120,9 @@ export default function FlowersCarousel() {
                         height: imageSize,
                         transition: `width 550ms ${EASE}, height 550ms ${EASE}`
                       }}
-                      sizes='(min-width: 1024px) 460px, (min-width: 768px) 352px, (min-width: 640px) 256px, 208px'
+                      sizes='(min-width: 1024px) 320px, (min-width: 768px) 256px, 128px'
                       loading='lazy'
-                      quality={60}
+                      quality={55}
                     />
                   </div>
 

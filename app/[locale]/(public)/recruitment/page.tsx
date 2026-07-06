@@ -1,3 +1,4 @@
+import ScopedIntlProvider from '@/components/scoped-intl-provider'
 import { Spinner } from '@/components/ui/spinner'
 import type { Locale } from '@/lib/i18n/routing'
 import { JsonLd } from '@/shared/seo'
@@ -25,7 +26,7 @@ export default async function RecruitmentPage({
   const jobParams = toJobDescriptionParam(search)
 
   return (
-    <>
+    <ScopedIntlProvider namespaces={['recruitment', 'richTextEditor', 'careers', 'dataTable']}>
       <JsonLd data={buildRecruitmentJsonLd(locale)} />
 
       <Suspense
@@ -37,6 +38,6 @@ export default async function RecruitmentPage({
       >
         <RecruitmentResults locale={locale} jobParams={jobParams} />
       </Suspense>
-    </>
+    </ScopedIntlProvider>
   )
 }

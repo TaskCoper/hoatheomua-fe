@@ -1,3 +1,4 @@
+import ScopedIntlProvider from '@/components/scoped-intl-provider'
 import type { Locale } from '@/lib/i18n/routing'
 import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
@@ -23,7 +24,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   const aboutJsonLd = await buildAboutJsonLd(locale)
 
   return (
-    <>
+    <ScopedIntlProvider namespaces={['about']}>
       <JsonLd data={aboutJsonLd} />
 
       <div className='relative overflow-hidden'>
@@ -36,6 +37,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <AboutTestimonialsSection />
         <AboutPressSection />
       </div>
-    </>
+    </ScopedIntlProvider>
   )
 }
