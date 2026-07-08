@@ -27,7 +27,7 @@ export default async function NotFoundPage() {
         aria-label='Hoa Theo Mùa'
         className='absolute top-8 left-1/2 -translate-x-1/2 transition-opacity hover:opacity-80'
       >
-        <Image src={logo} alt='Hoa Theo Mùa' width={56} height={56} priority />
+        <Image src={logo} alt='Hoa Theo Mùa' width={56} height={56} priority loading='eager' />
       </Link>
 
       <div className='relative z-10 mx-auto max-w-2xl space-y-6'>

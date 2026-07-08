@@ -7,7 +7,19 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/sign-in', '/sign-up', '/forgot-password', '/cart', '/verification', '/en/sign-in', '/en/sign-up', '/en/forgot-password', '/en/cart', '/en/verification']
+        disallow: [
+          '/api/',
+          '/sign-in',
+          '/sign-up',
+          '/forgot-password',
+          '/cart',
+          '/verification',
+          '/en/sign-in',
+          '/en/sign-up',
+          '/en/forgot-password',
+          '/en/cart',
+          '/en/verification'
+        ]
       }
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

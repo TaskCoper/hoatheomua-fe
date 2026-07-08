@@ -75,6 +75,7 @@ export default function NavBar() {
           alt={t('header.logoAlt')}
           sizes='(min-width: 1024px) 56px, (min-width: 640px) 48px, 40px'
           quality={80}
+          loading='eager'
           className='h-10 sm:h-12 lg:h-14 w-auto'
         />
       </Link>
