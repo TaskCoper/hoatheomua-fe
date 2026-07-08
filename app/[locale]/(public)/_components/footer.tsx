@@ -88,6 +88,7 @@ export default function Footer() {
               alt={t('footer.logoAlt')}
               sizes='(min-width: 1024px) 128px, (min-width: 640px) 112px, 96px'
               quality={80}
+              loading='eager'
               className='h-24 w-auto sm:h-28 lg:h-32'
             />
             <p className='text-base sm:text-lg font-bold'>{t('footer.company')}</p>
@@ -147,11 +148,7 @@ export default function Footer() {
             <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.mapHeading')}</h2>
             <div className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md'>
               {googleMapSrc && (
-                <LazyMapEmbed
-                  src={googleMapSrc}
-                  title={t('footer.mapTitle')}
-                  className='h-40 w-full sm:h-48 lg:h-44'
-                />
+                <LazyMapEmbed src={googleMapSrc} title={t('footer.mapTitle')} className='h-40 w-full sm:h-48 lg:h-44' />
               )}
             </div>
             <div className='flex items-center gap-3'>

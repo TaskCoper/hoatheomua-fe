@@ -31,8 +31,8 @@ const PHOTO_DIMENSIONS: Record<string, { width: number; height: number }> = {
   '15': { width: 1706, height: 2560 },
   '16': { width: 1920, height: 2560 },
   '17': { width: 1920, height: 2560 },
-  '18': { width: 832, height: 1248 },
-  '20': { width: 2048, height: 1366 }
+  '18': { width: 832, height: 1248 }
+  // '20': { width: 2048, height: 1366 }
 }
 
 const PHOTOS = Object.entries(PHOTO_DIMENSIONS).map(([id, { width, height }]) => ({
