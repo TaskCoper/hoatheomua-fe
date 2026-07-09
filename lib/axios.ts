@@ -1,4 +1,3 @@
-import { hasSessionCookieClient } from '@/lib/has-session'
 import { isPublicRoutePath } from '@/shared/constants'
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
 
@@ -191,12 +190,6 @@ export const createApiClient = (
       // user's browser from here, and a redirect isn't possible. Let the caller
       // (Server Component / *.server.ts fetcher) decide what to do with the 401.
       if (!isBrowser() || !originalRequest || !isExpiredAccessToken || isRefreshRequest) {
-        return Promise.reject(error)
-      }
-
-      // Anonymous visitors have no session to refresh — short-circuit before
-      // triggering /refresh_token so public pages don't fire a noisy 401.
-      if (!hasSessionCookieClient()) {
         return Promise.reject(error)
       }
 

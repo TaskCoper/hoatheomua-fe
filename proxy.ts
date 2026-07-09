@@ -1,11 +1,12 @@
-import { SESSION_MARKER_COOKIE } from '@/lib/has-session'
 import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
-import { GUEST_ONLY_ROUTES } from './shared/constants'
 
-const ACCESS_TOKEN_COOKIE = 'accessToken'
-const REFRESH_TOKEN_COOKIE = 'refreshToken'
+const ACCESS_TOKEN_COOKIE = 'HTM-Access-Token'
+const REFRESH_TOKEN_COOKIE = 'HTM-Refresh-Token'
+
+const PUBLIC_ROUTES = new Set<string>(['/', '/sign-in', '/sign-up', '/verify', '/verify-sent'])
+const GUEST_ONLY_ROUTES = new Set<string>(['/sign-in', '/sign-up'])
 
 const intlMiddleware = createIntlMiddleware(routing)
 const LOCALES = routing.locales as readonly string[]
@@ -29,44 +30,29 @@ const buildRedirect = (request: NextRequest, target: string, search?: URLSearchP
   return NextResponse.redirect(url)
 }
 
-const applySessionMarker = (response: NextResponse, hasSession: boolean) => {
-  if (hasSession) {
-    response.cookies.set(SESSION_MARKER_COOKIE, '1', {
-      httpOnly: false,
-      sameSite: 'lax',
-      path: '/',
-      secure: process.env.NODE_ENV === 'production'
-    })
-  } else {
-    response.cookies.set(SESSION_MARKER_COOKIE, '', {
-      httpOnly: false,
-      sameSite: 'lax',
-      path: '/',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 0
-    })
-  }
-  return response
-}
-
 export default function proxy(request: NextRequest) {
   const intlResponse = intlMiddleware(request)
 
-  const hasAccessToken = request.cookies.has(ACCESS_TOKEN_COOKIE)
-  const hasRefreshToken = request.cookies.has(REFRESH_TOKEN_COOKIE)
-  const isProbablyAuthed = hasAccessToken || hasRefreshToken
-
   if (intlResponse.status >= 300 && intlResponse.status < 400) {
-    return applySessionMarker(intlResponse, isProbablyAuthed)
+    return intlResponse
   }
 
   const pathname = stripLocale(request.nextUrl.pathname)
+  const hasAccessToken = request.cookies.has(ACCESS_TOKEN_COOKIE)
+  const hasRefreshToken = request.cookies.has(REFRESH_TOKEN_COOKIE)
+
+  const isProbablyAuthed = hasAccessToken || hasRefreshToken
 
   if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed) {
-    return applySessionMarker(buildRedirect(request, '/'), isProbablyAuthed)
+    return buildRedirect(request, '/')
   }
 
-  return applySessionMarker(intlResponse, isProbablyAuthed)
+  if (!PUBLIC_ROUTES.has(pathname) && !isProbablyAuthed) {
+    const params = new URLSearchParams({ from: request.nextUrl.pathname })
+    return buildRedirect(request, '/sign-in', params)
+  }
+
+  return intlResponse
 }
 
 export const config = {

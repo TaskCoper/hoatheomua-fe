@@ -1,27 +1,19 @@
-import { hasSessionCookieClient } from '@/lib/has-session'
 import { useQuery } from '@tanstack/react-query'
-import { getMeQuery } from '../queries'
+import authService from '../services'
 
 export const useGetMe = () => {
-  const hasSession = hasSessionCookieClient()
-
   const {
-    data,
-    isPending,
-    isFetching,
-    fetchStatus
+    data: me,
+    isLoading: isGettingMe,
+    isError
   } = useQuery({
-    ...getMeQuery(),
-    retry: false,
-    throwOnError: false,
-    enabled: hasSession
+    queryKey: ['me'],
+    queryFn: authService.getMe,
+    retry: false
   })
 
-  const me = hasSession ? data : null
-  const isGettingMe = hasSession && (fetchStatus === 'fetching' || (isPending && fetchStatus !== 'idle') || isFetching)
-
-  const isAuthenticated = !!me
+  const isAuthenticated = !!me && !isError
   const isVerificationRequired = !!me && me.isEmailVerified === false
 
-  return { me, isGettingMe, isAuthenticated, isVerificationRequired }
+  return { me, isGettingMe, isError, isAuthenticated, isVerificationRequired }
 }
