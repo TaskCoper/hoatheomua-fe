@@ -13,7 +13,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import ProductDetailContent from './_components/product-detail-content'
 
-const STATIC_PRODUCT_LIMIT = 20
+const STATIC_PRODUCT_LIMIT = 10
 
 export const revalidate = 3600
 export const dynamicParams = true
