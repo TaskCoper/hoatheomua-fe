@@ -240,7 +240,7 @@ export const createApiClient = (
 const AUTH_TOKEN_CODES = {
   // Only these codes justify a silent refresh — MissingAccessToken means the
   // caller was anonymous, which is not a refresh candidate.
-  expiredAccessTokenCodes: ['ExpiredAccessToken', 'InvalidAccessToken'],
+  expiredAccessTokenCodes: ['ExpiredAccessToken', 'InvalidAccessToken', 'MissingAccessToken'],
   expiredRefreshTokenCodes: ['InvalidRefreshToken']
 } as const
 
