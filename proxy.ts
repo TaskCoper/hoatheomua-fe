@@ -1,12 +1,10 @@
 import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
+import { GUEST_ONLY_ROUTES, isPublicRoutePath } from './shared/constants'
 
 const ACCESS_TOKEN_COOKIE = 'HTM-Access-Token'
 const REFRESH_TOKEN_COOKIE = 'HTM-Refresh-Token'
-
-const PUBLIC_ROUTES = new Set<string>(['/', '/sign-in', '/sign-up', '/verify', '/verify-sent'])
-const GUEST_ONLY_ROUTES = new Set<string>(['/sign-in', '/sign-up'])
 
 const intlMiddleware = createIntlMiddleware(routing)
 const LOCALES = routing.locales as readonly string[]
@@ -47,7 +45,7 @@ export default function proxy(request: NextRequest) {
     return buildRedirect(request, '/')
   }
 
-  if (!PUBLIC_ROUTES.has(pathname) && !isProbablyAuthed) {
+  if (!isPublicRoutePath(pathname) && !isProbablyAuthed) {
     const params = new URLSearchParams({ from: request.nextUrl.pathname })
     return buildRedirect(request, '/sign-in', params)
   }
