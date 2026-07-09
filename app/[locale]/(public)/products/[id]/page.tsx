@@ -1,9 +1,10 @@
 import { productDetailQuery } from '@/features/products/queries'
-import { getAllProductIds, getProductDetail } from '@/features/products/queries.server'
+import { getProductDetail } from '@/features/products/queries.server'
+// import { getAllProductIds, getProductDetail } from '@/features/products/queries.server'
 import { buildProductDetailJsonLd, generateProductDetailMetadata } from '@/features/products/seo'
 import type { ProductDetail } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
-import { routing } from '@/lib/i18n/routing'
+// import { routing } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
@@ -13,15 +14,16 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import ProductDetailContent from './_components/product-detail-content'
 
-const STATIC_PRODUCT_LIMIT = 10
+// const STATIC_PRODUCT_LIMIT = 10
 
-export const revalidate = 3600
-export const dynamicParams = true
+// export const revalidate = 3600
+// export const dynamicParams = true
+export const dynamic = 'force-dynamic'
 
-export async function generateStaticParams() {
-  const ids = await getAllProductIds(STATIC_PRODUCT_LIMIT)
-  return routing.locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
-}
+// export async function generateStaticParams() {
+//   const ids = await getAllProductIds(STATIC_PRODUCT_LIMIT)
+//   return routing.locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+// }
 
 export async function generateMetadata({
   params
