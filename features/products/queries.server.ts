@@ -24,7 +24,7 @@ export const getCachedProducts = (params: ProductListParams, locale: string) =>
  *
  * Server-only by virtue of being a side-effect of the server-side axios client.
  */
-export async function getAllProductIds(limit = 50): Promise<string[]> {
+export async function getAllProductIds(limit = 20): Promise<string[]> {
   try {
     const qc = getQueryClient()
     const response: ProductListResponse = await qc.fetchQuery(productListQuery({ size: limit }, 'vi'))

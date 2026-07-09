@@ -8,11 +8,12 @@ import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
+import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import ProductDetailContent from './_components/product-detail-content'
 
-const STATIC_PRODUCT_LIMIT = 50
+const STATIC_PRODUCT_LIMIT = 20
 
 export const revalidate = 3600
 export const dynamicParams = true
@@ -28,6 +29,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale; id: string }>
 }): Promise<Metadata> {
   const { locale, id } = await params
+  setRequestLocale(locale)
   const envelope = await getProductDetail(id, locale)
   const product = (envelope?.value?.data ?? null) as ProductDetail | null
   return generateProductDetailMetadata({ locale, product })
@@ -35,6 +37,7 @@ export async function generateMetadata({
 
 export default async function ProductPage({ params }: { params: Promise<{ locale: Locale; id: string }> }) {
   const { locale, id } = await params
+  setRequestLocale(locale)
   const envelope = await getProductDetail(id, locale)
   const product = envelope?.value?.data as ProductDetail | null | undefined
 
