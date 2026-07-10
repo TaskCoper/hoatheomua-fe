@@ -3,8 +3,8 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
 import { GUEST_ONLY_ROUTES, isPublicRoutePath } from './shared/constants'
 
-const ACCESS_TOKEN_COOKIE = 'HTM-Access-Token'
-const REFRESH_TOKEN_COOKIE = 'HTM-Refresh-Token'
+const ACCESS_TOKEN_COOKIE = 'accessToken'
+const REFRESH_TOKEN_COOKIE = 'refreshToken'
 
 const intlMiddleware = createIntlMiddleware(routing)
 const LOCALES = routing.locales as readonly string[]
