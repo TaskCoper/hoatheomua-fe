@@ -40,6 +40,13 @@ const WebhookBodySchema = z.object({
 })
 
 export async function POST(req: Request) {
+  const rawBody = await req.clone().text()
+  console.log('[nhanh-webhook:in]', {
+    url: req.url,
+    headers: Object.fromEntries(req.headers),
+    body: rawBody,
+  })
+
   if (req.headers.get('authorization') !== VERIFY_TOKEN) {
     return Response.json({ ok: false, reason: 'unauthorized' }, { status: 401 })
   }
