@@ -118,7 +118,7 @@ export default function ProductLinesSection() {
               className='group relative flex flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:rounded-2xl lg:rounded-3xl'
             >
               <Link href={`/mainline/${card.id}`} className='flex flex-1 flex-col'>
-                <div className='relative isolate h-44 w-full overflow-hidden sm:h-58 md:h-64 lg:h-72'>
+                <div className='relative isolate h-110 w-full overflow-hidden'>
                   <Image
                     src={card.image}
                     alt={name}
