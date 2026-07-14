@@ -21,7 +21,7 @@ const buildListBody = (params: ProductListParams) => {
       ids: params.ids ?? [],
       status: params.status ?? [],
       categoryIds: params.categoryIds,
-      gpid: -2,
+      gpid: 2,
       ...(trimmedName.length > 0 ? { name: trimmedName.toLowerCase() } : {}),
       ...(params.price && params.price.length === 2 ? { price: params.price } : {})
     },
