@@ -65,7 +65,7 @@ export default function ProductCard({
       <div className='relative z-10 flex flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'>
         <Link
           href={`/products/${product.id}`}
-          className='relative isolate flex h-44 items-center justify-center overflow-hidden bg-secondary/40 sm:h-48 lg:h-56'
+          className='relative isolate flex h-80 items-center justify-center overflow-hidden bg-secondary/40'
         >
           {avatar ? (
             <Image

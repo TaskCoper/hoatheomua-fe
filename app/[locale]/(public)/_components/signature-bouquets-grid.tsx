@@ -46,8 +46,7 @@ export default function SignatureBouquetsGrid() {
   const products = response?.value?.data ?? []
   const nextCursor = response?.value?.paginator?.next?.id ?? 0
   const hasPreviousPage = cursorStack.length > 1
-  const hasNextPage =
-    products.length === SIGNATURE_BOUQUETS_PAGE_SIZE && nextCursor > 0 && nextCursor !== currentCursor
+  const hasNextPage = products.length === SIGNATURE_BOUQUETS_PAGE_SIZE && nextCursor > 0 && nextCursor !== currentCursor
 
   const handlePreviousPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
