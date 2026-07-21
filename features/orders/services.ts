@@ -97,10 +97,14 @@ class OrderService {
   createOrder = async ({ body }: { body: CheckoutPayload }) => {
     const { data } = await api.post<
       BaseResponse<{
-        ahamoveResult: AhamoveResult[]
-        productNhanhResult: ProductNhanhResult
+        order_id: number
+        mrc_order_id: string
+        payment_url: string
       }>
-    >(`${this.baseUrl}`, body)
+    >(`${this.baseUrl}`, {
+      ...body,
+      paymentMethod: Number(body.paymentMethod)
+    })
 
     return data.value
   }

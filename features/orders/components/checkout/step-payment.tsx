@@ -2,11 +2,14 @@
 
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { I18nKey } from '@/lib/i18n/types'
 import { cn } from '@/shared/utils'
-import { BankIcon } from '@hugeicons/core-free-icons'
+import { Atm01Icon, BankIcon, CreditCardIcon, QrCodeIcon } from '@hugeicons/core-free-icons'
+import type { IconSvgElement } from '@hugeicons/react'
 import { HugeiconsIcon } from '@hugeicons/react'
 import type { AhamoveResult } from '../../ahamove.type'
 import type { TaxBusinessInfo } from '../../types'
+import { PaymentMethod, PaymentMethodDescription } from '../../types'
 import { InvoiceFields } from '../invoice-fields'
 
 type LookupState = 'idle' | 'loading' | 'found' | 'not_found' | 'error'
@@ -18,7 +21,43 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
 })
 const formatVnd = (value: number) => vndFormatter.format(value)
 
+interface PaymentMethodOption {
+  value: PaymentMethod
+  labelKey: I18nKey
+  descriptionKey: I18nKey
+  icon: IconSvgElement
+}
+
+const PAYMENT_METHODS: PaymentMethodOption[] = [
+  {
+    value: PaymentMethod[1],
+    labelKey: 'orders.checkout.paymentMethod.va.label',
+    descriptionKey: PaymentMethodDescription[PaymentMethod[1]],
+    icon: BankIcon
+  },
+  {
+    value: PaymentMethod[3],
+    labelKey: 'orders.checkout.paymentMethod.card.label',
+    descriptionKey: PaymentMethodDescription[PaymentMethod[3]],
+    icon: CreditCardIcon
+  },
+  {
+    value: PaymentMethod[5],
+    labelKey: 'orders.checkout.paymentMethod.atm.label',
+    descriptionKey: PaymentMethodDescription[PaymentMethod[5]],
+    icon: Atm01Icon
+  },
+  {
+    value: PaymentMethod[6],
+    labelKey: 'orders.checkout.paymentMethod.vnPayQr.label',
+    descriptionKey: PaymentMethodDescription[PaymentMethod[6]],
+    icon: QrCodeIcon
+  }
+]
+
 interface StepPaymentProps {
+  paymentMethod: PaymentMethod
+  onPaymentMethodChange: (value: PaymentMethod) => void
   shippingOptions: AhamoveResult[]
   selectedServiceId: string
   onSelectShipping: (id: string) => void
@@ -29,6 +68,8 @@ interface StepPaymentProps {
 }
 
 export function StepPayment({
+  paymentMethod,
+  onPaymentMethodChange,
   shippingOptions,
   selectedServiceId,
   onSelectShipping,
@@ -47,15 +88,38 @@ export function StepPayment({
           <p className='mt-1 text-sm text-muted-foreground'>{t('orders.checkout.paymentDescription')}</p>
         </header>
 
-        <div className='rounded-2xl border border-primary/30 bg-primary/5 p-4'>
-          <div className='mb-3 flex items-center gap-2'>
-            <span className='grid size-8 place-items-center rounded-full bg-primary/10 text-primary'>
-              <HugeiconsIcon icon={BankIcon} strokeWidth={2} className='size-4' />
-            </span>
-            <h3 className='font-heading text-sm font-semibold'>{t('orders.checkout.bankTransferTitle')}</h3>
-          </div>
-          <p className='text-sm text-muted-foreground'>{t('orders.checkout.bankTransferHint')}</p>
-        </div>
+        <RadioGroup value={paymentMethod} onValueChange={onPaymentMethodChange} className='gap-2'>
+          {PAYMENT_METHODS.map((method) => {
+            const isActive = paymentMethod === method.value
+            const id = `payment-${method.value}`
+            return (
+              <label
+                key={method.value}
+                htmlFor={id}
+                className={cn(
+                  'flex cursor-pointer items-center gap-3 rounded-2xl border bg-background/60 px-3 py-3 transition-colors',
+                  isActive
+                    ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/30'
+                    : 'border-border/60 hover:bg-muted/40'
+                )}
+              >
+                <RadioGroupItem id={id} value={method.value} />
+                <span
+                  className={cn(
+                    'grid size-8 shrink-0 place-items-center rounded-full',
+                    isActive ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                  )}
+                >
+                  <HugeiconsIcon icon={method.icon} strokeWidth={2} className='size-4' />
+                </span>
+                <div className='min-w-0 flex-1'>
+                  <p className='text-sm font-medium'>{t(method.labelKey)}</p>
+                  <p className='text-xs text-muted-foreground'>{t(method.descriptionKey)}</p>
+                </div>
+              </label>
+            )
+          })}
+        </RadioGroup>
       </section>
 
       <section className='rounded-3xl bg-card p-5 sm:p-6 border border-border'>
@@ -84,9 +148,7 @@ export function StepPayment({
                 >
                   <RadioGroupItem id={id} value={service.service_id} />
                   <div className='min-w-0 flex-1'>
-                    <div className='flex items-center gap-2'>
-                      <p className='truncate text-sm font-medium'>{service.service_id}</p>
-                    </div>
+                    <p className='truncate text-sm font-medium'>{service.service_id}</p>
                     <p className='text-xs text-muted-foreground'>
                       {t('orders.checkout.shippingMeta', {
                         km: (service.data?.distance ?? 0).toFixed(1),
@@ -115,11 +177,6 @@ export function StepPayment({
           onTaxBusinessLookupStateChange={onTaxBusinessLookupStateChange}
         />
       </section>
-
-      {/* <div className='flex items-start gap-2 rounded-2xl bg-secondary/30 px-4 py-3 text-xs text-muted-foreground'>
-        <HugeiconsIcon icon={InformationCircleIcon} strokeWidth={2} className='mt-0.5 size-4 shrink-0' />
-        <p>{t('orders.checkout.paymentNote')}</p>
-      </div> */}
     </div>
   )
 }

@@ -15,7 +15,7 @@ import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
-import type { TaxBusinessInfo } from '../../types'
+import { PaymentMethod, type TaxBusinessInfo } from '../../types'
 import { CheckoutSidebar } from './checkout-sidebar'
 import { CheckoutStepper } from './checkout-stepper'
 import { StepComplete } from './step-complete'
@@ -43,6 +43,7 @@ export function CheckoutClient() {
     createOrder
   })
 
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('1')
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
   const [taxBusinessLookupState, setTaxBusinessLookupState] = useState<LookupState>('idle')
 
@@ -90,7 +91,7 @@ export function CheckoutClient() {
       : step === 2
         ? {
             label: t('orders.checkout.sidebar.payForBooking'),
-            onClick: () => handleConfirmOrder(),
+            onClick: () => handleConfirmOrder(paymentMethod),
             disabled: !selectedServiceId,
             loading: isCreatingOrder
           }
@@ -137,6 +138,8 @@ export function CheckoutClient() {
               />
             ) : step === 2 ? (
               <StepPayment
+                paymentMethod={paymentMethod}
+                onPaymentMethodChange={setPaymentMethod}
                 shippingOptions={sortedAhamove}
                 selectedServiceId={selectedServiceId}
                 onSelectShipping={setPickedServiceId}

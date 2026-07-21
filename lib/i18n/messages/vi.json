@@ -688,6 +688,24 @@
         "termsLink": "Điều khoản & Điều kiện",
         "termsAnd": "và",
         "privacyLink": "Chính sách bảo mật"
+      },
+      "paymentMethod": {
+        "va": {
+          "label": "VA",
+          "description": "Chuyển tiền vào tài khoản ngân hàng của chúng tôi. Thông tin tài khoản và mã QR sẽ được gửi sau khi xác nhận đơn."
+        },
+        "card": {
+          "label": "Thẻ tín dụng / ghi nợ quốc tế",
+          "description": "Thanh toán an toàn bằng Visa, Mastercard hoặc JCB. Bạn sẽ được chuyển sang cổng VNPay để hoàn tất."
+        },
+        "atm": {
+          "label": "Thẻ ATM / thẻ nội địa",
+          "description": "Thanh toán bằng thẻ ATM hoặc thẻ ngân hàng nội địa Việt Nam qua VNPay."
+        },
+        "vnPayQr": {
+          "label": "VNPay QR",
+          "description": "Quét mã QR VNPay bằng ứng dụng ngân hàng để thanh toán ngay lập tức."
+        }
       }
     },
     "list": {
@@ -710,6 +728,12 @@
         "Pending": "Chờ xác nhận",
         "Paid": "Đã thanh toán",
         "Cancelled": "Đã hủy"
+      },
+      "paymentMethod": {
+        "va": "VA",
+        "card": "Thẻ tín dụng / ghi nợ quốc tế",
+        "atm": "Thẻ ATM / thẻ nội địa",
+        "vnPayQr": "VNPay QR"
       },
       "qr": {
         "title": "Thanh toán đơn hàng",
@@ -755,7 +779,9 @@
         "cancelConfirmCta": "Có, hủy đơn hàng",
         "cancelKeep": "Giữ đơn hàng",
         "cancelSuccess": "Đã hủy đơn hàng",
-        "cancelError": "Không thể hủy đơn hàng"
+        "cancelError": "Không thể hủy đơn hàng",
+        "payNow": "Thanh toán ngay",
+        "paymentMethod": "Phương thức thanh toán"
       }
     }
   },

@@ -688,6 +688,24 @@
         "termsLink": "Terms & Conditions",
         "termsAnd": "and",
         "privacyLink": "Privacy Policy"
+      },
+      "paymentMethod": {
+        "va": {
+          "label": "VA",
+          "description": "Transfer to our bank account. You'll receive account details and a QR code after order confirmation."
+        },
+        "card": {
+          "label": "Credit / Debit Card",
+          "description": "Pay securely with Visa, Mastercard, or JCB. You'll be redirected to VNPay to complete payment."
+        },
+        "atm": {
+          "label": "ATM / Domestic Card",
+          "description": "Pay with your Vietnamese ATM or local bank card via VNPay."
+        },
+        "vnPayQr": {
+          "label": "VNPay QR",
+          "description": "Scan the VNPay QR code with any banking app to complete payment instantly."
+        }
       }
     },
     "list": {
@@ -710,6 +728,12 @@
         "Pending": "Pending",
         "Paid": "Paid",
         "Cancelled": "Cancelled"
+      },
+      "paymentMethod": {
+        "va": "VA",
+        "card": "Credit / Debit Card",
+        "atm": "ATM / Domestic Card",
+        "vnPayQr": "VNPay QR"
       },
       "qr": {
         "title": "Pay this order",
@@ -755,7 +779,9 @@
         "cancelConfirmCta": "Yes, cancel order",
         "cancelKeep": "Keep order",
         "cancelSuccess": "Order cancelled",
-        "cancelError": "Could not cancel order"
+        "cancelError": "Could not cancel order",
+        "payNow": "Pay now",
+        "paymentMethod": "Payment method"
       }
     }
   },

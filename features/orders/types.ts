@@ -16,6 +16,33 @@ export const OrderStatusLabel: Record<OrderStatus, I18nKey> = {
 
 export type OrderStatusLabel = (typeof OrderStatusLabel)[keyof typeof OrderStatusLabel]
 
+export const PaymentMethod = {
+  1: '1', // VA
+  3: '3', // Thẻ tín dụng
+  5: '5', // ATM
+  6: '6' // VNPayQR
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+export const PaymentMethodLabel: Record<PaymentMethod, I18nKey> = {
+  [PaymentMethod[1]]: 'orders.list.paymentMethod.va',
+  [PaymentMethod[3]]: 'orders.list.paymentMethod.card',
+  [PaymentMethod[5]]: 'orders.list.paymentMethod.atm',
+  [PaymentMethod[6]]: 'orders.list.paymentMethod.vnPayQr'
+}
+
+export type PaymentMethodLabel = (typeof PaymentMethodLabel)[keyof typeof PaymentMethodLabel]
+
+export const PaymentMethodDescription: Record<PaymentMethod, I18nKey> = {
+  [PaymentMethod[1]]: 'orders.checkout.paymentMethod.va.description',
+  [PaymentMethod[3]]: 'orders.checkout.paymentMethod.card.description',
+  [PaymentMethod[5]]: 'orders.checkout.paymentMethod.atm.description',
+  [PaymentMethod[6]]: 'orders.checkout.paymentMethod.vnPayQr.description'
+}
+
+export type PaymentMethodDescription = (typeof PaymentMethodDescription)[keyof typeof PaymentMethodDescription]
+
 export interface Order {
   orderId: string
   status: OrderStatus
@@ -58,7 +85,8 @@ export interface OrderDetail {
   productFee: number
   totalFee: number
   vatFee: number
-  qrCodeUrl: string | null
+  paymentUrl: string | null
+  paymentMethod: PaymentMethod
   transaction: OrderTransaction | null
   details: OrderItem[]
 }
@@ -111,6 +139,7 @@ export interface CheckoutPayload extends EstimatePayload {
   receiptEmail: string | null
   isExportInvoice: boolean
   invoiceType: InvoiceType | null
+  paymentMethod: PaymentMethod
 }
 
 export interface TaxBusinessInfo {

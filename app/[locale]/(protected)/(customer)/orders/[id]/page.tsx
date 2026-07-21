@@ -16,7 +16,14 @@ import { Spinner } from '@/components/ui/spinner'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useGetOrder } from '@/features/orders/hooks/use-get-order'
 import { useGetOrderStatus } from '@/features/orders/hooks/use-get-order-status'
-import { InvoiceType, InvoiceTypeLabel, OrderStatus, type OrderDetail } from '@/features/orders/types'
+import {
+  InvoiceType,
+  InvoiceTypeLabel,
+  OrderStatus,
+  PaymentMethod,
+  PaymentMethodLabel,
+  type OrderDetail
+} from '@/features/orders/types'
 import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
@@ -26,9 +33,11 @@ import { Link, useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import {
   ArrowLeft02Icon,
+  Atm01Icon,
   BankIcon,
   CalendarCheckOut01Icon,
   CheckmarkCircle02Icon,
+  CreditCardIcon,
   DeliveryTruck02Icon,
   FlowerIcon,
   InvoiceIcon,
@@ -59,29 +68,36 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
 
 const formatVnd = (value: number) => vndFormatter.format(value)
 
-interface QrDetails {
-  bank: string | null
-  account: string | null
-  amount: number | null
-  content: string | null
-}
+// interface QrDetails {
+//   bank: string | null
+//   account: string | null
+//   amount: number | null
+//   content: string | null
+// }
 
-const parseQrDetails = (qrCodeUrl: string | null | undefined): QrDetails | null => {
-  if (!qrCodeUrl) return null
-  try {
-    const url = new URL(qrCodeUrl, 'https://qr.sepay.vn')
-    const rawAmount = url.searchParams.get('amount')?.trim()
-    const amount = rawAmount ? Number(rawAmount) : NaN
-    return {
-      bank: url.searchParams.get('bank')?.trim() || null,
-      account: url.searchParams.get('acc')?.trim() || null,
-      amount: Number.isFinite(amount) ? amount : null,
-      content: url.searchParams.get('des')?.trim() || null
-    }
-  } catch {
-    return null
-  }
-}
+// const parseQrDetails = (qrCodeUrl: string | null | undefined): QrDetails | null => {
+//   if (!qrCodeUrl) return null
+//   try {
+//     const url = new URL(qrCodeUrl, 'https://qr.sepay.vn')
+//     const rawAmount = url.searchParams.get('amount')?.trim()
+//     const amount = rawAmount ? Number(rawAmount) : NaN
+//     return {
+//       bank: url.searchParams.get('bank')?.trim() || null,
+//       account: url.searchParams.get('acc')?.trim() || null,
+//       amount: Number.isFinite(amount) ? amount : null,
+//       content: url.searchParams.get('des')?.trim() || null
+//     }
+//   } catch {
+//     return null
+//   }
+// }
+
+const PAYMENT_METHOD_ICONS = {
+  [PaymentMethod[1]]: BankIcon,
+  [PaymentMethod[3]]: CreditCardIcon,
+  [PaymentMethod[5]]: Atm01Icon,
+  [PaymentMethod[6]]: QrCodeIcon
+} as const satisfies Record<PaymentMethod, unknown>
 
 export default function OrderDetailPage() {
   const params = useParams<{ id: string }>()
@@ -194,7 +210,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
     return labels.length ? labels.join(', ') : null
   }, [orderTags, order.tagsId])
 
-  const qrDetails = useMemo(() => parseQrDetails(order.qrCodeUrl), [order.qrCodeUrl])
+  // const qrDetails = useMemo(() => parseQrDetails(order.qrCodeUrl), [order.qrCodeUrl])
 
   const items = useMemo(() => order.details ?? [], [order.details])
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.itemId))), [items])
@@ -353,6 +369,17 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
 
             <SectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm'>
+                {order.paymentMethod ? (
+                  <SummaryRow
+                    label={t('orders.list.detail.paymentMethod')}
+                    value={
+                      <span className='inline-flex items-center gap-1.5'>
+                        {t(PaymentMethodLabel[order.paymentMethod])}
+                      </span>
+                    }
+                  />
+                ) : null}
+
                 <SummaryRow label={t('orders.checkout.subtotal')} value={formatVnd(order.productFee)} />
                 <SummaryRow label={t('orders.checkout.shippingFee')} value={formatVnd(order.shippingFee)} />
                 {order.vatFee > 0 ? (
@@ -389,53 +416,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     }
                   />
                 </dl>
-              </SectionCard>
-            ) : null}
-
-            {!isPaid && order.qrCodeUrl ? (
-              <SectionCard
-                icon={QrCodeIcon}
-                title={t('orders.list.qr.title')}
-                aside={
-                  <span className='inline-flex items-center gap-1.5 rounded-full bg-warning/10 px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-wider text-warning ring-1 ring-warning/20'>
-                    <Spinner className='size-3' />
-                    {t('orders.list.qr.waiting')}
-                  </span>
-                }
-              >
-                <p className='mb-4 text-xs text-muted-foreground'>{t('orders.list.qr.description')}</p>
-                <div className='flex flex-col gap-4 sm:flex-row sm:items-start'>
-                  <div className='relative mx-auto size-52 shrink-0 overflow-hidden rounded-2xl bg-background ring-1 ring-foreground/10 sm:mx-0'>
-                    <Image
-                      src={order.qrCodeUrl}
-                      alt={t('orders.list.qr.imageAlt')}
-                      fill
-                      unoptimized
-                      className='object-contain p-2'
-                      sizes='208px'
-                    />
-                  </div>
-                  {qrDetails ? (
-                    <dl className='min-w-0 flex-1 space-y-2 text-sm'>
-                      {qrDetails.bank ? <DetailRow label={t('orders.list.qr.bank')} value={qrDetails.bank} /> : null}
-                      {qrDetails.account ? (
-                        <DetailRow
-                          label={t('orders.list.qr.account')}
-                          value={<span className='font-mono'>{qrDetails.account}</span>}
-                        />
-                      ) : null}
-                      {qrDetails.amount !== null ? (
-                        <DetailRow label={t('orders.list.qr.amount')} value={formatVnd(qrDetails.amount)} />
-                      ) : null}
-                      {qrDetails.content ? (
-                        <DetailRow
-                          label={t('orders.list.qr.content')}
-                          value={<span className='font-mono'>{qrDetails.content}</span>}
-                        />
-                      ) : null}
-                    </dl>
-                  ) : null}
-                </div>
               </SectionCard>
             ) : null}
 
@@ -551,30 +531,49 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               </ol>
             </SectionCard>
 
-            {isPendingOrder ? (
-              <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant='destructive'>{t('orders.list.detail.cancelCta')}</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{t('orders.list.detail.cancelConfirmTitle')}</DialogTitle>
-                    <DialogDescription>{t('orders.list.detail.cancelConfirmDescription')}</DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant='outline' disabled={isCancellingOrder}>
-                        {t('orders.list.detail.cancelKeep')}
-                      </Button>
-                    </DialogClose>
-                    <Button variant='destructive' onClick={handleConfirmCancel} disabled={isCancellingOrder}>
-                      {isCancellingOrder ? <Spinner className='size-4' /> : null}
-                      {t('orders.list.detail.cancelConfirmCta')}
+            <div className='space-y-2'>
+              {isPendingOrder && order.paymentUrl ? (
+                <a href={order.paymentUrl} target='_blank' rel='noopener noreferrer' className='block'>
+                  <Button className='w-full gap-1.5 font-semibold'>
+                    {order.paymentMethod ? (
+                      <HugeiconsIcon
+                        icon={PAYMENT_METHOD_ICONS[order.paymentMethod]}
+                        strokeWidth={2}
+                        className='size-4'
+                      />
+                    ) : null}
+                    {t('orders.list.detail.payNow')}
+                  </Button>
+                </a>
+              ) : null}
+
+              {isPendingOrder ? (
+                <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant='destructive' className='w-full'>
+                      {t('orders.list.detail.cancelCta')}
                     </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            ) : null}
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>{t('orders.list.detail.cancelConfirmTitle')}</DialogTitle>
+                      <DialogDescription>{t('orders.list.detail.cancelConfirmDescription')}</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant='outline' disabled={isCancellingOrder}>
+                          {t('orders.list.detail.cancelKeep')}
+                        </Button>
+                      </DialogClose>
+                      <Button variant='destructive' onClick={handleConfirmCancel} disabled={isCancellingOrder}>
+                        {isCancellingOrder ? <Spinner className='size-4' /> : null}
+                        {t('orders.list.detail.cancelConfirmCta')}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              ) : null}
+            </div>
           </aside>
         </div>
       </div>

@@ -1,11 +1,8 @@
 import type { CartItem } from '@/stores/cart.store'
-import type { CheckoutPayload, EstimatePayload } from './types'
+import type { CheckoutPayload, EstimatePayload, PaymentMethod } from './types'
 import type { CheckoutFormValues, EstimateFormValues } from './validations'
 
-export const buildEstimatePayload = (
-  values: EstimateFormValues,
-  items: CartItem[]
-): EstimatePayload => {
+export const buildEstimatePayload = (values: EstimateFormValues, items: CartItem[]): EstimatePayload => {
   const fullAddress = `${values.addressLine}, ${values.ward}, ${values.city}`
 
   return {
@@ -27,7 +24,8 @@ export const buildEstimatePayload = (
 
 export const buildCheckoutPayload = (
   values: CheckoutFormValues,
-  items: CartItem[]
+  items: CartItem[],
+  paymentMethod: PaymentMethod
 ): CheckoutPayload => {
   const base = buildEstimatePayload(values, items)
 
@@ -41,7 +39,8 @@ export const buildCheckoutPayload = (
       receiptAddress: null,
       receiptEmail: null,
       isExportInvoice: false,
-      invoiceType: null
+      invoiceType: null,
+      paymentMethod
     }
   }
 
@@ -54,6 +53,7 @@ export const buildCheckoutPayload = (
     receiptAddress: values.receiptAddress?.trim() ? values.receiptAddress : null,
     receiptEmail: values.receiptEmail?.trim() ? values.receiptEmail : null,
     isExportInvoice: true,
-    invoiceType: values.invoiceType
+    invoiceType: values.invoiceType,
+    paymentMethod
   }
 }
