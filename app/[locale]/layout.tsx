@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   generator: 'Next.js',
   referrer: 'origin-when-cross-origin',
   formatDetection: { telephone: true, address: true, email: true },
-  icons: { icon: '/favicon.ico' },
+  icons: { icon: '/icon.png' },
   robots: {
     index: true,
     follow: true,
