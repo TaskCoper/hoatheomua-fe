@@ -4,6 +4,7 @@ import { useGetCompanyAddress } from '@/hooks/use-get-company-address'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useLocale, useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import boCongThuong from '@/public/images/bo-cong-thuong.png'
 import logo from '@/public/images/logo.png'
 import {
   CompanyConfigItem,
@@ -146,11 +147,13 @@ export default function Footer() {
 
           <div className='space-y-2 lg:col-span-3'>
             <h2 className='text-sm sm:text-base font-bold text-primary'>{t('footer.mapHeading')}</h2>
+
             <div className='overflow-hidden rounded-2xl border-2 border-secondary/80 shadow-md'>
               {googleMapSrc && (
                 <LazyMapEmbed src={googleMapSrc} title={t('footer.mapTitle')} className='h-40 w-full sm:h-48 lg:h-44' />
               )}
             </div>
+
             <div className='flex items-center gap-3'>
               {SOCIALS.map((social) => (
                 <a
@@ -163,6 +166,10 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+
+            <Link href='http://online.gov.vn/nen-tang/0cd662c6-4166-4a40-80c4-aa499ca6d727' target='_blank'>
+              <Image src={boCongThuong} alt='bo-cong-thuong' height={72} />
+            </Link>
           </div>
         </div>
       </div>
