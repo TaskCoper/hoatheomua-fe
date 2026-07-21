@@ -23,21 +23,20 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
   const isOnSignInPage = pathname.startsWith('/sign-in')
   const isOnSignUpPage = pathname.startsWith('/sign-up')
   const isOnForgotPasswordPage = pathname.startsWith('/forgot-password')
-  const isOnGuestAuthPage = isOnSignInPage || isOnSignUpPage || isOnForgotPasswordPage
-  const isOnAuthFlowPage = isOnGuestAuthPage || isOnVerifyPage
+  const isOnGuestAuthPage = isOnSignInPage || isOnSignUpPage || isOnForgotPasswordPage || isOnVerifyPage
 
   const isModalOverlay = requiresAuth && isOnGuestAuthPage
 
   const fromRef = useRef<string | null>(null)
   useEffect(() => {
-    if (!isOnAuthFlowPage) {
+    if (!isOnGuestAuthPage) {
       fromRef.current = pathname
     }
-  }, [pathname, isOnAuthFlowPage])
+  }, [pathname, isOnGuestAuthPage])
 
   const shouldRedirectToVerify = isVerificationRequired && !isOnVerifyPage
-  const shouldRedirectAuthedAway = isAuthenticated && !isVerificationRequired && isOnAuthFlowPage
-  const shouldRedirectToSignIn = !isAuthenticated && !isVerificationRequired && !isOnGuestAuthPage
+  const shouldRedirectAuthedAway = isAuthenticated && !isVerificationRequired && isOnGuestAuthPage
+  const shouldRedirectToSignIn = !isAuthenticated && !isVerificationRequired && !isOnGuestAuthPage && !isOnGuestAuthPage
 
   useEffect(() => {
     if (isGettingMe) return
@@ -71,7 +70,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
     userHomePath
   ])
 
-  if (isGettingMe || shouldRedirectToVerify || shouldRedirectToSignIn || shouldRedirectAuthedAway || isModalOverlay) {
+  if (shouldRedirectToVerify || shouldRedirectToSignIn || shouldRedirectAuthedAway || isModalOverlay) {
     return <AuthGuardLoading />
   }
 
