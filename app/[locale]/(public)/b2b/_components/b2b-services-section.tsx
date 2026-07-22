@@ -120,11 +120,12 @@ export default function B2BServicesSection() {
       </motion.div>
 
       <motion.div
+        id='b2b-services'
         initial='hidden'
         whileInView='visible'
         viewport={{ once: true, margin: '-60px' }}
         variants={cardStagger}
-        className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5'
+        className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5 scroll-mt-24'
       >
         {SERVICES.map((service, index) => {
           const isFeatured = index === 0
@@ -134,11 +135,16 @@ export default function B2BServicesSection() {
               variants={cardItem}
               whileHover={{ y: -10, scale: 1.025 }}
               transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-              className={`group relative flex flex-col gap-3 overflow-hidden rounded-3xl p-5 ring-1 sm:p-6 ${
+              className={`group relative flex flex-col gap-3 overflow-hidden rounded-3xl ring-1 sm:col-span-1 ${
                 isFeatured
-                  ? 'bg-gradient-to-br from-primary via-primary/95 to-primary/80 text-primary-foreground ring-primary/30 shadow-[0_1rem_2.5rem_rgb(81_108_108/28%)] hover:shadow-[0_1.8rem_4rem_rgb(81_108_108/40%)] sm:col-span-2 lg:col-span-2 lg:p-7'
+                  ? 'bg-gradient-to-br from-primary via-primary/95 to-primary/80 text-primary-foreground ring-primary/30 shadow-[0_1rem_2.5rem_rgb(81_108_108/28%)] hover:shadow-[0_1.8rem_4rem_rgb(81_108_108/40%)] sm:col-span-2 lg:col-span-2'
                   : 'bg-card ring-foreground/5 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'
               }`}
+            >
+            <Link
+              href={`/b2b/${service.id}`}
+              aria-label={t(service.nameKey)}
+              className={`relative flex h-full flex-col gap-3 p-5 sm:p-6 ${isFeatured ? 'lg:p-7' : ''}`}
             >
               {isFeatured && (
                 <>
@@ -239,17 +245,18 @@ export default function B2BServicesSection() {
                     <HugeiconsIcon icon={ArrowRight02Icon} className={isFeatured ? 'size-4' : 'size-3'} />
                   </motion.span>
                 </motion.div>
-
-                {service.linkToPackages && (
-                  <Link
-                    href='#b2b-packages'
-                    className='inline-flex w-fit items-center gap-1 text-xs font-semibold text-leaf transition-colors hover:text-primary'
-                  >
-                    {t('b2b.services.viewPackages')}
-                    <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
-                  </Link>
-                )}
               </div>
+            </Link>
+
+            {service.linkToPackages && (
+              <Link
+                href='#b2b-packages'
+                className='relative mx-5 mb-4 -mt-1 inline-flex w-fit items-center gap-1 text-xs font-semibold text-leaf transition-colors hover:text-primary sm:mx-6'
+              >
+                {t('b2b.services.viewPackages')}
+                <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
+              </Link>
+            )}
             </motion.article>
           )
         })}

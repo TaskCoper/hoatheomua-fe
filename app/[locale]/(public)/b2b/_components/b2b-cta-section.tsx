@@ -32,7 +32,7 @@ export default function B2BCtaSection() {
         whileInView='visible'
         viewport={{ once: true, margin: '-80px' }}
         variants={containerStagger}
-        className='relative mx-auto w-full max-w-6xl overflow-hidden rounded-[2rem] bg-primary p-6 text-primary-foreground shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:p-8 lg:p-10'
+        className='relative mx-auto w-full max-w-7xl overflow-hidden rounded-[2rem] bg-primary p-6 text-primary-foreground shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:p-8 lg:p-10'
       >
         {/* <span
           aria-hidden='true'

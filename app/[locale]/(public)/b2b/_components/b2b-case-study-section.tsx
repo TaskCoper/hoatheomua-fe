@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { I18nKey } from '@/lib/i18n/types'
 import { QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -12,6 +13,71 @@ import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
+import { SparkleDivider } from '../../_components/sparkle-dividier'
+
+type Partner = {
+  id: string
+  nameKey: I18nKey
+  roleKey: I18nKey
+  summaryKey: I18nKey
+  logoAltKey: I18nKey
+  logoPath?: string
+}
+
+const PARTNERS: readonly Partner[] = [
+  {
+    id: 'fusion',
+    nameKey: 'b2b.caseStudies.partners.fusion.name',
+    roleKey: 'b2b.caseStudies.partners.fusion.role',
+    summaryKey: 'b2b.caseStudies.partners.fusion.summary',
+    logoAltKey: 'b2b.caseStudies.partners.fusion.logoAlt'
+  },
+  {
+    id: 'masan',
+    nameKey: 'b2b.caseStudies.partners.masan.name',
+    roleKey: 'b2b.caseStudies.partners.masan.role',
+    summaryKey: 'b2b.caseStudies.partners.masan.summary',
+    logoAltKey: 'b2b.caseStudies.partners.masan.logoAlt'
+  },
+  {
+    id: 'tanCang',
+    nameKey: 'b2b.caseStudies.partners.tanCang.name',
+    roleKey: 'b2b.caseStudies.partners.tanCang.role',
+    summaryKey: 'b2b.caseStudies.partners.tanCang.summary',
+    logoAltKey: 'b2b.caseStudies.partners.tanCang.logoAlt'
+  },
+  {
+    id: 'eastin',
+    nameKey: 'b2b.caseStudies.partners.eastin.name',
+    roleKey: 'b2b.caseStudies.partners.eastin.role',
+    summaryKey: 'b2b.caseStudies.partners.eastin.summary',
+    logoAltKey: 'b2b.caseStudies.partners.eastin.logoAlt'
+  }
+]
+
+const partnerCardStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } }
+}
+
+const partnerCardItem: Variants = {
+  hidden: { opacity: 0, y: 32, scale: 0.94 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 180, damping: 18 }
+  }
+}
+
+const partnerInitials = (name: string) =>
+  name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
 
 const PHOTO_DIMENSIONS: Record<string, { width: number; height: number }> = {
   '01': { width: 1706, height: 2560 },
@@ -175,6 +241,86 @@ export default function B2BCaseStudySection() {
           </div>
         </motion.div>
       </motion.article>
+
+      <motion.div
+        initial='hidden'
+        whileInView='visible'
+        viewport={{ once: true, margin: '-80px' }}
+        variants={fadeUp}
+        className='mx-auto mt-10 w-full max-w-7xl space-y-1 sm:space-y-1.5 md:space-y-2 sm:mt-12'
+      >
+        <div className='flex items-center justify-start sm:justify-center gap-3'>
+          <SparkleDivider
+            className='min-w-0 max-w-72 flex-1 hidden sm:flex'
+            iconClassName='sm:size-4 md:size-5'
+            color='#516c6c'
+          />
+          <h3 className='shrink-0 text-center font-title text-xl md:text-2xl lg:text-3xl font-bold text-primary'>
+            {t('b2b.caseStudies.partners.title')}
+          </h3>
+          <SparkleDivider
+            className='min-w-0 max-w-72 flex-1 hidden sm:flex'
+            iconClassName='sm:size-4 md:size-5'
+            direction='rtl'
+            color='#516c6c'
+          />
+        </div>
+        <p className='mx-auto max-w-full text-left sm:max-w-200 sm:text-center text-xs leading-relaxed text-foreground sm:text-sm'>
+          {t('b2b.caseStudies.partners.description')}
+        </p>
+      </motion.div>
+
+      <motion.div
+        initial='hidden'
+        whileInView='visible'
+        viewport={{ once: true, margin: '-60px' }}
+        variants={partnerCardStagger}
+        className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4'
+      >
+        {PARTNERS.map((partner) => {
+          const name = t(partner.nameKey)
+          return (
+            <motion.article
+              key={partner.id}
+              variants={partnerCardItem}
+              whileHover={{ y: -6, scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 240, damping: 18 }}
+              className='group relative flex h-full flex-col gap-3 overflow-hidden rounded-3xl bg-card p-5 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'
+            >
+              <div className='flex items-center gap-3'>
+                {partner.logoPath ? (
+                  <span className='grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white/90 ring-1 ring-primary/10'>
+                    <Image
+                      src={partner.logoPath}
+                      alt={t(partner.logoAltKey)}
+                      width={35}
+                      height={35}
+                      className='object-contain'
+                    />
+                  </span>
+                ) : (
+                  <span
+                    aria-label={t(partner.logoAltKey)}
+                    className='grid size-12 shrink-0 place-items-center rounded-2xl bg-primary/10 font-title text-sm font-bold text-primary ring-1 ring-primary/10'
+                  >
+                    {partnerInitials(name)}
+                  </span>
+                )}
+                <div className='min-w-0 -space-y-0.5'>
+                  <h4 className='truncate font-title text-base font-bold text-primary sm:text-lg'>
+                    {name}
+                  </h4>
+                  <p className='truncate text-[0.6875rem] font-medium tracking-wide text-muted-foreground sm:text-xs'>
+                    {t(partner.roleKey)}
+                  </p>
+                </div>
+              </div>
+
+              <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{t(partner.summaryKey)}</p>
+            </motion.article>
+          )
+        })}
+      </motion.div>
 
       <Lightbox
         open={lightboxIndex >= 0}

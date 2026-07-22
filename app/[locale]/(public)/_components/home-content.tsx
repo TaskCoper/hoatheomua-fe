@@ -10,7 +10,7 @@ import TestimonialSection from './testimonial-section'
 import WhyChooseUsSection from './why-choose-us-section'
 
 const bannerWrapperClass =
-  'mx-auto w-full max-w-7xl px-4 mt-4 sm:mt-6 md:mt-8 lg:mt-10 transition-transform duration-500 ease-out hover:-translate-y-2 hover:scale-[1.015] animate-in fade-in slide-in-from-bottom-6 zoom-in-95 duration-700'
+  'mx-auto w-full max-w-7xl px-4 py-6 mt-4 sm:mt-6 md:mt-8 lg:mt-10 transition-transform duration-500 ease-out hover:-translate-y-2 hover:scale-[1.015] animate-in fade-in slide-in-from-bottom-6 zoom-in-95 duration-700'
 
 const bannerImageClass = 'w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg'
 

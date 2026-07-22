@@ -937,7 +937,7 @@
       }
     },
     "signatureBouquets": {
-      "title": "Bó Hoa Đặc Trưng",
+      "title": "Bó Hoa Signature",
       "description": "Mỗi sản phẩm là một dấu ấn riêng - nơi sự tinh tế thể hiện trong từng chi tiết sản phẩm để mang đến vẻ đẹp không thể nhầm lẫn.",
       "addToCart": "Thêm {name} vào giỏ",
       "flowers": {
@@ -1529,6 +1529,34 @@
           "banquetCenterpiece": "Bàn tiệc với centerpiece sen — gala sự kiện",
           "banquetDetail": "Chi tiết centerpiece bàn tiệc"
         }
+      },
+      "partners": {
+        "title": "Đối tác doanh nghiệp tiêu biểu",
+        "description": "Những thương hiệu đã đồng hành cùng Hoa Theo Mùa trong hành trình xây dựng trải nghiệm hoa chuẩn quốc tế.",
+        "fusion": {
+          "name": "Fusion",
+          "role": "Chuỗi khách sạn & resort",
+          "summary": "Fusion lựa chọn Hoa Theo Mùa là đối tác triển khai dịch vụ hoa tươi định kỳ tại sảnh, nhà hàng và quầy thanh toán, với concept thay đổi theo mùa và phù hợp từng không gian — góp phần tạo điểm nhấn thẩm mỹ và trải nghiệm tinh tế cho khách lưu trú.",
+          "logoAlt": "Logo Fusion Hotel Group"
+        },
+        "masan": {
+          "name": "Masan Group",
+          "role": "Tập đoàn tiêu dùng",
+          "summary": "Masan tin tưởng Hoa Theo Mùa triển khai dịch vụ hoa tươi định kỳ tại sảnh và khu lễ tân, giúp xây dựng không gian làm việc chuyên nghiệp và tạo ấn tượng tích cực với khách hàng, đối tác ngay từ điểm chạm đầu tiên.",
+          "logoAlt": "Logo Masan Group"
+        },
+        "tanCang": {
+          "name": "Tân Cảng Sài Gòn",
+          "role": "Hoa doanh nghiệp toàn quốc",
+          "summary": "Tân Cảng hợp tác cùng Hoa Theo Mùa để triển khai dịch vụ hoa doanh nghiệp và hoa chúc mừng sinh nhật đối tác trên toàn quốc — từ thiết kế mẫu, kiểm soát chất lượng đến giao hoa đúng thời gian, đúng địa điểm.",
+          "logoAlt": "Logo Tân Cảng Sài Gòn"
+        },
+        "eastin": {
+          "name": "Eastin",
+          "role": "Khách sạn 4 sao quốc tế",
+          "summary": "Eastin lựa chọn Hoa Theo Mùa cho hoa hội nghị, hoa sự kiện, tiệc cưới, cùng dịch vụ cắt tỉa cây xanh và thay hoa định kỳ tại khu vực nhà hàng — luôn duy trì không gian chỉn chu và giàu sức sống.",
+          "logoAlt": "Logo Eastin Hotel"
+        }
       }
     },
     "packages": {
@@ -1670,6 +1698,428 @@
       "emailLabel": "Hợp tác",
       "primary": "Gửi brief",
       "secondary": "Xem sản phẩm của chúng tôi"
+    },
+    "serviceDetails": {
+      "common": {
+        "backToOverview": "Doanh nghiệp",
+        "tag": "DỊCH VỤ DÀNH RIÊNG CHO DOANH NGHIỆP",
+        "introTitle": "Về dịch vụ",
+        "inclusionsTitle": "Dịch vụ bao gồm",
+        "scheduleTitle": "Linh hoạt theo lịch thay hoa",
+        "benefitsTitle": "Lợi ích khi sử dụng dịch vụ",
+        "processTitle": "Quy trình triển khai",
+        "audienceTitle": "Phù hợp với",
+        "closingTitle": "Đồng hành cùng thương hiệu của bạn",
+        "relatedTitle": "Dịch vụ liên quan",
+        "relatedDescription": "Khám phá thêm những giải pháp hoa được thiết kế cho doanh nghiệp.",
+        "relatedViewAll": "Xem tất cả dịch vụ",
+        "primaryCta": "Liên hệ tư vấn",
+        "secondaryCta": "Xem gói dịch vụ",
+        "statsTitle": "Những con số",
+        "faqTitle": "Câu hỏi thường gặp",
+        "faqDescription": "Giải đáp những câu hỏi doanh nghiệp quan tâm nhất.",
+        "heroMetaLabels": {
+          "industry": "Lĩnh vực",
+          "category": "Dịch vụ",
+          "timeline": "Hình thức"
+        },
+        "tocTitle": "Nội dung trang",
+        "sidebarRelatedTitle": "Dịch vụ liên quan",
+        "sidebarContactTitle": "Liên hệ đội ngũ",
+        "sidebarIndustriesTitle": "Lĩnh vực phục vụ",
+        "toc": {
+          "intro": "Tổng quan",
+          "stats": "Những con số",
+          "inclusions": "Bao gồm",
+          "mice": "Hoa sự kiện MICE",
+          "schedule": "Lịch hoa",
+          "personalization": "Cá nhân hóa",
+          "benefits": "Lợi ích",
+          "process": "Quy trình",
+          "audience": "Phù hợp với",
+          "faq": "Hỏi đáp",
+          "closing": "Lời kết"
+        },
+        "placeholderBadge": "Nội dung mẫu"
+      },
+      "outsourced": {
+        "metaTitle": "Phòng Hoa Thuê Ngoài Cho Khách Sạn 4–5 Sao",
+        "metaDescription": "Giải pháp outsource toàn bộ vận hành hoa tươi cho khách sạn 4–5 sao, resort và tòa nhà cao cấp. Đội ngũ florist Hoa Theo Mùa vận hành như phòng hoa nội bộ chuẩn quốc tế.",
+        "breadcrumb": "Phòng hoa thuê ngoài",
+        "heading": "Phòng Hoa Thuê Ngoài",
+        "lede": "Giải pháp outsource toàn bộ vận hành hoa cho khách sạn 4–5 sao chuẩn quốc tế: từ sảnh, nhà hàng đến phòng khách VIP — vận hành như một phòng hoa nội bộ, không cần khách sạn tự duy trì nhân sự florist.",
+        "intro": {
+          "01": "Thay vì xây dựng một phòng hoa nội bộ với chi phí tuyển dụng, đào tạo và quản lý florist, doanh nghiệp có thể lựa chọn dịch vụ phòng hoa thuê ngoài như một giải pháp vận hành chuyên nghiệp, linh hoạt và tối ưu ngân sách.",
+          "02": "Chúng tôi cung cấp giải pháp outsource toàn bộ vận hành hoa tươi cho khách sạn 4–5 sao, resort, khu nghỉ dưỡng và các tòa nhà cao cấp, đảm nhận từ khâu lên ý tưởng, thiết kế, cung ứng hoa tươi đến cắm mới, bảo dưỡng và thay thế định kỳ. Đội ngũ florist giàu kinh nghiệm vận hành như một phòng hoa nội bộ, giúp khách sạn luôn duy trì hình ảnh sang trọng mà không cần duy trì nhân sự chuyên trách."
+        },
+        "inclusions": {
+          "heading": "Dịch vụ được triển khai đồng bộ tại nhiều khu vực trong khách sạn như:",
+          "items": {
+            "01": "Hoa trang trí sảnh lễ tân (Lobby Flowers)",
+            "02": "Hoa nhà hàng và quầy bar",
+            "03": "Hoa phòng VIP, Presidential Suite",
+            "04": "Hoa phòng hội nghị, ballroom và khu vực sự kiện",
+            "05": "Hoa khu spa, lounge và không gian công cộng",
+            "06": "Hoa chào đón khách VIP, đoàn khách quốc tế"
+          },
+          "closing": "Mỗi thiết kế đều được xây dựng dựa trên phong cách kiến trúc, bộ nhận diện thương hiệu và tiêu chuẩn dịch vụ của từng khách sạn, đảm bảo tính đồng nhất, thẩm mỹ và phù hợp với từng mùa trong năm."
+        },
+        "benefits": {
+          "heading": "Lợi ích khi sử dụng dịch vụ phòng hoa thuê ngoài:",
+          "items": {
+            "01": "Tiết kiệm chi phí tuyển dụng và quản lý đội ngũ florist.",
+            "02": "Không phát sinh chi phí đào tạo, kho vật tư và hao hụt hoa.",
+            "03": "Được phục vụ bởi đội ngũ florist chuyên nghiệp theo tiêu chuẩn khách sạn quốc tế.",
+            "04": "Thiết kế hoa được thay đổi linh hoạt theo mùa, sự kiện và các dịp lễ.",
+            "05": "Đảm bảo chất lượng hoa tươi, quy trình chăm sóc và thay mới đúng lịch.",
+            "06": "Chủ động mở rộng quy mô phục vụ khi khách sạn có hội nghị, sự kiện hoặc mùa cao điểm."
+          }
+        },
+        "closing": {
+          "paragraphs": {
+            "01": "Hoa Theo Mùa không chỉ cung cấp hoa tươi, mà còn đồng hành cùng khách sạn trong việc xây dựng trải nghiệm khách hàng thông qua nghệ thuật cắm hoa, góp phần nâng cao hình ảnh thương hiệu, tạo ấn tượng với khách lưu trú và gia tăng giá trị của không gian dịch vụ của bạn."
+          }
+        }
+      },
+      "eventsMice": {
+        "metaTitle": "Hoa Khai Trương, Sự Kiện & MICE Trọn Gói",
+        "metaDescription": "Thiết kế và thi công hoa sự kiện trọn gói cho doanh nghiệp: khai trương, hội nghị, gala dinner, ra mắt sản phẩm và chương trình MICE quy mô lớn.",
+        "breadcrumb": "Hoa khai trương, sự kiện & MICE",
+        "heading": "Hoa Khai Trương, Sự Kiện & MICE",
+        "lede": "Giải pháp thiết kế và thi công hoa trọn gói cho sự kiện doanh nghiệp",
+        "intro": {
+          "01": "Mỗi sự kiện là một dấu mốc quan trọng trong hành trình phát triển của doanh nghiệp. Từ lễ khai trương, hội nghị khách hàng, hội thảo, lễ ký kết, ra mắt sản phẩm đến các chương trình MICE quy mô lớn, hoa tươi không chỉ đóng vai trò trang trí mà còn góp phần truyền tải hình ảnh thương hiệu, tạo điểm nhấn cho không gian và nâng tầm trải nghiệm của khách tham dự.",
+          "02": "Chúng tôi cung cấp dịch vụ thiết kế và thi công hoa sự kiện trọn gói, đồng hành cùng doanh nghiệp trong toàn bộ quá trình từ tư vấn ý tưởng, thiết kế concept, sản xuất, vận chuyển đến lắp đặt và tháo dỡ sau sự kiện. Mỗi thiết kế được cá nhân hóa theo nhận diện thương hiệu, màu sắc chủ đạo và thông điệp của chương trình, đảm bảo sự đồng bộ trong mọi điểm chạm của sự kiện."
+        },
+        "inclusions": {
+          "heading": "Dịch vụ hoa dành cho khai trương và sự kiện",
+          "subIntro": "Đội ngũ florist và chuyên viên thiết kế của chúng tôi triển khai đa dạng hạng mục hoa cho các chương trình doanh nghiệp, bao gồm:",
+          "items": {
+            "10": "Hoa cho chương trình MICE, hội nghị quốc tế và sự kiện doanh nghiệp quy mô lớn.",
+            "11": "Giải pháp hoa cho chương trình MICE",
+            "01": "Hoa sân khấu và backdrop sự kiện.",
+            "02": "Hoa bục phát biểu, bục ký kết và bàn VIP.",
+            "03": "Hoa bàn tiếp tân, quầy check-in và khu vực đón khách.",
+            "04": "Hoa hội trường, phòng hội nghị và ballroom.",
+            "05": "Hoa trang trí lễ cắt băng khai trương.",
+            "06": "Hoa trang trí showroom, cửa hàng và văn phòng mới.",
+            "07": "Hoa cho lễ ra mắt sản phẩm, họp báo và triển lãm.",
+            "08": "Hoa tiệc gala dinner, lễ kỷ niệm và tiệc tri ân khách hàng.",
+            "09": "Hoa trang trí khu vực chụp hình (Photo Booth)."
+          }
+        },
+        "mice": {
+          "heading": "Giải pháp hoa cho chương trình MICE",
+          "intro": "Đối với các chương trình MICE (Meetings, Incentives, Conferences & Exhibitions), chúng tôi cung cấp giải pháp hoa chuyên nghiệp đáp ứng yêu cầu về tiến độ, quy mô và tính đồng nhất.",
+          "body": "Từ hội nghị khách hàng, hội thảo chuyên ngành, triển lãm thương mại, lễ trao giải đến các sự kiện quốc tế, đội ngũ của chúng tôi phối hợp cùng ban tổ chức để xây dựng concept hoa phù hợp với chủ đề chương trình, tối ưu không gian và tạo nên trải nghiệm ấn tượng cho khách mời."
+        },
+        "benefits": {
+          "heading": "Vì sao doanh nghiệp lựa chọn dịch vụ hoa sự kiện của chúng tôi?",
+          "items": {
+            "01": {
+              "title": "Thiết kế theo nhận diện thương hiệu",
+              "description": "Mọi hạng mục hoa được xây dựng dựa trên màu sắc thương hiệu, phong cách tổ chức và thông điệp của sự kiện, góp phần tăng tính chuyên nghiệp và khả năng nhận diện doanh nghiệp."
+            },
+            "02": {
+              "title": "Thi công đúng tiến độ",
+              "description": "Đội ngũ triển khai có kinh nghiệm thực hiện nhiều sự kiện lớn, đảm bảo hoàn thiện đúng thời gian, phối hợp nhịp nhàng với đơn vị tổ chức và các nhà cung cấp khác."
+            },
+            "03": {
+              "title": "Quy mô linh hoạt",
+              "description": "Từ các buổi khai trương showroom, văn phòng mới đến hội nghị hàng nghìn khách mời, chúng tôi đều có giải pháp phù hợp với ngân sách và yêu cầu của từng chương trình."
+            },
+            "04": {
+              "title": "Hoa tươi chất lượng cao",
+              "description": "Nguồn hoa được tuyển chọn kỹ lưỡng, bảo đảm độ tươi, màu sắc đồng đều và khả năng giữ vẻ đẹp trong suốt thời gian diễn ra sự kiện."
+            },
+            "05": {
+              "title": "Thi công trọn gói",
+              "description": "Khách hàng chỉ cần chia sẻ yêu cầu và mục tiêu của chương trình, chúng tôi sẽ phụ trách toàn bộ quy trình từ tư vấn, thiết kế, vận chuyển, lắp đặt đến thu dọn sau sự kiện."
+            }
+          }
+        },
+        "closing": {
+          "heading": "Đồng hành cùng những dấu mốc quan trọng của doanh nghiệp",
+          "paragraphs": {
+            "01": "Một không gian sự kiện được chăm chút bằng hoa tươi chuyên nghiệp sẽ góp phần tạo nên ấn tượng đầu tiên, gia tăng giá trị hình ảnh thương hiệu và mang đến trải nghiệm đáng nhớ cho khách tham dự.",
+            "02": "Với kinh nghiệm triển khai hoa cho lễ khai trương, hội nghị, triển lãm, gala dinner, sự kiện doanh nghiệp và chương trình MICE, chúng tôi cam kết mang đến những thiết kế chỉn chu, đúng tiến độ và phù hợp với từng quy mô tổ chức, giúp mỗi sự kiện diễn ra thành công và để lại dấu ấn chuyên nghiệp trong lòng đối tác, khách hàng và khách mời."
+          }
+        }
+      },
+      "officeSubscription": {
+        "metaTitle": "Dịch Vụ Hoa Văn Phòng Định Kỳ",
+        "metaDescription": "Hoa tươi định kỳ cho văn phòng, tập đoàn, ngân hàng, showroom — thiết kế đồng bộ với thương hiệu, thay hoa đúng lịch, tiết kiệm thời gian quản lý.",
+        "breadcrumb": "Hoa văn phòng định kỳ",
+        "heading": "Hoa Văn Phòng Định Kỳ",
+        "lede": "Dịch vụ hoa tươi định kỳ giúp doanh nghiệp duy trì không gian làm việc chuyên nghiệp",
+        "intro": {
+          "01": "Không gian văn phòng không chỉ là nơi làm việc mà còn là bộ mặt của doanh nghiệp khi tiếp đón khách hàng, đối tác và ứng viên. Những bình hoa tươi được chăm chút cẩn thận tại quầy lễ tân, phòng họp hay khu vực tiếp khách góp phần tạo nên bầu không khí tích cực, nâng cao hình ảnh thương hiệu và mang đến trải nghiệm chuyên nghiệp ngay từ những ấn tượng đầu tiên.",
+          "02": "Với dịch vụ hoa văn phòng định kỳ, doanh nghiệp không còn phải mất thời gian lựa chọn hoa, thay nước, chăm sóc hay thay mới khi hoa tàn. Chúng tôi đảm nhận toàn bộ quy trình từ tư vấn, thiết kế, cung ứng hoa tươi, cắm hoa, vận chuyển đến bảo dưỡng và thay thế theo lịch cố định, giúp văn phòng luôn giữ được vẻ tươi mới mỗi ngày."
+        },
+        "inclusions": {
+          "heading": "Dịch vụ hoa văn phòng định kỳ bao gồm những gì?",
+          "subIntro": "Chúng tôi cung cấp giải pháp hoa tươi trọn gói dành cho doanh nghiệp, văn phòng, tòa nhà và trụ sở công ty với nhiều hạng mục khác nhau:",
+          "items": {
+            "01": "Hoa quầy lễ tân và khu vực tiếp đón khách.",
+            "02": "Hoa phòng họp, phòng hội nghị và phòng tiếp khách.",
+            "03": "Hoa bàn làm việc của Ban Giám đốc và lãnh đạo.",
+            "04": "Hoa khu vực pantry, lounge và không gian sinh hoạt chung.",
+            "05": "Hoa trang trí sảnh văn phòng và khu vực thang máy.",
+            "06": "Hoa cho showroom, trung tâm trải nghiệm và cửa hàng.",
+            "07": "Hoa trang trí theo mùa, ngày lễ hoặc các sự kiện nội bộ của doanh nghiệp."
+          },
+          "closing": "Tất cả các thiết kế đều được xây dựng dựa trên phong cách kiến trúc, màu sắc thương hiệu và văn hóa doanh nghiệp, tạo nên một không gian làm việc hài hòa, hiện đại và giàu cảm hứng."
+        },
+        "schedule": {
+          "heading": "Linh hoạt theo lịch thay hoa của doanh nghiệp",
+          "subIntro": "Doanh nghiệp có thể lựa chọn lịch thay hoa phù hợp với nhu cầu sử dụng:",
+          "items": {
+            "01": "Thay hoa hằng tuần.",
+            "02": "Thay hoa hai tuần một lần.",
+            "03": "Thay hoa theo tháng.",
+            "04": "Thay hoa theo sự kiện hoặc chiến dịch truyền thông.",
+            "05": "Thiết kế riêng cho các dịp lễ như Tết, Quốc tế Phụ nữ, Giáng sinh, lễ kỷ niệm thành lập công ty và các sự kiện doanh nghiệp."
+          },
+          "closing": "Mỗi lần thay hoa là một concept mới với các loại hoa theo mùa, đảm bảo sự đa dạng, phù hợp ngân sách và luôn mang đến cảm giác mới mẻ cho không gian văn phòng."
+        },
+        "benefits": {
+          "heading": "Lợi ích của dịch vụ hoa văn phòng định kỳ",
+          "items": {
+            "01": {
+              "title": "Nâng cao hình ảnh doanh nghiệp",
+              "description": "Một văn phòng được trang trí bằng hoa tươi thể hiện sự chuyên nghiệp, chỉn chu và tạo thiện cảm với khách hàng, đối tác cũng như nhân viên."
+            },
+            "02": {
+              "title": "Tiết kiệm thời gian và chi phí",
+              "description": "Không cần cử nhân sự phụ trách việc mua hoa, cắm hoa hay chăm sóc định kỳ. Doanh nghiệp chỉ cần lựa chọn gói dịch vụ, mọi công việc còn lại sẽ do đội ngũ của chúng tôi đảm nhiệm."
+            },
+            "03": {
+              "title": "Thiết kế đồng bộ với thương hiệu",
+              "description": "Mỗi bình hoa đều được phối màu và lựa chọn chất liệu phù hợp với phong cách thiết kế nội thất cũng như bộ nhận diện thương hiệu của doanh nghiệp."
+            },
+            "04": {
+              "title": "Hoa luôn tươi mới",
+              "description": "Nguồn hoa được tuyển chọn mỗi ngày và thay mới theo lịch cố định, đảm bảo chất lượng, độ bền và tính thẩm mỹ trong suốt thời gian trưng bày."
+            },
+            "05": {
+              "title": "Linh hoạt theo ngân sách",
+              "description": "Chúng tôi xây dựng nhiều gói dịch vụ phù hợp với doanh nghiệp vừa và nhỏ, tập đoàn, ngân hàng, showroom, văn phòng đại diện và các tòa nhà thương mại."
+            }
+          }
+        },
+        "process": {
+          "heading": "Quy trình triển khai dịch vụ",
+          "items": {
+            "01": "Khảo sát không gian và nhu cầu của doanh nghiệp.",
+            "02": "Tư vấn phong cách thiết kế phù hợp với thương hiệu.",
+            "03": "Đề xuất gói dịch vụ và lịch thay hoa định kỳ.",
+            "04": "Thiết kế, vận chuyển và cắm hoa tại văn phòng.",
+            "05": "Thay mới, chăm sóc và bảo dưỡng theo lịch đã thống nhất.",
+            "06": "Điều chỉnh concept hoa theo mùa hoặc các sự kiện đặc biệt khi doanh nghiệp có nhu cầu."
+          }
+        },
+        "audience": {
+          "heading": "Phù hợp với nhiều loại hình doanh nghiệp",
+          "subIntro": "Dịch vụ hoa văn phòng định kỳ được nhiều khách hàng lựa chọn như:",
+          "items": {
+            "01": "Văn phòng doanh nghiệp.",
+            "02": "Tập đoàn và tổng công ty.",
+            "03": "Ngân hàng và tổ chức tài chính.",
+            "04": "Văn phòng luật, công ty tư vấn.",
+            "05": "Bệnh viện và phòng khám cao cấp.",
+            "06": "Showroom ô tô và bất động sản.",
+            "07": "Trung tâm thương mại.",
+            "08": "Khách sạn và tòa nhà văn phòng."
+          }
+        },
+        "closing": {
+          "heading": "Mang thiên nhiên vào không gian làm việc",
+          "paragraphs": {
+            "01": "Hoa tươi không chỉ giúp văn phòng trở nên đẹp hơn mà còn tạo cảm giác thư giãn, tăng nguồn cảm hứng làm việc và góp phần xây dựng môi trường làm việc tích cực. Với dịch vụ hoa văn phòng định kỳ, doanh nghiệp luôn duy trì được hình ảnh chuyên nghiệp, tiết kiệm thời gian quản lý và mang đến trải nghiệm tốt hơn cho khách hàng, đối tác cũng như toàn thể nhân viên."
+          }
+        }
+      },
+      "corporateGifts": {
+        "metaTitle": "Quà Tặng Doanh Nghiệp Bằng Hoa Tươi",
+        "metaDescription": "Giải pháp quà tặng hoa tươi cho khách hàng, đối tác và nhân viên — thiết kế theo nhận diện thương hiệu, giao đúng hẹn, linh hoạt theo ngân sách và quy mô.",
+        "breadcrumb": "Quà tặng doanh nghiệp",
+        "heading": "Quà Tặng Doanh Nghiệp",
+        "lede": "Giải pháp quà tặng hoa tươi giúp doanh nghiệp xây dựng mối quan hệ bền vững",
+        "intro": {
+          "01": "Mỗi món quà doanh nghiệp không chỉ là lời chúc hay sự tri ân mà còn là cách thể hiện sự chuyên nghiệp, tinh tế và giá trị thương hiệu. Một thiết kế hoa tươi được lựa chọn phù hợp sẽ giúp doanh nghiệp tạo ấn tượng tích cực với khách hàng, đối tác và đội ngũ nhân viên, đồng thời góp phần nuôi dưỡng những mối quan hệ lâu dài.",
+          "02": "Chúng tôi cung cấp giải pháp quà tặng doanh nghiệp bằng hoa tươi được thiết kế riêng theo từng mục đích sử dụng, ngân sách và nhận diện thương hiệu. Từ những bó hoa trang nhã, giỏ hoa cao cấp, hộp hoa sang trọng đến chậu lan hồ điệp hoặc set quà kết hợp, mỗi sản phẩm đều được chăm chút về thẩm mỹ, thông điệp và trải nghiệm người nhận."
+        },
+        "inclusions": {
+          "heading": "Dịch vụ quà tặng doanh nghiệp bao gồm những gì?",
+          "subIntro": "Chúng tôi đồng hành cùng doanh nghiệp trong nhiều chương trình quà tặng khác nhau, đáp ứng nhu cầu từ số lượng nhỏ đến các chiến dịch quy mô lớn.",
+          "items": {
+            "01": {
+              "title": "Quà tặng khách hàng",
+              "description": "Thiết kế hoa dành cho khách hàng thân thiết, khách hàng VIP và các chương trình chăm sóc khách hàng vào dịp sinh nhật, lễ Tết, kỷ niệm hợp tác hoặc các sự kiện đặc biệt."
+            },
+            "02": {
+              "title": "Quà tặng đối tác",
+              "description": "Các mẫu hoa sang trọng giúp doanh nghiệp gửi lời chúc mừng, tri ân hoặc đánh dấu những cột mốc hợp tác quan trọng, góp phần xây dựng hình ảnh chuyên nghiệp và bền vững trong quan hệ đối tác."
+            },
+            "03": {
+              "title": "Quà tặng nhân viên",
+              "description": "Hoa tươi dành cho sinh nhật nhân viên, lễ vinh danh, chương trình nội bộ, chúc mừng thăng chức, ngày Quốc tế Phụ nữ 8/3, Ngày Phụ nữ Việt Nam 20/10, Ngày Nhà giáo Việt Nam và nhiều dịp ý nghĩa khác."
+            },
+            "04": {
+              "title": "Quà tặng khai trương và chúc mừng",
+              "description": "Thiết kế kệ hoa, lẵng hoa và giỏ hoa chúc mừng dành cho đối tác, khách hàng hoặc chi nhánh mới của doanh nghiệp."
+            },
+            "05": {
+              "title": "Quà tặng theo mùa và ngày lễ",
+              "description": "Xây dựng bộ sưu tập quà tặng riêng cho các dịp như Tết Nguyên đán, Giáng sinh, Trung thu, Valentine, Quốc tế Phụ nữ, Ngày của Mẹ và các chiến dịch tri ân cuối năm."
+            }
+          }
+        },
+        "personalization": {
+          "heading": "Thiết kế theo nhận diện thương hiệu doanh nghiệp",
+          "intro": "Mỗi doanh nghiệp đều có phong cách và thông điệp riêng. Vì vậy, chúng tôi không chỉ thiết kế hoa đẹp mà còn chú trọng đến sự đồng nhất với hình ảnh thương hiệu.",
+          "subIntro": "Các sản phẩm có thể được cá nhân hóa với:",
+          "items": {
+            "01": "Màu sắc theo bộ nhận diện thương hiệu.",
+            "02": "Thiệp chúc mừng mang thông điệp riêng.",
+            "03": "Logo doanh nghiệp trên thiệp hoặc bao bì.",
+            "04": "Bao bì, hộp quà và ruy băng theo yêu cầu.",
+            "05": "Kết hợp hoa tươi cùng quà tặng cao cấp như trái cây, bánh, trà, cà phê hoặc các sản phẩm đặc trưng của doanh nghiệp."
+          }
+        },
+        "benefits": {
+          "heading": "Lợi ích khi lựa chọn dịch vụ quà tặng doanh nghiệp",
+          "items": {
+            "01": {
+              "title": "Tối ưu thời gian triển khai",
+              "description": "Doanh nghiệp không cần tìm kiếm nhiều nhà cung cấp. Chúng tôi hỗ trợ từ khâu tư vấn, thiết kế, sản xuất đến giao hoa tận nơi theo đúng thời gian và địa điểm yêu cầu."
+            },
+            "02": {
+              "title": "Linh hoạt theo ngân sách",
+              "description": "Từ các chương trình tri ân quy mô nhỏ đến chiến dịch tặng quà hàng trăm hoặc hàng nghìn khách hàng, chúng tôi đều có giải pháp phù hợp với ngân sách và mục tiêu của doanh nghiệp."
+            },
+            "03": {
+              "title": "Thiết kế chỉn chu và đồng nhất",
+              "description": "Mỗi món quà được hoàn thiện theo cùng một tiêu chuẩn về chất lượng, hình ảnh và trải nghiệm, giúp doanh nghiệp duy trì sự chuyên nghiệp trong mọi chương trình quà tặng."
+            },
+            "04": {
+              "title": "Giao hàng đúng hẹn",
+              "description": "Hệ thống vận hành và đội ngũ giao nhận giúp đảm bảo hoa được giao đúng thời gian, đúng địa điểm và giữ được độ tươi đẹp khi đến tay người nhận."
+            }
+          }
+        },
+        "audience": {
+          "heading": "Phù hợp với nhiều loại hình doanh nghiệp",
+          "subIntro": "Dịch vụ quà tặng doanh nghiệp của chúng tôi được thiết kế dành cho:",
+          "items": {
+            "01": "Doanh nghiệp vừa và lớn.",
+            "02": "Tập đoàn và tổng công ty.",
+            "03": "Ngân hàng và tổ chức tài chính.",
+            "04": "Khách sạn, resort và trung tâm hội nghị.",
+            "05": "Công ty bất động sản, ô tô và bảo hiểm.",
+            "06": "Chuỗi bán lẻ và hệ thống cửa hàng.",
+            "07": "Doanh nghiệp sản xuất và xuất khẩu.",
+            "08": "Các tổ chức, hiệp hội và đơn vị tổ chức sự kiện."
+          }
+        },
+        "closing": {
+          "heading": "Đồng hành cùng doanh nghiệp trong mọi dịp quan trọng",
+          "paragraphs": {
+            "01": "Một món quà được chuẩn bị chu đáo không chỉ mang đến niềm vui cho người nhận mà còn góp phần lan tỏa hình ảnh thương hiệu và tạo dựng những mối quan hệ bền vững. Với dịch vụ quà tặng doanh nghiệp bằng hoa tươi, chúng tôi mang đến giải pháp linh hoạt, chuyên nghiệp và phù hợp với từng mục tiêu truyền thông, chăm sóc khách hàng và xây dựng văn hóa doanh nghiệp.",
+            "02": "Từ những bó hoa tri ân, giỏ hoa chúc mừng đến các bộ quà tặng được thiết kế riêng, chúng tôi sẵn sàng đồng hành để giúp doanh nghiệp gửi gắm sự trân trọng trong từng món quà và tạo nên những trải nghiệm đáng nhớ cho khách hàng, đối tác và đội ngũ nhân viên."
+          }
+        }
+      },
+      "brandExperience": {
+        "metaTitle": "Trải Nghiệm Thương Hiệu Cùng Hoa",
+        "metaDescription": "Workshop cắm hoa, mini event 'Thiền cùng Hoa', trải nghiệm khách VIP và hoạt động gắn kết nội bộ — biến hoa thành cầu nối cảm xúc giữa thương hiệu và khách hàng.",
+        "breadcrumb": "Trải nghiệm thương hiệu cùng hoa",
+        "heading": "Trải Nghiệm Thương Hiệu Cùng Hoa",
+        "lede": "Giải pháp nâng tầm trải nghiệm thương hiệu bằng nghệ thuật hoa tươi",
+        "intro": {
+          "01": "Trong bối cảnh doanh nghiệp ngày càng chú trọng đến trải nghiệm khách hàng (Customer Experience) và gắn kết nhân viên (Employee Engagement), hoa tươi không còn chỉ là một yếu tố trang trí mà đã trở thành công cụ truyền tải cảm xúc, câu chuyện thương hiệu và sự quan tâm dành cho mỗi người tham dự.",
+          "02": "Chúng tôi mang đến giải pháp trải nghiệm thương hiệu cùng hoa, kết hợp nghệ thuật cắm hoa với các hoạt động tương tác, workshop và sự kiện doanh nghiệp. Mỗi chương trình được thiết kế riêng theo mục tiêu truyền thông, văn hóa doanh nghiệp và đối tượng khách mời, giúp tạo nên những khoảnh khắc đáng nhớ và gia tăng sự kết nối giữa thương hiệu với khách hàng, đối tác và đội ngũ nhân viên."
+        },
+        "inclusions": {
+          "heading": "Dịch vụ trải nghiệm thương hiệu bằng hoa bao gồm những gì?",
+          "subIntro": "Chúng tôi đồng hành cùng doanh nghiệp trong việc xây dựng các hoạt động trải nghiệm sáng tạo, phù hợp với nhiều quy mô và mục tiêu khác nhau.",
+          "items": {
+            "01": {
+              "title": "Workshop cắm hoa doanh nghiệp",
+              "description": "Tổ chức các buổi workshop cắm hoa dành cho nhân viên, khách hàng hoặc đối tác với nội dung được thiết kế theo chủ đề riêng. Chương trình kết hợp giữa kiến thức về hoa, thực hành sáng tạo và những câu chuyện truyền cảm hứng, mang đến trải nghiệm thư giãn và gắn kết."
+            },
+            "02": {
+              "title": "Mini Event \"Thiền cùng Hoa\"",
+              "description": "Không gian nơi người tham gia có thể chậm lại, cảm nhận vẻ đẹp của thiên nhiên và tìm lại sự cân bằng thông qua nghệ thuật cắm hoa. Đây là hoạt động được nhiều doanh nghiệp lựa chọn trong các chương trình chăm sóc sức khỏe tinh thần (Well-being), Team Building trong nhà hoặc tuần lễ văn hóa doanh nghiệp."
+            },
+            "03": {
+              "title": "Trải nghiệm dành cho khách hàng VIP và đối tác",
+              "description": "Thiết kế những hoạt động mang tính cá nhân hóa như workshop riêng, trải nghiệm cắm hoa cùng nghệ nhân, bàn hoa tương tác hoặc quà tặng hoa được chuẩn bị ngay tại sự kiện. Những điểm chạm này giúp khách mời cảm nhận được sự trân trọng và tinh thần hiếu khách của doanh nghiệp."
+            },
+            "04": {
+              "title": "Hoạt động gắn kết nhân viên",
+              "description": "Workshop hoa tươi là lựa chọn phù hợp cho các dịp 8/3, 20/10, Ngày Gia đình Việt Nam, kỷ niệm thành lập công ty, chương trình tri ân nhân viên hoặc các hoạt động nội bộ nhằm tăng cường tinh thần đồng đội và xây dựng văn hóa doanh nghiệp."
+            },
+            "05": {
+              "title": "Trải nghiệm thương hiệu tại sự kiện",
+              "description": "Chúng tôi thiết kế các khu vực trải nghiệm với hoa tươi như flower bar, flower station, photo corner, bàn cắm hoa tương tác hoặc không gian check-in theo concept của sự kiện, giúp khách tham dự có thêm hoạt động tương tác và tạo ra những nội dung chia sẻ tự nhiên trên mạng xã hội."
+            }
+          }
+        },
+        "benefits": {
+          "heading": "Giá trị doanh nghiệp nhận được",
+          "items": {
+            "01": {
+              "title": "Gia tăng trải nghiệm khách hàng",
+              "description": "Một hoạt động tương tác được đầu tư chỉn chu sẽ giúp khách hàng ghi nhớ thương hiệu lâu hơn, tạo cảm xúc tích cực và nâng cao giá trị của mỗi lần gặp gỡ."
+            },
+            "02": {
+              "title": "Xây dựng văn hóa doanh nghiệp",
+              "description": "Workshop hoa là cơ hội để nhân viên thư giãn, sáng tạo và kết nối với đồng nghiệp, góp phần xây dựng môi trường làm việc tích cực và nâng cao mức độ gắn kết trong tổ chức."
+            },
+            "03": {
+              "title": "Tăng giá trị thương hiệu",
+              "description": "Các chương trình được cá nhân hóa theo màu sắc, thông điệp và nhận diện thương hiệu, giúp doanh nghiệp truyền tải hình ảnh chuyên nghiệp và tạo dấu ấn khác biệt trong từng sự kiện."
+            },
+            "04": {
+              "title": "Khuyến khích chia sẻ trên mạng xã hội",
+              "description": "Không gian được thiết kế đẹp mắt cùng những trải nghiệm mang tính tương tác sẽ tạo ra nhiều nội dung do người tham gia tự chia sẻ (User-Generated Content), góp phần lan tỏa hình ảnh thương hiệu một cách tự nhiên và hiệu quả."
+            }
+          }
+        },
+        "process": {
+          "heading": "Quy trình triển khai",
+          "items": {
+            "01": "Khảo sát mục tiêu và đối tượng tham gia.",
+            "02": "Xây dựng chủ đề và concept trải nghiệm phù hợp với thương hiệu.",
+            "03": "Thiết kế không gian, chuẩn bị hoa tươi và dụng cụ.",
+            "04": "Tổ chức chương trình với đội ngũ florist và điều phối viên.",
+            "05": "Hỗ trợ truyền thông, chụp ảnh và ghi lại những khoảnh khắc nổi bật của sự kiện.",
+            "06": "Đánh giá và tối ưu cho các chương trình tiếp theo nếu doanh nghiệp triển khai định kỳ."
+          }
+        },
+        "audience": {
+          "heading": "Phù hợp với nhiều loại hình doanh nghiệp",
+          "subIntro": "Dịch vụ Trải nghiệm thương hiệu cùng hoa phù hợp với:",
+          "items": {
+            "01": "Doanh nghiệp và tập đoàn.",
+            "02": "Khách sạn và resort.",
+            "03": "Ngân hàng và tổ chức tài chính.",
+            "04": "Trung tâm thương mại.",
+            "05": "Showroom ô tô và bất động sản.",
+            "06": "Thương hiệu thời trang, mỹ phẩm và bán lẻ.",
+            "07": "Agency tổ chức sự kiện.",
+            "08": "Doanh nghiệp tổ chức hội nghị, triển lãm và chương trình MICE.",
+            "09": "Biến mỗi bông hoa thành một điểm chạm thương hiệu"
+          }
+        },
+        "closing": {
+          "paragraphs": {
+            "01": "Một trải nghiệm đáng nhớ luôn bắt đầu từ những chi tiết tinh tế. Thay vì chỉ sử dụng hoa để trang trí, doanh nghiệp có thể biến hoa thành cầu nối cảm xúc giữa thương hiệu với khách hàng, đối tác và nhân viên thông qua những hoạt động giàu tính tương tác và sáng tạo.",
+            "02": "Với kinh nghiệm thiết kế workshop cắm hoa doanh nghiệp, mini event trải nghiệm, hoạt động chăm sóc khách hàng VIP và chương trình gắn kết nội bộ, chúng tôi mang đến những giải pháp được cá nhân hóa theo từng thương hiệu, giúp mỗi sự kiện không chỉ đẹp về hình thức mà còn để lại dấu ấn sâu sắc trong lòng người tham dự."
+          }
+        }
+      }
     }
   },
   "policies": {
