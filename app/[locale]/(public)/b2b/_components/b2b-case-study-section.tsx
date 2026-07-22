@@ -30,28 +30,32 @@ const PARTNERS: readonly Partner[] = [
     nameKey: 'b2b.caseStudies.partners.fusion.name',
     roleKey: 'b2b.caseStudies.partners.fusion.role',
     summaryKey: 'b2b.caseStudies.partners.fusion.summary',
-    logoAltKey: 'b2b.caseStudies.partners.fusion.logoAlt'
+    logoAltKey: 'b2b.caseStudies.partners.fusion.logoAlt',
+    logoPath: '/images/b2b/logos/hospitality/fusion.png'
   },
   {
     id: 'masan',
     nameKey: 'b2b.caseStudies.partners.masan.name',
     roleKey: 'b2b.caseStudies.partners.masan.role',
     summaryKey: 'b2b.caseStudies.partners.masan.summary',
-    logoAltKey: 'b2b.caseStudies.partners.masan.logoAlt'
+    logoAltKey: 'b2b.caseStudies.partners.masan.logoAlt',
+    logoPath: '/images/b2b/logos/enterprise/masan.png'
   },
   {
     id: 'tanCang',
     nameKey: 'b2b.caseStudies.partners.tanCang.name',
     roleKey: 'b2b.caseStudies.partners.tanCang.role',
     summaryKey: 'b2b.caseStudies.partners.tanCang.summary',
-    logoAltKey: 'b2b.caseStudies.partners.tanCang.logoAlt'
+    logoAltKey: 'b2b.caseStudies.partners.tanCang.logoAlt',
+    logoPath: '/images/b2b/logos/enterprise/tancang.png'
   },
   {
     id: 'eastin',
     nameKey: 'b2b.caseStudies.partners.eastin.name',
     roleKey: 'b2b.caseStudies.partners.eastin.role',
     summaryKey: 'b2b.caseStudies.partners.eastin.summary',
-    logoAltKey: 'b2b.caseStudies.partners.eastin.logoAlt'
+    logoAltKey: 'b2b.caseStudies.partners.eastin.logoAlt',
+    logoPath: '/images/b2b/logos/hospitality/eastin.png'
   }
 ]
 
@@ -307,9 +311,7 @@ export default function B2BCaseStudySection() {
                   </span>
                 )}
                 <div className='min-w-0 -space-y-0.5'>
-                  <h4 className='truncate font-title text-base font-bold text-primary sm:text-lg'>
-                    {name}
-                  </h4>
+                  <h4 className='truncate font-title text-base font-bold text-primary sm:text-lg'>{name}</h4>
                   <p className='truncate text-[0.6875rem] font-medium tracking-wide text-muted-foreground sm:text-xs'>
                     {t(partner.roleKey)}
                   </p>
