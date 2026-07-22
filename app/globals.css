@@ -255,6 +255,251 @@
   }
 }
 
+/* Unlayered so it beats Tailwind v4 preflight (which sits inside the `base` layer). */
+.hth-rich-text {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.hth-rich-text > :first-child {
+  margin-top: 0;
+}
+
+.hth-rich-text > :last-child {
+  margin-bottom: 0;
+}
+
+.hth-rich-text p {
+  margin: 0.75em 0;
+  color: var(--foreground);
+}
+
+.hth-rich-text h1,
+.hth-rich-text h2,
+.hth-rich-text h3,
+.hth-rich-text h4,
+.hth-rich-text h5,
+.hth-rich-text h6 {
+  color: var(--primary);
+  font-family: var(--font-title, var(--font-sans));
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 1.75em 0 0.6em;
+}
+
+.hth-rich-text h1 {
+  font-size: 1.875rem;
+}
+.hth-rich-text h2 {
+  font-size: 1.5rem;
+}
+.hth-rich-text h3 {
+  font-size: 1.25rem;
+}
+.hth-rich-text h4 {
+  font-size: 1.125rem;
+}
+.hth-rich-text h5,
+.hth-rich-text h6 {
+  font-size: 1rem;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hth-rich-text strong,
+.hth-rich-text b {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.hth-rich-text em,
+.hth-rich-text i {
+  font-style: italic;
+}
+
+.hth-rich-text u {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--primary) 60%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+.hth-rich-text s {
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+}
+
+.hth-rich-text a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--primary) 45%, transparent);
+  text-underline-offset: 0.25rem;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+.hth-rich-text a:hover {
+  color: var(--secondary-foreground);
+  text-decoration-color: currentColor;
+}
+
+.hth-rich-text ul,
+.hth-rich-text ol {
+  margin: 0.75em 0;
+  padding-left: 1.5rem;
+}
+
+.hth-rich-text ul {
+  list-style: disc;
+}
+
+.hth-rich-text ol {
+  list-style: decimal;
+}
+
+.hth-rich-text li {
+  margin: 0.3em 0;
+  padding-left: 0.25rem;
+}
+
+.hth-rich-text li::marker {
+  color: var(--leaf);
+}
+
+.hth-rich-text li > p {
+  margin: 0;
+}
+
+.hth-rich-text ul ul,
+.hth-rich-text ul ol,
+.hth-rich-text ol ul,
+.hth-rich-text ol ol {
+  margin: 0.3em 0;
+}
+
+.hth-rich-text blockquote {
+  margin: 1.25em 0;
+  padding: 0.75em 1rem;
+  border-left: 3px solid var(--leaf);
+  background: color-mix(in oklab, var(--muted) 60%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+.hth-rich-text hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.hth-rich-text code {
+  padding: 0.125em 0.375em;
+  background: color-mix(in oklab, var(--muted) 80%, transparent);
+  border-radius: calc(var(--radius) * 0.5);
+  font-size: 0.9em;
+  color: var(--primary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.hth-rich-text pre {
+  margin: 1.25em 0;
+  padding: 1rem 1.125rem;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.hth-rich-text pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+.hth-rich-text figure {
+  margin: 1.5em 0;
+}
+
+.hth-rich-text figcaption {
+  margin-top: 0.5em;
+  color: var(--muted-foreground);
+  font-size: 0.875em;
+  text-align: center;
+  font-style: italic;
+}
+
+.hth-rich-text img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em auto;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 6px 18px -12px rgb(81 108 108 / 25%);
+}
+
+.hth-rich-text sub,
+.hth-rich-text sup {
+  font-size: 0.75em;
+  line-height: 0;
+}
+
+.hth-rich-text sub {
+  vertical-align: sub;
+}
+
+.hth-rich-text sup {
+  vertical-align: super;
+}
+
+.hth-rich-text table {
+  width: 100%;
+  margin: 1.5em 0;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-size: 0.95em;
+}
+
+.hth-rich-text caption {
+  padding: 0.5em 0;
+  caption-side: bottom;
+  color: var(--muted-foreground);
+  font-size: 0.875em;
+}
+
+.hth-rich-text thead {
+  background: color-mix(in oklab, var(--secondary) 65%, transparent);
+  color: var(--secondary-foreground);
+}
+
+.hth-rich-text th,
+.hth-rich-text td {
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.hth-rich-text th {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.hth-rich-text tbody tr:nth-child(even) {
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+
 @keyframes float-y {
   0%,
   100% {

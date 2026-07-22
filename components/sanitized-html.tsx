@@ -1,16 +1,5 @@
 'use client'
 
-import '@/styles/tiptap.scss'
-
-import '@/components/tiptap-node/blockquote-node/blockquote-node.scss'
-import '@/components/tiptap-node/code-block-node/code-block-node.scss'
-import '@/components/tiptap-node/heading-node/heading-node.scss'
-import '@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node.scss'
-import '@/components/tiptap-node/image-node/image-node.scss'
-import '@/components/tiptap-node/image-upload-node/image-upload-node.scss'
-import '@/components/tiptap-node/list-node/list-node.scss'
-import '@/components/tiptap-node/paragraph-node/paragraph-node.scss'
-
 import { useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import DOMPurify from 'isomorphic-dompurify'
@@ -75,7 +64,10 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
   const router = useRouter()
 
   const finalHtml = useMemo(() => {
-    const cleanHtml = DOMPurify.sanitize(html, PURIFY_CONFIG)
+    const cleanHtml = DOMPurify.sanitize(html, PURIFY_CONFIG).replace(
+      / (style|class|bgcolor|color|align|face|size)="[^"]*"/gi,
+      ''
+    )
 
     if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
       return cleanHtml
@@ -83,6 +75,11 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
 
     const parser = new DOMParser()
     const doc = parser.parseFromString(cleanHtml, 'text/html')
+
+    const STRIP_ATTRS = ['style', 'class', 'bgcolor', 'color', 'align', 'face', 'size']
+    doc.body.querySelectorAll('*').forEach((el) => {
+      STRIP_ATTRS.forEach((attr) => el.removeAttribute(attr))
+    })
 
     doc.querySelectorAll('a[target="_blank"]').forEach((link) => {
       link.setAttribute('rel', 'noopener noreferrer')
@@ -124,12 +121,7 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
   return (
     <ElementType
       onClick={handleContainerClick}
-      className={cn(
-        'tiptap ProseMirror prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl max-w-none overflow-auto',
-        'prose-pre:whitespace-pre-wrap prose-pre:wrap-break-word wrap-break-word',
-        'prose-img:my-6 prose-img:w-full prose-img:rounded-2xl',
-        className
-      )}
+      className={cn('hth-rich-text', className)}
       dangerouslySetInnerHTML={{ __html: finalHtml }}
     />
   )

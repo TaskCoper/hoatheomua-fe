@@ -13,7 +13,6 @@ import ProductBreadcrumb from './product-breadcrumb'
 import ProductChildSelector from './product-child-selector'
 import ProductDetailsTabs from './product-details-tabs'
 import ProductGallery from './product-gallery'
-import ProductPromiseCard from './product-promise-card'
 import ProductPurchaseBox from './product-purchase-box'
 import ProductSummary from './product-summary'
 
@@ -98,7 +97,7 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
                 units={flatUnits}
               />
 
-              <ProductPromiseCard />
+              {/* <ProductPromiseCard /> */}
             </div>
 
             <div className='lg:col-span-7 lg:col-start-1 lg:row-start-2 xl:col-span-8'>
