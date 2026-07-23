@@ -2,55 +2,64 @@
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { Locale } from '@/lib/i18n/routing'
 import { cn } from '@/shared/utils'
 import type { ContactConfigItem } from '@/types/config.type'
 import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
-import type { ServiceI18nKey } from '../_content'
+import { pick, type B2BServiceDetail, type FaqItem } from '../_palette'
 import { petalCard, Reveal, SectionHeading } from './editorial'
 
-type FaqItem = { question: string; answer: string; hasZalo?: boolean }
+// Answers may embed a single `<zalo>…</zalo>` marker that becomes a Zalo deep-link.
+const ZALO_MARKER = /<zalo>([\s\S]*?)<\/zalo>/
 
-type FaqBlock = {
-  heading?: string
-  items?: Record<string, FaqItem>
-} | null
-
-export default function ServiceFaqSection({ serviceKey, id }: { serviceKey: ServiceI18nKey; id: string }) {
-  const { t } = useTranslation()
-  const rt = useTranslations()
+export default function ServiceFaqSection({
+  detail,
+  locale,
+  id
+}: {
+  detail: B2BServiceDetail
+  locale: Locale
+  id: string
+}) {
+  const t = useTranslations()
   const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
   const zaloUrl = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
 
-  let raw: FaqBlock = null
-  try {
-    raw = rt.raw(`b2b.serviceDetails.${serviceKey}.faq`) as FaqBlock
-  } catch {
-    raw = null
-  }
-  const entries = raw?.items ? Object.entries(raw.items) : []
-  if (entries.length === 0) return null
+  const items = detail.faq?.items ?? []
+  if (items.length === 0) return null
 
-  const heading = raw?.heading ?? t('b2b.serviceDetails.common.faqTitle')
+  const heading = pick(detail.faq!.heading, locale) || t('b2b.serviceDetails.common.faqTitle')
 
-  const renderAnswer = (key: string, item: FaqItem): ReactNode => {
-    if (!item.hasZalo) return item.answer
-    return rt.rich(`b2b.serviceDetails.${serviceKey}.faq.items.${key}.answer`, {
-      zalo: (chunks) =>
-        zaloUrl ? (
+  const renderAnswer = (item: FaqItem): ReactNode => {
+    const answer = pick(item.answer, locale)
+    if (!item.hasZalo) return answer
+
+    const match = answer.match(ZALO_MARKER)
+    if (!match) return answer
+
+    const [full, label] = match
+    const start = match.index ?? 0
+    const before = answer.slice(0, start)
+    const after = answer.slice(start + full.length)
+    return (
+      <>
+        {before}
+        {zaloUrl ? (
           <a
             href={zaloUrl}
             target='_blank'
             rel='noopener noreferrer'
             className='font-semibold text-primary underline underline-offset-2 hover:text-primary/80'
           >
-            {chunks}
+            {label}
           </a>
         ) : (
-          <span className='font-semibold text-primary'>{chunks}</span>
-        )
-    })
+          <span className='font-semibold text-primary'>{label}</span>
+        )}
+        {after}
+      </>
+    )
   }
 
   return (
@@ -60,10 +69,10 @@ export default function ServiceFaqSection({ serviceKey, id }: { serviceKey: Serv
 
         <div className={cn(petalCard, 'px-5 py-1 sm:px-6')}>
           <Accordion type='single' collapsible className='w-full'>
-            {entries.map(([key, item]) => (
-              <AccordionItem key={key} value={key}>
-                <AccordionTrigger>{item.question}</AccordionTrigger>
-                <AccordionContent>{renderAnswer(key, item)}</AccordionContent>
+            {items.map((item, index) => (
+              <AccordionItem key={index} value={String(index)}>
+                <AccordionTrigger>{pick(item.question, locale)}</AccordionTrigger>
+                <AccordionContent>{renderAnswer(item)}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>

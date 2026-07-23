@@ -1,20 +1,27 @@
 'use client'
 
+import type { Locale } from '@/lib/i18n/routing'
 import { motion } from 'motion/react'
-import { useTranslations } from 'next-intl'
-import { galleryImage, type ServiceDetailConfig } from '../_content'
+import { galleryImage } from '../_content'
+import { pick, type B2BServiceDetail } from '../_palette'
 import { fadeUp, Reveal, SectionShell } from './editorial'
 import ServiceImageDivider from './service-image-divider'
 
-export default function ServiceIntroSection({ config, id }: { config: ServiceDetailConfig; id: string }) {
-  const t = useTranslations()
-  const raw = t.raw(`b2b.serviceDetails.${config.i18nKey}.intro`) as Record<string, string> | null
-  const intro = raw ? Object.values(raw) : []
+export default function ServiceIntroSection({
+  detail,
+  locale,
+  id
+}: {
+  detail: B2BServiceDetail
+  locale: Locale
+  id: string
+}) {
+  const intro = detail.intro.map((paragraph) => pick(paragraph, locale)).filter(Boolean)
   if (intro.length === 0) return null
 
   const [lead, ...rest] = intro
-  const dividerImage = galleryImage(config, 0)
-  const serviceName = t(config.cardNameKey)
+  const dividerImage = galleryImage(detail, 0)
+  const serviceName = pick(detail.card.name, locale)
 
   return (
     <SectionShell id={id}>

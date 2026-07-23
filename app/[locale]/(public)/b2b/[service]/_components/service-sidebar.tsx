@@ -4,27 +4,33 @@ import { Button } from '@/components/ui/button'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import type { I18nKey } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n/routing'
 import { cn } from '@/shared/utils'
 import type { ContactConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon, Mail01Icon, PhoneCheckIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { SERVICE_DETAILS, type ServiceDetailConfig, type ServiceSection } from '../_content'
+import { B2B_SERVICE_SLUGS } from '../../_seo'
+import { SERVICE_ICONS, type ServiceSection } from '../_content'
+import { pick, type B2BServiceDetail } from '../_palette'
 import { petalCard } from './editorial'
 import ServiceToc from './service-toc'
 
 type Props = {
-  config: ServiceDetailConfig
+  detail: B2BServiceDetail
+  locale: Locale
   sections: ServiceSection[]
+  siblings: B2BServiceDetail[]
 }
 
-export default function ServiceSidebar({ config, sections }: Props) {
+export default function ServiceSidebar({ detail, locale, sections, siblings }: Props) {
   const { t } = useTranslation()
   const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
   const phone = contactConfigs.find((item) => item.key === 'contact.phone')?.value.value
   const email = contactConfigs.find((item) => item.key === 'contact.email')?.value.value
 
-  const siblings = Object.values(SERVICE_DETAILS).filter((s) => s.slug !== config.slug)
+  const orderedSiblings = [...siblings]
+    .filter((s) => s.slug !== detail.slug)
+    .sort((a, b) => B2B_SERVICE_SLUGS.indexOf(a.slug) - B2B_SERVICE_SLUGS.indexOf(b.slug))
 
   return (
     <aside className='hidden lg:block'>
@@ -40,19 +46,19 @@ export default function ServiceSidebar({ config, sections }: Props) {
             {t('b2b.serviceDetails.common.sidebarRelatedTitle')}
           </p>
           <ul className='space-y-0.5'>
-            {siblings.map((sibling) => (
+            {orderedSiblings.map((sibling) => (
               <li key={sibling.slug}>
                 <Link
                   href={`/b2b/${sibling.slug}`}
                   className='group flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-secondary/30'
                 >
                   <HugeiconsIcon
-                    icon={sibling.icon}
+                    icon={SERVICE_ICONS[sibling.icon]}
                     className={cn('size-4 shrink-0', sibling.accent === 'leaf' ? 'text-leaf' : 'text-primary/60')}
                   />
 
                   <span className='flex-1 text-sm font-medium leading-tight text-foreground group-hover:text-primary'>
-                    {t(sibling.cardNameKey as I18nKey)}
+                    {pick(sibling.card.name, locale)}
                   </span>
 
                   <HugeiconsIcon

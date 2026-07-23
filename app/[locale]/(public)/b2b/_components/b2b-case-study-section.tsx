@@ -1,7 +1,6 @@
 'use client'
 
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import type { I18nKey } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n/routing'
 import { QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -14,50 +13,16 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
 import { SparkleDivider } from '../../_components/sparkle-dividier'
+import { pick, type OverviewCaseStudies } from '../_overview-palette'
 
-type Partner = {
-  id: string
-  nameKey: I18nKey
-  roleKey: I18nKey
-  summaryKey: I18nKey
-  logoAltKey: I18nKey
-  logoPath?: string
+// Partner logo srcs come from the CMS `logo` field; this map is the fallback
+// (keyed by the CMS partner `id`) for partners authored without one.
+const PARTNER_LOGO: Record<string, string> = {
+  fusion: '/images/b2b/logos/hospitality/fusion.png',
+  masan: '/images/b2b/logos/enterprise/masan.png',
+  tanCang: '/images/b2b/logos/enterprise/tancang.png',
+  eastin: '/images/b2b/logos/hospitality/eastin.png'
 }
-
-const PARTNERS: readonly Partner[] = [
-  {
-    id: 'fusion',
-    nameKey: 'b2b.caseStudies.partners.fusion.name',
-    roleKey: 'b2b.caseStudies.partners.fusion.role',
-    summaryKey: 'b2b.caseStudies.partners.fusion.summary',
-    logoAltKey: 'b2b.caseStudies.partners.fusion.logoAlt',
-    logoPath: '/images/b2b/logos/hospitality/fusion.png'
-  },
-  {
-    id: 'masan',
-    nameKey: 'b2b.caseStudies.partners.masan.name',
-    roleKey: 'b2b.caseStudies.partners.masan.role',
-    summaryKey: 'b2b.caseStudies.partners.masan.summary',
-    logoAltKey: 'b2b.caseStudies.partners.masan.logoAlt',
-    logoPath: '/images/b2b/logos/enterprise/masan.png'
-  },
-  {
-    id: 'tanCang',
-    nameKey: 'b2b.caseStudies.partners.tanCang.name',
-    roleKey: 'b2b.caseStudies.partners.tanCang.role',
-    summaryKey: 'b2b.caseStudies.partners.tanCang.summary',
-    logoAltKey: 'b2b.caseStudies.partners.tanCang.logoAlt',
-    logoPath: '/images/b2b/logos/enterprise/tancang.png'
-  },
-  {
-    id: 'eastin',
-    nameKey: 'b2b.caseStudies.partners.eastin.name',
-    roleKey: 'b2b.caseStudies.partners.eastin.role',
-    summaryKey: 'b2b.caseStudies.partners.eastin.summary',
-    logoAltKey: 'b2b.caseStudies.partners.eastin.logoAlt',
-    logoPath: '/images/b2b/logos/hospitality/eastin.png'
-  }
-]
 
 const partnerCardStagger: Variants = {
   hidden: {},
@@ -105,12 +70,18 @@ const PHOTO_DIMENSIONS: Record<string, { width: number; height: number }> = {
   // '20': { width: 2048, height: 1366 }
 }
 
-const PHOTOS = Object.entries(PHOTO_DIMENSIONS).map(([id, { width, height }]) => ({
+// Fallback gallery (local assets) used only when the CMS ships no `photos`.
+const FALLBACK_PHOTOS = Object.entries(PHOTO_DIMENSIONS).map(([id, { width, height }]) => ({
   id,
   src: `/images/b2b/case-studies/indigo/${id}.jpg`,
   width,
   height
 }))
+
+// CMS photo URLs end in `-NN.jpg`; that NN keys back into PHOTO_DIMENSIONS so
+// next/image gets the right aspect ratio for the marquee + lightbox.
+const DEFAULT_DIM = { width: 1706, height: 2560 }
+const photoNumber = (src: string) => src.match(/-(\d+)\.jpg(?:[?#]|$)/)?.[1] ?? ''
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -122,18 +93,32 @@ const cardStagger: Variants = {
   visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } }
 }
 
-export default function B2BCaseStudySection() {
-  const { t } = useTranslation()
+export default function B2BCaseStudySection({
+  caseStudies,
+  locale
+}: {
+  caseStudies: OverviewCaseStudies
+  locale: Locale
+}) {
   const [lightboxIndex, setLightboxIndex] = useState(-1)
+  const { indigo, partners } = caseStudies
 
-  const hotelName = t('b2b.caseStudies.indigo.logoAlt')
-  const slides = PHOTOS.map((photo) => ({
+  const hotelName = pick(indigo.logoAlt, locale)
+  const photos =
+    indigo.photos.length > 0
+      ? indigo.photos.map((src, i) => {
+          const key = photoNumber(src)
+          const dim = PHOTO_DIMENSIONS[key] ?? DEFAULT_DIM
+          return { id: key || String(i + 1), src, width: dim.width, height: dim.height }
+        })
+      : FALLBACK_PHOTOS
+  const slides = photos.map((photo) => ({
     src: photo.src,
     alt: `${hotelName} — ${photo.id}`
   }))
   const MIN_ITEMS_PER_SET = 10
-  const repeatsPerSet = Math.max(1, Math.ceil(MIN_ITEMS_PER_SET / PHOTOS.length))
-  const oneSet = Array.from({ length: repeatsPerSet * PHOTOS.length }, (_, i) => PHOTOS[i % PHOTOS.length])
+  const repeatsPerSet = Math.max(1, Math.ceil(MIN_ITEMS_PER_SET / photos.length))
+  const oneSet = Array.from({ length: repeatsPerSet * photos.length }, (_, i) => photos[i % photos.length])
   const marqueeItems = [...oneSet, ...oneSet]
 
   return (
@@ -146,10 +131,10 @@ export default function B2BCaseStudySection() {
         className='mx-auto w-full max-w-7xl space-y-1 sm:space-y-1.5 md:space-y-2'
       >
         <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
-          {t('b2b.caseStudies.title')}
+          {pick(caseStudies.title, locale)}
         </h2>
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          {t('b2b.caseStudies.description')}
+          {pick(caseStudies.description, locale)}
         </p>
       </motion.div>
 
@@ -165,28 +150,26 @@ export default function B2BCaseStudySection() {
             <div className='flex flex-wrap items-center gap-3'>
               {/* TODO(b2b): swap placeholder with Indigo Saigon Hotel SVG when brand team delivers */}
               <div
-                aria-label={t('b2b.caseStudies.indigo.logoAlt')}
+                aria-label={hotelName}
                 className='flex items-center gap-2 rounded-xl bg-secondary/40 ring-1 ring-primary/10 py-1.5 pl-2 pr-3'
               >
                 <Image
-                  src='/images/b2b/logos/hospitality/indigo.png'
-                  alt={t('b2b.caseStudies.indigo.logoAlt')}
+                  src={indigo.logo || '/images/b2b/logos/hospitality/indigo.png'}
+                  alt={hotelName}
                   width={35}
                   height={35}
                   className='rounded-md'
                 />
                 <div className='flex flex-col -space-y-0.5'>
                   <span className='font-title text-sm font-bold tracking-tight text-primary sm:text-base'>
-                    {t('b2b.caseStudies.indigo.logoAlt')}
+                    {hotelName}
                   </span>
-                  <span className='text-[0.625rem] font-semibold tracking-wide'>
-                    {t('b2b.caseStudies.indigo.badge')}
-                  </span>
+                  <span className='text-[0.625rem] font-semibold tracking-wide'>{pick(indigo.badge, locale)}</span>
                 </div>
               </div>
             </div>
 
-            <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{t('b2b.caseStudies.indigo.summary')}</p>
+            <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{pick(indigo.summary, locale)}</p>
           </motion.div>
 
           <motion.figure
@@ -198,14 +181,14 @@ export default function B2BCaseStudySection() {
               className='absolute -top-2 left-4 size-6 text-primary/40 sm:-top-3 sm:size-7'
             />
             <blockquote className='font-title text-sm italic leading-relaxed text-primary sm:text-base'>
-              “{t('b2b.caseStudies.indigo.quote')}”
+              “{pick(indigo.quote, locale)}”
             </blockquote>
             <figcaption className='-space-y-0.5'>
               <span className='block font-title text-sm font-bold text-primary sm:text-base'>
-                {t('b2b.caseStudies.indigo.quoteAuthor')}
+                {pick(indigo.quoteAuthor, locale)}
               </span>
               <span className='block text-[0.6875rem] font-medium tracking-wide text-muted-foreground sm:text-xs'>
-                {t('b2b.caseStudies.indigo.quoteRole')}
+                {pick(indigo.quoteRole, locale)}
               </span>
             </figcaption>
           </motion.figure>
@@ -227,7 +210,7 @@ export default function B2BCaseStudySection() {
               <button
                 type='button'
                 key={`${photo.id}-${index}`}
-                onClick={() => setLightboxIndex(index % PHOTOS.length)}
+                onClick={() => setLightboxIndex(index % photos.length)}
                 aria-label={`${hotelName} — ${photo.id}`}
                 className='relative block shrink-0 h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden rounded-2xl ring-1 ring-foreground/5 shadow-[0_0.4rem_1rem_rgb(81_108_108/8%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
               >
@@ -260,7 +243,7 @@ export default function B2BCaseStudySection() {
             color='#516c6c'
           />
           <h3 className='shrink-0 text-center font-title text-xl md:text-2xl lg:text-3xl font-bold text-primary'>
-            {t('b2b.caseStudies.partners.title')}
+            {pick(partners.title, locale)}
           </h3>
           <SparkleDivider
             className='min-w-0 max-w-72 flex-1 hidden sm:flex'
@@ -270,7 +253,7 @@ export default function B2BCaseStudySection() {
           />
         </div>
         <p className='mx-auto max-w-full text-left sm:max-w-200 sm:text-center text-xs leading-relaxed text-foreground sm:text-sm'>
-          {t('b2b.caseStudies.partners.description')}
+          {pick(partners.description, locale)}
         </p>
       </motion.div>
 
@@ -281,8 +264,10 @@ export default function B2BCaseStudySection() {
         variants={partnerCardStagger}
         className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4'
       >
-        {PARTNERS.map((partner) => {
-          const name = t(partner.nameKey)
+        {partners.items.map((partner) => {
+          const name = pick(partner.name, locale)
+          const logoAlt = pick(partner.logoAlt, locale)
+          const logoPath = partner.logo || PARTNER_LOGO[partner.id]
           return (
             <motion.article
               key={partner.id}
@@ -292,19 +277,13 @@ export default function B2BCaseStudySection() {
               className='group relative flex h-full flex-col gap-3 overflow-hidden rounded-3xl bg-card p-5 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'
             >
               <div className='flex items-center gap-3'>
-                {partner.logoPath ? (
+                {logoPath ? (
                   <span className='grid size-12 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white/90 ring-1 ring-primary/10'>
-                    <Image
-                      src={partner.logoPath}
-                      alt={t(partner.logoAltKey)}
-                      width={35}
-                      height={35}
-                      className='object-contain'
-                    />
+                    <Image src={logoPath} alt={logoAlt} width={35} height={35} className='object-contain' />
                   </span>
                 ) : (
                   <span
-                    aria-label={t(partner.logoAltKey)}
+                    aria-label={logoAlt}
                     className='grid size-12 shrink-0 place-items-center rounded-2xl bg-primary/10 font-title text-sm font-bold text-primary ring-1 ring-primary/10'
                   >
                     {partnerInitials(name)}
@@ -313,12 +292,12 @@ export default function B2BCaseStudySection() {
                 <div className='min-w-0 -space-y-0.5'>
                   <h4 className='truncate font-title text-base font-bold text-primary sm:text-lg'>{name}</h4>
                   <p className='truncate text-[0.6875rem] font-medium tracking-wide text-muted-foreground sm:text-xs'>
-                    {t(partner.roleKey)}
+                    {pick(partner.role, locale)}
                   </p>
                 </div>
               </div>
 
-              <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{t(partner.summaryKey)}</p>
+              <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{pick(partner.summary, locale)}</p>
             </motion.article>
           )
         })}

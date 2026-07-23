@@ -10,10 +10,10 @@ import {
 } from '@/components/ui/breadcrumb'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import type { I18nKey } from '@/lib/i18n/types'
-import type { ServiceDetailConfig } from '../_content'
+import type { Locale } from '@/lib/i18n/routing'
+import { pick, type B2BServiceDetail } from '../_palette'
 
-export default function ServiceBreadcrumb({ service }: { service: ServiceDetailConfig }) {
+export default function ServiceBreadcrumb({ detail, locale }: { detail: B2BServiceDetail; locale: Locale }) {
   const { t } = useTranslation()
 
   return (
@@ -33,7 +33,7 @@ export default function ServiceBreadcrumb({ service }: { service: ServiceDetailC
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{t(service.cardNameKey as I18nKey)}</BreadcrumbPage>
+            <BreadcrumbPage>{pick(detail.card.name, locale)}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>

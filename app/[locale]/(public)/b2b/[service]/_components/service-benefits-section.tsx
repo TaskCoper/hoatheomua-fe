@@ -1,31 +1,47 @@
 'use client'
 
+import type { Locale } from '@/lib/i18n/routing'
 import { cn } from '@/shared/utils'
 import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
-import { galleryImage, type ServiceDetailConfig } from '../_content'
-import { cardItem, petalCard, petalCardHover, Reveal, SectionHeading, SectionShell, stagger } from './editorial'
+import { galleryImage } from '../_content'
+import { pick, type B2BServiceDetail } from '../_palette'
+import {
+  cardItem,
+  gridCols,
+  petalCard,
+  petalCardHover,
+  Reveal,
+  SectionHeading,
+  SectionShell,
+  stagger
+} from './editorial'
 import ServiceImageDivider from './service-image-divider'
 
-type BenefitItem = string | { title: string; description: string }
-
-type BenefitsBlock = {
-  heading?: string
-  items?: Record<string, BenefitItem>
-} | null
-
-export default function ServiceBenefitsSection({ config, id }: { config: ServiceDetailConfig; id: string }) {
+export default function ServiceBenefitsSection({
+  detail,
+  locale,
+  id
+}: {
+  detail: B2BServiceDetail
+  locale: Locale
+  id: string
+}) {
   const t = useTranslations()
-  const raw = t.raw(`b2b.serviceDetails.${config.i18nKey}.benefits`) as BenefitsBlock
-  const items = raw?.items ? Object.values(raw.items) : []
+  const block = detail.benefits
+  const items = (block?.items ?? []).map((item) => ({
+    title: pick(item.title, locale),
+    description: pick(item.description, locale)
+  }))
   if (items.length === 0) return null
 
-  const heading = raw?.heading ?? t('b2b.serviceDetails.common.benefitsTitle')
-  const allPlain = items.every((item) => typeof item === 'string')
-  const dividerImage = galleryImage(config, 3)
-  const serviceName = t(config.cardNameKey)
+  const heading = pick(block!.heading, locale) || t('b2b.serviceDetails.common.benefitsTitle')
+  // Plain when no item carries a description — render as a compact two-column list.
+  const allPlain = items.every((item) => !item.description)
+  const dividerImage = galleryImage(detail, 3)
+  const serviceName = pick(detail.card.name, locale)
 
   return (
     <SectionShell id={id}>
@@ -33,8 +49,8 @@ export default function ServiceBenefitsSection({ config, id }: { config: Service
         <SectionHeading title={heading} />
 
         {allPlain ? (
-          <motion.ul variants={stagger} className='grid gap-3 sm:grid-cols-2'>
-            {(items as string[]).map((item, index) => (
+          <motion.ul variants={stagger} className={cn('grid gap-3', gridCols(items.length, 2))}>
+            {items.map((item, index) => (
               <motion.li
                 key={index}
                 variants={cardItem}
@@ -43,15 +59,15 @@ export default function ServiceBenefitsSection({ config, id }: { config: Service
                 <span className='mt-0.5 grid size-7 shrink-0 place-items-center rounded-full rounded-tl-[0.25rem] bg-leaf/15 text-leaf'>
                   <HugeiconsIcon icon={CheckmarkCircle02Icon} className='size-4' />
                 </span>
-                <span className='pt-0.5 text-sm leading-relaxed text-foreground'>{item}</span>
+                <span className='pt-0.5 text-sm leading-relaxed text-foreground'>{item.title}</span>
               </motion.li>
             ))}
           </motion.ul>
         ) : (
-          <motion.div variants={stagger} className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+          <motion.div variants={stagger} className={cn('grid gap-4', gridCols(items.length, 3))}>
             {items.map((item, index) => {
-              const title = typeof item === 'string' ? '' : item.title
-              const description = typeof item === 'string' ? item : item.description
+              const description = item.description || item.title
+              const title = item.description ? item.title : ''
               return (
                 <motion.article
                   key={index}

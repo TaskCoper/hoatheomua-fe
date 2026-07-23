@@ -1,13 +1,17 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { Locale } from '@/lib/i18n/routing'
 import type { ReactNode } from 'react'
-import type { ServiceDetailConfig, ServiceSection } from '../_content'
+import type { ServiceSection } from '../_content'
+import type { B2BServiceDetail } from '../_palette'
 import ServiceSidebar from './service-sidebar'
 
 type Props = {
-  config: ServiceDetailConfig
+  detail: B2BServiceDetail
+  locale: Locale
   sections: ServiceSection[]
+  siblings: B2BServiceDetail[]
   children: ReactNode
 }
 
@@ -16,7 +20,7 @@ type Props = {
  * components (each carrying its anchor id) and passes them here as `children`;
  * this client boundary owns the sticky sidebar + scroll-spy behaviour.
  */
-export default function ServiceDetailLayout({ config, sections, children }: Props) {
+export default function ServiceDetailLayout({ detail, locale, sections, siblings, children }: Props) {
   const { t } = useTranslation()
 
   return (
@@ -38,7 +42,7 @@ export default function ServiceDetailLayout({ config, sections, children }: Prop
 
       <div className='mx-auto mt-8 grid w-full max-w-7xl gap-8 px-4 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_21rem]'>
         <main className='min-w-0 space-y-8'>{children}</main>
-        <ServiceSidebar config={config} sections={sections} />
+        <ServiceSidebar detail={detail} locale={locale} sections={sections} siblings={siblings} />
       </div>
     </>
   )

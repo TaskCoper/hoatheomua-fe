@@ -75,6 +75,17 @@ export function PlaceholderBadge({ children }: { children: ReactNode }) {
   )
 }
 
+/**
+ * Responsive grid column classes that collapse to fewer tracks for short lists,
+ * so a lone item spans the full width instead of hugging one corner. `max` caps
+ * how many columns a long list is allowed to fan out to.
+ */
+export function gridCols(count: number, max: 2 | 3) {
+  if (count <= 1) return 'grid-cols-1'
+  if (count === 2 || max === 2) return 'sm:grid-cols-2'
+  return 'sm:grid-cols-2 lg:grid-cols-3'
+}
+
 /** Standard section wrapper carrying the scroll-spy anchor id. */
 export function SectionShell({ id, className, children }: { id: string; className?: string; children: ReactNode }) {
   return (

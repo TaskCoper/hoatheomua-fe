@@ -1,41 +1,42 @@
 'use client'
 
+import type { Locale } from '@/lib/i18n/routing'
 import { cn } from '@/shared/utils'
 import { Calendar03Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
-import type { ServiceDetailConfig } from '../_content'
+import { pick, type B2BServiceDetail } from '../_palette'
 import { cardItem, fadeUp, petalCard, petalCardHover, Reveal, SectionHeading, SectionShell, stagger } from './editorial'
 
-type ScheduleBlock = {
-  heading?: string
-  subIntro?: string
-  items?: Record<string, string>
-  closing?: string
-} | null
-
-export default function ServiceScheduleSection({ config, id }: { config: ServiceDetailConfig; id: string }) {
+export default function ServiceScheduleSection({
+  detail,
+  locale,
+  id
+}: {
+  detail: B2BServiceDetail
+  locale: Locale
+  id: string
+}) {
   const t = useTranslations()
-  let raw: ScheduleBlock = null
-  try {
-    raw = t.raw(`b2b.serviceDetails.${config.i18nKey}.schedule`) as ScheduleBlock
-  } catch {
-    raw = null
-  }
-  const items = raw?.items ? Object.values(raw.items) : []
+  const block = detail.schedule
+  const items = (block?.items ?? [])
+    .map((item) => pick(item.title, locale) || pick(item.description, locale))
+    .filter(Boolean)
   if (items.length === 0) return null
 
-  const heading = raw?.heading ?? t('b2b.serviceDetails.common.scheduleTitle')
+  const heading = pick(block!.heading, locale) || t('b2b.serviceDetails.common.scheduleTitle')
+  const subIntro = pick(block!.subIntro, locale)
+  const closing = pick(block!.closing, locale)
 
   return (
     <SectionShell id={id}>
       <Reveal className='space-y-6'>
         <SectionHeading title={heading} />
 
-        {raw?.subIntro ? (
+        {subIntro ? (
           <motion.p variants={fadeUp} className='text-base leading-relaxed text-foreground'>
-            {raw.subIntro}
+            {subIntro}
           </motion.p>
         ) : null}
 
@@ -54,12 +55,12 @@ export default function ServiceScheduleSection({ config, id }: { config: Service
           ))}
         </motion.ul>
 
-        {raw?.closing ? (
+        {closing ? (
           <motion.p
             variants={fadeUp}
             className='border-l-2 border-leaf/50 pl-4 font-title text-[0.9375rem] italic leading-relaxed text-primary/80'
           >
-            {raw.closing}
+            {closing}
           </motion.p>
         ) : null}
       </Reveal>

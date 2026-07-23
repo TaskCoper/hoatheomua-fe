@@ -3,12 +3,13 @@
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import type { I18nKey } from '@/lib/i18n/types'
+import type { Locale } from '@/lib/i18n/routing'
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
-import type { ServiceDetailConfig } from '../_content'
+import { SERVICE_ICONS } from '../_content'
+import { pick, type B2BServiceDetail, type ServiceAccent, type ServiceIcon } from '../_palette'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -20,13 +21,11 @@ const container: Variants = {
   visible: { transition: { staggerChildren: 0.09, delayChildren: 0.04 } }
 }
 
-type Props = {
-  service: ServiceDetailConfig
-}
-
-export default function ServiceDetailHero({ service }: Props) {
+export default function ServiceDetailHero({ detail, locale }: { detail: B2BServiceDetail; locale: Locale }) {
   const { t } = useTranslation()
-  const ledeKey = `b2b.serviceDetails.${service.i18nKey}.lede` as I18nKey
+  const name = pick(detail.card.name, locale)
+  const lede = pick(detail.lede, locale)
+  const tag = pick(detail.card.tag, locale)
   const primaryCta = t('b2b.serviceDetails.common.primaryCta')
   const secondaryCta = t('b2b.serviceDetails.common.secondaryCta')
 
@@ -37,11 +36,11 @@ export default function ServiceDetailHero({ service }: Props) {
           variants={fadeUp}
           className='mt-5 text-pretty font-title text-4xl font-bold leading-[1.08] tracking-[-0.01em] text-primary sm:text-5xl lg:text-6xl'
         >
-          {t(service.cardNameKey as I18nKey)}
+          {name}
         </motion.h1>
 
         <motion.p variants={fadeUp} className='mt-5 text-base leading-relaxed text-foreground/90 sm:text-lg'>
-          {t(ledeKey)}
+          {lede}
         </motion.p>
 
         <motion.div variants={fadeUp} className='mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center'>
@@ -51,7 +50,7 @@ export default function ServiceDetailHero({ service }: Props) {
               <HugeiconsIcon icon={ArrowRight02Icon} />
             </Link>
           </Button>
-          {service.showPackagesLink ? (
+          {detail.showPackagesLink ? (
             <Button asChild size='lg' variant='ghost' className='w-full text-primary sm:w-auto'>
               <Link href='/b2b#b2b-packages'>{secondaryCta}</Link>
             </Button>
@@ -65,17 +64,17 @@ export default function ServiceDetailHero({ service }: Props) {
             className='absolute -bottom-2.5 -right-2.5 left-6 top-6 rounded-[2.75rem] rounded-tl-[0.875rem] bg-secondary/50 sm:-bottom-3.5 sm:-right-3.5'
           />
           <figure className='relative aspect-[16/10] w-full overflow-hidden rounded-[2.5rem] rounded-tl-[0.75rem] bg-muted shadow-xl shadow-primary/10 ring-1 ring-primary/10 sm:aspect-[16/8] lg:aspect-[16/7]'>
-            {service.hasHero && service.heroImage ? (
+            {detail.heroImage ? (
               <Image
-                src={service.heroImage}
-                alt={t(service.cardNameKey as I18nKey)}
+                src={detail.heroImage}
+                alt={name}
                 fill
                 priority
                 className='object-cover'
                 sizes='(min-width: 1280px) 80rem, 100vw'
               />
             ) : (
-              <GradientHero accent={service.accent} icon={service.icon} label={t(service.cardTagKey as I18nKey)} />
+              <GradientHero accent={detail.accent} icon={detail.icon} label={tag} />
             )}
             <span
               aria-hidden='true'
@@ -88,15 +87,7 @@ export default function ServiceDetailHero({ service }: Props) {
   )
 }
 
-function GradientHero({
-  icon,
-  accent,
-  label
-}: {
-  icon: ServiceDetailConfig['icon']
-  accent: ServiceDetailConfig['accent']
-  label: string
-}) {
+function GradientHero({ icon, accent, label }: { icon: ServiceIcon; accent: ServiceAccent; label: string }) {
   return (
     <div
       className={`relative flex h-full items-center justify-center overflow-hidden p-8 ${
@@ -107,7 +98,7 @@ function GradientHero({
     >
       <div className='relative flex flex-col items-center gap-4 text-primary-foreground'>
         <span className='grid size-20 place-items-center rounded-3xl bg-primary-foreground/15 ring-1 ring-primary-foreground/25 backdrop-blur-sm sm:size-24'>
-          <HugeiconsIcon icon={icon} className='size-10 sm:size-12' />
+          <HugeiconsIcon icon={SERVICE_ICONS[icon]} className='size-10 sm:size-12' />
         </span>
         <span className='font-title text-lg font-semibold sm:text-xl'>{label}</span>
       </div>

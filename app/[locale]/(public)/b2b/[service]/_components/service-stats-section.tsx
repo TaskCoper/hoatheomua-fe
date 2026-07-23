@@ -1,30 +1,31 @@
 'use client'
 
+import type { Locale } from '@/lib/i18n/routing'
 import { cn } from '@/shared/utils'
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
-import type { ServiceI18nKey } from '../_content'
+import { pick, type B2BServiceDetail } from '../_palette'
 import { cardItem, Reveal, SectionShell, stagger } from './editorial'
 
-type StatItem = { value: string; label: string; caption?: string }
-
-type StatsBlock = {
-  heading?: string
-  items?: Record<string, StatItem>
-} | null
-
-export default function ServiceStatsSection({ serviceKey, id }: { serviceKey: ServiceI18nKey; id: string }) {
+export default function ServiceStatsSection({
+  detail,
+  locale,
+  id
+}: {
+  detail: B2BServiceDetail
+  locale: Locale
+  id: string
+}) {
   const t = useTranslations()
-  let raw: StatsBlock = null
-  try {
-    raw = t.raw(`b2b.serviceDetails.${serviceKey}.stats`) as StatsBlock
-  } catch {
-    raw = null
-  }
-  const items = raw?.items ? Object.values(raw.items) : []
+  const block = detail.stats
+  const items = (block?.items ?? []).map((item) => ({
+    value: pick(item.value, locale),
+    label: pick(item.label, locale),
+    caption: pick(item.caption, locale)
+  }))
   if (items.length === 0) return null
 
-  const heading = raw?.heading ?? t('b2b.serviceDetails.common.statsTitle')
+  const heading = pick(block!.heading, locale) || t('b2b.serviceDetails.common.statsTitle')
 
   return (
     <SectionShell id={id}>

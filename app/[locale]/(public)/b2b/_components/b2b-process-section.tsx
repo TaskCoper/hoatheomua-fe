@@ -1,40 +1,18 @@
 'use client'
 
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { Locale } from '@/lib/i18n/routing'
 import { DeliveryTruck01Icon, Note01Icon, PaintBoardIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
+import { pick, type OverviewProcess } from '../_overview-palette'
 
-const STEPS = [
-  {
-    id: 'listen',
-    icon: Note01Icon,
-    labelKey: 'b2b.process.steps.listen.label',
-    titleKey: 'b2b.process.steps.listen.title',
-    descriptionKey: 'b2b.process.steps.listen.description'
-  },
-  {
-    id: 'propose',
-    icon: PaintBoardIcon,
-    labelKey: 'b2b.process.steps.propose.label',
-    titleKey: 'b2b.process.steps.propose.title',
-    descriptionKey: 'b2b.process.steps.propose.description'
-  },
-  {
-    id: 'sample',
-    icon: SparklesIcon,
-    labelKey: 'b2b.process.steps.sample.label',
-    titleKey: 'b2b.process.steps.sample.title',
-    descriptionKey: 'b2b.process.steps.sample.description'
-  },
-  {
-    id: 'produce',
-    icon: DeliveryTruck01Icon,
-    labelKey: 'b2b.process.steps.produce.label',
-    titleKey: 'b2b.process.steps.produce.title',
-    descriptionKey: 'b2b.process.steps.produce.description'
-  }
-] as const
+// Icon stays in code, keyed by the CMS step `id`.
+const STEP_ICON: Record<string, typeof Note01Icon> = {
+  listen: Note01Icon,
+  propose: PaintBoardIcon,
+  sample: SparklesIcon,
+  produce: DeliveryTruck01Icon
+}
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -51,9 +29,7 @@ const cardItem: Variants = {
   visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 160, damping: 16 } }
 }
 
-export default function B2BProcessSection() {
-  const { t } = useTranslation()
-
+export default function B2BProcessSection({ process, locale }: { process: OverviewProcess; locale: Locale }) {
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
       <motion.div
@@ -66,16 +42,16 @@ export default function B2BProcessSection() {
         <div className='flex justify-center'>
           <span className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-3 py-1 text-[0.625rem] font-semibold tracking-wide text-primary ring-1 ring-primary/15 sm:text-xs'>
             <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
-            {t('b2b.process.eyebrow')}
+            {pick(process.eyebrow, locale)}
           </span>
         </div>
 
         <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
-          {t('b2b.process.title')}
+          {pick(process.title, locale)}
         </h2>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          {t('b2b.process.description')}
+          {pick(process.description, locale)}
         </p>
       </motion.div>
 
@@ -91,7 +67,7 @@ export default function B2BProcessSection() {
           className='pointer-events-none absolute top-7 left-12 right-12 hidden h-px bg-[repeating-linear-gradient(90deg,var(--primary)_0,var(--primary)_8px,transparent_8px,transparent_16px)] opacity-30 lg:block'
         />
 
-        {STEPS.map((step, index) => (
+        {process.steps.map((step, index) => (
           <motion.li
             key={step.id}
             variants={cardItem}
@@ -110,7 +86,7 @@ export default function B2BProcessSection() {
                 }}
                 className='relative z-10 grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-md ring-4 ring-background'
               >
-                <HugeiconsIcon icon={step.icon} className='size-5' />
+                <HugeiconsIcon icon={STEP_ICON[step.id] ?? SparklesIcon} className='size-5' />
               </motion.div>
 
               <span className='font-title text-3xl font-bold leading-none text-secondary/60 sm:text-4xl'>
@@ -120,13 +96,12 @@ export default function B2BProcessSection() {
 
             <div className='space-y-1'>
               <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
-                {t(step.labelKey)}
+                {pick(step.label, locale)}
               </p>
               <h3 className='font-title text-base font-bold leading-tight text-primary sm:text-lg'>
-                {t(step.titleKey)}
+                {pick(step.title, locale)}
               </h3>
-              {/* TODO(b2b): confirm step descriptions with Founder before launch */}
-              <p className='text-xs leading-relaxed text-foreground'>{t(step.descriptionKey)}</p>
+              <p className='text-xs leading-relaxed text-foreground'>{pick(step.description, locale)}</p>
             </div>
           </motion.li>
         ))}

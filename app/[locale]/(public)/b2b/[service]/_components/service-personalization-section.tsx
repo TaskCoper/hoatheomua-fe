@@ -1,61 +1,72 @@
 'use client'
 
+import type { Locale } from '@/lib/i18n/routing'
 import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
-import { useTranslations } from 'next-intl'
-import { galleryImage, type ServiceDetailConfig } from '../_content'
+import { galleryImage } from '../_content'
+import { pick, type B2BServiceDetail } from '../_palette'
 import { cardItem, fadeUp, Reveal, SectionHeading, SectionShell, stagger } from './editorial'
 import ServiceImageSplit from './service-image-split'
 
-type PersonalizationBlock = {
-  heading?: string
-  intro?: string
-  subIntro?: string
-  items?: Record<string, string>
-} | null
+export default function ServicePersonalizationSection({
+  detail,
+  locale,
+  id
+}: {
+  detail: B2BServiceDetail
+  locale: Locale
+  id: string
+}) {
+  const block = detail.personalization
+  const items = (block?.items ?? []).map((item) => ({
+    title: pick(item.title, locale),
+    description: pick(item.description, locale)
+  }))
+  if (items.length === 0) return null
 
-export default function ServicePersonalizationSection({ config, id }: { config: ServiceDetailConfig; id: string }) {
-  const t = useTranslations()
-  let raw: PersonalizationBlock = null
-  try {
-    raw = t.raw(`b2b.serviceDetails.${config.i18nKey}.personalization`) as PersonalizationBlock
-  } catch {
-    raw = null
-  }
-  const items = raw?.items ? Object.values(raw.items) : []
-  if (!raw || items.length === 0) return null
-
-  const splitImage = galleryImage(config, 2)
-  const serviceName = t(config.cardNameKey)
+  const heading = pick(block!.heading, locale)
+  const intro = pick(block!.intro, locale)
+  const subIntro = pick(block!.subIntro, locale)
+  const splitImage = galleryImage(detail, 2)
+  const serviceName = pick(detail.card.name, locale)
 
   return (
     <SectionShell id={id}>
       <Reveal className='space-y-6'>
-        {raw.heading ? <SectionHeading title={raw.heading} /> : null}
+        {heading ? <SectionHeading title={heading} /> : null}
 
         <ServiceImageSplit src={splitImage} alt={serviceName} reverse>
           <div className='space-y-4'>
-            {raw.intro ? (
+            {intro ? (
               <motion.p variants={fadeUp} className='text-base leading-relaxed text-foreground'>
-                {raw.intro}
+                {intro}
               </motion.p>
             ) : null}
-            {raw.subIntro ? (
+            {subIntro ? (
               <motion.p variants={fadeUp} className='text-base leading-relaxed text-foreground'>
-                {raw.subIntro}
+                {subIntro}
               </motion.p>
             ) : null}
 
             <motion.ul variants={stagger} className='space-y-2.5 pt-1'>
-              {items.map((item, index) => (
-                <motion.li key={index} variants={cardItem} className='flex items-start gap-3'>
-                  <span className='mt-0.5 grid size-6 shrink-0 place-items-center rounded-full rounded-tl-[0.1875rem] bg-leaf/15 text-leaf'>
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className='size-4' />
-                  </span>
-                  <span className='text-sm leading-relaxed text-foreground'>{item}</span>
-                </motion.li>
-              ))}
+              {items.map((item, index) => {
+                const title = item.description ? item.title : null
+                const body = item.description || item.title
+                return (
+                  <motion.li key={index} variants={cardItem} className='flex items-start gap-3'>
+                    <span className='mt-0.5 grid size-6 shrink-0 place-items-center rounded-full rounded-tl-[0.1875rem] bg-leaf/15 text-leaf'>
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} className='size-4' />
+                    </span>
+                    <div className='min-w-0'>
+                      {title ? (
+                        <p className='font-title text-sm font-bold leading-tight text-primary sm:text-base'>{title}</p>
+                      ) : null}
+                      <span className='text-sm leading-relaxed text-foreground'>{body}</span>
+                    </div>
+                  </motion.li>
+                )
+              })}
             </motion.ul>
           </div>
         </ServiceImageSplit>

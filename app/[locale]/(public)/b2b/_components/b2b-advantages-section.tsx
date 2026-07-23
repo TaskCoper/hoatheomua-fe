@@ -1,36 +1,18 @@
 'use client'
 
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { Locale } from '@/lib/i18n/routing'
 import { Calendar03Icon, HandHeartIcon, Note01Icon, PaintBoardIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
+import { pick, type OverviewAdvantages } from '../_overview-palette'
 
-const ADVANTAGES = [
-  {
-    id: 'onTime',
-    icon: Calendar03Icon,
-    titleKey: 'b2b.advantages.items.onTime.title',
-    descriptionKey: 'b2b.advantages.items.onTime.description'
-  },
-  {
-    id: 'singlePoc',
-    icon: HandHeartIcon,
-    titleKey: 'b2b.advantages.items.singlePoc.title',
-    descriptionKey: 'b2b.advantages.items.singlePoc.description'
-  },
-  {
-    id: 'brandAligned',
-    icon: PaintBoardIcon,
-    titleKey: 'b2b.advantages.items.brandAligned.title',
-    descriptionKey: 'b2b.advantages.items.brandAligned.description'
-  },
-  {
-    id: 'transparent',
-    icon: Note01Icon,
-    titleKey: 'b2b.advantages.items.transparent.title',
-    descriptionKey: 'b2b.advantages.items.transparent.description'
-  }
-] as const
+// Icon stays in code, keyed by the CMS advantage `id`.
+const ADVANTAGE_ICON: Record<string, typeof Calendar03Icon> = {
+  onTime: Calendar03Icon,
+  singlePoc: HandHeartIcon,
+  brandAligned: PaintBoardIcon,
+  transparent: Note01Icon
+}
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -53,9 +35,13 @@ const cardItem: Variants = {
   }
 }
 
-export default function B2BAdvantagesSection() {
-  const { t } = useTranslation()
-
+export default function B2BAdvantagesSection({
+  advantages,
+  locale
+}: {
+  advantages: OverviewAdvantages
+  locale: Locale
+}) {
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4'>
       <motion.div
@@ -68,16 +54,16 @@ export default function B2BAdvantagesSection() {
         <div className='flex justify-center'>
           <span className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-3 py-1 text-[0.625rem] font-semibold tracking-wide text-primary ring-1 ring-primary/15 sm:text-xs'>
             <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
-            {t('b2b.advantages.eyebrow')}
+            {pick(advantages.eyebrow, locale)}
           </span>
         </div>
 
         <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
-          {t('b2b.advantages.title')}
+          {pick(advantages.title, locale)}
         </h2>
 
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
-          {t('b2b.advantages.description')}
+          {pick(advantages.description, locale)}
         </p>
       </motion.div>
 
@@ -88,7 +74,7 @@ export default function B2BAdvantagesSection() {
         variants={cardStagger}
         className='mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4'
       >
-        {ADVANTAGES.map((advantage, index) => (
+        {advantages.items.map((advantage, index) => (
           <motion.article
             key={advantage.id}
             variants={cardItem}
@@ -115,14 +101,14 @@ export default function B2BAdvantagesSection() {
               }}
               className='grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-md sm:size-12'
             >
-              <HugeiconsIcon icon={advantage.icon} className='size-5 sm:size-6' />
+              <HugeiconsIcon icon={ADVANTAGE_ICON[advantage.id] ?? SparklesIcon} className='size-5 sm:size-6' />
             </motion.div>
 
             <div className='space-y-1'>
               <h3 className='font-title text-base font-bold leading-tight text-primary sm:text-lg'>
-                {t(advantage.titleKey)}
+                {pick(advantage.title, locale)}
               </h3>
-              <p className='text-xs leading-relaxed text-foreground'>{t(advantage.descriptionKey)}</p>
+              <p className='text-xs leading-relaxed text-foreground'>{pick(advantage.description, locale)}</p>
             </div>
           </motion.article>
         ))}

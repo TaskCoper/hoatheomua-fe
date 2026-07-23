@@ -2,12 +2,13 @@
 
 import { Button } from '@/components/ui/button'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import type { Locale } from '@/lib/i18n/routing'
 import type { ContactConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon, Mail01Icon, PhoneCheckIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
+import { pick, type OverviewCta } from '../_overview-palette'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -19,8 +20,7 @@ const containerStagger: Variants = {
   visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } }
 }
 
-export default function B2BCtaSection() {
-  const { t } = useTranslation()
+export default function B2BCtaSection({ cta, locale }: { cta: OverviewCta; locale: Locale }) {
   const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
   const phone = contactConfigs.find((item) => item.key === 'contact.phone')?.value.value
   const email = contactConfigs.find((item) => item.key === 'contact.email')?.value.value
@@ -34,23 +34,13 @@ export default function B2BCtaSection() {
         variants={containerStagger}
         className='relative mx-auto w-full max-w-7xl overflow-hidden rounded-[2rem] bg-primary p-6 text-primary-foreground shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:p-8 lg:p-10'
       >
-        {/* <span
-          aria-hidden='true'
-          className='pointer-events-none absolute inset-0 opacity-15'
-          style={{
-            backgroundImage: "url('/images/about/botanical-pattern-sage.png')",
-            backgroundRepeat: 'repeat',
-            backgroundSize: '16rem'
-          }}
-        /> */}
-
         <motion.span
           aria-hidden='true'
           animate={{ rotate: [0, 12, 0, -8, 0], scale: [1, 1.08, 1] }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           className='pointer-events-none absolute -right-8 -bottom-10 font-title text-[10rem] font-bold leading-none text-primary-foreground/8 sm:text-[14rem]'
         >
-          B2B
+          {pick(cta.eyebrow, locale)}
         </motion.span>
 
         <div className='relative grid grid-cols-1 items-center gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10'>
@@ -58,7 +48,7 @@ export default function B2BCtaSection() {
             <motion.div variants={fadeUp} className='flex flex-wrap items-center gap-2'>
               <span className='inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/15 px-3 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground ring-1 ring-primary-foreground/25 sm:text-xs'>
                 <HugeiconsIcon icon={SparklesIcon} className='size-3.5' />
-                {t('b2b.cta.eyebrow')}
+                {pick(cta.eyebrow, locale)}
               </span>
             </motion.div>
 
@@ -66,11 +56,11 @@ export default function B2BCtaSection() {
               variants={fadeUp}
               className='font-title text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl'
             >
-              {t('b2b.cta.title')}
+              {pick(cta.title, locale)}
             </motion.h2>
 
             <motion.p variants={fadeUp} className='text-sm leading-relaxed text-primary-foreground/85 sm:text-base'>
-              {t('b2b.cta.description')}
+              {pick(cta.description, locale)}
             </motion.p>
 
             <motion.div variants={fadeUp} className='flex flex-col gap-2.5 pt-1 sm:flex-row sm:items-center'>
@@ -81,7 +71,7 @@ export default function B2BCtaSection() {
                 className='w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90 sm:w-auto'
               >
                 <Link href='/contact'>
-                  {t('b2b.cta.primary')}
+                  {pick(cta.primary, locale)}
                   <HugeiconsIcon icon={ArrowRight02Icon} />
                 </Link>
               </Button>
@@ -92,7 +82,7 @@ export default function B2BCtaSection() {
                 variant='ghost'
                 className='w-full text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground sm:w-auto'
               >
-                <Link href='/products'>{t('b2b.cta.secondary')}</Link>
+                <Link href='/products'>{pick(cta.secondary, locale)}</Link>
               </Button>
             </motion.div>
           </motion.div>
@@ -110,7 +100,7 @@ export default function B2BCtaSection() {
               </span>
               <span className='min-w-0 -space-y-0.5'>
                 <span className='block text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground/70'>
-                  {t('b2b.cta.callLabel')}
+                  {pick(cta.callLabel, locale)}
                 </span>
                 <span className='block truncate font-title text-base font-bold text-primary-foreground sm:text-lg'>
                   {phone}
@@ -130,7 +120,7 @@ export default function B2BCtaSection() {
               </span>
               <span className='min-w-0 -space-y-0.5'>
                 <span className='block text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground/70'>
-                  {t('b2b.cta.emailLabel')}
+                  {pick(cta.emailLabel, locale)}
                 </span>
                 <span className='block truncate font-title text-base font-bold text-primary-foreground sm:text-lg'>
                   {email}
