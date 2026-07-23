@@ -5,13 +5,12 @@ import configService from '@/services/config.service'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 
-const REVALIDATE_SECONDS = 300
+const REVALIDATE_SECONDS = 30
 
 const withCache = <T>(fetcher: () => Promise<T>, key: string[], tag: string) =>
   unstable_cache(fetcher, key, { revalidate: REVALIDATE_SECONDS, tags: [tag] })
 
-export const publicConfigQueryKey = (group?: string, key?: string) =>
-  ['configs', 'content', group, key] as const
+export const publicConfigQueryKey = (group?: string, key?: string) => ['configs', 'content', group, key] as const
 
 const fetchPublicConfigsGroup = async <T extends { key: string }>(group: string, key?: string) => {
   try {
@@ -21,9 +20,12 @@ const fetchPublicConfigsGroup = async <T extends { key: string }>(group: string,
   }
 }
 
-const cachedFetchPublicConfigsGroup = cache(
-  <T extends { key: string }>(group: string, key?: string) =>
-    withCache(() => fetchPublicConfigsGroup<T>(group, key), ['public-configs', group, key ?? '_all'], `configs:${group}`)()
+const cachedFetchPublicConfigsGroup = cache(<T extends { key: string }>(group: string, key?: string) =>
+  withCache(
+    () => fetchPublicConfigsGroup<T>(group, key),
+    ['public-configs', group, key ?? '_all'],
+    `configs:${group}`
+  )()
 )
 
 export const getPublicConfigsGroup = <T extends { key: string }>(group: string, key?: string) =>
