@@ -36,7 +36,7 @@ const photoEnter: Variants = {
 
 export default function B2BHeroSection({ hero, locale }: { hero: OverviewHero; locale: Locale }) {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
-  const heroImageSrc = '/images/b2b/case-studies/indigo/20.jpg'
+  const heroImageSrc = hero.image || '/images/b2b/case-studies/indigo/20.jpg'
 
   const eyebrow = pick(hero.eyebrow, locale)
   const title = pick(hero.title, locale)

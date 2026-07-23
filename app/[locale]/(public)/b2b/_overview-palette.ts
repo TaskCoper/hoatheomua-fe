@@ -45,6 +45,7 @@ export interface OverviewHero {
   primaryCta: LocalizedText
   secondaryCta: LocalizedText
   imageAlt: LocalizedText
+  image: string // CMS hero image src; section falls back to the code-owned default
 }
 const parseHero = (raw: unknown): OverviewHero => {
   const o = asRecord(raw)
@@ -55,7 +56,8 @@ const parseHero = (raw: unknown): OverviewHero => {
     audienceLine: parseLocalizedText(o.audienceLine),
     primaryCta: parseLocalizedText(o.primaryCta),
     secondaryCta: parseLocalizedText(o.secondaryCta),
-    imageAlt: parseLocalizedText(o.imageAlt)
+    imageAlt: parseLocalizedText(o.imageAlt),
+    image: asString(o.image)
   }
 }
 

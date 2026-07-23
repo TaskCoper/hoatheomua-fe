@@ -112,6 +112,7 @@ export default function B2BCaseStudySection({
           return { id: key || String(i + 1), src, width: dim.width, height: dim.height }
         })
       : FALLBACK_PHOTOS
+
   const slides = photos.map((photo) => ({
     src: photo.src,
     alt: `${hotelName} — ${photo.id}`
