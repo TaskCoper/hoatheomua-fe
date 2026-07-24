@@ -15,7 +15,7 @@ import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
-import { PaymentMethod, type TaxBusinessInfo } from '../../types'
+import { PaymentGateway, PaymentMethod, type TaxBusinessInfo } from '../../types'
 import { CheckoutSidebar } from './checkout-sidebar'
 import { CheckoutStepper } from './checkout-stepper'
 import { StepComplete } from './step-complete'
@@ -43,8 +43,15 @@ export function CheckoutClient() {
     createOrder
   })
 
+  const [gateway, setGateway] = useState<PaymentGateway>(PaymentGateway.BaoKim)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('1')
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
+
+  // Sepay only offers VNPayQR (6); BaoKim exposes the full method list.
+  const handleGatewayChange = (value: PaymentGateway) => {
+    setGateway(value)
+    setPaymentMethod(value === PaymentGateway.Sepay ? PaymentMethod[6] : PaymentMethod[1])
+  }
   const [taxBusinessLookupState, setTaxBusinessLookupState] = useState<LookupState>('idle')
 
   const sortedAhamove = useMemo(
@@ -91,7 +98,7 @@ export function CheckoutClient() {
       : step === 2
         ? {
             label: t('orders.checkout.sidebar.payForBooking'),
-            onClick: () => handleConfirmOrder(paymentMethod),
+            onClick: () => handleConfirmOrder(paymentMethod, gateway),
             disabled: !selectedServiceId,
             loading: isCreatingOrder
           }
@@ -127,8 +134,8 @@ export function CheckoutClient() {
 
         <h1 className='mb-4 font-title text-2xl font-bold sm:mb-6 sm:text-3xl'>{t('orders.checkout.title')}</h1>
 
-        <div className='grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6'>
-          <div className='space-y-4 lg:col-span-2'>
+        <div className='grid grid-cols-1 gap-2 lg:grid-cols-5'>
+          <div className='space-y-2 lg:col-span-3'>
             {step === 1 ? (
               <StepPersonal
                 addresses={addresses}
@@ -138,6 +145,8 @@ export function CheckoutClient() {
               />
             ) : step === 2 ? (
               <StepPayment
+                gateway={gateway}
+                onGatewayChange={handleGatewayChange}
                 paymentMethod={paymentMethod}
                 onPaymentMethodChange={setPaymentMethod}
                 shippingOptions={sortedAhamove}
@@ -153,7 +162,7 @@ export function CheckoutClient() {
             )}
           </div>
 
-          <div className='lg:col-span-1'>
+          <div className='lg:col-span-2 lg:sticky lg:top-23 lg:self-start'>
             <CheckoutSidebar
               lines={summaryLines}
               totalItems={totalItems}

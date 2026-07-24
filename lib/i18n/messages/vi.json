@@ -663,6 +663,8 @@
       "stepPayment": "Thanh toán",
       "stepComplete": "Hoàn tất",
       "stepPersonalDescription": "Điền thông tin người nhận và địa chỉ giao hàng cho đơn này.",
+      "gatewayTitle": "Cổng thanh toán",
+      "gatewayDescription": "Chọn cổng thanh toán bạn muốn sử dụng để tiếp tục.",
       "paymentTitle": "Phương thức thanh toán",
       "paymentDescription": "Hiện tại chúng tôi chỉ hỗ trợ chuyển khoản ngân hàng. Hướng dẫn thanh toán sẽ được hiển thị sau khi bạn xác nhận đơn.",
       "bankTransferTitle": "Chuyển khoản ngân hàng",
@@ -692,19 +694,21 @@
       "paymentMethod": {
         "va": {
           "label": "VA",
-          "description": "Chuyển tiền vào tài khoản ngân hàng của chúng tôi. Thông tin tài khoản và mã QR sẽ được gửi sau khi xác nhận đơn."
-        },
-        "card": {
-          "label": "Thẻ tín dụng / ghi nợ quốc tế",
-          "description": "Thanh toán an toàn bằng Visa, Mastercard hoặc JCB. Bạn sẽ được chuyển sang cổng VNPay để hoàn tất."
-        },
-        "atm": {
-          "label": "Thẻ ATM / thẻ nội địa",
-          "description": "Thanh toán bằng thẻ ATM hoặc thẻ ngân hàng nội địa Việt Nam qua VNPay."
+          "description": "Thông tin tài khoản và mã QR sẽ được gửi sau khi xác nhận đơn."
         },
         "vnPayQr": {
           "label": "VNPay QR",
           "description": "Quét mã QR VNPay bằng ứng dụng ngân hàng để thanh toán ngay lập tức."
+        }
+      },
+      "paymentGateway": {
+        "baoKim": {
+          "label": "BaoKim",
+          "description": "Thanh toán qua VA — thông tin tài khoản và mã QR gửi sau khi xác nhận."
+        },
+        "sePay": {
+          "label": "Sepay",
+          "description": "Thanh toán nhanh bằng VNPay QR."
         }
       }
     },
@@ -731,8 +735,6 @@
       },
       "paymentMethod": {
         "va": "VA",
-        "card": "Thẻ tín dụng / ghi nợ quốc tế",
-        "atm": "Thẻ ATM / thẻ nội địa",
         "vnPayQr": "VNPay QR"
       },
       "qr": {
@@ -745,6 +747,7 @@
         "detailsTitle": "Thông tin chuyển khoản",
         "bank": "Ngân hàng",
         "account": "Tài khoản",
+        "holder": "Chủ tài khoản",
         "amount": "Số tiền",
         "content": "Nội dung",
         "waiting": "Đang chờ xác nhận thanh toán…"
@@ -1446,28 +1449,52 @@
           "hospitality": {
             "label": "Khách sạn",
             "items": {
-              "indigo": { "name": "Indigo Saigon Hotel" },
-              "fusion": { "name": "Fusion Saigon Hotel" },
-              "eastin": { "name": "Eastin Saigon Hotel" }
+              "indigo": {
+                "name": "Indigo Saigon Hotel"
+              },
+              "fusion": {
+                "name": "Fusion Saigon Hotel"
+              },
+              "eastin": {
+                "name": "Eastin Saigon Hotel"
+              }
             }
           },
           "finance": {
             "label": "Tài chính — Ngân hàng",
             "items": {
-              "shinhan": { "name": "Shinhan Bank" },
-              "mbbank": { "name": "MB Bank" },
-              "woori": { "name": "Woori Bank" }
+              "shinhan": {
+                "name": "Shinhan Bank"
+              },
+              "mbbank": {
+                "name": "MB Bank"
+              },
+              "woori": {
+                "name": "Woori Bank"
+              }
             }
           },
           "enterprise": {
             "label": "Doanh nghiệp — Bán lẻ — Xây dựng",
             "items": {
-              "sevenEleven": { "name": "Seven-Eleven" },
-              "datxanh": { "name": "Đất Xanh" },
-              "gsenc": { "name": "GS E&C" },
-              "tancang": { "name": "Tân Cảng Sài Gòn" },
-              "gelex": { "name": "Gelex Group" },
-              "masan": { "name": "Masan Consumer" }
+              "sevenEleven": {
+                "name": "Seven-Eleven"
+              },
+              "datxanh": {
+                "name": "Đất Xanh"
+              },
+              "gsenc": {
+                "name": "GS E&C"
+              },
+              "tancang": {
+                "name": "Tân Cảng Sài Gòn"
+              },
+              "gelex": {
+                "name": "Gelex Group"
+              },
+              "masan": {
+                "name": "Masan Consumer"
+              }
             }
           }
         }

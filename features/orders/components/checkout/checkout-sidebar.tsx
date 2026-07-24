@@ -70,10 +70,10 @@ export function CheckoutSidebar({
   const { t } = useTranslation()
 
   return (
-    <aside className='sticky top-6 space-y-4'>
+    <aside className='sticky top-6 space-y-2'>
       <section className='rounded-3xl bg-card p-5 border border-border'>
         <div className='mb-4 flex items-baseline justify-between'>
-          <h2 className='font-heading text-base font-semibold'>{t('orders.checkout.sidebar.summaryTitle')}</h2>
+          <h2 className='font-title text-base font-semibold'>{t('orders.checkout.sidebar.summaryTitle')}</h2>
           <span className='text-xs text-muted-foreground'>
             {t('orders.checkout.sidebar.itemsCount', { count: totalItems })}
           </span>
@@ -110,7 +110,7 @@ export function CheckoutSidebar({
         </dl>
 
         <div className='mt-5 border-t border-border/70 pt-4'>
-          <h3 className='mb-3 font-heading text-base font-semibold'>{t('orders.checkout.sidebar.priceTitle')}</h3>
+          <h3 className='mb-3 font-title text-base font-semibold'>{t('orders.checkout.sidebar.priceTitle')}</h3>
           <dl className='space-y-2 text-sm'>
             <SidebarRow label={t('orders.checkout.subtotal')} value={formatVnd(productsSubtotal)} />
             {hasTaxCode ? <SidebarRow label={t('orders.checkout.vat')} value={formatVnd(vatAmount)} /> : null}

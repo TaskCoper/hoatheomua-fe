@@ -7,7 +7,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import type { CheckoutStep } from '../components/checkout/checkout-stepper'
 import { buildCheckoutPayload, buildEstimatePayload } from '../payloads'
-import type { PaymentMethod } from '../types'
+import type { PaymentGateway, PaymentMethod } from '../types'
 import { createEstimateSchema, type CheckoutFormValues } from '../validations'
 import { useCreateOrder } from './use-create-order'
 import { useEstimateOrder } from './use-estimate-order'
@@ -65,11 +65,11 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
     }
   }
 
-  const handleConfirmOrder = (paymentMethod: PaymentMethod) =>
+  const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway) =>
     methods.handleSubmit(
       async (values) => {
         try {
-          const { payment_url } = await createOrder({ body: buildCheckoutPayload(values, items, paymentMethod) })
+          const { mrc_order_id } = await createOrder({ body: buildCheckoutPayload(values, items, paymentMethod, gateway) })
 
           if (source === 'cart') {
             items.forEach((item) => removeCartItem(item.lineId))
@@ -78,10 +78,7 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
           hasSubmittedRef.current = true
           clearIntent()
 
-          if (payment_url) {
-            window.open(payment_url, '_blank', 'noopener,noreferrer')
-          }
-          router.push('/orders')
+          router.push(`/orders/${mrc_order_id}`)
         } catch (error) {
           const message = error instanceof Error ? error.message : t('orders.checkout.createError')
           toast.error(t('orders.checkout.createError'), { description: message })

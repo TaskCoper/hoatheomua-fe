@@ -18,8 +18,8 @@ export function StepPersonal({ addresses, isLoadingAddresses, selectedAddressId,
   return (
     <section className='rounded-3xl bg-card p-5 sm:p-6 border border-border'>
       <header className='mb-4 border-b border-border/70 pb-4'>
-        <h2 className='font-heading text-lg font-semibold'>{t('orders.checkout.stepPersonal')}</h2>
-        <p className='mt-1 text-sm text-muted-foreground'>{t('orders.checkout.stepPersonalDescription')}</p>
+        <h2 className='font-title text-lg font-semibold'>{t('orders.checkout.stepPersonal')}</h2>
+        <p className='text-xs text-muted-foreground'>{t('orders.checkout.stepPersonalDescription')}</p>
       </header>
 
       {isLoadingAddresses ? (

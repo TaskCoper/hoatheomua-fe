@@ -34,12 +34,10 @@ import { Link, useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import {
   ArrowLeft02Icon,
-  Atm01Icon,
   BankIcon,
   CalendarCheckOut01Icon,
   CancelCircleIcon,
   CheckmarkCircle02Icon,
-  CreditCardIcon,
   DeliveryTruck02Icon,
   FlowerIcon,
   InvoiceIcon,
@@ -70,34 +68,34 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
 
 const formatVnd = (value: number) => vndFormatter.format(value)
 
-// interface QrDetails {
-//   bank: string | null
-//   account: string | null
-//   amount: number | null
-//   content: string | null
-// }
+interface SepayDetails {
+  bank: string | null
+  account: string | null
+  holder: string | null
+  amount: number | null
+  content: string | null
+}
 
-// const parseQrDetails = (qrCodeUrl: string | null | undefined): QrDetails | null => {
-//   if (!qrCodeUrl) return null
-//   try {
-//     const url = new URL(qrCodeUrl, 'https://qr.sepay.vn')
-//     const rawAmount = url.searchParams.get('amount')?.trim()
-//     const amount = rawAmount ? Number(rawAmount) : NaN
-//     return {
-//       bank: url.searchParams.get('bank')?.trim() || null,
-//       account: url.searchParams.get('acc')?.trim() || null,
-//       amount: Number.isFinite(amount) ? amount : null,
-//       content: url.searchParams.get('des')?.trim() || null
-//     }
-//   } catch {
-//     return null
-//   }
-// }
+const parseSepayDetails = (sepayUrl: string | null | undefined): SepayDetails | null => {
+  if (!sepayUrl) return null
+  try {
+    const url = new URL(sepayUrl)
+    const rawAmount = url.searchParams.get('amount')?.trim()
+    const amount = rawAmount ? Number(rawAmount) : NaN
+    return {
+      bank: url.searchParams.get('bank')?.trim() || null,
+      account: url.searchParams.get('acc')?.trim() || null,
+      holder: url.searchParams.get('holder')?.trim() || null,
+      amount: Number.isFinite(amount) ? amount : null,
+      content: url.searchParams.get('des')?.trim() || null
+    }
+  } catch {
+    return null
+  }
+}
 
 const PAYMENT_METHOD_ICONS = {
   [PaymentMethod[1]]: BankIcon,
-  [PaymentMethod[3]]: CreditCardIcon,
-  [PaymentMethod[5]]: Atm01Icon,
   [PaymentMethod[6]]: QrCodeIcon
 } as const satisfies Record<PaymentMethod, unknown>
 
@@ -214,7 +212,8 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
     return labels.length ? labels.join(', ') : null
   }, [orderTags, order.tagsId])
 
-  // const qrDetails = useMemo(() => parseQrDetails(order.qrCodeUrl), [order.qrCodeUrl])
+  const sepayDetails = useMemo(() => parseSepayDetails(order.sepayUrl), [order.sepayUrl])
+  const showSepayQr = isPendingOrder && !order.paymentUrl && Boolean(order.sepayUrl) && Boolean(sepayDetails)
 
   const items = useMemo(() => order.details ?? [], [order.details])
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.itemId))), [items])
@@ -310,6 +309,51 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
 
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex flex-col gap-4 lg:col-span-2'>
+            {showSepayQr && order.sepayUrl && sepayDetails ? (
+              <SectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
+                <p className='mb-4 text-xs text-muted-foreground'>{t('orders.list.qr.description')}</p>
+                <div className='grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start'>
+                  <div className='mx-auto sm:mx-0'>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={order.sepayUrl}
+                      alt={t('orders.list.qr.imageAlt')}
+                      className='mx-auto h-auto max-h-80 w-auto max-w-64 rounded-2xl bg-white p-2 ring-1 ring-border sm:mx-0'
+                    />
+                  </div>
+                  <dl className='space-y-2 text-sm'>
+                    {sepayDetails.bank ? (
+                      <DetailRow label={t('orders.list.qr.bank')} value={sepayDetails.bank} />
+                    ) : null}
+                    {sepayDetails.account ? (
+                      <DetailRow
+                        label={t('orders.list.qr.account')}
+                        value={<span className='font-mono'>{sepayDetails.account}</span>}
+                      />
+                    ) : null}
+                    {sepayDetails.holder ? (
+                      <DetailRow label={t('orders.list.qr.holder')} value={sepayDetails.holder} />
+                    ) : null}
+                    {sepayDetails.amount != null ? (
+                      <DetailRow
+                        label={t('orders.list.qr.amount')}
+                        value={<span className='font-semibold text-primary'>{formatVnd(sepayDetails.amount)}</span>}
+                      />
+                    ) : null}
+                    {sepayDetails.content ? (
+                      <DetailRow
+                        label={t('orders.list.qr.content')}
+                        value={<span className='font-mono text-xs'>{sepayDetails.content}</span>}
+                      />
+                    ) : null}
+                  </dl>
+                </div>
+                <p className='mt-3 border-t border-border/60 pt-3 text-xs text-muted-foreground'>
+                  {t('orders.list.qr.waiting')}
+                </p>
+              </SectionCard>
+            ) : null}
+
             {items.length > 0 ? (
               <SectionCard
                 icon={PackageIcon}
@@ -600,7 +644,7 @@ function SectionCard({ icon, title, aside, children }: SectionCardProps) {
           <span className='grid size-8 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
             <HugeiconsIcon icon={icon} strokeWidth={1.75} className='size-4' />
           </span>
-          <h2 className='font-heading text-sm font-semibold sm:text-base'>{title}</h2>
+          <h2 className='font-title text-sm font-semibold sm:text-base'>{title}</h2>
         </div>
         {aside ? <div className='shrink-0 text-xs text-muted-foreground'>{aside}</div> : null}
       </header>

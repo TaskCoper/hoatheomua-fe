@@ -663,6 +663,8 @@
       "stepPayment": "Payment",
       "stepComplete": "Complete",
       "stepPersonalDescription": "Fill in the recipient and delivery details for this order.",
+      "gatewayTitle": "Payment gateway",
+      "gatewayDescription": "Choose the payment gateway you want to use to continue.",
       "paymentTitle": "Payment method",
       "paymentDescription": "We currently support bank transfer only. Payment instructions will be shown after you confirm.",
       "bankTransferTitle": "Bank transfer",
@@ -692,19 +694,21 @@
       "paymentMethod": {
         "va": {
           "label": "VA",
-          "description": "Transfer to our bank account. You'll receive account details and a QR code after order confirmation."
-        },
-        "card": {
-          "label": "Credit / Debit Card",
-          "description": "Pay securely with Visa, Mastercard, or JCB. You'll be redirected to VNPay to complete payment."
-        },
-        "atm": {
-          "label": "ATM / Domestic Card",
-          "description": "Pay with your Vietnamese ATM or local bank card via VNPay."
+          "description": "You'll receive account details and a QR code after order confirmation."
         },
         "vnPayQr": {
           "label": "VNPay QR",
           "description": "Scan the VNPay QR code with any banking app to complete payment instantly."
+        }
+      },
+      "paymentGateway": {
+        "baoKim": {
+          "label": "BaoKim",
+          "description": "Pay via VA — account details and a QR code sent after confirmation."
+        },
+        "sePay": {
+          "label": "Sepay",
+          "description": "Fast payment with VNPay QR."
         }
       }
     },
@@ -731,8 +735,6 @@
       },
       "paymentMethod": {
         "va": "VA",
-        "card": "Credit / Debit Card",
-        "atm": "ATM / Domestic Card",
         "vnPayQr": "VNPay QR"
       },
       "qr": {
@@ -745,6 +747,7 @@
         "detailsTitle": "Payment details",
         "bank": "Bank",
         "account": "Account",
+        "holder": "Account holder",
         "amount": "Amount",
         "content": "Content",
         "waiting": "Waiting for payment confirmation…"
@@ -1446,28 +1449,52 @@
           "hospitality": {
             "label": "Hospitality",
             "items": {
-              "indigo": { "name": "Indigo Saigon Hotel" },
-              "fusion": { "name": "Fusion Saigon Hotel" },
-              "eastin": { "name": "Eastin Saigon Hotel" }
+              "indigo": {
+                "name": "Indigo Saigon Hotel"
+              },
+              "fusion": {
+                "name": "Fusion Saigon Hotel"
+              },
+              "eastin": {
+                "name": "Eastin Saigon Hotel"
+              }
             }
           },
           "finance": {
             "label": "Finance & Banking",
             "items": {
-              "shinhan": { "name": "Shinhan Bank" },
-              "mbbank": { "name": "MB Bank" },
-              "woori": { "name": "Woori Bank" }
+              "shinhan": {
+                "name": "Shinhan Bank"
+              },
+              "mbbank": {
+                "name": "MB Bank"
+              },
+              "woori": {
+                "name": "Woori Bank"
+              }
             }
           },
           "enterprise": {
             "label": "Enterprise — Retail — Construction",
             "items": {
-              "sevenEleven": { "name": "Seven-Eleven" },
-              "datxanh": { "name": "Đất Xanh" },
-              "gsenc": { "name": "GS E&C" },
-              "tancang": { "name": "Tân Cảng Sài Gòn" },
-              "gelex": { "name": "Gelex Group" },
-              "masan": { "name": "Masan Consumer" }
+              "sevenEleven": {
+                "name": "Seven-Eleven"
+              },
+              "datxanh": {
+                "name": "Đất Xanh"
+              },
+              "gsenc": {
+                "name": "GS E&C"
+              },
+              "tancang": {
+                "name": "Tân Cảng Sài Gòn"
+              },
+              "gelex": {
+                "name": "Gelex Group"
+              },
+              "masan": {
+                "name": "Masan Consumer"
+              }
             }
           }
         }

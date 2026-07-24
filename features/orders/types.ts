@@ -17,18 +17,14 @@ export const OrderStatusLabel: Record<OrderStatus, I18nKey> = {
 export type OrderStatusLabel = (typeof OrderStatusLabel)[keyof typeof OrderStatusLabel]
 
 export const PaymentMethod = {
-  1: '1', // VA
-  3: '3', // Thẻ tín dụng
-  5: '5', // ATM
-  6: '6' // VNPayQR
+  1: '1', // VA (BaoKim)
+  6: '6' // VNPayQR (SePay)
 } as const
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 export const PaymentMethodLabel: Record<PaymentMethod, I18nKey> = {
   [PaymentMethod[1]]: 'orders.list.paymentMethod.va',
-  [PaymentMethod[3]]: 'orders.list.paymentMethod.card',
-  [PaymentMethod[5]]: 'orders.list.paymentMethod.atm',
   [PaymentMethod[6]]: 'orders.list.paymentMethod.vnPayQr'
 }
 
@@ -36,12 +32,38 @@ export type PaymentMethodLabel = (typeof PaymentMethodLabel)[keyof typeof Paymen
 
 export const PaymentMethodDescription: Record<PaymentMethod, I18nKey> = {
   [PaymentMethod[1]]: 'orders.checkout.paymentMethod.va.description',
-  [PaymentMethod[3]]: 'orders.checkout.paymentMethod.card.description',
-  [PaymentMethod[5]]: 'orders.checkout.paymentMethod.atm.description',
   [PaymentMethod[6]]: 'orders.checkout.paymentMethod.vnPayQr.description'
 }
 
 export type PaymentMethodDescription = (typeof PaymentMethodDescription)[keyof typeof PaymentMethodDescription]
+
+export const PaymentGateway = {
+  BaoKim: 'BaoKim',
+  Sepay: 'Sepay'
+} as const
+
+export type PaymentGateway = (typeof PaymentGateway)[keyof typeof PaymentGateway]
+
+export const PaymentGatewayLabel: Record<PaymentGateway, I18nKey> = {
+  [PaymentGateway.BaoKim]: 'orders.checkout.paymentGateway.baoKim.label',
+  [PaymentGateway.Sepay]: 'orders.checkout.paymentGateway.sePay.label'
+}
+
+export type PaymentGatewayLabel = (typeof PaymentGatewayLabel)[keyof typeof PaymentGatewayLabel]
+
+export const PaymentGatewayDescription: Record<PaymentGateway, I18nKey> = {
+  [PaymentGateway.BaoKim]: 'orders.checkout.paymentGateway.baoKim.description',
+  [PaymentGateway.Sepay]: 'orders.checkout.paymentGateway.sePay.description'
+}
+
+export type PaymentGatewayDescription = (typeof PaymentGatewayDescription)[keyof typeof PaymentGatewayDescription]
+
+// Which payment methods each gateway exposes. BaoKim uses VA (1);
+// Sepay uses VNPayQR (6).
+export const GatewayPaymentMethods: Record<PaymentGateway, PaymentMethod[]> = {
+  [PaymentGateway.BaoKim]: [PaymentMethod[1]],
+  [PaymentGateway.Sepay]: [PaymentMethod[6]]
+}
 
 export interface Order {
   orderId: string
@@ -86,6 +108,7 @@ export interface OrderDetail {
   totalFee: number
   vatFee: number
   paymentUrl: string | null
+  sepayUrl: string | null
   paymentMethod: PaymentMethod
   transaction: OrderTransaction | null
   details: OrderItem[]
@@ -140,6 +163,7 @@ export interface CheckoutPayload extends EstimatePayload {
   isExportInvoice: boolean
   invoiceType: InvoiceType | null
   paymentMethod: PaymentMethod
+  gateway: PaymentGateway
 }
 
 export interface TaxBusinessInfo {
