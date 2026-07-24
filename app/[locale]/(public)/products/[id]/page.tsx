@@ -5,6 +5,7 @@ import { buildProductDetailJsonLd, generateProductDetailMetadata } from '@/featu
 import type { ProductDetail } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
 // import { routing } from '@/lib/i18n/routing'
+import ProductDetailContent from '@/features/products/components/product-detail-content'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
@@ -12,7 +13,6 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import ProductDetailContent from './_components/product-detail-content'
 
 // const STATIC_PRODUCT_LIMIT = 10
 

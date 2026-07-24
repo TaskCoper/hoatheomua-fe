@@ -1,11 +1,11 @@
+import PolicyPageShell from '@/features/policies/components/policy-page-shell'
+import PolicySection from '@/features/policies/components/policy-section'
+import { ORDERING_CONTENT } from '@/features/policies/content/ordering'
+import { buildOrderingJsonLd, generateOrderingMetadata } from '@/features/policies/seo/ordering'
 import type { Locale } from '@/lib/i18n/routing'
 import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import PolicyPageShell from '../_components/policy-page-shell'
-import PolicySection from '../_components/policy-section'
-import { ORDERING_CONTENT } from './_content'
-import { buildOrderingJsonLd, generateOrderingMetadata } from './_seo'
 
 export const revalidate = 3600
 

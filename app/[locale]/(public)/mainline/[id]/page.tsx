@@ -1,8 +1,8 @@
 import { getMainlineCard } from '@/features/mainline/queries.server'
+import OccasionDetailContent from '@/features/occasions/components/occasion-detail-content'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import OccasionDetailContent from '../../occasions/[id]/_components/occasion-detail-content'
 
 export const revalidate = 600
 export const dynamicParams = true

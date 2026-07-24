@@ -3,10 +3,10 @@ import downLeftCorner from '@/public/images/DownLeftCorner-removebg-preview.png'
 import downRightCorner from '@/public/images/DownRightCorner-removebg-preview.png'
 import upperLeftCorner from '@/public/images/UpperLeftCorner-removebg-preview.png'
 import upperRightCorner from '@/public/images/UpperRightCorner-removebg-preview.png'
+import FloatingPetals from '@/shared/components/floating-petals'
 import { cn } from '@/shared/utils'
 import type { Metadata } from 'next'
 import Image, { type StaticImageData } from 'next/image'
-import FloatingPetals from '../(public)/_components/floating-petals'
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false }

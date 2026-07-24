@@ -7,6 +7,7 @@ import { OrderStatus, type Order } from '@/features/orders/types'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { cn } from '@/shared/utils'
 import {
   CheckmarkCircle02Icon,
@@ -19,7 +20,6 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { SparkleDivider } from '../../../(public)/_components/sparkle-dividier'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },

@@ -1,13 +1,13 @@
 import ScopedIntlProvider from '@/components/scoped-intl-provider'
 import { Spinner } from '@/components/ui/spinner'
+import RecruitmentResults from '@/features/recruitment/components/recruitment-results'
+import { loadRecruitmentSearch, toJobDescriptionParam } from '@/features/recruitment/search-params'
+import { buildRecruitmentJsonLd, generateRecruitmentMetadata } from '@/features/recruitment/seo'
 import type { Locale } from '@/lib/i18n/routing'
 import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 import type { SearchParams } from 'nuqs/server'
 import { Suspense } from 'react'
-import RecruitmentResults from './_components/recruitment-results'
-import { loadRecruitmentSearch, toJobDescriptionParam } from './_search-params'
-import { buildRecruitmentJsonLd, generateRecruitmentMetadata } from './_seo'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params

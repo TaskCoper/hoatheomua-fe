@@ -1,15 +1,15 @@
+import ContactForm from '@/features/contact/components/contact-form'
+import ContactLinks from '@/features/contact/components/contact-links'
 import { buildContactJsonLd, generateContactMetadata } from '@/features/contact/seo'
 import type { Locale } from '@/lib/i18n/routing'
 import contactFlowerGarden from '@/public/images/contact-removebg-preview.png'
 import cornerOneFlower from '@/public/images/Corner1_bg_rm.png'
 import cornerTwoFlower from '@/public/images/Corner2_bg_rm.png'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import { SparkleDivider } from '../_components/sparkle-dividier'
-import ContactForm from './_components/contact-form'
-import ContactLinks from './_components/contact-links'
 
 export const revalidate = 3600
 

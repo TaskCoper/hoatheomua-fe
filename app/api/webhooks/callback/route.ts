@@ -44,7 +44,7 @@ export async function POST(req: Request) {
   console.log('[nhanh-webhook:in]', {
     url: req.url,
     headers: Object.fromEntries(req.headers),
-    body: rawBody,
+    body: rawBody
   })
 
   if (req.headers.get('authorization') !== VERIFY_TOKEN) {

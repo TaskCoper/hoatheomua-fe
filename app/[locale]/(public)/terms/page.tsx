@@ -1,11 +1,11 @@
+import PolicyPageShell from '@/features/policies/components/policy-page-shell'
+import PolicySection from '@/features/policies/components/policy-section'
+import { TERMS_CONTENT } from '@/features/policies/content/terms'
+import { buildTermsJsonLd, generateTermsMetadata } from '@/features/policies/seo/terms'
 import type { Locale } from '@/lib/i18n/routing'
 import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import PolicyPageShell from '../_components/policy-page-shell'
-import PolicySection from '../_components/policy-section'
-import { TERMS_CONTENT } from './_content'
-import { buildTermsJsonLd, generateTermsMetadata } from './_seo'
 
 export const revalidate = 3600
 

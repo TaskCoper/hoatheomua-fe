@@ -1,12 +1,12 @@
 import { getCompanyBgMusic } from '@/features/company/queries.server'
+import FloatingContactClient from '@/features/layout/components/floating-contact-client'
+import Footer from '@/features/layout/components/footer'
+import PublicHeader from '@/features/layout/components/public-header'
 import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
 import RoleGuard from '@/guards/role-guard'
 import { ROLES } from '@/guards/utils'
 import { getQueryClient } from '@/lib/react-query-client'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import FloatingContactClient from './_components/floating-contact-client'
-import Footer from './_components/footer'
-import PublicHeader from './_components/public-header'
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient()

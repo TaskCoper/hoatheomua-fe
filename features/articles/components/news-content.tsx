@@ -23,8 +23,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { useQueryStates } from 'nuqs'
-import FloatingPetals from '../../../app/[locale]/(public)/_components/floating-petals'
-import { SparkleDivider } from '../../../app/[locale]/(public)/_components/sparkle-dividier'
+import FloatingPetals from '@/shared/components/floating-petals'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { newsSearchParsers } from '../search-params'
 
 const NEWS_IMAGES = [heroImage, bgNews1, image2, image3, image5, image6, image7, image8]

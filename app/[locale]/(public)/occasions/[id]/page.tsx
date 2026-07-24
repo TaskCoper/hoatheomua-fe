@@ -1,9 +1,9 @@
 import { resolveCard } from '@/features/occasions/campaign'
+import OccasionDetailContent from '@/features/occasions/components/occasion-detail-content'
 import { getOccasionCard } from '@/features/occasions/queries.server'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import OccasionDetailContent from './_components/occasion-detail-content'
 
 export const revalidate = 600
 export const dynamicParams = true

@@ -1,4 +1,4 @@
-import Header from '@/app/[locale]/(public)/_components/header'
+import Header from '@/features/layout/components/header'
 import RoleGuard from '@/guards/role-guard'
 import { ROLES } from '@/guards/utils'
 import pedalsRight from '@/public/images/pedals-right.png'

@@ -7,6 +7,7 @@ import type { ProductDetail } from '@/features/products/types'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { type CartItem, useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import {
@@ -23,7 +24,6 @@ import { motion, type Variants } from 'motion/react'
 import { useLocale } from 'next-intl'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
-import { SparkleDivider } from '../../../(public)/_components/sparkle-dividier'
 
 const ACTIVE_PRODUCT_STATUS = 1
 

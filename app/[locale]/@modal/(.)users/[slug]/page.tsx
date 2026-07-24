@@ -1,4 +1,4 @@
-import { UserProfileModalShell } from './_components/user-profile-modal-shell'
+import { UserProfileModalShell } from '@/features/users/components/user-profile-modal-shell'
 
 interface UserProfileModalPageProps {
   params: Promise<{ slug: string }>
