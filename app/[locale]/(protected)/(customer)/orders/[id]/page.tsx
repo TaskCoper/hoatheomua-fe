@@ -20,6 +20,7 @@ import {
   InvoiceType,
   InvoiceTypeLabel,
   OrderStatus,
+  OrderStatusLabel,
   PaymentMethod,
   PaymentMethodLabel,
   type OrderDetail
@@ -36,6 +37,7 @@ import {
   Atm01Icon,
   BankIcon,
   CalendarCheckOut01Icon,
+  CancelCircleIcon,
   CheckmarkCircle02Icon,
   CreditCardIcon,
   DeliveryTruck02Icon,
@@ -178,7 +180,9 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   const router = useRouter()
   const isPaid = order.status === OrderStatus.Paid
   const isPendingOrder = order.status === OrderStatus.Pending
-  const statusLabel = isPaid ? t('orders.list.status.Paid') : t('orders.list.status.Pending')
+  const isCancelledOrder = order.status === OrderStatus.Cancelled
+  const statusLabel = t(OrderStatusLabel[order.status])
+  const statusIcon = isPaid ? CheckmarkCircle02Icon : isCancelledOrder ? CancelCircleIcon : TimeQuarterPassIcon
 
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
   const { cancelOrder, isCancellingOrder } = useCancelOrder()
@@ -291,14 +295,14 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               variant='outline'
               className={cn(
                 'gap-1 rounded-full px-2 py-1 text-[0.7rem] font-semibold tracking-wider',
-                isPaid ? 'border-leaf/30 bg-leaf/10 text-leaf' : 'border-warning/40 bg-warning/10 text-warning'
+                isPaid
+                  ? 'border-leaf/30 bg-leaf/10 text-leaf'
+                  : isCancelledOrder
+                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
+                    : 'border-warning/40 bg-warning/10 text-warning'
               )}
             >
-              <HugeiconsIcon
-                icon={isPaid ? CheckmarkCircle02Icon : TimeQuarterPassIcon}
-                strokeWidth={2}
-                className='size-3'
-              />
+              <HugeiconsIcon icon={statusIcon} strokeWidth={2} className='size-3' />
               {statusLabel}
             </Badge>
           </div>

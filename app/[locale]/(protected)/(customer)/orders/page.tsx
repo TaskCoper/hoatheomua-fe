@@ -3,13 +3,14 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useGetOrders } from '@/features/orders/hooks/use-get-orders'
-import { OrderStatus, type Order } from '@/features/orders/types'
+import { OrderStatus, OrderStatusLabel, type Order } from '@/features/orders/types'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { cn } from '@/shared/utils'
 import {
+  CancelCircleIcon,
   CheckmarkCircle02Icon,
   DeliveryTruck02Icon,
   InvoiceIcon,
@@ -152,7 +153,9 @@ interface OrderRowProps {
 function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
   const isPaid = order.status === OrderStatus.Paid
   const isPending = order.status === OrderStatus.Pending
-  const statusLabel = isPaid ? t('orders.list.status.Paid') : t('orders.list.status.Pending')
+  const isCancelled = order.status === OrderStatus.Cancelled
+  const statusLabel = t(OrderStatusLabel[order.status])
+  const statusIcon = isPaid ? CheckmarkCircle02Icon : isCancelled ? CancelCircleIcon : TimeQuarterPassIcon
 
   return (
     <motion.li
@@ -182,14 +185,14 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
               variant='outline'
               className={cn(
                 'gap-1 rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wider',
-                isPaid ? 'border-leaf/30 bg-leaf/10 text-leaf' : 'border-warning/40 bg-warning/10 text-warning'
+                isPaid
+                  ? 'border-leaf/30 bg-leaf/10 text-leaf'
+                  : isCancelled
+                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
+                    : 'border-warning/40 bg-warning/10 text-warning'
               )}
             >
-              <HugeiconsIcon
-                icon={isPaid ? CheckmarkCircle02Icon : TimeQuarterPassIcon}
-                strokeWidth={2}
-                className='size-3'
-              />
+              <HugeiconsIcon icon={statusIcon} strokeWidth={2} className='size-3' />
               {statusLabel}
             </Badge>
           </div>

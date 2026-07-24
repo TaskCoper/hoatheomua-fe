@@ -46,7 +46,7 @@ export default function ProductDetailContent({ product }: { product: ProductDeta
   const active = activeChild ?? product
 
   const inventorySource = hasChildren ? activeChild : product
-  const available = inventorySource?.inventory?.available ?? 0
+  const available = Math.floor(inventorySource?.inventory?.available ?? 0)
 
   const retail = active.prices?.retail ?? 0
   const oldPrice = active.prices?.old ?? 0
