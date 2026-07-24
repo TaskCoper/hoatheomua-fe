@@ -1,14 +1,19 @@
-import { hasText, type B2BServiceDetail, type ServiceIcon } from '@/features/b2b/service/palette'
+import type { B2BServiceSlug } from '@/features/b2b/seo'
+import { hasText, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import type { I18nKey } from '@/lib/i18n/types'
 import { Building03Icon, Calendar03Icon, GiftIcon, HotelIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 
-// String icon enum (CMS) → Hugeicons component (FE render).
-export const SERVICE_ICONS: Record<ServiceIcon, typeof HotelIcon> = {
-  hotel: HotelIcon,
-  calendar: Calendar03Icon,
-  building: Building03Icon,
-  gift: GiftIcon,
-  sparkles: SparklesIcon
+type ServiceAccent = 'primary' | 'leaf'
+
+// Static per-slug presentation metadata (icon + accent). NOT CMS-backed — mirrors
+// taskcoper's `SERVICE_META`. Keyed by slug so related-service links render the right
+// icon/accent regardless of what the CMS document carries.
+export const SERVICE_META: Record<B2BServiceSlug, { icon: typeof HotelIcon; accent: ServiceAccent }> = {
+  outsourced: { icon: HotelIcon, accent: 'primary' },
+  'events-mice': { icon: Calendar03Icon, accent: 'primary' },
+  'office-subscription': { icon: Building03Icon, accent: 'primary' },
+  'corporate-gifts': { icon: GiftIcon, accent: 'primary' },
+  'brand-experience': { icon: SparklesIcon, accent: 'leaf' }
 }
 
 // Stable DOM anchor ids shared between the main column (section wrappers) and the

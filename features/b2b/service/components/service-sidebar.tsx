@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { B2B_SERVICE_SLUGS } from '@/features/b2b/seo'
 import { petalCard } from '@/features/b2b/service/components/editorial'
 import ServiceToc from '@/features/b2b/service/components/service-toc'
-import { SERVICE_ICONS, type ServiceSection } from '@/features/b2b/service/content'
+import { SERVICE_META, type ServiceSection } from '@/features/b2b/service/content'
 import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -53,8 +53,11 @@ export default function ServiceSidebar({ detail, locale, sections, siblings }: P
                   className='group flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-secondary/30'
                 >
                   <HugeiconsIcon
-                    icon={SERVICE_ICONS[sibling.icon]}
-                    className={cn('size-4 shrink-0', sibling.accent === 'leaf' ? 'text-leaf' : 'text-primary/60')}
+                    icon={SERVICE_META[sibling.slug].icon}
+                    className={cn(
+                      'size-4 shrink-0',
+                      SERVICE_META[sibling.slug].accent === 'leaf' ? 'text-leaf' : 'text-primary/60'
+                    )}
                   />
 
                   <span className='flex-1 text-sm font-medium leading-tight text-foreground group-hover:text-primary'>

@@ -29,9 +29,7 @@ import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-// ISR: statically render each locale/service and revalidate hourly so CMS edits
-// propagate. The underlying config fetch is additionally cached (see queries.server).
-export const revalidate = 3600
+export const revalidate = 30
 
 const isValidSlug = (value: string): value is B2BServiceSlug => (B2B_SERVICE_SLUGS as readonly string[]).includes(value)
 

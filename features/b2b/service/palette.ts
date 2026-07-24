@@ -9,9 +9,6 @@ import type { LocalizedText } from '@/types/config.type'
 // types + `pick()` from here.
 // ---------------------------------------------------------------------------
 
-export type ServiceAccent = 'primary' | 'leaf'
-export type ServiceIcon = 'hotel' | 'calendar' | 'building' | 'gift' | 'sparkles'
-
 const emptyLocalizedText = (): LocalizedText => ({ vi: '', en: '' })
 
 const parseLocalizedText = (raw: unknown): LocalizedText => {
@@ -171,8 +168,6 @@ export interface ServiceSeo {
 export interface B2BServiceDetail {
   slug: B2BServiceSlug
   enabled: boolean
-  accent: ServiceAccent
-  icon: ServiceIcon
   showPackagesLink: boolean
 
   heroImage: string
@@ -198,13 +193,9 @@ export interface B2BServiceDetail {
   closing: ClosingBlock
 }
 
-const ICON_VALUES: readonly ServiceIcon[] = ['hotel', 'calendar', 'building', 'gift', 'sparkles']
-
 export const defaultB2BServiceDetail = (slug: B2BServiceSlug): B2BServiceDetail => ({
   slug,
   enabled: true,
-  accent: 'primary',
-  icon: 'sparkles',
   showPackagesLink: false,
   heroImage: '',
   ogImage: '',
@@ -237,8 +228,6 @@ export const parseB2BServiceDetail = (raw: unknown): B2BServiceDetail => {
     ...base,
     slug,
     enabled: obj.enabled ?? true,
-    accent: obj.accent === 'leaf' ? 'leaf' : 'primary',
-    icon: ICON_VALUES.includes(obj.icon as ServiceIcon) ? (obj.icon as ServiceIcon) : base.icon,
     showPackagesLink: Boolean(obj.showPackagesLink),
     heroImage: typeof obj.heroImage === 'string' ? obj.heroImage : '',
     ogImage: typeof obj.ogImage === 'string' ? obj.ogImage : '',

@@ -10,12 +10,12 @@ export const useGetPublicConfigs = <T extends { key: string }, K extends T['key'
   group,
   key
 }: { group?: string; key?: K } = {}) => {
-  const { data: configs = [] as Extract<T, { key: K }>[], isLoading: isGettingConfigs } = useQuery<
-    Extract<T, { key: K }>[]
-  >({
+  const { data, isLoading: isGettingConfigs } = useQuery<Extract<T, { key: K }>[]>({
     queryKey: ['configs', 'content', group, key],
     queryFn: () => configService.getPublicConfigs<Extract<T, { key: K }>>({ group, key })
   })
+
+  const configs = data ?? ([] as Extract<T, { key: K }>[])
 
   return { configs, isGettingConfigs }
 }

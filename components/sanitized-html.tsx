@@ -3,7 +3,7 @@
 import { useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import DOMPurify from 'isomorphic-dompurify'
-import { useMemo, type MouseEvent } from 'react'
+import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
 
 interface SanitizedHtmlProps {
   /** The raw HTML string to be sanitized and displayed. */
@@ -63,25 +63,29 @@ const PURIFY_CONFIG = {
 export default function SanitizedHtml({ html, className, as: Component = 'div' }: SanitizedHtmlProps) {
   const router = useRouter()
 
-  const finalHtml = useMemo(() => {
-    const cleanHtml = DOMPurify.sanitize(html, PURIFY_CONFIG).replace(
-      / (style|class|bgcolor|color|align|face|size)="[^"]*"/gi,
-      ''
-    )
+  // Server-safe base markup. This must be identical on the server and on the
+  // first client render so hydration matches; the DOMParser refinement below
+  // only runs after mount.
+  const baseHtml = useMemo(
+    () => DOMPurify.sanitize(html, PURIFY_CONFIG).replace(/ (style|class|bgcolor|color|align|face|size)="[^"]*"/gi, ''),
+    [html]
+  )
 
-    if (typeof window === 'undefined' || typeof DOMParser === 'undefined') {
-      return cleanHtml
-    }
+  const containerRef = useRef<HTMLElement>(null)
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(cleanHtml, 'text/html')
+  // Client-only DOM refinement. Mutates the already-rendered container
+  // directly instead of going through state, so it doesn't trigger a
+  // second React render.
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
 
     const STRIP_ATTRS = ['style', 'class', 'bgcolor', 'color', 'align', 'face', 'size']
-    doc.body.querySelectorAll('*').forEach((el) => {
+    container.querySelectorAll('*').forEach((el) => {
       STRIP_ATTRS.forEach((attr) => el.removeAttribute(attr))
     })
 
-    doc.querySelectorAll('a[target="_blank"]').forEach((link) => {
+    container.querySelectorAll('a[target="_blank"]').forEach((link) => {
       link.setAttribute('rel', 'noopener noreferrer')
     })
 
@@ -90,12 +94,10 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
       if (el.querySelector('img, iframe, video, audio, picture, svg')) return false
       return (el.textContent ?? '').replace(/ /g, ' ').trim() === ''
     }
-    while (isEmptyBlock(doc.body.lastElementChild)) {
-      doc.body.lastElementChild!.remove()
+    while (isEmptyBlock(container.lastElementChild)) {
+      container.lastElementChild!.remove()
     }
-
-    return doc.body.innerHTML
-  }, [html])
+  }, [baseHtml])
 
   const handleContainerClick = (event: MouseEvent<Element>) => {
     const target = event.target as Element
@@ -116,13 +118,14 @@ export default function SanitizedHtml({ html, className, as: Component = 'div' }
     router.push(`${url.pathname}${url.search}${url.hash}`)
   }
 
-  const ElementType = Component as keyof React.JSX.IntrinsicElements
+  const ElementType = Component as React.ElementType
 
   return (
     <ElementType
+      ref={containerRef}
       onClick={handleContainerClick}
       className={cn('hth-rich-text', className)}
-      dangerouslySetInnerHTML={{ __html: finalHtml }}
+      dangerouslySetInnerHTML={{ __html: baseHtml }}
     />
   )
 }
