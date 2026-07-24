@@ -1,12 +1,5 @@
 'use client'
 
-import type { Locale } from '@/lib/i18n/routing'
-import { cn } from '@/shared/utils'
-import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { motion } from 'motion/react'
-import { useTranslations } from 'next-intl'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import {
   cardItem,
   gridCols,
@@ -18,6 +11,13 @@ import {
   stagger
 } from '@/features/b2b/service/components/editorial'
 import ServiceImageDivider from '@/features/b2b/service/components/service-image-divider'
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
+import type { Locale } from '@/lib/i18n/routing'
+import { cn } from '@/shared/utils'
+import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import { motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 
 export default function ServiceBenefitsSection({
   detail,

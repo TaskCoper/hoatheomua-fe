@@ -1,11 +1,11 @@
 'use client'
 
+import ServiceSidebar from '@/features/b2b/service/components/service-sidebar'
+import type { ServiceSection } from '@/features/b2b/service/content'
+import type { B2BServiceDetail } from '@/features/b2b/service/palette'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import type { Locale } from '@/lib/i18n/routing'
 import type { ReactNode } from 'react'
-import type { ServiceSection } from '@/features/b2b/service/content'
-import type { B2BServiceDetail } from '@/features/b2b/service/palette'
-import ServiceSidebar from '@/features/b2b/service/components/service-sidebar'
 
 type Props = {
   detail: B2BServiceDetail

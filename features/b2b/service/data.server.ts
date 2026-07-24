@@ -1,8 +1,8 @@
 import 'server-only'
 
-import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
 import { B2B_SERVICE_SLUGS, type B2BServiceSlug } from '@/features/b2b/seo'
 import { parseB2BServiceDetail, type B2BServiceDetail } from '@/features/b2b/service/palette'
+import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
 
 const B2B_SERVICES_GROUP = 'b2bServices'
 

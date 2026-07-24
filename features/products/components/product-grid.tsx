@@ -7,15 +7,15 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination'
+import ProductCard from '@/features/products/components/product-card'
+import ProductGridEmpty from '@/features/products/components/product-grid-empty'
+import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import { useGetProducts } from '@/features/products/hooks/use-get-products'
 import type { Product } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { motion, type Variants } from 'motion/react'
 import { useState } from 'react'
-import ProductCard from '@/features/products/components/product-card'
-import ProductGridEmpty from '@/features/products/components/product-grid-empty'
-import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 
 const cardStagger: Variants = {
   hidden: {},

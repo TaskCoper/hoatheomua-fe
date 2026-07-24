@@ -1,8 +1,8 @@
 import 'server-only'
 
-import { unstable_cache } from 'next/cache'
 import { jobDescriptionService } from '@/features/recruitment/services'
 import type { JobDescriptionParam } from '@/features/recruitment/types'
+import { unstable_cache } from 'next/cache'
 
 export const RECRUITMENT_CACHE_TAG = 'recruitment'
 

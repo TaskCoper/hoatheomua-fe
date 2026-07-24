@@ -1,12 +1,12 @@
 'use client'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { pick, type OverviewFaq, type OverviewFaqItem } from '@/features/b2b/overview-palette'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import type { Locale } from '@/lib/i18n/routing'
 import type { ContactConfigItem } from '@/types/config.type'
 import { motion, type Variants } from 'motion/react'
 import type { ReactNode } from 'react'
-import { pick, type OverviewFaq, type OverviewFaqItem } from '@/features/b2b/overview-palette'
 
 // Answers may embed a single `<zalo>…</zalo>` marker that becomes a Zalo deep-link.
 const ZALO_MARKER = /<zalo>([\s\S]*?)<\/zalo>/

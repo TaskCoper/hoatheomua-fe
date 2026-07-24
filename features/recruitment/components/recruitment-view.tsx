@@ -1,20 +1,20 @@
 'use client'
 
 import { Spinner } from '@/components/ui/spinner'
+import FilterSection from '@/features/recruitment/components/filter-section'
+import JobDetail from '@/features/recruitment/components/job-detail'
+import JobList from '@/features/recruitment/components/job-list'
+import { useGetHighestSalary } from '@/features/recruitment/hooks/use-get-highest-salary'
+import { useGetJobDescriptions } from '@/features/recruitment/hooks/use-get-job-descriptions'
+import { useGetJobLocations } from '@/features/recruitment/hooks/use-get-job-locations'
+import { RECRUITMENT_PAGE_SIZE, recruitmentSearchParsers } from '@/features/recruitment/search-params'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { motion, type Variants } from 'motion/react'
 import { useQueryStates } from 'nuqs'
 import { useMemo, useState } from 'react'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import { RECRUITMENT_PAGE_SIZE, recruitmentSearchParsers } from '@/features/recruitment/search-params'
-import { useGetHighestSalary } from '@/features/recruitment/hooks/use-get-highest-salary'
-import { useGetJobDescriptions } from '@/features/recruitment/hooks/use-get-job-descriptions'
-import { useGetJobLocations } from '@/features/recruitment/hooks/use-get-job-locations'
 import type { RecruitmentFilters } from '../types'
-import FilterSection from '@/features/recruitment/components/filter-section'
-import JobDetail from '@/features/recruitment/components/job-detail'
-import JobList from '@/features/recruitment/components/job-list'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },

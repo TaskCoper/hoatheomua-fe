@@ -9,8 +9,8 @@ import {
 } from '@/components/ui/pagination'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 
-import type { Job } from '../types'
 import JobCard from '@/features/recruitment/components/job-card'
+import type { Job } from '../types'
 
 type JobListProps = {
   jobs: Job[]

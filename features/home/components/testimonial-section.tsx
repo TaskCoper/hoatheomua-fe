@@ -1,10 +1,10 @@
+import TestimonialCarousel from '@/features/home/components/testimonial-carousel'
 import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
 import type { Locale } from '@/lib/i18n/routing'
 import type { FeedbacksCollection, FeedbacksCollectionConfigItem } from '@/types/config.type'
 import { QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { getLocale, getTranslations } from 'next-intl/server'
-import TestimonialCarousel from '@/features/home/components/testimonial-carousel'
 
 async function loadTestimonials() {
   const configs = await getPublicConfigsGroup<FeedbacksCollectionConfigItem>('feedbacks', 'feedbacks.collection')

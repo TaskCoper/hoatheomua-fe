@@ -1,10 +1,10 @@
+import RecruitmentView from '@/features/recruitment/components/recruitment-view'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { jobsListQuery } from '../queries'
 import { getCachedJobs } from '../queries.server'
 import type { JobDescriptionParam } from '../types'
-import RecruitmentView from '@/features/recruitment/components/recruitment-view'
 
 export default async function RecruitmentResults({
   locale,

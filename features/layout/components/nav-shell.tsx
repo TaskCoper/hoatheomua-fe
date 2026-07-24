@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import NavBar from '@/features/layout/components/nav-bar'
+import { useEffect, useState } from 'react'
 
 export default function NavShell() {
   const [isScrolled, setIsScrolled] = useState(false)

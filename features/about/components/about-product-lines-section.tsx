@@ -5,13 +5,13 @@ import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import rightBranch from '@/public/images/right-branch.png'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { MainlineCollection, MainlineCollectionConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon, FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { useMemo } from 'react'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },

@@ -7,7 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from '@/components/ui/dialog'
 import { Spinner } from '@/components/ui/spinner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -32,7 +32,7 @@ export function AddressDeleteDialog({ addressId, receiverName, open, onOpenChang
       onOpenChange(false)
     } catch (error) {
       toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined,
+        description: error instanceof Error ? error.message : undefined
       })
     }
   }
@@ -42,9 +42,7 @@ export function AddressDeleteDialog({ addressId, receiverName, open, onOpenChang
       <DialogContent position='top-center' className='sm:max-w-md' showCloseButton>
         <DialogHeader>
           <DialogTitle>{t('profile.confirmDeleteAddress')}</DialogTitle>
-          <DialogDescription>
-            {t('profile.confirmDeleteAddressDescription', { receiverName })}
-          </DialogDescription>
+          <DialogDescription>{t('profile.confirmDeleteAddressDescription', { receiverName })}</DialogDescription>
         </DialogHeader>
 
         <DialogFooter className='mt-2' showCloseButton={false}>

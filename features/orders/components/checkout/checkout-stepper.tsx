@@ -7,7 +7,10 @@ import { HugeiconsIcon } from '@hugeicons/react'
 
 export type CheckoutStep = 1 | 2 | 3
 
-const STEPS: { step: CheckoutStep; labelKey: 'orders.checkout.stepPersonal' | 'orders.checkout.stepPayment' | 'orders.checkout.stepComplete' }[] = [
+const STEPS: {
+  step: CheckoutStep
+  labelKey: 'orders.checkout.stepPersonal' | 'orders.checkout.stepPayment' | 'orders.checkout.stepComplete'
+}[] = [
   { step: 1, labelKey: 'orders.checkout.stepPersonal' },
   { step: 2, labelKey: 'orders.checkout.stepPayment' },
   { step: 3, labelKey: 'orders.checkout.stepComplete' }
@@ -45,12 +48,7 @@ export function CheckoutStepper({ current }: { current: CheckoutStep }) {
               </span>
             </div>
             {index < STEPS.length - 1 ? (
-              <span
-                className={cn(
-                  'h-px w-8 sm:w-16 transition-colors',
-                  current > step ? 'bg-primary' : 'bg-border'
-                )}
-              />
+              <span className={cn('h-px w-8 sm:w-16 transition-colors', current > step ? 'bg-primary' : 'bg-border')} />
             ) : null}
           </div>
         )

@@ -1,10 +1,10 @@
 'use client'
 
+import DecorImage from '@/features/about/components/about-decor-image'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DeliveryTruck01Icon, DiscountTag02Icon, Flower2Icon, HandHeartIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import DecorImage from '@/features/about/components/about-decor-image'
 
 const ADVANTAGES = [
   {

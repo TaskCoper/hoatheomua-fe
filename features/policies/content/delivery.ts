@@ -1,3 +1,4 @@
+import type { PolicySectionData } from '@/features/policies/components/policy-section'
 import type { Locale } from '@/lib/i18n/routing'
 import {
   AlarmClockIcon,
@@ -10,7 +11,6 @@ import {
   PackageOpenIcon,
   UnavailableIcon
 } from '@hugeicons/core-free-icons'
-import type { PolicySectionData } from '@/features/policies/components/policy-section'
 
 export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
   vi: [

@@ -2,12 +2,12 @@
 
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { Link } from '@/lib/i18n/navigation'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import type { ContactConfigItem } from '@/types/config.type'
 import { ArrowRight01Icon, HomeIcon, MailValidation01Icon, SmartPhone01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import type { ReactNode } from 'react'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 
 type BreadcrumbStep = { label: string; href?: string }
 

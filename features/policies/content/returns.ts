@@ -1,3 +1,4 @@
+import type { PolicySectionData } from '@/features/policies/components/policy-section'
 import type { Locale } from '@/lib/i18n/routing'
 import {
   Calendar03Icon,
@@ -7,7 +8,6 @@ import {
   RecycleIcon,
   ToolsIcon
 } from '@hugeicons/core-free-icons'
-import type { PolicySectionData } from '@/features/policies/components/policy-section'
 
 export const RETURNS_CONTENT: Record<Locale, PolicySectionData[]> = {
   vi: [

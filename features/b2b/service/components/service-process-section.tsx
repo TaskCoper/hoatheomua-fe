@@ -1,11 +1,11 @@
 'use client'
 
+import { cardItem, Reveal, SectionHeading, SectionShell, stagger } from '@/features/b2b/service/components/editorial'
+import ServiceImageDivider from '@/features/b2b/service/components/service-image-divider'
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import type { Locale } from '@/lib/i18n/routing'
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
-import { cardItem, Reveal, SectionHeading, SectionShell, stagger } from '@/features/b2b/service/components/editorial'
-import ServiceImageDivider from '@/features/b2b/service/components/service-image-divider'
 
 export default function ServiceProcessSection({
   detail,

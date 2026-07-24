@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import ApplyJobDialog from '@/features/recruitment/components/apply-job-dialog'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
@@ -20,7 +21,6 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useState } from 'react'
 import { formatJobSalary, getJobAvatarFallback, getJobEmploymentTypeLabel } from '../helpers'
 import type { Job } from '../types'
-import ApplyJobDialog from '@/features/recruitment/components/apply-job-dialog'
 
 type JobDetailProps = {
   job: Job
@@ -86,11 +86,7 @@ export default function JobDetail({ job }: JobDetailProps) {
               {job.avatarUrl ? <AvatarImage src={job.avatarUrl} alt={job.title} className='rounded-3xl' /> : null}
               <AvatarFallback className='relative rounded-3xl bg-transparent text-current'>
                 <span className='font-title text-2xl sm:text-4xl'>{avatarFallback}</span>
-                <HugeiconsIcon
-                  icon={Flower2Icon}
-                  strokeWidth={1.5}
-                  className='absolute size-7 opacity-30 sm:size-11'
-                />
+                <HugeiconsIcon icon={Flower2Icon} strokeWidth={1.5} className='absolute size-7 opacity-30 sm:size-11' />
               </AvatarFallback>
             </Avatar>
 

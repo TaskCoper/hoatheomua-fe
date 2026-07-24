@@ -1,6 +1,6 @@
-import { queryOptions } from '@tanstack/react-query'
 import { jobDescriptionService } from '@/features/recruitment/services'
 import type { JobDescriptionParam } from '@/features/recruitment/types'
+import { queryOptions } from '@tanstack/react-query'
 
 /**
  * One source of truth for the recruitment job-list query, used by both the

@@ -1,5 +1,6 @@
 'use client'
 
+import LazyMapEmbed from '@/features/layout/components/lazy-map-embed'
 import { useGetCompanyAddress } from '@/hooks/use-get-company-address'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useLocale, useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -16,7 +17,6 @@ import { Facebook01Icon, InstagramIcon, Mail01Icon, MessageMultiple01Icon } from
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useMemo } from 'react'
-import LazyMapEmbed from '@/features/layout/components/lazy-map-embed'
 
 const POLICIES = [
   { labelKey: 'footer.policies.terms', href: '/terms' },

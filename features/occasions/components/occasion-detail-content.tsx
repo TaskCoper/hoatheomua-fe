@@ -1,11 +1,11 @@
 'use client'
 
-import type { BaseCard, LocalizedText } from '@/types/config.type'
-import dynamic from 'next/dynamic'
-import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import OccasionBreadcrumb from '@/features/occasions/components/occasion-breadcrumb'
 import OccasionHeroSection from '@/features/occasions/components/occasion-hero-section'
 import OccasionProductsSection from '@/features/occasions/components/occasion-products-section'
+import ProductsPromiseSection from '@/features/products/components/products-promise-section'
+import type { BaseCard, LocalizedText } from '@/types/config.type'
+import dynamic from 'next/dynamic'
 
 const FloatingPetals = dynamic(() => import('@/shared/components/floating-petals'), { ssr: false })
 

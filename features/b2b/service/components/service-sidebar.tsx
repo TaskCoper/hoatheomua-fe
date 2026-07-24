@@ -1,6 +1,11 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { B2B_SERVICE_SLUGS } from '@/features/b2b/seo'
+import { petalCard } from '@/features/b2b/service/components/editorial'
+import ServiceToc from '@/features/b2b/service/components/service-toc'
+import { SERVICE_ICONS, type ServiceSection } from '@/features/b2b/service/content'
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
@@ -9,11 +14,6 @@ import { cn } from '@/shared/utils'
 import type { ContactConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon, Mail01Icon, PhoneCheckIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { B2B_SERVICE_SLUGS } from '@/features/b2b/seo'
-import { SERVICE_ICONS, type ServiceSection } from '@/features/b2b/service/content'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
-import { petalCard } from '@/features/b2b/service/components/editorial'
-import ServiceToc from '@/features/b2b/service/components/service-toc'
 
 type Props = {
   detail: B2BServiceDetail

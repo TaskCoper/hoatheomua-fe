@@ -1,10 +1,10 @@
 'use client'
 
-import type { Locale } from '@/lib/i18n/routing'
-import { motion } from 'motion/react'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import { fadeUp, Reveal, SectionHeading, SectionShell } from '@/features/b2b/service/components/editorial'
 import ServiceImageSplit from '@/features/b2b/service/components/service-image-split'
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
+import type { Locale } from '@/lib/i18n/routing'
+import { motion } from 'motion/react'
 
 export default function ServiceMiceSection({
   detail,

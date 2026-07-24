@@ -1,14 +1,14 @@
 'use client'
 
+import ProductsCatalogSection from '@/features/products/components/products-catalog-section'
+import ProductsHeroSection from '@/features/products/components/products-hero-section'
+import ProductsOccasionsSection from '@/features/products/components/products-occasions-section'
+import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import { DAILY_FLOWER_CATEGORY_IDS, VASE_CATEGORY_IDS } from '@/features/products/constants'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { BANNER_SLOTS } from '@/types/config.type'
 import { motion, type Variants } from 'motion/react'
 import dynamic from 'next/dynamic'
-import ProductsCatalogSection from '@/features/products/components/products-catalog-section'
-import ProductsHeroSection from '@/features/products/components/products-hero-section'
-import ProductsOccasionsSection from '@/features/products/components/products-occasions-section'
-import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 
 const FloatingPetals = dynamic(() => import('@/shared/components/floating-petals'), { ssr: false })
 

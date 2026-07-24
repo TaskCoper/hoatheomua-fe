@@ -1,5 +1,5 @@
-import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import { Job, JobDescriptionParam, SendRecruitmentRequestForm } from '@/features/recruitment/types'
+import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 
 class RecruitmentRequestService {
   private readonly baseUrl = 'v1/recruitment-requests'

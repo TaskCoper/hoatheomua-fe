@@ -1,11 +1,11 @@
 'use client'
 
+import DecorImage from '@/features/about/components/about-decor-image'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { QuoteUpIcon, StarIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import DecorImage from '@/features/about/components/about-decor-image'
 
 const TESTIMONIALS = [
   {

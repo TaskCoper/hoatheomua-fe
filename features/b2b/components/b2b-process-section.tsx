@@ -1,10 +1,10 @@
 'use client'
 
+import { pick, type OverviewProcess } from '@/features/b2b/overview-palette'
 import type { Locale } from '@/lib/i18n/routing'
 import { DeliveryTruck01Icon, Note01Icon, PaintBoardIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { pick, type OverviewProcess } from '@/features/b2b/overview-palette'
 
 // Icon stays in code, keyed by the CMS step `id`.
 const STEP_ICON: Record<string, typeof Note01Icon> = {

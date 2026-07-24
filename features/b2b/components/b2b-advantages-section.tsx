@@ -1,10 +1,10 @@
 'use client'
 
+import { pick, type OverviewAdvantages } from '@/features/b2b/overview-palette'
 import type { Locale } from '@/lib/i18n/routing'
 import { Calendar03Icon, HandHeartIcon, Note01Icon, PaintBoardIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { pick, type OverviewAdvantages } from '@/features/b2b/overview-palette'
 
 // Icon stays in code, keyed by the CMS advantage `id`.
 const ADVANTAGE_ICON: Record<string, typeof Calendar03Icon> = {

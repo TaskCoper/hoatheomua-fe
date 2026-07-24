@@ -1,7 +1,10 @@
 'use client'
 
+import { pick, type OverviewServices } from '@/features/b2b/overview-palette'
+import type { ServiceCard } from '@/features/b2b/service/palette'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import {
   ArrowRight02Icon,
   Building03Icon,
@@ -12,9 +15,6 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import type { ServiceCard } from '@/features/b2b/service/palette'
-import { pick, type OverviewServices } from '@/features/b2b/overview-palette'
 
 // Icon / accent / package-link stay in code, keyed by service slug. The card
 // text (tag/name/description) comes from each `b2bServices.<slug>` doc's `card`.

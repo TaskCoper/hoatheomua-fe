@@ -1,12 +1,12 @@
 'use client'
 
+import { fadeUp, Reveal, SectionShell } from '@/features/b2b/service/components/editorial'
+import ServiceImageDivider from '@/features/b2b/service/components/service-image-divider'
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import type { Locale } from '@/lib/i18n/routing'
 import { QuoteDownIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
-import { fadeUp, Reveal, SectionShell } from '@/features/b2b/service/components/editorial'
-import ServiceImageDivider from '@/features/b2b/service/components/service-image-divider'
 
 export default function ServiceClosingSection({
   detail,

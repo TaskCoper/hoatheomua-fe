@@ -5,6 +5,7 @@ import cornerFlowersLeft from '@/public/images/DownLeftCorner-removebg-preview.p
 import cornerFlowersRight from '@/public/images/DownRightCorner-removebg-preview.png'
 import leftBranch from '@/public/images/left-branch.png'
 import valueImage from '@/public/images/value.png'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import {
   Diamond01Icon,
   Flag03Icon,
@@ -16,7 +17,6 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 
 const BRAND_VALUES = [
   {

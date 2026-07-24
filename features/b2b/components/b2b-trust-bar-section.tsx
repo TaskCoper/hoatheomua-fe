@@ -1,9 +1,9 @@
 'use client'
 
+import { pick, type OverviewTrustBar } from '@/features/b2b/overview-palette'
 import type { Locale } from '@/lib/i18n/routing'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
-import { pick, type OverviewTrustBar } from '@/features/b2b/overview-palette'
 
 // Logo image srcs come from the CMS `image` field; this map is the fallback
 // (keyed by the CMS item `id`) for items authored without one.

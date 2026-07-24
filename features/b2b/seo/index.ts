@@ -1,3 +1,4 @@
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import type { Locale } from '@/lib/i18n/routing'
 import {
   buildBreadcrumbList,
@@ -10,7 +11,6 @@ import {
 } from '@/shared/seo'
 import { localePath, localeUrl } from '@/shared/seo/url'
 import type { Metadata } from 'next'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 
 const B2B_BASE_PATH = '/b2b'
 
@@ -148,7 +148,11 @@ const serviceCopy = (locale: Locale, detail: B2BServiceDetail): SeoCopy & { brea
 
 const servicePath = (slug: B2BServiceSlug) => `${B2B_BASE_PATH}/${slug}`
 
-export const generateB2BServiceMetadata = (locale: Locale, slug: B2BServiceSlug, detail: B2BServiceDetail): Metadata => {
+export const generateB2BServiceMetadata = (
+  locale: Locale,
+  slug: B2BServiceSlug,
+  detail: B2BServiceDetail
+): Metadata => {
   const copy = serviceCopy(locale, detail)
   const imageUrl = detail.ogImage || detail.heroImage
   return buildPageMetadata({

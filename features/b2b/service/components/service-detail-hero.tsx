@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
@@ -9,7 +10,6 @@ import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },

@@ -1,12 +1,12 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { pick, type OverviewPackages, type PackageItem } from '@/features/b2b/overview-palette'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
 import { CheckmarkCircle02Icon, Crown02Icon, Diamond01Icon, Flower2Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { pick, type OverviewPackages, type PackageItem } from '@/features/b2b/overview-palette'
 
 // slug / icon / featured stay in code, keyed by the CMS package `id`. The five
 // feature rows render in a fixed order; the text comes from the CMS.

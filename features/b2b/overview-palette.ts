@@ -1,5 +1,5 @@
-import type { LocalizedText } from '@/types/config.type'
 import { hasText, pick } from '@/features/b2b/service/palette'
+import type { LocalizedText } from '@/types/config.type'
 
 // ---------------------------------------------------------------------------
 // Runtime shape of the `b2bServices.overview` CMS document (value.value is a

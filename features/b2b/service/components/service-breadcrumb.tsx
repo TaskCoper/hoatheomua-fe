@@ -8,10 +8,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from '@/components/ui/breadcrumb'
+import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
-import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 
 export default function ServiceBreadcrumb({ detail, locale }: { detail: B2BServiceDetail; locale: Locale }) {
   const { t } = useTranslation()

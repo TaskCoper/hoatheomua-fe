@@ -1,6 +1,8 @@
 'use client'
 
+import { pick, type OverviewCaseStudies } from '@/features/b2b/overview-palette'
 import type { Locale } from '@/lib/i18n/routing'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -12,8 +14,6 @@ import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import { pick, type OverviewCaseStudies } from '@/features/b2b/overview-palette'
 
 // Partner logo srcs come from the CMS `logo` field; this map is the fallback
 // (keyed by the CMS partner `id`) for partners authored without one.

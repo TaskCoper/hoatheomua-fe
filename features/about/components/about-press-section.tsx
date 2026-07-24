@@ -3,18 +3,27 @@
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { LinkSquare02Icon, News01Icon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 
 const PRESS_MENTIONS = [
-  { id: 'dongkhoi', href: 'https://baodongkhoi.vn/hoa-theo-mua-cua-hang-dat-hoa-hang-dau-tai-ho-chi-minh-02122024-a139172.html' },
+  {
+    id: 'dongkhoi',
+    href: 'https://baodongkhoi.vn/hoa-theo-mua-cua-hang-dat-hoa-hang-dau-tai-ho-chi-minh-02122024-a139172.html'
+  },
   { id: 'tuyenquang', href: 'https://baotuyenquang.com.vn/hoa-theo-mua%C2%A0hoa-dep-la-hoa-no-dung-mua-203553.html' },
   { id: 'thanhhoa', href: 'https://baothanhhoa.vn/hoa-theo-mua-cua-hang-dat-hoa-tuoi-uy-tin-tai-tphcm-233829.htm' },
   { id: 'cantho', href: 'https://baocantho.com.vn/hoa-theo-mua-cua-hang-dat-hoa-8-3-uy-tin-tai-tp-hcm-a183299.html' },
-  { id: 'depviet', href: 'https://depviet.net.vn/hoa-theo-mua-ra-mat-bo-suu-tap-lan-ho-diep-chung-tet-giap-thin-2024-134606' },
-  { id: 'diendandoanhnghiep', href: 'https://diendandoanhnghiep.vn/hoa-theo-mua-khoi-nghiep-thanh-cong-nho-kinh-doanh-hoa-tuoi-10155786.html' },
+  {
+    id: 'depviet',
+    href: 'https://depviet.net.vn/hoa-theo-mua-ra-mat-bo-suu-tap-lan-ho-diep-chung-tet-giap-thin-2024-134606'
+  },
+  {
+    id: 'diendandoanhnghiep',
+    href: 'https://diendandoanhnghiep.vn/hoa-theo-mua-khoi-nghiep-thanh-cong-nho-kinh-doanh-hoa-tuoi-10155786.html'
+  },
   { id: 'vietbao', href: 'https://vietbao.vn/hoa-theo-mua-he-thong-hoa-tuoi-online-uy-tin-tai-tp-hcm-544869.html' },
   { id: 'quangninh', href: 'https://baoquangninh.vn/mau-thiet-ke-hoa-lan-doc-quyen-tai-hoa-theo-mua-3332769.html' },
   { id: 'tayninh', href: 'https://baotayninh.vn/dat-hoa-qua-tang-tai-hoa-theo-mua-nhanh-chong-tiet-kiem-a182597.html' }

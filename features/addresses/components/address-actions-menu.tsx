@@ -6,22 +6,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { useState } from 'react'
-import {
-  CheckmarkCircle02Icon,
-  Delete02Icon,
-  MoreVerticalIcon,
-  PencilEdit02Icon,
-} from '@hugeicons/core-free-icons'
+import { CheckmarkCircle02Icon, Delete02Icon, MoreVerticalIcon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { useState } from 'react'
 import { toast } from 'sonner'
+import { useSetDefaultAddress } from '../hooks/use-set-default-address'
+import type { Address } from '../types'
 import { AddressDeleteDialog } from './address-delete-dialog'
 import { AddressFormDialog } from './address-form-dialog'
-import type { Address } from '../types'
-import { useSetDefaultAddress } from '../hooks/use-set-default-address'
 
 interface AddressActionsMenuProps {
   address: Address
@@ -39,7 +34,7 @@ export function AddressActionsMenu({ address }: AddressActionsMenuProps) {
       toast.success(t('profile.addressDefaultSet'))
     } catch (error) {
       toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined,
+        description: error instanceof Error ? error.message : undefined
       })
     }
   }
@@ -57,14 +52,11 @@ export function AddressActionsMenu({ address }: AddressActionsMenuProps) {
           <HugeiconsIcon icon={PencilEdit02Icon} strokeWidth={1.5} />
           {t('profile.editAddress')}
         </DropdownMenuItem>
-      <DropdownMenuItem
-        onClick={handleSetDefault}
-        disabled={address.isDefault || isSettingDefaultAddress}
-      >
-        <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={1.5} />
-        {address.isDefault ? t('profile.defaultAddress') : t('profile.setDefaultAddress')}
-      </DropdownMenuItem>
-      <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleSetDefault} disabled={address.isDefault || isSettingDefaultAddress}>
+          <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={1.5} />
+          {address.isDefault ? t('profile.defaultAddress') : t('profile.setDefaultAddress')}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           variant='destructive'
           onSelect={(event) => event.preventDefault()}
@@ -74,12 +66,7 @@ export function AddressActionsMenu({ address }: AddressActionsMenuProps) {
           {t('profile.deleteAddress')}
         </DropdownMenuItem>
       </DropdownMenuContent>
-      <AddressFormDialog
-        addressId={address.id}
-        address={address}
-        open={isEditOpen}
-        onOpenChange={setIsEditOpen}
-      />
+      <AddressFormDialog addressId={address.id} address={address} open={isEditOpen} onOpenChange={setIsEditOpen} />
       <AddressDeleteDialog
         addressId={address.id}
         receiverName={address.receiverName}

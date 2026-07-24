@@ -1,6 +1,6 @@
+import type { B2BServiceSlug } from '@/features/b2b/seo'
 import type { Locale } from '@/lib/i18n/routing'
 import type { LocalizedText } from '@/types/config.type'
-import type { B2BServiceSlug } from '@/features/b2b/seo'
 
 // ---------------------------------------------------------------------------
 // Runtime shape of a `b2bServices.<slug>` CMS document (value.value is a JSON

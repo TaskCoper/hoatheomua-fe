@@ -1,7 +1,11 @@
 import { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import z from 'zod'
 
-const hasRichTextContent = (value: string) => value.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim().length > 0
+const hasRichTextContent = (value: string) =>
+  value
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .trim().length > 0
 
 export const createRecruitmentRequestSchema = (t: TranslationFunction) =>
   z
@@ -22,13 +26,11 @@ export const createRecruitmentRequestSchema = (t: TranslationFunction) =>
             field: t('careers.form.role')
           })
         }),
-      coverLetter: z
-        .string()
-        .refine(hasRichTextContent, {
-          error: t('common.validation.required', {
-            field: t('careers.form.coverLetter')
-          })
-        }),
+      coverLetter: z.string().refine(hasRichTextContent, {
+        error: t('common.validation.required', {
+          field: t('careers.form.coverLetter')
+        })
+      }),
       attachments: z.array(
         z.object({
           value: z.string()

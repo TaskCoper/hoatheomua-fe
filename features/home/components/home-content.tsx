@@ -1,13 +1,13 @@
-import bannerOne from '@/public/images/banner-one.webp'
-import saleBanner from '@/public/images/sale-banner.webp'
-import { BANNER_SLOTS } from '@/types/config.type'
-import ConfigurableBanner from '@/shared/components/configurable-banner'
 import CriteriaSection from '@/features/home/components/criteria-section'
-import FloatingPetalsClient from '@/shared/components/floating-petals-client'
 import ShopFreshFlowersSection from '@/features/home/components/shop-fresh-flowers-section'
 import SignatureBouquetsSection from '@/features/home/components/signature-bouquets-section'
 import TestimonialSection from '@/features/home/components/testimonial-section'
 import WhyChooseUsSection from '@/features/home/components/why-choose-us-section'
+import bannerOne from '@/public/images/banner-one.webp'
+import saleBanner from '@/public/images/sale-banner.webp'
+import ConfigurableBanner from '@/shared/components/configurable-banner'
+import FloatingPetalsClient from '@/shared/components/floating-petals-client'
+import { BANNER_SLOTS } from '@/types/config.type'
 
 const bannerWrapperClass =
   'mx-auto w-full max-w-7xl px-4 py-6 mt-4 sm:mt-6 md:mt-8 lg:mt-10 transition-transform duration-500 ease-out hover:-translate-y-2 hover:scale-[1.015] animate-in fade-in slide-in-from-bottom-6 zoom-in-95 duration-700'

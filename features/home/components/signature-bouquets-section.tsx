@@ -1,6 +1,6 @@
-import { getTranslations } from 'next-intl/server'
 import SignatureBouquetsGrid from '@/features/home/components/signature-bouquets-grid'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import { getTranslations } from 'next-intl/server'
 
 export default async function SignatureBouquetsSection() {
   const t = await getTranslations()

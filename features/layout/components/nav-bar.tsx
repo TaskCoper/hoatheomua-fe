@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
+import NavUser from '@/features/layout/components/nav-user'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
@@ -26,7 +27,6 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
-import NavUser from '@/features/layout/components/nav-user'
 
 const NAV_ITEMS = [
   { id: 1, labelKey: 'header.nav.home', href: '/' },

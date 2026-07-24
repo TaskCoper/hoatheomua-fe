@@ -1,6 +1,6 @@
+import HomeHeroVideo from '@/features/home/components/home-hero-video'
 import heroPoster from '@/public/images/hero-poster.svg'
 import Image from 'next/image'
-import HomeHeroVideo from '@/features/home/components/home-hero-video'
 
 interface HomeHeroProps {
   videoSrc?: string | null

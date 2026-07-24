@@ -1,3 +1,4 @@
+import type { PolicySectionData } from '@/features/policies/components/policy-section'
 import type { Locale } from '@/lib/i18n/routing'
 import {
   BankIcon,
@@ -14,7 +15,6 @@ import {
   TicketStarIcon,
   Wallet01Icon
 } from '@hugeicons/core-free-icons'
-import type { PolicySectionData } from '@/features/policies/components/policy-section'
 
 export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
   vi: [

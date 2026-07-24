@@ -1,6 +1,6 @@
+import { hasText, type B2BServiceDetail, type ServiceIcon } from '@/features/b2b/service/palette'
 import type { I18nKey } from '@/lib/i18n/types'
 import { Building03Icon, Calendar03Icon, GiftIcon, HotelIcon, SparklesIcon } from '@hugeicons/core-free-icons'
-import { hasText, type B2BServiceDetail, type ServiceIcon } from '@/features/b2b/service/palette'
 
 // String icon enum (CMS) → Hugeicons component (FE render).
 export const SERVICE_ICONS: Record<ServiceIcon, typeof HotelIcon> = {

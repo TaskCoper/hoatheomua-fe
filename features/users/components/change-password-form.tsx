@@ -5,9 +5,9 @@ import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Spinner } from '@/components/ui/spinner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -17,7 +17,7 @@ import { createChangePasswordSchema, type ChangePasswordFormValues } from '../va
 const defaultValues: ChangePasswordFormValues = {
   currentPassword: '',
   newPassword: '',
-  confirmPassword: '',
+  confirmPassword: ''
 }
 
 export function ChangePasswordForm() {
@@ -30,7 +30,7 @@ export function ChangePasswordForm() {
 
   const methods = useForm<ChangePasswordFormValues>({
     defaultValues,
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema)
   })
 
   const onSubmit = methods.handleSubmit(async (formValues) => {
@@ -43,7 +43,7 @@ export function ChangePasswordForm() {
       toast.success(t('profile.passwordUpdated'))
     } catch (error) {
       toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined,
+        description: error instanceof Error ? error.message : undefined
       })
     }
   })
@@ -73,7 +73,9 @@ export function ChangePasswordForm() {
                   />
                 </InputGroupAddon>
               </InputGroup>
-              <div className='min-h-4'>{fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}</div>
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
             </Field>
           )}
         />
@@ -100,7 +102,9 @@ export function ChangePasswordForm() {
                   />
                 </InputGroupAddon>
               </InputGroup>
-              <div className='min-h-4'>{fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}</div>
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
             </Field>
           )}
         />
@@ -127,7 +131,9 @@ export function ChangePasswordForm() {
                   />
                 </InputGroupAddon>
               </InputGroup>
-              <div className='min-h-4'>{fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}</div>
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
             </Field>
           )}
         />

@@ -1,7 +1,7 @@
 import 'server-only'
 
-import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
 import { parseB2BOverview, type B2BOverview } from '@/features/b2b/overview-palette'
+import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
 
 const B2B_SERVICES_GROUP = 'b2bServices'
 const OVERVIEW_KEY_SUFFIX = 'overview'

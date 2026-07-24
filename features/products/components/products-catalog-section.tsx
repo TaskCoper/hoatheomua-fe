@@ -1,16 +1,16 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
+import ProductGrid from '@/features/products/components/product-grid'
 import { PRICE_MAX, PRICE_MIN } from '@/features/products/constants'
 import { productsSearchParsers } from '@/features/products/search-params'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import type { I18nKey } from '@/lib/i18n/types'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { motion, type Variants } from 'motion/react'
 import { useQueryStates } from 'nuqs'
 import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import ProductGrid from '@/features/products/components/product-grid'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },

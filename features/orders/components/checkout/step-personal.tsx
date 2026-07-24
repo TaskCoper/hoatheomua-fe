@@ -12,12 +12,7 @@ interface StepPersonalProps {
   onSelectAddress: (id: string) => void
 }
 
-export function StepPersonal({
-  addresses,
-  isLoadingAddresses,
-  selectedAddressId,
-  onSelectAddress
-}: StepPersonalProps) {
+export function StepPersonal({ addresses, isLoadingAddresses, selectedAddressId, onSelectAddress }: StepPersonalProps) {
   const { t } = useTranslation()
 
   return (
@@ -32,11 +27,7 @@ export function StepPersonal({
           <Spinner />
         </div>
       ) : (
-        <CheckoutFields
-          addresses={addresses}
-          selectedAddressId={selectedAddressId}
-          onSelectAddress={onSelectAddress}
-        />
+        <CheckoutFields addresses={addresses} selectedAddressId={selectedAddressId} onSelectAddress={onSelectAddress} />
       )}
     </section>
   )

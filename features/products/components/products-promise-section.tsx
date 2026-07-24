@@ -1,8 +1,8 @@
 'use client'
 
-import ConfigurableBanner from '@/shared/components/configurable-banner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import saleBanner from '@/public/images/sale-banner.webp'
+import ConfigurableBanner from '@/shared/components/configurable-banner'
 import { type BannerSlot } from '@/types/config.type'
 import { DeliveryTruck01Icon, Flower2Icon, MessageMultiple02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'

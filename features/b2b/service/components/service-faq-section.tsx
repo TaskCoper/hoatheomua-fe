@@ -1,15 +1,15 @@
 'use client'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { petalCard, Reveal, SectionHeading } from '@/features/b2b/service/components/editorial'
+import ServiceImageDivider from '@/features/b2b/service/components/service-image-divider'
+import { pick, type B2BServiceDetail, type FaqItem } from '@/features/b2b/service/palette'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import type { Locale } from '@/lib/i18n/routing'
 import { cn } from '@/shared/utils'
 import type { ContactConfigItem } from '@/types/config.type'
 import { useTranslations } from 'next-intl'
 import type { ReactNode } from 'react'
-import { pick, type B2BServiceDetail, type FaqItem } from '@/features/b2b/service/palette'
-import { petalCard, Reveal, SectionHeading } from '@/features/b2b/service/components/editorial'
-import ServiceImageDivider from '@/features/b2b/service/components/service-image-divider'
 
 // Answers may embed a single `<zalo>…</zalo>` marker that becomes a Zalo deep-link.
 const ZALO_MARKER = /<zalo>([\s\S]*?)<\/zalo>/

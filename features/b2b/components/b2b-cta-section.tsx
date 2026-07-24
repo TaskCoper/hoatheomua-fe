@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { pick, type OverviewCta } from '@/features/b2b/overview-palette'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
@@ -8,7 +9,6 @@ import type { ContactConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon, Mail01Icon, PhoneCheckIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { pick, type OverviewCta } from '@/features/b2b/overview-palette'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },

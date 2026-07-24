@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import flower from '@/public/images/flower.png'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import {
   Building02Icon,
   CherryIcon,
@@ -16,7 +17,6 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 
 const HIGHLIGHTS = [
   { icon: Flower2Icon, labelKey: 'products.hero.highlights.seasons' },

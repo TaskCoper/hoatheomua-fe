@@ -1,7 +1,7 @@
 'use client'
 
-import { useSelectedLayoutSegment } from 'next/navigation'
 import NavShell from '@/features/layout/components/nav-shell'
+import { useSelectedLayoutSegment } from 'next/navigation'
 
 export default function PublicHeader() {
   const segment = useSelectedLayoutSegment()

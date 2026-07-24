@@ -1,12 +1,12 @@
 'use client'
 
+import DecorImage from '@/features/about/components/about-decor-image'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import flower from '@/public/images/about-avatar.png'
 import { Calendar03Icon, QuoteUpIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
-import DecorImage from '@/features/about/components/about-decor-image'
 
 const STORY_PARAGRAPH_KEYS = ['about.hero.story1', 'about.hero.story2', 'about.hero.story3'] as const
 

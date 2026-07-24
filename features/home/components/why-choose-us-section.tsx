@@ -1,7 +1,7 @@
 import banner from '@/public/images/banner.webp'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { getTranslations } from 'next-intl/server'
 import Image from 'next/image'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 
 const WHY_CHOOSE_FEATURES = [
   {

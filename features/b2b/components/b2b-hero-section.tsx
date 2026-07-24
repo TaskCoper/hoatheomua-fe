@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { pick, type OverviewHero } from '@/features/b2b/overview-palette'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
 import { ArrowRight02Icon, Leaf01Icon, SparklesIcon } from '@hugeicons/core-free-icons'
@@ -12,7 +13,6 @@ import Lightbox from 'yet-another-react-lightbox'
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
 import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
-import { pick, type OverviewHero } from '@/features/b2b/overview-palette'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },

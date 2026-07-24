@@ -1,6 +1,6 @@
-import { getTranslations } from 'next-intl/server'
 import FlowersCarousel from '@/features/home/components/flowers-carousel'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import { getTranslations } from 'next-intl/server'
 
 export default async function ShopFreshFlowersSection() {
   const t = await getTranslations()

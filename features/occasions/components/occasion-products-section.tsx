@@ -1,13 +1,13 @@
 'use client'
 
+import OccasionCampaignBanner from '@/features/occasions/components/occasion-campaign-banner'
+import ProductGrid from '@/features/products/components/product-grid'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import type { BaseCard, LocalizedText } from '@/types/config.type'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import ProductGrid from '@/features/products/components/product-grid'
-import OccasionCampaignBanner from '@/features/occasions/components/occasion-campaign-banner'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },

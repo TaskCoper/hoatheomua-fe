@@ -1,9 +1,9 @@
 'use client'
 
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { cn } from '@/shared/utils'
 import type { ServiceSection } from '@/features/b2b/service/content'
 import { useScrollSpy } from '@/features/b2b/service/hooks/use-scroll-spy'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { cn } from '@/shared/utils'
 
 export default function ServiceToc({ sections }: { sections: ServiceSection[] }) {
   const { t } = useTranslation()
