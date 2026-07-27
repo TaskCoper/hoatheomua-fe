@@ -3,19 +3,17 @@ import 'server-only'
 import { getQueryClient } from '@/lib/react-query-client'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
+import type { GetProductsParams } from './hooks/use-get-products'
 import { fetchProductDetail, productListQuery } from './queries'
-import type { ProductListParams } from './services'
 import productService from './services'
-import type { ProductListResponse } from './types'
 
 export const PRODUCTS_CACHE_TAG = 'products'
 
-export const getCachedProducts = (params: ProductListParams, locale: string) =>
-  unstable_cache(
-    () => productService.getProducts({ ...params, locale }),
-    ['products-list', locale, JSON.stringify(params)],
-    { tags: [PRODUCTS_CACHE_TAG], revalidate: 60 }
-  )()
+export const getCachedProducts = (params: GetProductsParams) =>
+  unstable_cache(() => productService.getProducts(params), ['products-list', JSON.stringify(params)], {
+    tags: [PRODUCTS_CACHE_TAG],
+    revalidate: 60
+  })()
 
 /**
  * Returns the most-recent product IDs as strings, suitable for
@@ -27,9 +25,8 @@ export const getCachedProducts = (params: ProductListParams, locale: string) =>
 export async function getAllProductIds(limit = 20): Promise<string[]> {
   try {
     const qc = getQueryClient()
-    const response: ProductListResponse = await qc.fetchQuery(productListQuery({ size: limit }, 'vi'))
-    const items = response.value?.data ?? []
-    return items.map((product) => String(product.id))
+    const response = await qc.fetchQuery(productListQuery({ pageSize: limit }))
+    return response.value.items.map((product) => product.id)
   } catch {
     return []
   }
@@ -38,12 +35,12 @@ export async function getAllProductIds(limit = 20): Promise<string[]> {
 /**
  * React `cache()`-deduped product detail fetcher. Used by both
  * `generateMetadata` and the page so a single backend call serves the whole
- * render pass; the returned envelope is then hydrated into the query client via
- * `setQueryData(productDetailQuery(id, locale).queryKey, envelope)`.
+ * render pass; the returned product is then hydrated into the query client via
+ * `setQueryData(productDetailQuery(id).queryKey, product)`.
  */
-export const getProductDetail = cache(async (id: string, locale: string) => {
+export const getProductDetail = cache(async (id: string) => {
   try {
-    return await fetchProductDetail(id, locale)
+    return await fetchProductDetail(id)
   } catch {
     return null
   }

@@ -1254,7 +1254,7 @@
     },
     "catalog": {
       "title": "Flower Accessories",
-      "description": "Same-day-imported flowers hand-arranged by artisans - a collection curated from color to emotion for every moment.",
+      "description": "Vases and flower-care accessories hand-picked by artisans - the finishing touch that completes every arrangement.",
       "vaseFlowers": {
         "title": "Vase Flowers",
         "description": "Seasonal stems for you to arrange in your favorite vase - fresh, easy to mix, and keeping a quiet rhythm of calm in your space.",
@@ -1270,7 +1270,13 @@
       "priceHeading": "Price range",
       "priceValue": "{min} – {max}",
       "priceAll": "All prices",
+      "priceFrom": "From",
+      "priceTo": "To",
       "reset": "Reset filters",
+      "categoriesPlaceholder": "All categories",
+      "categoriesSearchPlaceholder": "Search categories…",
+      "categoriesEmpty": "No categories found",
+      "more": "+{count}",
       "categories": {
         "eventFlowers": "Event Flowers",
         "daily": "Daily Flowers",
@@ -1290,7 +1296,8 @@
         "r500to1000": "500K – 1M",
         "r1000to2000": "1M – 2M",
         "r2000to5000": "2M – 5M"
-      }
+      },
+      "categoriesSelected": "{count} selected"
     },
     "promise": {
       "bannerAlt": "Hoa Theo Mua fresh flower promotion",

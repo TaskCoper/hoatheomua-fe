@@ -1254,7 +1254,7 @@
     },
     "catalog": {
       "title": "Phụ Kiện Chơi Hoa",
-      "description": "Hoa nhập trong ngày, cắm thủ công bởi nghệ nhân — bộ sưu tập được chăm chút từ sắc màu đến cảm xúc cho từng khoảnh khắc.",
+      "description": "Bình cắm và phụ kiện chơi hoa được nghệ nhân tuyển chọn - điểm chạm hoàn thiện cho mỗi bó hoa thêm trọn vẹn.",
       "vaseFlowers": {
         "title": "Hoa Cắm Bình",
         "description": "Những cành hoa theo mùa để bạn tự cắm vào chiếc bình yêu thích — tươi mới, dễ phối và giữ nhịp bình yên cho không gian sống.",
@@ -1270,7 +1270,13 @@
       "priceHeading": "Khoảng giá",
       "priceValue": "{min} – {max}",
       "priceAll": "Tất cả giá",
+      "priceFrom": "Từ",
+      "priceTo": "Đến",
       "reset": "Đặt lại bộ lọc",
+      "categoriesPlaceholder": "Tất cả danh mục",
+      "categoriesSearchPlaceholder": "Tìm danh mục…",
+      "categoriesEmpty": "Không tìm thấy danh mục",
+      "more": "+{count}",
       "categories": {
         "eventFlowers": "Hoa Sự Kiện",
         "daily": "Hoa Daily",
@@ -1290,7 +1296,8 @@
         "r500to1000": "500K – 1Tr",
         "r1000to2000": "1Tr – 2Tr",
         "r2000to5000": "2Tr – 5Tr"
-      }
+      },
+      "categoriesSelected": "Đã chọn {count}"
     },
     "promise": {
       "bannerAlt": "Ưu đãi hoa tươi Hoa Theo Mùa",

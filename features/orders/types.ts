@@ -117,7 +117,7 @@ export interface OrderDetail {
 export interface OrderItem {
   orderDetailsId: string
   name: string
-  itemId: number
+  itemId: string
   number: number
   price: number
   weight: number

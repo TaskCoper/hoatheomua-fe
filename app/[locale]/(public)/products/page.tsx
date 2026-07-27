@@ -1,9 +1,6 @@
+import categoryService from '@/features/categories/services'
 import ProductsContent from '@/features/products/components/products-content'
-import { DAILY_FLOWER_CATEGORY_IDS, DEFAULT_PRODUCT_SORT, VASE_CATEGORY_IDS } from '@/features/products/constants'
-import { productListQuery } from '@/features/products/queries'
-import { getCachedProducts } from '@/features/products/queries.server'
 import { buildProductsCollectionJsonLd, generateProductsListMetadata } from '@/features/products/seo'
-import type { Product } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
@@ -12,8 +9,8 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 
-const PRODUCTS_PAGE_SIZE = 12
-export const revalidate = 600
+// URL-driven filters (nuqs) make this route request-specific → render on the server per request.
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
@@ -24,27 +21,17 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   const { locale } = await params
   setRequestLocale(locale)
 
-  const listParams = {
-    size: PRODUCTS_PAGE_SIZE,
-    categoryIds: [...VASE_CATEGORY_IDS, ...DAILY_FLOWER_CATEGORY_IDS],
-    sort: DEFAULT_PRODUCT_SORT
-  }
-  const options = productListQuery(listParams, locale)
   const queryClient = getQueryClient()
 
-  let initialItems: Product[] = []
-
   try {
-    const data = await getCachedProducts(listParams, locale)
-    queryClient.setQueryData(options.queryKey, data)
-    initialItems = (data.value?.data ?? []) as Product[]
+    await queryClient.prefetchQuery({ queryKey: ['categories'], queryFn: categoryService.getCategories })
   } catch (error) {
-    console.error('[SSR] products list prefetch failed:', error)
+    console.error('[SSR] categories prefetch failed:', error)
   }
 
   return (
     <>
-      <JsonLd data={buildProductsCollectionJsonLd(locale, initialItems)} />
+      <JsonLd data={buildProductsCollectionJsonLd(locale, [])} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={null}>

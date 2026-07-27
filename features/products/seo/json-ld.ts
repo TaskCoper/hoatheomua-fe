@@ -9,12 +9,6 @@ const priceValidUntil = () => {
   return new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]
 }
 
-const stripHtml = (value: string | null | undefined) =>
-  (value ?? '')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-
 export const buildProductsCollectionJsonLd = (locale: Locale, items: Product[]) => {
   const copy = PRODUCTS_LIST_COPY[locale]
   const path = getProductsListPath(locale)
@@ -29,7 +23,8 @@ export const buildProductsCollectionJsonLd = (locale: Locale, items: Product[]) 
           numberOfItems: items.length,
           itemListElement: items.map((product, index) => {
             const productUrl = getProductUrl(locale, product.id)
-            const available = (product.inventory?.available ?? 0) > 0
+            const available = Number(product.availableForSaleRaw) > 0
+            const price = Number(product.priceRaw)
             return {
               '@type': 'ListItem' as const,
               position: index + 1,
@@ -37,17 +32,17 @@ export const buildProductsCollectionJsonLd = (locale: Locale, items: Product[]) 
               item: {
                 '@type': 'Product' as const,
                 '@id': `${productUrl}#product`,
-                name: product.name,
+                name: product.productName,
                 url: productUrl,
-                sku: String(product.id),
-                ...(product.images?.avatar ? { image: product.images.avatar } : {}),
-                ...(product.prices?.retail
+                sku: product.id,
+                ...(product.coverImage ? { image: product.coverImage } : {}),
+                ...(Number.isFinite(price) && price > 0
                   ? {
                       offers: {
                         '@type': 'Offer',
                         url: productUrl,
                         priceCurrency: 'VND',
-                        price: product.prices.retail,
+                        price,
                         availability: available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
                         itemCondition: 'https://schema.org/NewCondition'
                       }
@@ -81,113 +76,28 @@ export const buildProductsCollectionJsonLd = (locale: Locale, items: Product[]) 
 }
 
 export const buildProductDetailJsonLd = (locale: Locale, product: ProductDetail) => {
-  const productName = product.name ?? 'Hoa Theo Mùa'
+  const productName = product.productName ?? 'Hoa Theo Mùa'
   const productUrl = getProductUrl(locale, product.id)
-  const childs = product.childs ?? []
 
-  const parentAvatar = product.images?.avatar
-  const bestAvatar =
-    parentAvatar ?? childs.find((child) => child.images?.avatar)?.images?.avatar ?? PRODUCT_DEFAULT_FALLBACK_IMAGE
-  const allImages = Array.from(
-    new Set(
-      [
-        parentAvatar,
-        ...(product.images?.others ?? []),
-        ...childs.map((child) => child.images?.avatar),
-        ...childs.flatMap((child) => child.images?.others ?? [])
-      ].filter((url): url is string => typeof url === 'string' && url.startsWith('http'))
-    )
-  )
-
-  const parentInStock = (product.inventory?.available ?? 0) > 0
-  const anyChildInStock = childs.some((child) => (child.inventory?.available ?? 0) > 0)
-  const inStock = parentInStock || anyChildInStock
-
-  const description =
-    stripHtml(product.description) ||
-    stripHtml(childs.find((child) => stripHtml(child.description))?.description) ||
-    `${productName} — Hoa Theo Mùa`
+  const bestAvatar = product.coverImage ?? PRODUCT_DEFAULT_FALLBACK_IMAGE
+  const inStock = (product.availableForSale ?? 0) > 0
+  const description = `${productName} — Hoa Theo Mùa`
 
   const listCopy = PRODUCTS_LIST_COPY[locale]
   const breadcrumbId = `${productUrl}#breadcrumb`
   const availability = inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'
+  const price = product.price ?? 0
 
-  const variantOffers = childs
-    .map((child) => ({
-      price: child.prices?.retail ?? 0,
-      available: (child.inventory?.available ?? 0) > 0,
-      sku: child.code || `htm-${child.id}`,
-      name: child.name ?? productName
-    }))
-    .filter((offer) => offer.price > 0)
-
-  const parentPrice = product.prices?.retail ?? 0
-  const priceCandidates =
-    variantOffers.length > 0 ? variantOffers.map((o) => o.price) : parentPrice > 0 ? [parentPrice] : []
-  const useAggregate = variantOffers.length > 1
-  const lowPrice = priceCandidates.length > 0 ? Math.min(...priceCandidates) : 0
-  const highPrice = priceCandidates.length > 0 ? Math.max(...priceCandidates) : 0
-
-  const offers = useAggregate
-    ? {
-        '@type': 'AggregateOffer',
-        url: productUrl,
-        priceCurrency: 'VND',
-        lowPrice,
-        highPrice,
-        offerCount: variantOffers.length,
-        availability,
-        offers: variantOffers.map((offer) => ({
-          '@type': 'Offer',
-          url: productUrl,
-          priceCurrency: 'VND',
-          price: offer.price,
-          priceValidUntil: priceValidUntil(),
-          availability: offer.available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-          itemCondition: 'https://schema.org/NewCondition',
-          sku: offer.sku,
-          seller: { '@id': ORGANIZATION_ID }
-        }))
-      }
-    : {
-        '@type': 'Offer',
-        url: productUrl,
-        priceCurrency: 'VND',
-        price: lowPrice || parentPrice,
-        priceValidUntil: priceValidUntil(),
-        availability,
-        itemCondition: 'https://schema.org/NewCondition',
-        seller: { '@id': ORGANIZATION_ID }
-      }
-
-  const hasVariant = childs
-    .filter((child) => (child.attributes?.length ?? 0) > 0 || child.images?.avatar || (child.prices?.retail ?? 0) > 0)
-    .map((child) => ({
-      '@type': 'Product',
-      '@id': `${productUrl}#variant-${child.id}`,
-      name: child.name ?? productName,
-      sku: child.code || `htm-${child.id}`,
-      ...(child.images?.avatar ? { image: child.images.avatar } : {}),
-      ...(child.attributes?.length
-        ? {
-            additionalProperty: child.attributes.map((attribute) => ({
-              '@type': 'PropertyValue',
-              name: attribute.name,
-              value: attribute.value
-            }))
-          }
-        : {}),
-      offers: {
-        '@type': 'Offer',
-        url: productUrl,
-        priceCurrency: 'VND',
-        price: child.prices?.retail ?? 0,
-        availability:
-          (child.inventory?.available ?? 0) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-        itemCondition: 'https://schema.org/NewCondition',
-        seller: { '@id': ORGANIZATION_ID }
-      }
-    }))
+  const offers = {
+    '@type': 'Offer',
+    url: productUrl,
+    priceCurrency: 'VND',
+    price,
+    priceValidUntil: priceValidUntil(),
+    availability,
+    itemCondition: 'https://schema.org/NewCondition',
+    seller: { '@id': ORGANIZATION_ID }
+  }
 
   return {
     '@context': 'https://schema.org',
@@ -198,14 +108,13 @@ export const buildProductDetailJsonLd = (locale: Locale, product: ProductDetail)
         url: productUrl,
         name: productName,
         description,
-        image: allImages.length > 0 ? allImages : [bestAvatar],
-        sku: product.code || `htm-${product.id}`,
-        mpn: product.code || `htm-${product.id}`,
+        image: [bestAvatar],
+        sku: product.productCode || `htm-${product.id}`,
+        mpn: product.productCode || `htm-${product.id}`,
         inLanguage: inLanguage(locale),
-        category: product.category?.name ?? undefined,
-        brand: { '@type': 'Brand', name: product.brand?.name ?? 'Hoa Theo Mùa' },
-        offers,
-        ...(hasVariant.length > 0 ? { hasVariant } : {})
+        category: product.categoryName ?? undefined,
+        brand: { '@type': 'Brand', name: product.brand ?? 'Hoa Theo Mùa' },
+        offers
       },
       buildBreadcrumbList(locale, breadcrumbId, [
         { name: listCopy.breadcrumb, url: getProductsListUrl(locale) },

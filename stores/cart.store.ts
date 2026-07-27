@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
 export const CART_STORAGE_KEY = 'shopping-cart-v1'
-export const CART_PERSIST_VERSION = 1
+export const CART_PERSIST_VERSION = 2
 
 export const MIN_QUANTITY = 1
 export const MAX_QUANTITY = 99
@@ -11,7 +11,7 @@ export type CartSelectedOptions = Record<string, string>
 
 export interface CartItem {
   lineId: string
-  productId: number
+  productId: string
   variantId: number | null
   quantity: number
   selectedOptions: CartSelectedOptions
@@ -20,14 +20,14 @@ export interface CartItem {
 }
 
 export interface AddCartItemInput {
-  productId: number
+  productId: string
   variantId?: number | null
   quantity?: number
   selectedOptions?: CartSelectedOptions
 }
 
 export interface CheckoutCartItem {
-  productId: number
+  productId: string
   variantId: number | null
   quantity: number
   selectedOptions: CartSelectedOptions
@@ -64,7 +64,7 @@ function normalizeSelectedOptions(value: unknown): CartSelectedOptions {
   return Object.fromEntries(entries) as CartSelectedOptions
 }
 
-export function buildLineId(productId: number, variantId: number | null, selectedOptions: CartSelectedOptions): string {
+export function buildLineId(productId: string, variantId: number | null, selectedOptions: CartSelectedOptions): string {
   const normalizedOptions = normalizeSelectedOptions(selectedOptions)
   const optionsKey = Object.keys(normalizedOptions).length ? JSON.stringify(Object.entries(normalizedOptions)) : ''
   return `p:${productId}|v:${variantId ?? 'none'}|o:${optionsKey}`
@@ -83,8 +83,8 @@ export function sanitizeItems(input: unknown): CartItem[] {
     if (!raw || typeof raw !== 'object') continue
     const candidate = raw as Record<string, unknown>
 
-    const productId = typeof candidate.productId === 'number' ? candidate.productId : NaN
-    if (!Number.isFinite(productId)) continue
+    const productId = typeof candidate.productId === 'string' ? candidate.productId : ''
+    if (!productId) continue
 
     const variantId =
       typeof candidate.variantId === 'number' && Number.isFinite(candidate.variantId) ? candidate.variantId : null

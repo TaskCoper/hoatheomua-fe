@@ -54,7 +54,6 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueries, useQueryClient } from '@tanstack/react-query'
-import { useLocale } from 'next-intl'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
@@ -174,7 +173,6 @@ interface OrderDetailContentProps {
 }
 
 function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProps) {
-  const locale = useLocale()
   const router = useRouter()
   const isPaid = order.status === OrderStatus.Paid
   const isPendingOrder = order.status === OrderStatus.Pending
@@ -219,14 +217,14 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.itemId))), [items])
 
   const productQueries = useQueries({
-    queries: productIds.map((id) => productDetailQuery(String(id), locale))
+    queries: productIds.map((id) => productDetailQuery(id))
   })
 
   const productById = useMemo(() => {
-    const map = new Map<number, ProductDetail | null>()
+    const map = new Map<string, ProductDetail | null>()
     productIds.forEach((id, index) => {
       const query = productQueries[index]
-      map.set(id, (query?.data?.value?.data as ProductDetail | undefined) ?? null)
+      map.set(id, query?.data ?? null)
     })
     return map
   }, [productIds, productQueries])
@@ -363,8 +361,8 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 <ul className='divide-y divide-border/60'>
                   {items.map((item) => {
                     const product = productById.get(item.itemId) ?? null
-                    const avatar = product?.images?.avatar ?? null
-                    const displayName = product?.name ?? item.name
+                    const avatar = product?.coverImage ?? null
+                    const displayName = product?.productName ?? item.name
                     return (
                       <li key={item.orderDetailsId} className='flex items-center gap-3 py-3 first:pt-0 last:pb-0'>
                         {product?.id ? (

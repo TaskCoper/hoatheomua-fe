@@ -1,12 +1,11 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import type { Product } from '@/features/products/types'
+import type { ProductDetail } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import { FavouriteIcon, FlowerIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
+import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
@@ -35,17 +34,18 @@ export default function ProductCard({
   isActive = false,
   onHoverStart
 }: {
-  product: Product
+  product: ProductDetail
   eager?: boolean
   isActive?: boolean
   onHoverStart?: () => void
 }) {
   const { t } = useTranslation()
-  const retail = product.prices?.retail ?? 0
-  const oldPrice = product.prices?.old ?? 0
+  const name = product.productName ?? ''
+  const retail = product.price ?? 0
+  const oldPrice = product.oldPrice ?? 0
   const hasDiscount = oldPrice > retail
   const discountPercent = hasDiscount ? Math.round(((oldPrice - retail) / oldPrice) * 100) : 0
-  const avatar = product.images?.avatar
+  const avatar = product.coverImage
 
   return (
     <motion.article
@@ -70,7 +70,7 @@ export default function ProductCard({
           {avatar ? (
             <Image
               src={avatar}
-              alt={product.name}
+              alt={name}
               fill
               loading={eager ? 'eager' : 'lazy'}
               priority={eager}
@@ -121,24 +121,6 @@ export default function ProductCard({
               </Badge>
             </motion.span>
           ) : null}
-
-          <motion.div
-            whileHover={{ scale: 1.15, rotate: -8 }}
-            whileTap={{ scale: 0.92 }}
-            transition={{ type: 'spring', stiffness: 380, damping: 12 }}
-            className='absolute right-3 top-3'
-          >
-            <Button
-              type='button'
-              variant='outline'
-              size='icon-sm'
-              className='rounded-full bg-card/95 text-foreground shadow-sm hover:text-rose-500'
-              aria-label={t('products.card.addToFavorites', { name: product.name })}
-              onClick={(event) => event.preventDefault()}
-            >
-              <HugeiconsIcon icon={FavouriteIcon} className='size-4' />
-            </Button>
-          </motion.div>
         </Link>
 
         <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
@@ -146,7 +128,7 @@ export default function ProductCard({
             <Tooltip>
               <TooltipTrigger asChild>
                 <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg truncate'>
-                  {product.name}
+                  {name}
                 </h2>
               </TooltipTrigger>
 
@@ -154,35 +136,18 @@ export default function ProductCard({
                 className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
                 iconClassName=' bg-white fill-white'
               >
-                {product.name}
+                {name}
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
-          <div className='mt-1 flex items-end justify-between gap-3'>
-            <div className='-space-y-0.5'>
-              {hasDiscount ? (
-                <p className='text-[0.625rem] text-muted-foreground line-through'>{formatVnd(oldPrice)}</p>
-              ) : (
-                <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>
-              )}
-              <p className='font-title text-sm font-bold text-primary sm:text-base'>{formatVnd(retail)}</p>
-            </div>
-
-            <motion.div
-              whileHover={{ scale: 1.15, rotate: -12 }}
-              whileTap={{ scale: 0.92 }}
-              transition={{ type: 'spring', stiffness: 380, damping: 12 }}
-            >
-              <Button
-                type='button'
-                size='icon'
-                className='rounded-full hover:bg-foreground'
-                aria-label={t('products.card.addToCart', { name: product.name })}
-              >
-                <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-              </Button>
-            </motion.div>
+          <div className='-space-y-0.5 mt-1'>
+            {hasDiscount ? (
+              <p className='text-[0.625rem] text-muted-foreground line-through'>{formatVnd(oldPrice)}</p>
+            ) : (
+              <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>
+            )}
+            <p className='font-title text-sm font-bold text-primary sm:text-base'>{formatVnd(retail)}</p>
           </div>
         </div>
       </div>

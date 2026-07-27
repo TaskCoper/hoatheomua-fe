@@ -1,6 +1,5 @@
 import HomeContent from '@/features/home/components/home-content'
 import { buildHomeJsonLd, generateHomeMetadata } from '@/features/home/seo'
-import { DEFAULT_PRODUCT_SORT } from '@/features/products/constants'
 import { productListQuery } from '@/features/products/queries'
 import { getCachedProducts } from '@/features/products/queries.server'
 import { routing, type Locale } from '@/lib/i18n/routing'
@@ -12,7 +11,7 @@ import { hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 
 const SIGNATURE_BOUQUETS_SIZE = 6
-const SIGNATURE_BOUQUETS_CATEGORY_ID = [58901]
+const SIGNATURE_BOUQUETS_CATEGORY_ID = ['aeccf4a7-7f76-45ac-856b-668866950bd0']
 
 export const revalidate = 600
 
@@ -30,14 +29,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
 
   const queryClient = getQueryClient()
   const listParams = {
-    size: SIGNATURE_BOUQUETS_SIZE,
-    categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID,
-    sort: DEFAULT_PRODUCT_SORT
+    pageSize: SIGNATURE_BOUQUETS_SIZE,
+    categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID
   }
-  const options = productListQuery(listParams, locale)
+  const options = productListQuery(listParams)
 
   try {
-    const data = await getCachedProducts(listParams, locale)
+    const data = await getCachedProducts(listParams)
     queryClient.setQueryData(options.queryKey, data)
   } catch (error) {
     console.error('[SSR] home signature bouquets prefetch failed:', error)

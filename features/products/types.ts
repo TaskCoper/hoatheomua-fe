@@ -1,249 +1,302 @@
-import type { BaseResponse } from '@/lib/axios'
+import { Category } from '../categories/types'
 
-export interface ProductListPayload {
-  code: number
-  data: Product[]
-  paginator?: {
-    next: { id: number } | null
-  }
+/** A product's category membership plus whether that specific product ↔ category pair is pinned. */
+export interface ProductCategory extends Category {
+  isPinned: boolean
 }
 
-export interface ProductDetailPayload {
-  code: number
-  data: ProductDetail | null
-}
+export interface Product {
+  id: string
+  isPinned: boolean
+  categories: ProductCategory[]
 
-export type ProductListResponse = BaseResponse<ProductListPayload>
-export type ProductDetailResponse = BaseResponse<ProductDetailPayload>
+  sourceRowNumber: number
 
-export interface Product extends ProductBase {
-  priceVatMode: number
-  importPriceVatMode: number
-  categoryIds: number
-  internalCategoryId: number
-  brandId: number
-  type: number
-  inventory: ProductInventory
-}
+  // A - ID sản phẩm
+  nhanhProductId: string | null
 
-export interface ProductDetail {
-  id: number
-  parentId: number
-  code: string | null
+  // B - Id sản phẩm cha
+  parentProductId: string | null
+
+  // C - Mã sản phẩm cha
+  parentProductCode: string | null
+
+  // D - Tên sản phẩm cha
+  parentProductName: string | null
+
+  // E - Mã vạch
   barcode: string | null
-  name: string | null
-  status: number
-  category: ProductCategory | null
-  categoryId: number
-  internalCategory: ProductCategory | null
-  prices: ProductPrices | null
-  vat: number
-  images: ProductImages | null
-  warranty: unknown
-  brand: ProductCommonInfo | null
-  brandId: number | null
-  type: ProductCommonInfo | null
-  shipping: ProductShipping | null
-  countryName: string | null
-  units: ProductDetailUnits | null
-  combos: ProductCombo[]
-  inventory: ProductDetailInventory | null
-  attributes: ProductDetailAttribute[]
-  updatedAt: number
-  createdAt: number
-  description: string | null
-  content: string | null
-  suppliers: ProductDetailSupplier[]
-  videos: ProductDetailVideo[]
-  branchPrices: ProductBranchPrice[]
-  childs: ProductDetail[]
-}
 
-export interface ProductBase {
-  id: number
-  parentId: number
-  code: string
-  barcode: string
-  name: string
-  status: number
-  prices: ProductPrices
-  images: ProductImages
-  warranty: ProductWarranty[]
-  shipping: ProductShipping
-  countryName: string | null
-  units: ProductUnits
-  combos: ProductCombo[]
-  attributes: ProductAttribute[]
-  updatedAt: number
-  createdAt: number
-}
+  // F - Loại sản phẩm
+  productType: string | null
 
-export interface ProductPrices {
-  retail: number
-  retailVat: number
-  import: number
-  importVat: number
-  old: number
-  wholesale: number
-  avgCost: number
-}
+  // G - Mã sản phẩm
+  productCode: string | null
 
-export interface ProductImages {
-  avatar: string | null
-  others: string[]
-}
+  // H - Tên sản phẩm
+  productName: string | null
 
-export interface ProductShipping {
-  width: number
-  height: number
-  length: number
-  weight: number
-}
+  // I - Tên khác
+  otherName: string | null
 
-export interface ProductUnits {
-  name: string | null
-  list: ProductUnit[]
-}
+  // J - Đơn vị tính
+  unit: string | null
 
-export interface ProductUnit {
-  id: number
-  name: string
-  quantity: number
-  price: ProductUnitPrice
-}
+  // K - Link ảnh sản phẩm
+  coverImage: string | null
 
-export interface ProductUnitPrice {
-  retail: number
-  import: number
-  wholesale: number
-}
+  // L - Số tháng bảo hành
+  warrantyMonthsRaw: string | null
 
-/**
- * Units shape from product detail API. `list` is keyed by unit category
- * (e.g. variant group), with each entry containing the actual units.
- */
-export interface ProductDetailUnits {
-  name: string | null
-  list: Record<string, ProductUnit[]> | null
-}
+  // M - Cân nặng cả vỏ hộp
+  weightRaw: string | null
 
-export interface ProductCombo {
-  id: number
-  code: string | null
-  name: string | null
-  quantity: number
-}
+  // N - Giá nhập
+  importPriceRaw: string | null
 
-/**
- * Inventory shape from product list API.
- */
-export interface ProductInventory {
-  remain: number
-  shipping: number
-  damaged: number
-  holding: number
+  // O - VAT nhập
+  importVatRaw: string | null
 
-  /**
-   * API field is spelled `transfering`, keep exact key from response.
-   */
-  transfering: number
+  // P - Giá nhập + VAT
+  importPriceWithVatRaw: string | null
 
-  available: number
-  warranty: ProductInventoryWarranty
-  depots: ProductDepotInventory[]
-}
+  // Q - Vat Mode giá nhập
+  importVatMode: string | null
 
-export interface ProductInventoryWarranty {
-  remain: number
-  holding: number
-}
+  // R - Giá bán
+  priceRaw: string | null
 
-export interface ProductDepotInventory {
-  id: number
-  remain: number
-  shipping: number
-  damaged: number
-  holding: number
-  transfering: number
-  available: number
-  warranty: ProductInventoryWarranty
-}
+  // S - Giá bán + VAT
+  priceWithVatRaw: string | null
 
-/**
- * Inventory shape from product detail API. `warranty` is flexible: backend may
- * return either a primitive (e.g. `0`) or an object — kept loose to match.
- */
-export interface ProductDetailInventory {
-  remain: number
-  shipping: number
-  damaged: number
-  holding: number
-  transfering: number
-  warranty: number | ProductInventoryWarranty | null
-  warrantyHolding: number
-  holdingNew: number
-  shippingExport: number
-  available: number
-  depots: ProductDetailDepotInventory[]
-}
+  // T - Giá bán chi nhánh
+  branchPriceRaw: string | null
 
-export interface ProductDetailDepotInventory {
-  id: number
-  remain: number
-  shipping: number
-  damaged: number
-  holding: number
-  transfering: number
-  warranty: number | ProductInventoryWarranty | null
-  warrantyHolding: number
-  holdingNew: number
-  shippingExport: number
-  available: number
-}
+  // U - Giá bán chi nhánh có VAT
+  branchPriceWithVatRaw: string | null
 
-export interface ProductCategory {
-  id: number
-  code: string | null
-  name: string | null
+  // V - Vat mode giá bán
+  saleVatMode: string | null
+
+  // W - Giá cũ
+  oldPriceRaw: string | null
+
+  // X - VAT
+  vatRaw: string | null
+
+  // Y - % Lợi nhuận
+  profitPercentageRaw: string | null
+
+  // Z - Giá vốn
+  costPriceRaw: string | null
+
+  // AA - Giá sỉ
+  wholesalePriceRaw: string | null
+
+  // AB - Giá sỉ + VAT
+  wholesalePriceWithVatRaw: string | null
+
+  // AC - Giá sỉ chi nhánh
+  wholesaleBranchPriceRaw: string | null
+
+  // AD - Giá sỉ chi nhánh có VAT
+  wholesaleBranchPriceWithVatRaw: string | null
+
+  // AE - Tổng tồn
+  totalStockRaw: string | null
+
+  // AF - Đang chuyển kho
+  stockTransferringRaw: string | null
+
+  // AG - Tồn
+  stockRaw: string | null
+
+  // AH - Đang Giao hàng
+  deliveringStockRaw: string | null
+
+  // AI - Tồn trong kho
+  warehouseStockRaw: string | null
+
+  // AJ - Lỗi
+  stockErrorRaw: string | null
+
+  // AK - Tạm giữ
+  heldRaw: string | null
+
+  // AL - Có thể bán
+  availableForSaleRaw: string | null
+
+  // AM - Bảo hành (tồn)
+  warrantyStockRaw: string | null
+
+  // AN - Tạm giữ linh kiện
+  heldComponentsRaw: string | null
+
+  // AO - Chờ nhập hàng
+  pendingImportStockRaw: string | null
+
+  // AP - Đặt trước
+  preOrderRaw: string | null
+
+  // AQ - Trạng thái
+  status: string | null
+
+  // AR - Mã danh mục
+  categoryCode: string | null
+
+  // AS - Danh mục
+  categoryName: string | null
+
+  // AT - Mã danh mục nội bộ
+  internalCategoryCode: string | null
+
+  // AU - Thương hiệu
+  brand: string | null
+
+  // AV - Nhà cung cấp
+  supplier: string | null
+
+  // AW - Địa chỉ bảo hành
+  warrantyAddress: string | null
+
+  // AX - Link trên website
+  slug: string | null
+
+  // AY - Chiều dài
+  lengthRaw: string | null
+
+  // AZ - Chiều rộng
+  widthRaw: string | null
+
+  // BA - Chiều cao
+  heightRaw: string | null
+
+  // BB - Thứ tự trên Website
+  webOrderRaw: string | null
+
+  // BC - Ngày tạo
+  nhanhCreatedAtRaw: string | null
+
+  // BD - Nhãn sản phẩm
+  productLabel: string | null
+
+  // BE - Giá bán chi nhánh (trùng)
+  branchPriceDuplicateRaw: string | null
+
+  // BF - Giá sỉ chi nhánh (trùng)
+  wholesaleBranchPriceDuplicateRaw: string | null
+
+  // BG - Giá Tiền
+  priceLabel: string | null
+
+  // BH - Kích thước
+  size: string | null
+
+  // BI - Màu sắc
+  color: string | null
+
+  // BJ - Xuất xứ
+  origin: string | null
 }
 
 /**
- * Shared id/name shape used by `brand`, `type`, and branch references.
+ * Slim product shape returned by GET /products-pin — the pinned storefront list.
+ * Distinct from the full catalog `Product` row: prices arrive already parsed as numbers
+ * and it carries an explicit sort `position`.
  */
-export interface ProductCommonInfo {
-  id: number
-  name: string | null
+export interface PinnedProduct {
+  productId: string
+  productCode: string | null
+  productName: string | null
+  coverImage: string | null
+  price: number | null
+  oldPrice: number | null
+  position: number | null
 }
 
-export interface ProductWarranty {
-  // Unknown because sample is always []
-  [key: string]: unknown
-}
+type ProductRawFieldKey =
+  | 'warrantyMonthsRaw'
+  | 'weightRaw'
+  | 'importPriceRaw'
+  | 'importVatRaw'
+  | 'importPriceWithVatRaw'
+  | 'priceRaw'
+  | 'priceWithVatRaw'
+  | 'branchPriceRaw'
+  | 'branchPriceWithVatRaw'
+  | 'oldPriceRaw'
+  | 'vatRaw'
+  | 'profitPercentageRaw'
+  | 'costPriceRaw'
+  | 'wholesalePriceRaw'
+  | 'wholesalePriceWithVatRaw'
+  | 'wholesaleBranchPriceRaw'
+  | 'wholesaleBranchPriceWithVatRaw'
+  | 'totalStockRaw'
+  | 'stockTransferringRaw'
+  | 'stockRaw'
+  | 'deliveringStockRaw'
+  | 'warehouseStockRaw'
+  | 'stockErrorRaw'
+  | 'heldRaw'
+  | 'availableForSaleRaw'
+  | 'warrantyStockRaw'
+  | 'heldComponentsRaw'
+  | 'pendingImportStockRaw'
+  | 'preOrderRaw'
+  | 'lengthRaw'
+  | 'widthRaw'
+  | 'heightRaw'
+  | 'webOrderRaw'
+  | 'nhanhCreatedAtRaw'
+  | 'branchPriceDuplicateRaw'
+  | 'wholesaleBranchPriceDuplicateRaw'
 
-export interface ProductAttribute {
-  // Unknown because sample is always []
-  [key: string]: unknown
-}
+export interface ProductDetail extends Omit<Product, ProductRawFieldKey> {
+  warrantyMonths: number | null
+  weight: number | null
+  importPrice: number | null
+  importVat: number | null
+  importPriceWithVat: number | null
 
-export interface ProductDetailAttribute {
-  id: number
-  name: string | null
-  value: string | null
-}
+  price: number | null
+  priceWithVat: number | null
+  branchPrice: number | null
+  branchPriceWithVat: number | null
 
-export interface ProductDetailSupplier {
-  id: number
-  name: string | null
-  mobile: string | null
-}
+  oldPrice: number | null
+  vat: number | null
+  profitPercentage: number | null
+  costPrice: number | null
 
-export interface ProductDetailVideo {
-  title: string | null
-  src: string | null
-}
+  wholesalePrice: number | null
+  wholesalePriceWithVat: number | null
+  wholesaleBranchPrice: number | null
+  wholesaleBranchPriceWithVat: number | null
 
-export interface ProductBranchPrice {
-  branch: ProductCommonInfo | null
-  price: number
-  wholesalePrice: number
+  totalStock: number | null
+  stockTransferring: number | null
+  stock: number | null
+  deliveringStock: number | null
+  warehouseStock: number | null
+  stockError: number | null
+  held: number | null
+  availableForSale: number | null
+  warrantyStock: number | null
+  heldComponents: number | null
+  pendingImportStock: number | null
+  preOrder: number | null
+
+  length: number | null
+  width: number | null
+  height: number | null
+
+  webOrder: number | null
+  nhanhCreatedAt: string | null
+
+  branchPriceDuplicate: number | null
+  wholesaleBranchPriceDuplicate: number | null
+
+  createdAt: string
+  updatedAt: string | null
 }

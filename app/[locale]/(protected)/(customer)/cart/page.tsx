@@ -21,13 +21,10 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueries } from '@tanstack/react-query'
 import { motion, type Variants } from 'motion/react'
-import { useLocale } from 'next-intl'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 
-const ACTIVE_PRODUCT_STATUS = 1
-
-type UnavailableReason = 'missing' | 'inactive' | 'out-of-stock'
+type UnavailableReason = 'missing' | 'out-of-stock'
 
 interface MergedCartLine {
   cartItem: CartItem
@@ -70,7 +67,6 @@ export default function CartPage() {
 
   const router = useRouter()
   const setCheckoutIntent = useCheckoutIntentStore((state) => state.setIntent)
-  const locale = useLocale()
   const hasHydrated = useCartHydrated()
   const items = useCartStore((state) => state.items)
 
@@ -88,15 +84,15 @@ export default function CartPage() {
   )
 
   const productQueries = useQueries({
-    queries: productIds.map((id) => productDetailQuery(String(id), locale))
+    queries: productIds.map((id) => productDetailQuery(id))
   })
 
   const productStateById = useMemo(() => {
-    const map = new Map<number, { product: ProductDetail | null; isResolving: boolean }>()
+    const map = new Map<string, { product: ProductDetail | null; isResolving: boolean }>()
     productIds.forEach((id, index) => {
       const query = productQueries[index]
       map.set(id, {
-        product: (query?.data?.value?.data as ProductDetail | undefined) ?? null,
+        product: query?.data ?? null,
         isResolving: !query || query.isLoading
       })
     })
@@ -109,10 +105,10 @@ export default function CartPage() {
       const product = state?.product ?? null
       const isResolving = state?.isResolving ?? true
 
-      const rawStock = product?.inventory?.available
+      const rawStock = product?.availableForSale
       const isStockKnown = typeof rawStock === 'number' && Number.isFinite(rawStock) && rawStock >= 0
       const stock = isStockKnown ? rawStock : null
-      const unitPrice = product?.prices?.retail ?? 0
+      const unitPrice = product?.price ?? 0
       const lineSubtotal = unitPrice * cartItem.quantity
 
       const base = {
@@ -142,18 +138,6 @@ export default function CartPage() {
           isUnavailable: true,
           unavailableReason: 'missing',
           stock: null,
-          isOverStock: false,
-          isSelectable: false
-        }
-      }
-
-      if (product.status !== ACTIVE_PRODUCT_STATUS) {
-        return {
-          ...base,
-          isResolving: false,
-          isUnavailable: true,
-          unavailableReason: 'inactive',
-          stock,
           isOverStock: false,
           isSelectable: false
         }
@@ -412,9 +396,9 @@ interface CartLineRowProps {
 function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemove, onUseMax, t }: CartLineRowProps) {
   const { cartItem, product, isResolving, isUnavailable, unavailableReason, stock, isOverStock, isSelectable } = line
   const unitName = cartItem.selectedOptions?.unit
-  const avatar = product?.images?.avatar ?? null
-  const retailPrice = product?.prices?.retail ?? 0
-  const oldPrice = product?.prices?.old ?? 0
+  const avatar = product?.coverImage ?? null
+  const retailPrice = product?.price ?? 0
+  const oldPrice = product?.oldPrice ?? 0
   const hasDiscount = product ? oldPrice > retailPrice : false
   const canUseMax = isOverStock && typeof stock === 'number' && stock > 0
 
@@ -444,7 +428,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             {avatar ? (
               <Image
                 src={avatar}
-                alt={product.name ?? ''}
+                alt={product.productName ?? ''}
                 fill
                 sizes='112px'
                 quality={65}
@@ -466,7 +450,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
               href={`/products/${product.id}`}
               className='font-title line-clamp-2 text-sm font-bold leading-tight text-primary hover:text-primary/80 sm:text-base'
             >
-              {product.name}
+              {product.productName}
             </Link>
           ) : (
             <div className='text-sm font-semibold text-muted-foreground'>
@@ -491,11 +475,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
 
           {isUnavailable && (
             <p className='inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[0.625rem] font-semibold text-destructive ring-1 ring-destructive/15'>
-              {unavailableReason === 'missing'
-                ? t('cart.unavailable.missing')
-                : unavailableReason === 'inactive'
-                  ? t('cart.unavailable.inactive')
-                  : t('cart.unavailable.outOfStock')}
+              {unavailableReason === 'missing' ? t('cart.unavailable.missing') : t('cart.unavailable.outOfStock')}
             </p>
           )}
 

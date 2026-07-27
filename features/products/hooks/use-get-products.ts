@@ -1,19 +1,36 @@
-import { productListQuery, type ProductListParams } from '@/features/products/queries'
+import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
-import { useLocale } from 'next-intl'
+import { PRODUCTS_PAGE_SIZE } from '../constants'
+import productService from '../services'
 
-export type GetProductsParams = ProductListParams
+export interface GetProductsParams {
+  pageIndex?: number
+  pageSize?: number
+  search?: string
+  categoryIds?: string[]
+  priceFrom?: number
+  priceTo?: number
+  sortBy?: string[]
+}
 
-export const useGetProducts = (params: GetProductsParams = {}) => {
-  const locale = useLocale()
+export const useGetProducts = ({
+  pageIndex = DEFAULT_PAGE_INDEX,
+  pageSize = PRODUCTS_PAGE_SIZE,
+  search,
+  categoryIds,
+  priceFrom,
+  priceTo,
+  sortBy
+}: GetProductsParams) => {
   const {
     data: products,
-    isFetching: isFetchingProducts,
-    isLoading: isLoadingProducts
+    isLoading: isGettingProducts,
+    isFetching: isFetchingProducts
   } = useQuery({
-    ...productListQuery(params, locale),
+    queryKey: ['products', pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy],
+    queryFn: () => productService.getProducts({ pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy }),
     placeholderData: keepPreviousData
   })
 
-  return { products, isFetchingProducts, isLoadingProducts }
+  return { products, isGettingProducts, isFetchingProducts }
 }

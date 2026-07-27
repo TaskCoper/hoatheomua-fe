@@ -1,7 +1,8 @@
 export const VASE_CATEGORY_IDS = [19958, 58929, 58905, 58841, 58840]
 export const DAILY_FLOWER_CATEGORY_IDS = [58869]
 
-export const DEFAULT_PRODUCT_SORT: Record<string, 'asc' | 'desc'> = { id: 'desc' }
+/** Product grid page size for the category-driven listing sections. */
+export const PRODUCTS_PAGE_SIZE = 16
 
 export const PRODUCT_CATEGORIES = [
   { id: 58896, labelKey: 'products.filter.categories.eventFlowers' },

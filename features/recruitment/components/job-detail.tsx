@@ -3,15 +3,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import ApplyJobDialog from '@/features/recruitment/components/apply-job-dialog'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { Link, usePathname } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import {
   ArrowDown01Icon,
   ArrowUp01Icon,
   Flower2Icon,
   Location01Icon,
+  LoginCircle01Icon,
+  MailValidation01Icon,
   Money03Icon,
   SentIcon,
   User02Icon,
@@ -28,6 +32,7 @@ type JobDetailProps = {
 
 export default function JobDetail({ job }: JobDetailProps) {
   const { t } = useTranslation()
+  const pathname = usePathname()
   const salary = formatJobSalary(job)
   const avatarFallback = getJobAvatarFallback(job.title)
   const employmentTypeLabel = getJobEmploymentTypeLabel(job.employmentType, t)
@@ -37,7 +42,7 @@ export default function JobDetail({ job }: JobDetailProps) {
   const [showDescriptionToggle, setShowDescriptionToggle] = useState(false)
   const [descriptionElement, setDescriptionElement] = useState<HTMLDivElement | null>(null)
 
-  const { isAuthenticated } = useGetMe()
+  const { me, isAuthenticated, isVerificationRequired, isGettingMe } = useGetMe()
 
   useEffect(() => {
     if (!descriptionElement) return
@@ -127,17 +132,34 @@ export default function JobDetail({ job }: JobDetailProps) {
         </div>
 
         <div className='mb-2'>
-          <ApplyJobDialog job={job}>
-            <Button
-              type='button'
-              size='lg'
-              disabled={!isAuthenticated}
-              className='transform-gpu w-full transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
-            >
-              <HugeiconsIcon icon={SentIcon} strokeWidth={1.8} className='size-4' />
-              {t('recruitment.jobDetail.actions.apply')}
+          {isGettingMe ? (
+            <Skeleton className='h-10 w-full rounded-4xl' />
+          ) : isVerificationRequired ? (
+            <Button asChild size='lg' className='w-full'>
+              <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
+                {t('auth.verifyEmail.title')}
+                <HugeiconsIcon icon={MailValidation01Icon} strokeWidth={1.8} className='size-4' />
+              </Link>
             </Button>
-          </ApplyJobDialog>
+          ) : isAuthenticated ? (
+            <ApplyJobDialog job={job}>
+              <Button
+                type='button'
+                size='lg'
+                className='transform-gpu w-full transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
+              >
+                <HugeiconsIcon icon={SentIcon} strokeWidth={1.8} className='size-4' />
+                {t('recruitment.jobDetail.actions.apply')}
+              </Button>
+            </ApplyJobDialog>
+          ) : (
+            <Button asChild size='lg' className='w-full'>
+              <Link href={{ pathname: '/sign-in', query: { from: pathname } }}>
+                {t('auth.signIn.title')}
+                <HugeiconsIcon icon={LoginCircle01Icon} strokeWidth={1.8} className='size-4' />
+              </Link>
+            </Button>
+          )}
         </div>
 
         {description ? (

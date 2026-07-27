@@ -6,12 +6,6 @@ import { PRODUCTS_BASE_PATH, PRODUCTS_LIST_COPY, PRODUCTS_OG_IMAGE_PATH } from '
 
 const META_DESCRIPTION_MAX_LENGTH = 155
 
-const stripHtml = (value: string | null | undefined) =>
-  (value ?? '')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-
 const truncate = (value: string, max: number) => (value.length <= max ? value : `${value.slice(0, max - 1).trimEnd()}…`)
 
 export const generateProductsListMetadata = (locale: Locale): Metadata => {
@@ -44,15 +38,11 @@ const PRODUCT_NOT_FOUND_METADATA: Metadata = {
 export const generateProductDetailMetadata = ({ locale, product }: GenerateProductDetailMetadataInput): Metadata => {
   if (!product) return PRODUCT_NOT_FOUND_METADATA
 
-  const childs = product.childs ?? []
-  const productName = product.name ?? 'Hoa Theo Mùa'
-  const rawDescription =
-    stripHtml(product.description) ||
-    stripHtml(childs.find((child) => stripHtml(child.description))?.description) ||
-    `${productName} — Hoa Theo Mùa`
+  const productName = product.productName ?? 'Hoa Theo Mùa'
+  const rawDescription = `${productName} — Hoa Theo Mùa`
   const description = truncate(rawDescription, META_DESCRIPTION_MAX_LENGTH)
 
-  const bestAvatar = product.images?.avatar ?? childs.find((child) => child.images?.avatar)?.images?.avatar ?? null
+  const bestAvatar = product.coverImage ?? null
   const avatar = bestAvatar ?? PRODUCTS_OG_IMAGE_PATH
   const ogImage = bestAvatar
     ? { url: avatar, alt: productName }
@@ -63,29 +53,16 @@ export const generateProductDetailMetadata = ({ locale, product }: GenerateProdu
         alt: productName
       }
 
-  const attributeKeywords = childs.flatMap((child) =>
-    (child.attributes ?? []).map((attribute) => attribute.value).filter((v): v is string => Boolean(v))
-  )
   const keywords = Array.from(
     new Set(
-      [
-        productName,
-        product.category?.name,
-        product.brand?.name,
-        ...attributeKeywords,
-        'hoa tươi',
-        'shop hoa',
-        'Hoa Theo Mùa',
-        'giao hoa TP HCM'
-      ].filter((value): value is string => Boolean(value))
+      [productName, product.categoryName, product.brand, 'hoa tươi', 'shop hoa', 'Hoa Theo Mùa', 'giao hoa TP HCM'].filter(
+        (value): value is string => Boolean(value)
+      )
     )
   )
 
-  const parentPrice = product.prices?.retail ?? 0
-  const variantPrices = childs.map((child) => child.prices?.retail ?? 0).filter((price) => price > 0)
-  const anyInStock =
-    (product.inventory?.available ?? 0) > 0 || childs.some((child) => (child.inventory?.available ?? 0) > 0)
-  const bestPrice = parentPrice > 0 ? parentPrice : (variantPrices[0] ?? 0)
+  const bestPrice = product.price ?? 0
+  const anyInStock = (product.availableForSale ?? 0) > 0
 
   const productOgTags: Record<string, string> = {}
   if (bestPrice > 0) {
@@ -96,8 +73,8 @@ export const generateProductDetailMetadata = ({ locale, product }: GenerateProdu
   }
   productOgTags['product:availability'] = anyInStock ? 'in stock' : 'out of stock'
   productOgTags['og:availability'] = anyInStock ? 'instock' : 'oos'
-  if (product.brand?.name) productOgTags['product:brand'] = product.brand.name
-  if (product.category?.name) productOgTags['product:category'] = product.category.name
+  if (product.brand) productOgTags['product:brand'] = product.brand
+  if (product.categoryName) productOgTags['product:category'] = product.categoryName
 
   return buildPageMetadata({
     locale,

@@ -4,10 +4,12 @@ import OccasionCampaignBanner from '@/features/occasions/components/occasion-cam
 import ProductGrid from '@/features/products/components/product-grid'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import type { BaseCard, LocalizedText } from '@/types/config.type'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
+import { useState } from 'react'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -36,6 +38,7 @@ export default function OccasionProductsSection({
   const { t, locale } = useTranslation()
   const displayName = campaign ? campaign.name[locale] || campaign.name.vi || card.name[locale] : card.name[locale]
   const sectionId = campaign ? `occasion-products-${campaign.name.en || campaign.name.vi}` : 'occasion-products'
+  const [page, setPage] = useState(DEFAULT_PAGE_INDEX)
 
   return (
     <section id={sectionId} className='relative mt-8 scroll-mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
@@ -104,7 +107,12 @@ export default function OccasionProductsSection({
             </p>
           </motion.div>
         ) : (
-          <ProductGrid categoryIds={categoryIds} name={skuPrefix ?? ''} />
+          <ProductGrid
+            categoryIds={categoryIds.map(String)}
+            search={skuPrefix ?? ''}
+            page={page}
+            onPageChange={setPage}
+          />
         )}
       </div>
     </section>

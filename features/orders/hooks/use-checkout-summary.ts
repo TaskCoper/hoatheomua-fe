@@ -1,10 +1,7 @@
-import { productDetailQuery } from '@/features/products/queries'
-import type { ProductDetail } from '@/features/products/types'
 import type { CartItem } from '@/stores/cart.store'
-import { useQueries } from '@tanstack/react-query'
-import { useLocale } from 'next-intl'
 import { useMemo } from 'react'
 import type { CheckoutSummaryLine } from '../components/checkout/checkout-sidebar'
+import { useProductsByIds } from './use-products-by-ids'
 
 interface UseCheckoutSummaryArgs {
   items: CartItem[]
@@ -13,32 +10,18 @@ interface UseCheckoutSummaryArgs {
 }
 
 export const useCheckoutSummary = ({ items, hasTaxCode, shippingFee }: UseCheckoutSummaryArgs) => {
-  const locale = useLocale()
-
-  const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.productId))), [items])
-  const productQueries = useQueries({
-    queries: productIds.map((id) => productDetailQuery(String(id), locale))
-  })
-
-  const productById = useMemo(() => {
-    const map = new Map<number, ProductDetail>()
-    productIds.forEach((id, index) => {
-      const product = productQueries[index]?.data?.value?.data as ProductDetail | undefined
-      if (product) map.set(id, product)
-    })
-    return map
-  }, [productIds, productQueries])
+  const productById = useProductsByIds(items)
 
   const summaryLines: CheckoutSummaryLine[] = useMemo(
     () =>
       items.map((item) => {
         const product = productById.get(item.productId)
-        const unitPrice = product?.prices?.retail ?? 0
+        const unitPrice = product?.price ?? 0
 
         return {
           lineId: item.lineId,
-          name: product?.name ?? `#${item.productId}`,
-          image: product?.images?.avatar ?? null,
+          name: product?.productName ?? `#${item.productId}`,
+          image: product?.coverImage ?? null,
           quantity: item.quantity,
           unitPrice,
           subtotal: unitPrice * item.quantity

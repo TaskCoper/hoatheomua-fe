@@ -11,6 +11,7 @@ import type { PaymentGateway, PaymentMethod } from '../types'
 import { createEstimateSchema, type CheckoutFormValues } from '../validations'
 import { useCreateOrder } from './use-create-order'
 import { useEstimateOrder } from './use-estimate-order'
+import { useProductsByIds } from './use-products-by-ids'
 
 interface UseCheckoutFlowArgs {
   methods: UseFormReturn<CheckoutFormValues>
@@ -26,6 +27,7 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
   const source = useCheckoutIntentStore((state) => state.source)
   const clearIntent = useCheckoutIntentStore((state) => state.clear)
   const removeCartItem = useCartStore((state) => state.removeItem)
+  const productById = useProductsByIds(items)
 
   const [step, setStep] = useState<CheckoutStep>(1)
   const hasSubmittedRef = useRef(false)
@@ -56,7 +58,7 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
     }
 
     try {
-      await estimateOrder({ body: buildEstimatePayload(parsed.data, items) })
+      await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById) })
       setStep(2)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error) {
@@ -69,7 +71,9 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
     methods.handleSubmit(
       async (values) => {
         try {
-          const { mrc_order_id } = await createOrder({ body: buildCheckoutPayload(values, items, paymentMethod, gateway) })
+          const { mrc_order_id } = await createOrder({
+            body: buildCheckoutPayload(values, items, productById, paymentMethod, gateway)
+          })
 
           if (source === 'cart') {
             items.forEach((item) => removeCartItem(item.lineId))

@@ -1,19 +1,17 @@
 import { queryOptions } from '@tanstack/react-query'
-import type { ProductListParams } from './services'
+import type { GetProductsParams } from './hooks/use-get-products'
 import productService from './services'
 
-export type { ProductListParams }
-
-export const productListQuery = (params: ProductListParams, locale: string) =>
+export const productListQuery = (params: GetProductsParams) =>
   queryOptions({
-    queryKey: ['products', { params }, locale] as const,
-    queryFn: () => productService.getProducts({ ...params, locale })
+    queryKey: ['products', { params }] as const,
+    queryFn: () => productService.getProducts(params)
   })
 
-export const fetchProductDetail = (id: string, locale: string) => productService.getProduct({ id, locale })
+export const fetchProductDetail = (id: string) => productService.getProduct({ id })
 
-export const productDetailQuery = (id: string, locale: string) =>
+export const productDetailQuery = (id: string) =>
   queryOptions({
-    queryKey: ['product', id, locale] as const,
-    queryFn: () => fetchProductDetail(id, locale)
+    queryKey: ['product', id] as const,
+    queryFn: () => fetchProductDetail(id)
   })
