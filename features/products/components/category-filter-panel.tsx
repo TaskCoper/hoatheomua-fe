@@ -1,5 +1,6 @@
 'use client'
 
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,6 +10,7 @@ import { PRICE_STEP } from '@/features/products/constants'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
+import type { ReactNode } from 'react'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -22,7 +24,13 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
 })
 const formatVnd = (value: number) => vndFormatter.format(value)
 
-export type FilterChild = { categoryId: string; label: string }
+export type FilterChild = { categoryId: string; label: string; children?: FilterChild[] }
+
+/** Collect every parent (node with children) id so the accordion opens expanded. */
+const collectParentIds = (nodes: FilterChild[]): string[] =>
+  nodes.flatMap((node) =>
+    node.children && node.children.length > 0 ? [node.categoryId, ...collectParentIds(node.children)] : []
+  )
 
 type CategoryFilterPanelProps = {
   sectionId: string
@@ -76,9 +84,17 @@ export default function CategoryFilterPanel({
     if (!onPriceChange) return
     const parsed = Number(raw)
     if (raw === '' || Number.isNaN(parsed)) return
-    const clamped = Math.min(Math.max(parsed, 0), priceMax)
-    const next: [number, number] = index === 0 ? [clamped, priceValue[1]] : [priceValue[0], clamped]
-    onPriceChange(next[0] > next[1] ? [next[0], next[0]] : next)
+    const next: [number, number] = index === 0 ? [parsed, priceValue[1]] : [priceValue[0], parsed]
+    onPriceChange(next)
+  }
+
+  const handlePriceBlur = () => {
+    if (!onPriceChange) return
+    const clampedMin = Math.min(Math.max(priceValue[0], 0), priceMax)
+    const clampedMax = Math.min(Math.max(priceValue[1], 0), priceMax)
+    const ordered: [number, number] = clampedMin <= clampedMax ? [clampedMin, clampedMax] : [clampedMax, clampedMin]
+    onPriceChange(ordered)
+    onPriceCommit?.(ordered)
   }
 
   const nameBlock = showName ? (
@@ -116,40 +132,62 @@ export default function CategoryFilterPanel({
     handleCatsChange(next)
   }
 
+  // Render a category facet. Leaf nodes are plain checkboxes; nodes with
+  // filterable children become an accordion whose header keeps the parent's own
+  // checkbox (so the parent stays selectable) next to an expand toggle.
+  const renderCat = (node: FilterChild): ReactNode => {
+    const inputId = `${sectionId}-cat-${node.categoryId}`
+    const checkbox = (
+      <Checkbox
+        id={inputId}
+        checked={checkedCats.includes(node.categoryId)}
+        onCheckedChange={(checked) => handleCatCheckedChange(node.categoryId, checked === true)}
+      />
+    )
+
+    if (!node.children || node.children.length === 0) {
+      return (
+        <label
+          key={node.categoryId}
+          htmlFor={inputId}
+          className='flex cursor-pointer items-center gap-2 text-sm text-foreground'
+        >
+          {checkbox}
+          {node.label}
+        </label>
+      )
+    }
+
+    return (
+      <AccordionItem key={node.categoryId} value={node.categoryId} className='border-b-0'>
+        <div className='flex items-center gap-2'>
+          {checkbox}
+          <div className='min-w-0 flex-1'>
+            <AccordionTrigger className='py-2 text-sm font-medium text-foreground hover:text-primary sm:text-sm'>
+              {node.label}
+            </AccordionTrigger>
+          </div>
+        </div>
+        <AccordionContent className='pt-0 pb-1'>
+          <div className='ml-2 space-y-2 border-l border-foreground/10 pl-3'>
+            {node.children.map((child) => renderCat(child))}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    )
+  }
+
   const catsBlock =
     filterChildren.length > 0 ? (
       <div className={cn('space-y-1.5', isHorizontal && 'min-w-[18rem] flex-1')}>
         <span className={cn('block', fieldLabelClass)}>{t('products.filter.categoriesHeading')}</span>
-        {/* <MultiSelectField
-          options={catOptions}
-          value={checkedCats}
-          onValueChange={handleCatsChange}
-          displayError={false}
-          placeholder={t('products.filter.categoriesPlaceholder')}
-          searchPlaceholder={t('products.filter.categoriesSearchPlaceholder')}
-          emptyMessage={t('products.filter.categoriesEmpty')}
-          selectedText={(count) => t('products.filter.categoriesSelected', { count })}
-          triggerClassName='rounded-full'
-        /> */}
-        <div className={cn(isHorizontal ? 'flex flex-wrap gap-x-4 gap-y-2' : 'space-y-2')}>
-          {filterChildren.map((child) => {
-            const inputId = `${sectionId}-cat-${child.categoryId}`
-            return (
-              <label
-                key={child.categoryId}
-                htmlFor={inputId}
-                className='flex cursor-pointer items-center gap-2 text-sm text-foreground'
-              >
-                <Checkbox
-                  id={inputId}
-                  checked={checkedCats.includes(child.categoryId)}
-                  onCheckedChange={(checked) => handleCatCheckedChange(child.categoryId, checked === true)}
-                />
-                {child.label}
-              </label>
-            )
-          })}
-        </div>
+        <Accordion
+          type='multiple'
+          defaultValue={collectParentIds(filterChildren)}
+          className={cn('w-full', isHorizontal ? 'flex flex-wrap gap-x-4 gap-y-2' : 'space-y-2')}
+        >
+          {filterChildren.map((child) => renderCat(child))}
+        </Accordion>
       </div>
     ) : null
 
@@ -163,10 +201,10 @@ export default function CategoryFilterPanel({
             type='number'
             inputMode='numeric'
             min={0}
-            max={priceValue[1]}
+            max={priceMax}
             value={priceValue[0]}
             onChange={(event) => handlePriceInput(0, event.target.value)}
-            onBlur={() => onPriceCommit?.(priceValue)}
+            onBlur={handlePriceBlur}
             className='h-9 rounded-full text-sm'
           />
         </label>
@@ -175,11 +213,11 @@ export default function CategoryFilterPanel({
           <Input
             type='number'
             inputMode='numeric'
-            min={priceValue[0]}
+            min={0}
             max={priceMax}
             value={priceValue[1]}
             onChange={(event) => handlePriceInput(1, event.target.value)}
-            onBlur={() => onPriceCommit?.(priceValue)}
+            onBlur={handlePriceBlur}
             className='h-9 rounded-full text-sm'
           />
         </label>

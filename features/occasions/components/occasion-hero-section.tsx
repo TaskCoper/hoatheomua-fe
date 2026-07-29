@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import type { BaseCard, LocalizedText } from '@/types/config.type'
 import { CherryIcon, DeliveryTruck01Icon, Flower2Icon, GiftIcon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -58,9 +57,9 @@ export default function OccasionHeroSection({ card, badge: resolvedBadge }: Occa
       initial='hidden'
       animate='visible'
       variants={containerStagger}
-      className='relative px-4 pt-6 sm:pt-8 md:pt-10 lg:pt-12'
+      className='relative px-4 pt-4 sm:pt-6 md:pt-8 lg:pt-10'
     >
-      <motion.div
+      {/* <motion.div
         variants={fadeUp}
         className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
       >
@@ -84,7 +83,7 @@ export default function OccasionHeroSection({ card, badge: resolvedBadge }: Occa
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
           {description}
         </p>
-      </motion.div>
+      </motion.div> */}
 
       <div className='relative mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-5 sm:gap-6 lg:mt-10 lg:grid-cols-12 lg:items-center lg:gap-10'>
         <motion.div variants={containerStagger} className='space-y-4 lg:col-span-7'>

@@ -11,7 +11,7 @@ const FloatingPetals = dynamic(() => import('@/shared/components/floating-petals
 
 export interface OccasionSection {
   key: string
-  categoryIds: number[]
+  categoryIds: string[]
   skuPrefix: string | null
   campaign: {
     name: LocalizedText

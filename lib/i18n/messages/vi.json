@@ -1211,7 +1211,7 @@
           "occasions": "Dịp lễ",
           "back": "Trở lại danh sách dịp"
         },
-        "headline": "{name} — gợi ý hoa được tuyển chọn",
+        "headline": "{name} - gợi ý hoa được tuyển chọn",
         "campaign": {
           "label": "Đang diễn ra",
           "dates": "{start} – {end}"

@@ -1,12 +1,17 @@
+import categoryService from '@/features/categories/services'
 import { getMainlineCard } from '@/features/mainline/queries.server'
 import OccasionDetailContent from '@/features/occasions/components/occasion-detail-content'
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import type { Locale } from '@/lib/i18n/routing'
+import { getQueryClient } from '@/lib/react-query-client'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
-export const revalidate = 600
-export const dynamicParams = true
+// The detail sections now carry URL-driven category filters (nuqs) → render on
+// the server per request instead of ISR.
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({
   params
@@ -45,23 +50,36 @@ export default async function MainlinePage({ params }: { params: Promise<{ local
     notFound()
   }
 
-  const toNumberIds = (ids: string[]) => ids.map((value) => Number(value)).filter((value) => Number.isFinite(value))
-
   const sections = [
     {
       key: 'default',
-      categoryIds: toNumberIds(card.categoryIds),
+      categoryIds: card.categoryIds,
       skuPrefix: null,
       campaign: null
     }
   ]
 
+  const queryClient = getQueryClient()
+
+  try {
+    await queryClient.prefetchQuery({
+      queryKey: ['categories', undefined],
+      queryFn: () => categoryService.getCategories()
+    })
+  } catch (error) {
+    console.error('[SSR] categories prefetch failed:', error)
+  }
+
   return (
-    <OccasionDetailContent
-      card={card}
-      badge={card.badge}
-      sections={sections}
-      promiseSection={<ProductsPromiseSection />}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={null}>
+        <OccasionDetailContent
+          card={card}
+          badge={card.badge}
+          sections={sections}
+          promiseSection={<ProductsPromiseSection />}
+        />
+      </Suspense>
+    </HydrationBoundary>
   )
 }

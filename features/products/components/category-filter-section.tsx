@@ -24,13 +24,19 @@ export default function CategoryFilterSection({ category }: { category: Sortable
   const { locale } = useTranslation()
 
   const meta = useMemo(() => parseCategoryMetadata(category.metaData), [category.metaData])
-  const filterableChildren = useMemo<FilterChild[]>(
-    () =>
-      category.children
+  const filterableChildren = useMemo<FilterChild[]>(() => {
+    // Recurse the category tree so nested facets (up to 3+ levels) are preserved,
+    // keeping only nodes flagged as filterable at each level.
+    const build = (cats: SortableCategory[]): FilterChild[] =>
+      cats
         .filter((child) => parseCategoryMetadata(child.metaData).isFilterable)
-        .map((child) => ({ categoryId: child.categoryId, label: getCategoryName(child, locale) })),
-    [category.children, locale]
-  )
+        .map((child) => ({
+          categoryId: child.categoryId,
+          label: getCategoryName(child, locale),
+          children: build(child.children)
+        }))
+    return build(category.children)
+  }, [category.children, locale])
 
   const showName = Boolean(meta.filterByName)
   const showPrice = Boolean(meta.filterByPrice)

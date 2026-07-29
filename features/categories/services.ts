@@ -7,7 +7,7 @@ class CategoryService {
   getCategories = async ({ page }: { page?: CategoryProductPage[] } = {}) => {
     const { data } = await api.get<BaseResponse<SortableCategory[]>>(`v1/${this.baseUrl}/with-children`, {
       params: {
-        Page: page
+        page
       }
     })
 
