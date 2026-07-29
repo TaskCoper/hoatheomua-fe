@@ -86,23 +86,42 @@ export function AddressMapField({
       return
     }
     setIsLocating(true)
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setIsLocating(false)
-        void handlePick({ latitude: position.coords.latitude, longitude: position.coords.longitude })
-      },
-      (error) => {
-        setIsLocating(false)
-        // Report the actual cause so permission-denied vs. unavailable vs.
-        // timeout is distinguishable (on macOS, "unavailable" usually means
-        // Location Services is off for the browser in System Settings).
-        console.warn('[geolocation] failed', { code: error.code, message: error.message })
-        toast.error(locationErrorLabel, { description: error.message || undefined })
-      },
-      // Allow a recent cached fix and a longer window — high-accuracy on a
-      // desktop can be slow, and a coarse position is fine as a starting pin.
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
-    )
+
+    const locate = (highAccuracy: boolean) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setIsLocating(false)
+          void handlePick({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+        },
+        (error) => {
+          // High-accuracy asks for a GPS fix first; desktops/laptops without a GPS
+          // chip often fail that outright with POSITION_UNAVAILABLE instead of
+          // falling back to the coarser network/Wi-Fi provider. Retry once at low
+          // accuracy before surfacing an error.
+          if (highAccuracy && error.code === error.POSITION_UNAVAILABLE) {
+            locate(false)
+            return
+          }
+          setIsLocating(false)
+          // Report the actual cause so permission-denied vs. unavailable vs.
+          // timeout is distinguishable (on macOS, "unavailable" usually means
+          // Location Services is off for the browser in System Settings).
+          console.warn('[geolocation] failed', { code: error.code, message: error.message })
+          // POSITION_UNAVAILABLE means the OS provider couldn't get a fix — the
+          // browser message is usually empty/cryptic, so give an actionable hint.
+          const description =
+            error.code === error.POSITION_UNAVAILABLE
+              ? 'Location unavailable — check Location Services and Wi‑Fi are on.'
+              : error.message || undefined
+          toast.error(locationErrorLabel, { description })
+        },
+        // Allow a recent cached fix and a longer window — high-accuracy on a
+        // desktop can be slow, and a coarse position is fine as a starting pin.
+        { enableHighAccuracy: highAccuracy, timeout: 15000, maximumAge: 60000 }
+      )
+    }
+
+    locate(true)
   }, [handlePick, locationErrorLabel])
 
   return (

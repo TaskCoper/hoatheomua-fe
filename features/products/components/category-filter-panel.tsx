@@ -10,7 +10,7 @@ import { PRICE_STEP } from '@/features/products/constants'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -80,7 +80,16 @@ export default function CategoryFilterPanel({
   const { t } = useTranslation()
   const isHorizontal = orientation === 'horizontal'
 
+  const [priceInputs, setPriceInputs] = useState<[string, string]>([String(priceValue[0]), String(priceValue[1])])
+  const [prevPriceValue, setPrevPriceValue] = useState(priceValue)
+
+  if (priceValue[0] !== prevPriceValue[0] || priceValue[1] !== prevPriceValue[1]) {
+    setPrevPriceValue(priceValue)
+    setPriceInputs([String(priceValue[0]), String(priceValue[1])])
+  }
+
   const handlePriceInput = (index: 0 | 1, raw: string) => {
+    setPriceInputs((prev) => (index === 0 ? [raw, prev[1]] : [prev[0], raw]))
     if (!onPriceChange) return
     const parsed = Number(raw)
     if (raw === '' || Number.isNaN(parsed)) return
@@ -93,6 +102,7 @@ export default function CategoryFilterPanel({
     const clampedMin = Math.min(Math.max(priceValue[0], 0), priceMax)
     const clampedMax = Math.min(Math.max(priceValue[1], 0), priceMax)
     const ordered: [number, number] = clampedMin <= clampedMax ? [clampedMin, clampedMax] : [clampedMax, clampedMin]
+    setPriceInputs([String(ordered[0]), String(ordered[1])])
     onPriceChange(ordered)
     onPriceCommit?.(ordered)
   }
@@ -202,7 +212,7 @@ export default function CategoryFilterPanel({
             inputMode='numeric'
             min={0}
             max={priceMax}
-            value={priceValue[0]}
+            value={priceInputs[0]}
             onChange={(event) => handlePriceInput(0, event.target.value)}
             onBlur={handlePriceBlur}
             className='h-9 rounded-full text-sm'
@@ -215,7 +225,7 @@ export default function CategoryFilterPanel({
             inputMode='numeric'
             min={0}
             max={priceMax}
-            value={priceValue[1]}
+            value={priceInputs[1]}
             onChange={(event) => handlePriceInput(1, event.target.value)}
             onBlur={handlePriceBlur}
             className='h-9 rounded-full text-sm'
