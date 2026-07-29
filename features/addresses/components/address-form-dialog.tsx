@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Spinner } from '@/components/ui/spinner'
 import { AddressAutocomplete } from '@/features/orders/components/address-autocomplete'
+import { AddressMapField } from '@/features/orders/components/address-map-field'
 import { useGetShippingLocations } from '@/features/orders/hooks/use-get-shipping-locations'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
@@ -79,6 +80,8 @@ export function AddressFormDialog({
 
   const cityValue = useWatch({ control: methods.control, name: 'city' }) ?? ''
   const wardValue = useWatch({ control: methods.control, name: 'ward' }) ?? ''
+  const latitudeValue = useWatch({ control: methods.control, name: 'latitude' }) ?? 0
+  const longitudeValue = useWatch({ control: methods.control, name: 'longitude' }) ?? 0
   const selectedCity = useMemo(() => cityValue.trim(), [cityValue])
   const { shippingLocations: cities, isLoadingShippingLocations: isLoadingCities } = useGetShippingLocations({
     type: 'CITY'
@@ -271,6 +274,23 @@ export function AddressFormDialog({
                       </div>
                     </Field>
                   )}
+                />
+
+                <AddressMapField
+                  latitude={latitudeValue}
+                  longitude={longitudeValue}
+                  onResolve={({ latitude, longitude, mapId, addressLine }) => {
+                    methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
+                    methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
+                    methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
+                    if (addressLine) {
+                      methods.setValue('addressLine', addressLine, { shouldDirty: true, shouldValidate: true })
+                    }
+                  }}
+                  hint={t('profile.addressMapHint')}
+                  useLocationLabel={t('profile.addressMapUseLocation')}
+                  resolvingLabel={t('profile.addressMapResolving')}
+                  locationErrorLabel={t('profile.addressMapLocationError')}
                 />
 
                 <Controller

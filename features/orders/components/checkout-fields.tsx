@@ -6,6 +6,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import type { Address } from '@/features/addresses/types'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
@@ -19,6 +20,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
 import type { CheckoutFormValues } from '../validations'
 import { AddressAutocomplete } from './address-autocomplete'
+import { AddressMapField } from './address-map-field'
 import { LocationCombobox } from './location-combobox'
 
 const ORDER_TAG_NONE = '__none__'
@@ -27,9 +29,17 @@ interface CheckoutFieldsProps {
   addresses: Address[]
   selectedAddressId: string
   onSelectAddress: (id: string) => void
+  manualAddress: boolean
+  onManualAddressChange: (value: boolean) => void
 }
 
-export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }: CheckoutFieldsProps) {
+export function CheckoutFields({
+  addresses,
+  selectedAddressId,
+  onSelectAddress,
+  manualAddress,
+  onManualAddressChange
+}: CheckoutFieldsProps) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
   const { control, setValue, watch } = useFormContext<CheckoutFormValues>()
@@ -45,6 +55,31 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
   const wardCodeForm = watch('wardCode')
   const wardForm = watch('ward')
   const cityForm = watch('city')
+  const latitudeForm = watch('latitude')
+  const longitudeForm = watch('longitude')
+
+  const hasSavedAddresses = addresses.length > 0
+  const showManualFields = manualAddress || !hasSavedAddresses
+
+  const handleManualToggle = (checked: boolean) => {
+    onManualAddressChange(checked)
+    if (checked) {
+      // Blank the address fields so the user starts a fresh manual entry.
+      setValue('fullName', '', { shouldDirty: true })
+      setValue('phone', '', { shouldDirty: true })
+      setValue('addressLine', '', { shouldDirty: true })
+      setValue('city', '', { shouldDirty: true })
+      setValue('ward', '', { shouldDirty: true })
+      setValue('cityCode', -1, { shouldDirty: true })
+      setValue('wardCode', -1, { shouldDirty: true })
+      setValue('latitude', 0, { shouldDirty: true })
+      setValue('longitude', 0, { shouldDirty: true })
+      setValue('mapId', '', { shouldDirty: true })
+    } else if (selectedAddressId) {
+      // Restore the previously selected saved address.
+      onSelectAddress(selectedAddressId)
+    }
+  }
 
   const { orderTags, isGettingOrderTags } = useGetOrderTags()
 
@@ -84,7 +119,19 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
 
   return (
     <FieldGroup className='gap-2'>
-      {addresses.length > 0 ? (
+      {hasSavedAddresses ? (
+        <Field orientation='horizontal' className='mb-2 items-center justify-between gap-3'>
+          <div className='flex flex-col gap-0.5'>
+            <FieldLabel htmlFor='manual-address-toggle' className='w-auto p-0'>
+              {t('orders.checkout.manualAddress')}
+            </FieldLabel>
+            <span className='text-xs text-muted-foreground'>{t('orders.checkout.manualAddressHint')}</span>
+          </div>
+          <Switch id='manual-address-toggle' checked={manualAddress} onCheckedChange={handleManualToggle} />
+        </Field>
+      ) : null}
+
+      {!showManualFields ? (
         <Field className='gap-1 mb-4'>
           <FieldLabel>{t('orders.checkout.savedAddress')}</FieldLabel>
           <LocationCombobox
@@ -96,7 +143,9 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
             emptyMessage={t('orders.checkout.comboboxEmpty')}
           />
         </Field>
-      ) : (
+      ) : null}
+
+      {showManualFields ? (
         <>
           <Controller
             name='fullName'
@@ -261,8 +310,25 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
               </Field>
             )}
           />
+
+          <AddressMapField
+            latitude={latitudeForm}
+            longitude={longitudeForm}
+            onResolve={({ latitude, longitude, mapId, addressLine }) => {
+              setValue('latitude', latitude, { shouldDirty: true })
+              setValue('longitude', longitude, { shouldDirty: true })
+              setValue('mapId', mapId, { shouldDirty: true })
+              if (addressLine) {
+                setValue('addressLine', addressLine, { shouldDirty: true, shouldValidate: true })
+              }
+            }}
+            hint={t('orders.checkout.mapHint')}
+            useLocationLabel={t('orders.checkout.mapUseLocation')}
+            resolvingLabel={t('orders.checkout.mapResolving')}
+            locationErrorLabel={t('orders.checkout.mapLocationError')}
+          />
         </>
-      )}
+      ) : null}
 
       <Controller
         name='orderTime'

@@ -10,9 +10,18 @@ interface StepPersonalProps {
   isLoadingAddresses: boolean
   selectedAddressId: string
   onSelectAddress: (id: string) => void
+  manualAddress: boolean
+  onManualAddressChange: (value: boolean) => void
 }
 
-export function StepPersonal({ addresses, isLoadingAddresses, selectedAddressId, onSelectAddress }: StepPersonalProps) {
+export function StepPersonal({
+  addresses,
+  isLoadingAddresses,
+  selectedAddressId,
+  onSelectAddress,
+  manualAddress,
+  onManualAddressChange
+}: StepPersonalProps) {
   const { t } = useTranslation()
 
   return (
@@ -27,7 +36,13 @@ export function StepPersonal({ addresses, isLoadingAddresses, selectedAddressId,
           <Spinner />
         </div>
       ) : (
-        <CheckoutFields addresses={addresses} selectedAddressId={selectedAddressId} onSelectAddress={onSelectAddress} />
+        <CheckoutFields
+          addresses={addresses}
+          selectedAddressId={selectedAddressId}
+          onSelectAddress={onSelectAddress}
+          manualAddress={manualAddress}
+          onManualAddressChange={onManualAddressChange}
+        />
       )}
     </section>
   )

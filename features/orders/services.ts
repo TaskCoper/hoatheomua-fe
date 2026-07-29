@@ -6,6 +6,7 @@ import type {
   EstimatePayload,
   GeocodeAutocompleteResponse,
   GeocodeResponse,
+  GeocodeReverseResponse,
   GeoResponse,
   GeoResult,
   Order,
@@ -167,6 +168,14 @@ class OrderService {
   resolveGeocodePlace = async ({ refId }: { refId: string }): Promise<GeocodeResponse> => {
     const { data } = await axios.get<GeocodeResponse>('/api/geocode/place', {
       params: { refId }
+    })
+
+    return data
+  }
+
+  reverseGeocode = async ({ lat, lng }: { lat: number; lng: number }): Promise<GeocodeReverseResponse> => {
+    const { data } = await axios.get<GeocodeReverseResponse>('/api/geocode/reverse', {
+      params: { lat, lng }
     })
 
     return data

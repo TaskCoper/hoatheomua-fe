@@ -231,3 +231,17 @@ export interface GeocodeResult {
 export interface GeocodeResponse {
   result: GeocodeResult | null
 }
+
+export interface GeocodeReverseResult {
+  latitude: number
+  longitude: number
+  mapId: string
+  display: string
+  addressLine: string
+  ward: string
+  city: string
+}
+
+export interface GeocodeReverseResponse {
+  result: GeocodeReverseResult | null
+}

@@ -43,6 +43,7 @@ export function CheckoutClient() {
     createOrder
   })
 
+  const [manualAddress, setManualAddress] = useState(false)
   const [gateway, setGateway] = useState<PaymentGateway>(PaymentGateway.BaoKim)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('1')
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
@@ -142,6 +143,8 @@ export function CheckoutClient() {
                 isLoadingAddresses={isLoadingAddresses}
                 selectedAddressId={selectedAddressId}
                 onSelectAddress={handleSelectAddress}
+                manualAddress={manualAddress}
+                onManualAddressChange={setManualAddress}
               />
             ) : step === 2 ? (
               <StepPayment
