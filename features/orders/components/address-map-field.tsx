@@ -23,8 +23,11 @@ export interface ResolvedMapAddress {
   addressLine: string
   ward: string
   city: string
-  display: string
 }
+
+// How far the delivery pin may be dragged from the address the user typed.
+// Enough to fine-tune the exact building, not enough to land in another area.
+const MAX_PIN_DISTANCE_METERS = 500
 
 interface AddressMapFieldProps {
   latitude: number
@@ -34,6 +37,11 @@ interface AddressMapFieldProps {
   useLocationLabel: string
   resolvingLabel: string
   locationErrorLabel: string
+  // Coordinate the typed address resolved to; the pin can't stray past
+  // `MAX_PIN_DISTANCE_METERS` from it. Omit to allow free placement.
+  anchorLatitude?: number
+  anchorLongitude?: number
+  tooFarLabel?: string
   className?: string
   disabled?: boolean
 }
@@ -46,11 +54,18 @@ export function AddressMapField({
   useLocationLabel,
   resolvingLabel,
   locationErrorLabel,
+  anchorLatitude,
+  anchorLongitude,
+  tooFarLabel,
   className,
   disabled
 }: AddressMapFieldProps) {
   const { reverseGeocode, isReverseGeocoding } = useReverseGeocode()
   const [isLocating, setIsLocating] = useState(false)
+
+  const handleReject = useCallback(() => {
+    if (tooFarLabel) toast.error(tooFarLabel)
+  }, [tooFarLabel])
 
   const handlePick = useCallback(
     async ({ latitude: lat, longitude: lng }: { latitude: number; longitude: number }) => {
@@ -62,12 +77,11 @@ export function AddressMapField({
           mapId: result?.mapId ?? '',
           addressLine: result?.addressLine ?? '',
           ward: result?.ward ?? '',
-          city: result?.city ?? '',
-          display: result?.display ?? ''
+          city: result?.city ?? ''
         })
       } catch {
         // Keep the picked coordinates even if reverse geocoding fails.
-        onResolve({ latitude: lat, longitude: lng, mapId: '', addressLine: '', ward: '', city: '', display: '' })
+        onResolve({ latitude: lat, longitude: lng, mapId: '', addressLine: '', ward: '', city: '' })
       }
     },
     [onResolve, reverseGeocode]
@@ -149,7 +163,15 @@ export function AddressMapField({
       </div>
 
       <div className='relative'>
-        <AddressMapPicker latitude={latitude} longitude={longitude} onPick={handlePick} />
+        <AddressMapPicker
+          latitude={latitude}
+          longitude={longitude}
+          onPick={handlePick}
+          anchorLatitude={anchorLatitude}
+          anchorLongitude={anchorLongitude}
+          maxDistanceMeters={MAX_PIN_DISTANCE_METERS}
+          onReject={handleReject}
+        />
         {isReverseGeocoding ? (
           <div className='absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-background/85 py-1.5 text-xs text-muted-foreground backdrop-blur-sm'>
             <Spinner className='size-3.5' />

@@ -6,7 +6,7 @@ import { z } from 'zod'
  * `display_type=1` (new 2-level ward/city boundaries) to stay consistent with
  * the autocomplete/place proxies.
  *
- * Response: { result: { latitude, longitude, mapId, display, addressLine, ward, city } | null }
+ * Response: { result: { latitude, longitude, mapId, addressLine, ward, city } | null }
  * `result` is null when no address is near the point (a data-quality signal,
  * not an error). Upstream/config failures return a 4xx/5xx with a short reason.
  */
@@ -83,7 +83,6 @@ export async function GET(req: Request) {
         latitude: lat,
         longitude: lng,
         mapId: first.ref_id,
-        display: first.display || first.name || '',
         addressLine: first.name || first.display || '',
         ward,
         city

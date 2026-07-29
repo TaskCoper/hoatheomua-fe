@@ -20,5 +20,11 @@ export const useAddressAutocomplete = ({
     placeholderData: keepPreviousData
   })
 
-  return { suggestions: data?.results ?? [], isSearchingAddress }
+  // VietMap occasionally returns the same refId more than once in a single
+  // response; dedupe so React keys and cmdk item values stay unique.
+  const suggestions = data?.results
+    ? Array.from(new Map(data.results.map((suggestion) => [suggestion.refId, suggestion])).values())
+    : []
+
+  return { suggestions, isSearchingAddress }
 }

@@ -18,12 +18,13 @@ import { Spinner } from '@/components/ui/spinner'
 import { AddressAutocomplete } from '@/features/orders/components/address-autocomplete'
 import { AddressMapField } from '@/features/orders/components/address-map-field'
 import { useGetShippingLocations } from '@/features/orders/hooks/use-get-shipping-locations'
+import { matchShippingLocation } from '@/features/orders/utils/match-shipping-location'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowDown01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useCreateAddress } from '../hooks/use-create-address'
@@ -78,6 +79,21 @@ export function AddressFormDialog({
     resolver: zodResolver(schema)
   })
 
+  // The coordinate the typed address resolved to — map picks are constrained
+  // to a radius around it. `resolvedAnchor` is the user's most recent pick
+  // (via autocomplete) within this session; it falls back to the saved
+  // address's own coordinate, derived from `activeAddress` so it stays in
+  // sync as that data loads without a dedicated effect.
+  const [resolvedAnchor, setResolvedAnchor] = useState<{ latitude: number; longitude: number } | null>(null)
+  const savedAnchor = useMemo(
+    () =>
+      activeAddress && (activeAddress.latitude ?? 0) !== 0 && (activeAddress.longitude ?? 0) !== 0
+        ? { latitude: activeAddress.latitude, longitude: activeAddress.longitude }
+        : null,
+    [activeAddress]
+  )
+  const mapAnchor = resolvedAnchor ?? savedAnchor
+
   const cityValue = useWatch({ control: methods.control, name: 'city' }) ?? ''
   const wardValue = useWatch({ control: methods.control, name: 'ward' }) ?? ''
   const latitudeValue = useWatch({ control: methods.control, name: 'latitude' }) ?? 0
@@ -97,6 +113,19 @@ export function AddressFormDialog({
     parentId: selectedCityId,
     enabled: selectedCityId !== -1
   })
+
+  const pendingWardRef = useRef<string | null>(null)
+  const resolvePendingWard = useCallback(() => {
+    if (pendingWardRef.current === null || isLoadingWards || wards.length === 0) return
+    const matchedWard = matchShippingLocation(wards, pendingWardRef.current)
+    if (matchedWard) {
+      methods.setValue('ward', matchedWard.name, { shouldDirty: true, shouldValidate: true })
+    }
+    pendingWardRef.current = null
+  }, [wards, isLoadingWards, methods])
+  useEffect(() => {
+    resolvePendingWard()
+  }, [resolvePendingWard])
 
   useEffect(() => {
     if (!open) return
@@ -122,6 +151,7 @@ export function AddressFormDialog({
   const close = () => {
     setOpen(false)
     methods.reset(defaultValues)
+    setResolvedAnchor(null)
   }
 
   const onSubmit = methods.handleSubmit(async (values) => {
@@ -247,26 +277,36 @@ export function AddressFormDialog({
                         id={field.name}
                         value={field.value ?? ''}
                         onValueChange={field.onChange}
-                        onResolve={({ latitude, longitude, mapId }) => {
+                        onResolve={({ latitude, longitude, mapId, ward, city }) => {
                           methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
                           methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
                           methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
+                          // Anchor the map pin to this newly resolved point.
+                          setResolvedAnchor({ latitude, longitude })
+
+                          // Lift the resolved ward/city into their own selectors.
+                          const matchedCity = matchShippingLocation(cities, city)
+                          const cityChanged = Boolean(matchedCity && matchedCity.name !== cityValue)
+                          if (cityChanged && matchedCity) {
+                            methods.setValue('city', matchedCity.name, { shouldDirty: true, shouldValidate: true })
+                            methods.setValue('ward', '', { shouldDirty: true, shouldValidate: true })
+                          }
+                          pendingWardRef.current = ward || null
+                          // Same city → its ward list is already loaded, resolve now;
+                          // a changed city resolves via the effect once wards reload.
+                          if (!cityChanged) resolvePendingWard()
                         }}
                         onClear={() => {
                           methods.setValue('latitude', 0, { shouldDirty: true, shouldValidate: true })
                           methods.setValue('longitude', 0, { shouldDirty: true, shouldValidate: true })
                           methods.setValue('mapId', '', { shouldDirty: true, shouldValidate: true })
+                          setResolvedAnchor(null)
                         }}
                         ward={wardValue}
                         city={cityValue}
-                        placeholder={
-                          wardValue && cityValue
-                            ? t('profile.addressLinePlaceholder')
-                            : t('profile.addressLineDisabledPlaceholder')
-                        }
+                        placeholder={t('profile.addressLinePlaceholder')}
                         searchingLabel={t('profile.addressLineSearching')}
                         emptyLabel={t('profile.addressLineEmpty')}
-                        disabled={!wardValue || !cityValue}
                         invalid={fieldState.invalid}
                       />
                       <div className='min-h-4'>
@@ -276,22 +316,29 @@ export function AddressFormDialog({
                   )}
                 />
 
-                <AddressMapField
-                  latitude={latitudeValue}
-                  longitude={longitudeValue}
-                  onResolve={({ latitude, longitude, mapId, addressLine }) => {
-                    methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
-                    methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
-                    methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
-                    if (addressLine) {
-                      methods.setValue('addressLine', addressLine, { shouldDirty: true, shouldValidate: true })
-                    }
-                  }}
-                  hint={t('profile.addressMapHint')}
-                  useLocationLabel={t('profile.addressMapUseLocation')}
-                  resolvingLabel={t('profile.addressMapResolving')}
-                  locationErrorLabel={t('profile.addressMapLocationError')}
-                />
+                {/* Map preview only appears once an address has resolved to a point. */}
+                {!(latitudeValue === 0 && longitudeValue === 0) &&
+                Number.isFinite(latitudeValue) &&
+                Number.isFinite(longitudeValue) ? (
+                  <AddressMapField
+                    latitude={latitudeValue}
+                    longitude={longitudeValue}
+                    onResolve={({ latitude, longitude, mapId }) => {
+                      // Map picks fine-tune the coordinate only — leave the address
+                      // line the user typed/selected untouched.
+                      methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
+                      methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
+                      methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
+                    }}
+                    anchorLatitude={mapAnchor?.latitude}
+                    anchorLongitude={mapAnchor?.longitude}
+                    hint={t('profile.addressMapHint')}
+                    useLocationLabel={t('profile.addressMapUseLocation')}
+                    resolvingLabel={t('profile.addressMapResolving')}
+                    locationErrorLabel={t('profile.addressMapLocationError')}
+                    tooFarLabel={t('profile.addressMapTooFar')}
+                  />
+                ) : null}
 
                 <Controller
                   name='isDefault'

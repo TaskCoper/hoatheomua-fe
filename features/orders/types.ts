@@ -226,6 +226,8 @@ export interface GeocodeResult {
   longitude: number
   mapId: string
   display: string
+  ward: string
+  city: string
 }
 
 export interface GeocodeResponse {
@@ -236,7 +238,6 @@ export interface GeocodeReverseResult {
   latitude: number
   longitude: number
   mapId: string
-  display: string
   addressLine: string
   ward: string
   city: string

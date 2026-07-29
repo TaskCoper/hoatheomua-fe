@@ -15,9 +15,10 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { Calendar03Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
+import { matchShippingLocation } from '../utils/match-shipping-location'
 import type { CheckoutFormValues } from '../validations'
 import { AddressAutocomplete } from './address-autocomplete'
 import { AddressMapField } from './address-map-field'
@@ -44,6 +45,9 @@ export function CheckoutFields({
   const { formatDate } = useDateFormat()
   const { control, setValue, watch } = useFormContext<CheckoutFormValues>()
   const [orderTimeOpen, setOrderTimeOpen] = useState(false)
+  // The coordinate the typed address resolved to — map picks are constrained to
+  // a radius around it so the pin can be fine-tuned but not moved to a new area.
+  const [mapAnchor, setMapAnchor] = useState<{ latitude: number; longitude: number } | null>(null)
 
   const minOrderDate = useMemo(() => new Date(new Date().setHours(0, 0, 0, 0)), [])
   const maxOrderDate = useMemo(
@@ -75,6 +79,7 @@ export function CheckoutFields({
       setValue('latitude', 0, { shouldDirty: true })
       setValue('longitude', 0, { shouldDirty: true })
       setValue('mapId', '', { shouldDirty: true })
+      setMapAnchor(null)
     } else if (selectedAddressId) {
       // Restore the previously selected saved address.
       onSelectAddress(selectedAddressId)
@@ -107,6 +112,22 @@ export function CheckoutFields({
       setValue('wardCode', match.id, { shouldDirty: true, shouldValidate: true })
     }
   }, [wardForm, wards, wardCodeForm, setValue])
+
+  // Ward name lifted from a picked address, resolved to a selector option once
+  // the newly-set city's ward list has finished loading.
+  const pendingWardRef = useRef<string | null>(null)
+  const resolvePendingWard = useCallback(() => {
+    if (pendingWardRef.current === null || isLoadingWards || wards.length === 0) return
+    const matchedWard = matchShippingLocation(wards, pendingWardRef.current)
+    if (matchedWard) {
+      setValue('ward', matchedWard.name, { shouldDirty: true })
+      setValue('wardCode', matchedWard.id, { shouldDirty: true, shouldValidate: true })
+    }
+    pendingWardRef.current = null
+  }, [wards, isLoadingWards, setValue])
+  useEffect(() => {
+    resolvePendingWard()
+  }, [resolvePendingWard])
 
   const addressOptions = useMemo(
     () =>
@@ -282,26 +303,39 @@ export function CheckoutFields({
                   id={field.name}
                   value={field.value ?? ''}
                   onValueChange={field.onChange}
-                  onResolve={({ latitude, longitude, mapId }) => {
+                  onResolve={({ latitude, longitude, mapId, ward, city }) => {
                     setValue('latitude', latitude, { shouldDirty: true })
                     setValue('longitude', longitude, { shouldDirty: true })
                     setValue('mapId', mapId, { shouldDirty: true })
+                    // This resolved point becomes the anchor the map pin is
+                    // constrained to; subsequent drags are measured from here.
+                    setMapAnchor({ latitude, longitude })
+
+                    // Lift the resolved ward/city into their own selectors.
+                    const matchedCity = matchShippingLocation(cities, city)
+                    const cityChanged = Boolean(matchedCity && matchedCity.id !== cityCodeForm)
+                    if (cityChanged && matchedCity) {
+                      setValue('city', matchedCity.name, { shouldDirty: true })
+                      setValue('cityCode', matchedCity.id, { shouldDirty: true, shouldValidate: true })
+                      setValue('ward', '', { shouldDirty: true })
+                      setValue('wardCode', -1, { shouldDirty: true, shouldValidate: true })
+                    }
+                    pendingWardRef.current = ward || null
+                    // Same city → its ward list is already loaded, resolve now;
+                    // a changed city resolves via the effect once wards reload.
+                    if (!cityChanged) resolvePendingWard()
                   }}
                   onClear={() => {
                     setValue('latitude', 0, { shouldDirty: true })
                     setValue('longitude', 0, { shouldDirty: true })
                     setValue('mapId', '', { shouldDirty: true })
+                    setMapAnchor(null)
                   }}
                   ward={wardForm ?? ''}
                   city={cityForm ?? ''}
-                  placeholder={
-                    wardForm && cityForm
-                      ? t('orders.checkout.addressLinePlaceholder')
-                      : t('orders.checkout.addressLineDisabledPlaceholder')
-                  }
+                  placeholder={t('orders.checkout.addressLinePlaceholder')}
                   searchingLabel={t('orders.checkout.addressLineSearching')}
                   emptyLabel={t('orders.checkout.addressLineEmpty')}
-                  disabled={!wardForm || !cityForm}
                   invalid={fieldState.invalid}
                 />
                 <div className='min-h-4'>
@@ -311,22 +345,27 @@ export function CheckoutFields({
             )}
           />
 
-          <AddressMapField
-            latitude={latitudeForm}
-            longitude={longitudeForm}
-            onResolve={({ latitude, longitude, mapId, addressLine }) => {
-              setValue('latitude', latitude, { shouldDirty: true })
-              setValue('longitude', longitude, { shouldDirty: true })
-              setValue('mapId', mapId, { shouldDirty: true })
-              if (addressLine) {
-                setValue('addressLine', addressLine, { shouldDirty: true, shouldValidate: true })
-              }
-            }}
-            hint={t('orders.checkout.mapHint')}
-            useLocationLabel={t('orders.checkout.mapUseLocation')}
-            resolvingLabel={t('orders.checkout.mapResolving')}
-            locationErrorLabel={t('orders.checkout.mapLocationError')}
-          />
+          {/* Map preview only appears once an address has resolved to a point. */}
+          {!(latitudeForm === 0 && longitudeForm === 0) && Number.isFinite(latitudeForm) && Number.isFinite(longitudeForm) ? (
+            <AddressMapField
+              latitude={latitudeForm}
+              longitude={longitudeForm}
+              onResolve={({ latitude, longitude, mapId }) => {
+                // Map picks fine-tune the coordinate only — leave the address line
+                // the user typed/selected untouched.
+                setValue('latitude', latitude, { shouldDirty: true })
+                setValue('longitude', longitude, { shouldDirty: true })
+                setValue('mapId', mapId, { shouldDirty: true })
+              }}
+              anchorLatitude={mapAnchor?.latitude}
+              anchorLongitude={mapAnchor?.longitude}
+              hint={t('orders.checkout.mapHint')}
+              useLocationLabel={t('orders.checkout.mapUseLocation')}
+              resolvingLabel={t('orders.checkout.mapResolving')}
+              locationErrorLabel={t('orders.checkout.mapLocationError')}
+              tooFarLabel={t('orders.checkout.mapTooFar')}
+            />
+          ) : null}
         </>
       ) : null}
 

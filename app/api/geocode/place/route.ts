@@ -7,7 +7,7 @@ import { z } from 'zod'
  * ref_id came from Autocomplete v4's `display_type=1`, the resolved `display`
  * reflects the new 2-level (ward, city) format.
  *
- * Response: { result: { latitude, longitude, mapId, display } | null }
+ * Response: { result: { latitude, longitude, mapId, display, ward, city } | null }
  * `result` is null when the ref_id has no match (a data-quality signal, not
  * an error). Upstream/config failures return a 4xx/5xx with a short reason.
  */
@@ -20,6 +20,10 @@ const QuerySchema = z.object({
 
 const PlaceSchema = z.object({
   display: z.string().optional(),
+  // Place v4 (display_type=1) returns the structured 2-level admin fields, which
+  // let the caller prefill the ward/city selectors from a picked suggestion.
+  ward: z.string().optional().default(''),
+  city: z.string().optional().default(''),
   lat: z.number(),
   lng: z.number()
 })
@@ -59,7 +63,9 @@ export async function GET(req: Request) {
         latitude: place.data.lat,
         longitude: place.data.lng,
         mapId: refId,
-        display: place.data.display || ''
+        display: place.data.display || '',
+        ward: place.data.ward,
+        city: place.data.city
       }
     })
   } catch {

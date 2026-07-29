@@ -214,7 +214,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   const showSepayQr = isPendingOrder && !order.paymentUrl && Boolean(order.sepayUrl) && Boolean(sepayDetails)
 
   const items = useMemo(() => order.details ?? [], [order.details])
-  const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.itemId))), [items])
+  const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.orderDetailsId))), [items])
 
   const productQueries = useQueries({
     queries: productIds.map((id) => productDetailQuery(id))
@@ -360,7 +360,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               >
                 <ul className='divide-y divide-border/60'>
                   {items.map((item) => {
-                    const product = productById.get(item.itemId) ?? null
+                    const product = productById.get(item.orderDetailsId) ?? null
                     const avatar = product?.coverImage ?? null
                     const displayName = product?.productName ?? item.name
                     return (

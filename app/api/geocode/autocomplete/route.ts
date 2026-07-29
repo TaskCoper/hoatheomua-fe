@@ -15,11 +15,17 @@ const QuerySchema = z.object({
   city: z.string().trim().optional()
 })
 
+const BoundarySchema = z.object({
+  name: z.string().optional().default(''),
+  full_name: z.string().optional().default('')
+})
+
 const AutocompleteResultSchema = z.object({
   ref_id: z.string(),
   name: z.string().optional().default(''),
   address: z.string().optional().default(''),
-  display: z.string().optional().default('')
+  display: z.string().optional().default(''),
+  boundaries: z.array(BoundarySchema).optional().default([])
 })
 
 const COMBINING_MARKS = /[̀-ͯ]/g
@@ -31,6 +37,18 @@ const normalize = (value: string) =>
 // Strips the admin-level prefix (e.g. "Phường", "Thành phố") so a bare name
 // like "Sài Gòn" still matches an address string of "Phường Sài Gòn, …".
 const adminCoreName = (value: string) => normalize(value).replace(ADMIN_PREFIX, '').trim()
+
+// Matches a ward/city against a result's structured admin boundaries rather than
+// its free-text `address` string. `boundaries` carries each admin level as a
+// discrete { name, full_name }, so this survives abbreviations (e.g. "TP. HCM")
+// and address strings that omit the ward — which the old substring match on
+// `address` silently dropped.
+const boundaryMatchesCore = (boundaries: { name: string; full_name: string }[], core: string): boolean =>
+  boundaries.some((boundary) => {
+    const name = adminCoreName(boundary.name)
+    const fullName = adminCoreName(boundary.full_name)
+    return name === core || fullName === core || name.includes(core) || fullName.includes(core)
+  })
 
 export async function GET(req: Request) {
   const apikey = process.env.VIETMAP_API_KEY
@@ -74,8 +92,11 @@ export async function GET(req: Request) {
 
     const matching = results.filter((result) => {
       if (!wardCore && !cityCore) return true
-      const normalizedAddress = normalize(result.address)
-      return (!wardCore || normalizedAddress.includes(wardCore)) && (!cityCore || normalizedAddress.includes(cityCore))
+      const boundaries = result.boundaries ?? []
+      return (
+        (!wardCore || boundaryMatchesCore(boundaries, wardCore)) &&
+        (!cityCore || boundaryMatchesCore(boundaries, cityCore))
+      )
     })
 
     return Response.json({

@@ -17,7 +17,7 @@ interface AddressAutocompleteProps {
   id?: string
   value: string
   onValueChange: (value: string) => void
-  onResolve: (result: { latitude: number; longitude: number; mapId: string }) => void
+  onResolve: (result: { latitude: number; longitude: number; mapId: string; ward: string; city: string }) => void
   onClear: () => void
   ward: string
   city: string
@@ -65,6 +65,8 @@ export function AddressAutocomplete({
   }
 
   const handleSelect = async (suggestion: GeocodeSuggestion) => {
+    // Keep only the street/POI portion in the address line — the ward and city
+    // are lifted into their own selectors via onResolve below.
     const addressLine = suggestion.name || suggestion.display
     lastSelectedRef.current = addressLine
     onValueChange(addressLine)
@@ -72,13 +74,19 @@ export function AddressAutocomplete({
 
     const { result } = await resolveGeocodePlace({ refId: suggestion.refId })
     if (result) {
-      onResolve({ latitude: result.latitude, longitude: result.longitude, mapId: suggestion.refId })
+      onResolve({
+        latitude: result.latitude,
+        longitude: result.longitude,
+        mapId: suggestion.refId,
+        ward: result.ward,
+        city: result.city
+      })
     }
   }
 
   return (
     <Command shouldFilter={false} className='overflow-visible bg-transparent p-0'>
-      <Popover open={open && !disabled} onOpenChange={setOpen}>
+      <Popover open={open && !disabled} onOpenChange={setOpen} modal>
         <PopoverAnchor asChild>
           <InputGroup className='h-9 bg-input/50'>
             <CommandPrimitive.Input
