@@ -16,11 +16,9 @@ import { Calendar03Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useMemo, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { useDebounce } from 'use-debounce'
-import { useGetLatLng } from '../hooks/use-get-lat-lng'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
-import { pickBestGeocodeResult } from '../services'
 import type { CheckoutFormValues } from '../validations'
+import { AddressAutocomplete } from './address-autocomplete'
 import { LocationCombobox } from './location-combobox'
 
 const ORDER_TAG_NONE = '__none__'
@@ -45,7 +43,6 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
 
   const cityCodeForm = watch('cityCode')
   const wardCodeForm = watch('wardCode')
-  const addressLineForm = watch('addressLine')
   const wardForm = watch('ward')
   const cityForm = watch('city')
 
@@ -59,20 +56,6 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
     parentId: cityCodeForm,
     enabled: cityCodeForm !== -1
   })
-
-  const fullAddress = addressLineForm && wardForm && cityForm ? `${addressLineForm}, ${wardForm}, ${cityForm}` : ''
-  const [debouncedAddress] = useDebounce(fullAddress, 300)
-
-  const { latLng } = useGetLatLng({ address: debouncedAddress, enabled: !!debouncedAddress })
-
-  useEffect(() => {
-    if (!debouncedAddress) return
-    const best = pickBestGeocodeResult(debouncedAddress, latLng)
-    if (!best) return
-    setValue('latitude', best.geometry.location.lat, { shouldDirty: true })
-    setValue('longitude', best.geometry.location.lng, { shouldDirty: true })
-    setValue('mapId', best.place_id, { shouldDirty: true })
-  }, [latLng, debouncedAddress, setValue])
 
   useEffect(() => {
     if (!cityForm || cities.length === 0) return
@@ -149,28 +132,6 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
                   aria-invalid={fieldState.invalid}
                   autoComplete='tel'
                   placeholder={t('orders.checkout.phonePlaceholder')}
-                />
-                <div className='min-h-4'>
-                  {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                </div>
-              </Field>
-            )}
-          />
-
-          <Controller
-            name='addressLine'
-            control={control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid} className='gap-1'>
-                <FieldLabel htmlFor={field.name}>{t('orders.checkout.addressLine')}</FieldLabel>
-                <Input
-                  {...field}
-                  value={field.value ?? ''}
-                  id={field.name}
-                  aria-invalid={fieldState.invalid}
-                  autoComplete='off'
-                  spellCheck={false}
-                  placeholder={t('orders.checkout.addressLinePlaceholder')}
                 />
                 <div className='min-h-4'>
                   {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
@@ -261,6 +222,45 @@ export function CheckoutFields({ addresses, selectedAddressId, onSelectAddress }
               )}
             />
           </div>
+
+          <Controller
+            name='addressLine'
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className='gap-1'>
+                <FieldLabel htmlFor={field.name}>{t('orders.checkout.addressLine')}</FieldLabel>
+                <AddressAutocomplete
+                  id={field.name}
+                  value={field.value ?? ''}
+                  onValueChange={field.onChange}
+                  onResolve={({ latitude, longitude, mapId }) => {
+                    setValue('latitude', latitude, { shouldDirty: true })
+                    setValue('longitude', longitude, { shouldDirty: true })
+                    setValue('mapId', mapId, { shouldDirty: true })
+                  }}
+                  onClear={() => {
+                    setValue('latitude', 0, { shouldDirty: true })
+                    setValue('longitude', 0, { shouldDirty: true })
+                    setValue('mapId', '', { shouldDirty: true })
+                  }}
+                  ward={wardForm ?? ''}
+                  city={cityForm ?? ''}
+                  placeholder={
+                    wardForm && cityForm
+                      ? t('orders.checkout.addressLinePlaceholder')
+                      : t('orders.checkout.addressLineDisabledPlaceholder')
+                  }
+                  searchingLabel={t('orders.checkout.addressLineSearching')}
+                  emptyLabel={t('orders.checkout.addressLineEmpty')}
+                  disabled={!wardForm || !cityForm}
+                  invalid={fieldState.invalid}
+                />
+                <div className='min-h-4'>
+                  {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                </div>
+              </Field>
+            )}
+          />
         </>
       )}
 

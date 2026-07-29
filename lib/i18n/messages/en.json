@@ -597,6 +597,9 @@
       "phonePlaceholder": "Enter phone number",
       "addressLine": "Address",
       "addressLinePlaceholder": "Street, building, …",
+      "addressLineDisabledPlaceholder": "Select province / city and ward first",
+      "addressLineSearching": "Searching addresses…",
+      "addressLineEmpty": "No matching address",
       "city": "Province / City",
       "cityPlaceholder": "Select province / city",
       "citySearchPlaceholder": "Search province / city",
@@ -938,31 +941,6 @@
           "description": "For circumstances beyond our control, you always receive a transparent refund."
         }
       }
-    },
-    "signatureBouquets": {
-      "title": "Signature Bouquets",
-      "description": "Each product is a signature of its own - where refinement is reflected in every detail to create an unmistakable beauty.",
-      "addToCart": "Add {name} to cart",
-      "flowers": {
-        "peony": "Peony - Paeonia lactiflora",
-        "phalaenopsis": "Phalaenopsis - Phalaenopsis Amabilis",
-        "calla": "Calla Lily - Zantedeschia aethiopica",
-        "lilyOfTheValley": "Lily of the Valley - Convallaria Majalis",
-        "birdOfParadise": "Bird of Paradise - Strelitzia Reginae",
-        "hyacinth": "Hyacinth - Hyacinthus Orientalis",
-        "tulip": "Tulip (Premium Variety) - Tulipa gesneriana",
-        "gardenRose": "Garden Rose (David Austin) - Rosa × Hybrida",
-        "anemone": "Anemone - Anemone Coronaria"
-      },
-      "bouquets": {
-        "classicRose": "Classic Rose",
-        "pinkRose": "Pink Rose",
-        "peachBloom": "Peach Bloom",
-        "sweetBerry": "Sweet Berry",
-        "pastelRose": "Pastel Rose",
-        "wildflower": "Wildflower"
-      },
-      "price": "550,000đ/Bouquet"
     },
     "testimonial": {
       "title": "What Customers Say",
@@ -2241,6 +2219,10 @@
     "addressReceiverName": "Receiver name",
     "addressPhoneNumber": "Phone number",
     "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, building, …",
+    "addressLineDisabledPlaceholder": "Select province / city and ward first",
+    "addressLineSearching": "Searching addresses…",
+    "addressLineEmpty": "No matching address",
     "addressWard": "Ward",
     "addressCity": "City",
     "addressCountry": "Country",

@@ -31,3 +31,19 @@ export const getLatLngQuery = ({ address }: { address?: string }) =>
     queryKey: ['lat-lng', address] as const,
     queryFn: () => orderService.getLatLngFromAddress({ address })
   })
+
+export const getAddressAutocompleteQuery = ({
+  text,
+  focus,
+  ward,
+  city
+}: {
+  text: string
+  focus?: string
+  ward?: string
+  city?: string
+}) =>
+  queryOptions({
+    queryKey: ['address-autocomplete', text, focus ?? null, ward ?? null, city ?? null] as const,
+    queryFn: () => orderService.autocompleteAddress({ text, focus, ward, city })
+  })

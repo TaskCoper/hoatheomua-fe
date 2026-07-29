@@ -1,6 +1,4 @@
-'use client'
-
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import ProductDetailsTabsShell, { type TabKey } from '@/features/products/components/product-details-tabs-shell'
 import {
   ArrowUpRight01Icon,
   DropletIcon,
@@ -10,10 +8,8 @@ import {
   ThermometerIcon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { motion } from 'motion/react'
-import { useMemo, useState } from 'react'
-
-type TabKey = 'description' | 'specs' | 'care' | 'landing'
+import { getTranslations } from 'next-intl/server'
+import type { ReactNode } from 'react'
 
 type TabLabelKey =
   | 'products.detail.tabs.description'
@@ -72,7 +68,7 @@ const formatWeight = (weight: number | null | undefined) => {
   return `${weight} g`
 }
 
-export default function ProductDetailsTabs({
+export default async function ProductDetailsTabs({
   code,
   brand,
   type,
@@ -89,126 +85,88 @@ export default function ProductDetailsTabs({
   shipping: ShippingDimensions | null
   landingUrl: string | null
 }) {
-  const { t } = useTranslation()
-  const [active, setActive] = useState<TabKey>('description')
+  const t = await getTranslations()
 
-  const tabs = useMemo<{ key: TabKey; labelKey: TabLabelKey }[]>(
-    () => (landingUrl ? [...BASE_TABS, { key: 'landing', labelKey: 'products.detail.tabs.landing' }] : BASE_TABS),
-    [landingUrl]
-  )
+  const tabs = (
+    landingUrl
+      ? [...BASE_TABS, { key: 'landing' as const, labelKey: 'products.detail.tabs.landing' as const }]
+      : BASE_TABS
+  ).map((tab) => ({ key: tab.key, label: t(tab.labelKey) }))
 
-  const specs = useMemo<SpecRow[]>(() => {
-    const rows: SpecRow[] = []
-    if (code) rows.push({ label: t('products.detail.tabs.specRows.code'), value: code })
-    if (brand) rows.push({ label: t('products.detail.tabs.specRows.brand'), value: brand })
-    if (category) rows.push({ label: t('products.detail.tabs.specRows.category'), value: category })
-    if (type) rows.push({ label: t('products.detail.tabs.specRows.type'), value: type })
-    if (country) rows.push({ label: t('products.detail.tabs.specRows.country'), value: country })
-    const dim = formatDimension(shipping)
-    if (dim) rows.push({ label: t('products.detail.tabs.specRows.dimensions'), value: dim })
-    const weight = formatWeight(shipping?.weight)
-    if (weight) rows.push({ label: t('products.detail.tabs.specRows.weight'), value: weight })
-    return rows
-  }, [code, brand, category, type, country, shipping, t])
+  const specs: SpecRow[] = []
+  if (code) specs.push({ label: t('products.detail.tabs.specRows.code'), value: code })
+  if (brand) specs.push({ label: t('products.detail.tabs.specRows.brand'), value: brand })
+  if (category) specs.push({ label: t('products.detail.tabs.specRows.category'), value: category })
+  if (type) specs.push({ label: t('products.detail.tabs.specRows.type'), value: type })
+  if (country) specs.push({ label: t('products.detail.tabs.specRows.country'), value: country })
+  const dim = formatDimension(shipping)
+  if (dim) specs.push({ label: t('products.detail.tabs.specRows.dimensions'), value: dim })
+  const weight = formatWeight(shipping?.weight)
+  if (weight) specs.push({ label: t('products.detail.tabs.specRows.weight'), value: weight })
 
-  return (
-    <div className='mt-8'>
-      <div
-        role='tablist'
-        aria-label={t('products.detail.tabs.ariaLabel')}
-        className='flex flex-wrap gap-1 border-b border-border'
-      >
-        {tabs.map((tab) => {
-          const isActive = active === tab.key
-
-          return (
-            <button
-              key={tab.key}
-              type='button'
-              role='tab'
-              aria-selected={isActive}
-              onClick={() => setActive(tab.key)}
-              className='cursor-pointer relative px-4 py-3 text-sm font-semibold transition-colors'
-              style={{ color: isActive ? 'var(--primary)' : 'var(--muted-foreground)' }}
+  const panels: Partial<Record<TabKey, ReactNode>> = {
+    description: (
+      <p className='text-sm text-muted-foreground p-4 bg-white/50 rounded-3xl'>
+        {t('products.detail.tabs.noDescription')}
+      </p>
+    ),
+    specs:
+      specs.length > 0 ? (
+        <dl className='overflow-hidden rounded-2xl ring-1 ring-foreground/5'>
+          {specs.map((spec, index) => (
+            <div
+              key={spec.label}
+              className={`grid grid-cols-[10rem_1fr] gap-4 px-4 py-3 text-sm ${
+                index % 2 === 0 ? 'bg-card' : 'bg-secondary/20'
+              }`}
             >
-              {t(tab.labelKey)}
-
-              {isActive ? (
-                <motion.span
-                  layoutId='product-tab-underline'
-                  className='absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-primary'
-                  transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                />
-              ) : null}
-            </button>
-          )
-        })}
-      </div>
-
-      <div role='tabpanel' className='pt-4'>
-        {active === 'description' ? (
-          <p className='text-sm text-muted-foreground p-4 bg-white/50 rounded-3xl'>
-            {t('products.detail.tabs.noDescription')}
-          </p>
-        ) : null}
-
-        {active === 'specs' ? (
-          specs.length > 0 ? (
-            <dl className='overflow-hidden rounded-2xl ring-1 ring-foreground/5'>
-              {specs.map((spec, index) => (
-                <div
-                  key={spec.label}
-                  className={`grid grid-cols-[10rem_1fr] gap-4 px-4 py-3 text-sm ${
-                    index % 2 === 0 ? 'bg-card' : 'bg-secondary/20'
-                  }`}
-                >
-                  <dt className='text-xs font-medium text-muted-foreground'>{spec.label}</dt>
-                  <dd className='font-medium text-xs text-primary truncate'>{spec.value}</dd>
-                </div>
-              ))}
-            </dl>
-          ) : (
-            <p className='text-sm text-muted-foreground'>{t('products.detail.tabs.noSpecs')}</p>
-          )
-        ) : null}
-
-        {active === 'care' ? (
-          <div className='grid gap-3'>
-            {CARE_TIPS.map((tip) => (
-              <div key={tip.titleKey} className='flex gap-2 rounded-2xl bg-card p-2 ring-1 ring-foreground/5'>
-                <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-secondary/60 text-primary ring-1 ring-primary/10'>
-                  <HugeiconsIcon icon={tip.icon} className='size-5' />
-                </span>
-                <div>
-                  <p className='font-title text-sm font-bold text-primary'>{t(tip.titleKey)}</p>
-                  <p className='text-xs text-foreground'>{t(tip.descriptionKey)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-
-        {active === 'landing' && landingUrl ? (
-          <a
-            href={landingUrl}
-            target='_blank'
-            rel='noopener noreferrer'
-            className='group flex items-center gap-4 rounded-2xl bg-card pl-2 pr-4 py-2 ring-1 ring-foreground/5 transition-colors hover:ring-primary/20'
-          >
-            <span className='grid size-12 shrink-0 place-items-center rounded-xl bg-secondary/60 text-primary ring-1 ring-primary/10'>
-              <HugeiconsIcon icon={MusicNote01Icon} className='size-6' />
-            </span>
-            <div className='min-w-0 flex-1'>
-              <p className='font-title text-sm font-bold text-primary'>{t('products.detail.tabs.landingTitle')}</p>
-              <p className='truncate text-xs text-muted-foreground'>{t('products.detail.tabs.visitLanding')}</p>
+              <dt className='text-xs font-medium text-muted-foreground'>{spec.label}</dt>
+              <dd className='font-medium text-xs text-primary truncate'>{spec.value}</dd>
             </div>
-            <HugeiconsIcon
-              icon={ArrowUpRight01Icon}
-              className='size-5 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary'
-            />
-          </a>
-        ) : null}
+          ))}
+        </dl>
+      ) : (
+        <p className='text-sm text-muted-foreground'>{t('products.detail.tabs.noSpecs')}</p>
+      ),
+    care: (
+      <div className='grid gap-3'>
+        {CARE_TIPS.map((tip) => (
+          <div key={tip.titleKey} className='flex gap-2 rounded-2xl bg-card p-2 ring-1 ring-foreground/5'>
+            <span className='grid size-10 shrink-0 place-items-center rounded-xl bg-secondary/60 text-primary ring-1 ring-primary/10'>
+              <HugeiconsIcon icon={tip.icon} className='size-5' />
+            </span>
+            <div>
+              <p className='font-title text-sm font-bold text-primary'>{t(tip.titleKey)}</p>
+              <p className='text-xs text-foreground'>{t(tip.descriptionKey)}</p>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  )
+    )
+  }
+
+  if (landingUrl) {
+    panels.landing = (
+      <a
+        href={landingUrl}
+        target='_blank'
+        rel='noopener noreferrer'
+        className='group flex items-center gap-4 rounded-2xl bg-card pl-2 pr-4 py-2 ring-1 ring-foreground/5 transition-colors hover:ring-primary/20'
+      >
+        <span className='grid size-12 shrink-0 place-items-center rounded-xl bg-secondary/60 text-primary ring-1 ring-primary/10'>
+          <HugeiconsIcon icon={MusicNote01Icon} className='size-6' />
+        </span>
+        <div className='min-w-0 flex-1'>
+          <p className='font-title text-sm font-bold text-primary'>{t('products.detail.tabs.landingTitle')}</p>
+          <p className='truncate text-xs text-muted-foreground'>{t('products.detail.tabs.visitLanding')}</p>
+        </div>
+        <HugeiconsIcon
+          icon={ArrowUpRight01Icon}
+          className='size-5 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary'
+        />
+      </a>
+    )
+  }
+
+  return <ProductDetailsTabsShell ariaLabel={t('products.detail.tabs.ariaLabel')} tabs={tabs} panels={panels} />
 }

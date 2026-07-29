@@ -1,6 +1,6 @@
 import CriteriaSection from '@/features/home/components/criteria-section'
+import HomeCategorySections from '@/features/home/components/home-category-sections'
 import ShopFreshFlowersSection from '@/features/home/components/shop-fresh-flowers-section'
-import SignatureBouquetsSection from '@/features/home/components/signature-bouquets-section'
 import TestimonialSection from '@/features/home/components/testimonial-section'
 import WhyChooseUsSection from '@/features/home/components/why-choose-us-section'
 import bannerOne from '@/public/images/banner-one.webp'
@@ -32,7 +32,7 @@ export default function HomeContent() {
       </div>
 
       <div className='cv-auto'>
-        <SignatureBouquetsSection />
+        <HomeCategorySections />
       </div>
 
       <div className={`${bannerWrapperClass} cv-auto`}>

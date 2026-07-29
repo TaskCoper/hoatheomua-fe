@@ -1,13 +1,11 @@
-'use client'
-
 import { Button } from '@/components/ui/button'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { ArrowLeft02Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { getTranslations } from 'next-intl/server'
 
-export default function ProductBreadcrumb({ name }: { name: string }) {
-  const { t } = useTranslation()
+export default async function ProductBreadcrumb({ name }: { name: string }) {
+  const t = await getTranslations()
 
   return (
     <nav

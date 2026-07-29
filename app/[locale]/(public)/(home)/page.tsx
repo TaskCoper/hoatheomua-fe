@@ -1,7 +1,7 @@
+import categoryService from '@/features/categories/services'
+import { CategoryProductPage } from '@/features/categories/types'
 import HomeContent from '@/features/home/components/home-content'
 import { buildHomeJsonLd, generateHomeMetadata } from '@/features/home/seo'
-import { productListQuery } from '@/features/products/queries'
-import { getCachedProducts } from '@/features/products/queries.server'
 import { routing, type Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
@@ -9,11 +9,10 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
+import { Suspense } from 'react'
 
-const SIGNATURE_BOUQUETS_SIZE = 6
-const SIGNATURE_BOUQUETS_CATEGORY_ID = ['aeccf4a7-7f76-45ac-856b-668866950bd0']
-
-export const revalidate = 600
+// URL-driven filters (nuqs) in the home category sections make this route request-specific → render on the server per request.
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -28,17 +27,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
   setRequestLocale(locale)
 
   const queryClient = getQueryClient()
-  const listParams = {
-    pageSize: SIGNATURE_BOUQUETS_SIZE,
-    categoryIds: SIGNATURE_BOUQUETS_CATEGORY_ID
-  }
-  const options = productListQuery(listParams)
+  const categoryPage = [CategoryProductPage.Home]
 
   try {
-    const data = await getCachedProducts(listParams)
-    queryClient.setQueryData(options.queryKey, data)
+    await queryClient.prefetchQuery({
+      queryKey: ['categories', categoryPage],
+      queryFn: () => categoryService.getCategories({ page: categoryPage })
+    })
   } catch (error) {
-    console.error('[SSR] home signature bouquets prefetch failed:', error)
+    console.error('[SSR] home categories prefetch failed:', error)
   }
 
   const homeJsonLd = await buildHomeJsonLd()
@@ -48,7 +45,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
       <JsonLd data={homeJsonLd} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <HomeContent />
+        <Suspense fallback={null}>
+          <HomeContent />
+        </Suspense>
       </HydrationBoundary>
     </>
   )

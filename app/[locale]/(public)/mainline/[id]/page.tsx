@@ -1,5 +1,6 @@
 import { getMainlineCard } from '@/features/mainline/queries.server'
 import OccasionDetailContent from '@/features/occasions/components/occasion-detail-content'
+import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -55,5 +56,12 @@ export default async function MainlinePage({ params }: { params: Promise<{ local
     }
   ]
 
-  return <OccasionDetailContent card={card} badge={card.badge} sections={sections} />
+  return (
+    <OccasionDetailContent
+      card={card}
+      badge={card.badge}
+      sections={sections}
+      promiseSection={<ProductsPromiseSection />}
+    />
+  )
 }

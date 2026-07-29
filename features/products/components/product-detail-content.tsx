@@ -1,5 +1,3 @@
-'use client'
-
 import ProductBreadcrumb from '@/features/products/components/product-breadcrumb'
 import ProductDetailsTabs from '@/features/products/components/product-details-tabs'
 import ProductGallery from '@/features/products/components/product-gallery'
@@ -7,16 +5,16 @@ import ProductPurchaseBox from '@/features/products/components/product-purchase-
 import ProductSummary from '@/features/products/components/product-summary'
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import type { ProductDetail } from '@/features/products/types'
-import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import FloatingPetals from '@/shared/components/floating-petals'
-import { BANNER_SLOTS, ProductSignatureMap, ProductsSignatureConfigItem } from '@/types/config.type'
+import { BANNER_SLOTS } from '@/types/config.type'
 
-export default function ProductDetailContent({ product }: { product: ProductDetail }) {
-  const { configs } = useGetPublicConfigs<ProductsSignatureConfigItem>({ group: 'products', key: 'products.signature' })
-  const signatureProducts = configs[0]?.value.value ?? '{}'
-  const parsed = JSON.parse(signatureProducts) as ProductSignatureMap
-  const landingUrl = parsed[product.id]?.trim() || null
-
+export default function ProductDetailContent({
+  product,
+  landingUrl
+}: {
+  product: ProductDetail
+  landingUrl: string | null
+}) {
   const available = Math.floor(product.availableForSale ?? 0)
   const retail = product.price ?? 0
   const oldPrice = product.oldPrice ?? 0

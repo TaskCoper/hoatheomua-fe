@@ -3,9 +3,9 @@
 import OccasionBreadcrumb from '@/features/occasions/components/occasion-breadcrumb'
 import OccasionHeroSection from '@/features/occasions/components/occasion-hero-section'
 import OccasionProductsSection from '@/features/occasions/components/occasion-products-section'
-import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import type { BaseCard, LocalizedText } from '@/types/config.type'
 import dynamic from 'next/dynamic'
+import type { ReactNode } from 'react'
 
 const FloatingPetals = dynamic(() => import('@/shared/components/floating-petals'), { ssr: false })
 
@@ -24,9 +24,10 @@ interface OccasionDetailContentProps {
   card: BaseCard
   badge: LocalizedText
   sections: OccasionSection[]
+  promiseSection: ReactNode
 }
 
-export default function OccasionDetailContent({ card, badge, sections }: OccasionDetailContentProps) {
+export default function OccasionDetailContent({ card, badge, sections, promiseSection }: OccasionDetailContentProps) {
   return (
     <div className='relative overflow-hidden'>
       <section className='relative px-4 pt-4 sm:px-6 lg:px-10 lg:pt-8 xl:px-16'>
@@ -48,7 +49,7 @@ export default function OccasionDetailContent({ card, badge, sections }: Occasio
         />
       ))}
 
-      <ProductsPromiseSection />
+      {promiseSection}
 
       <FloatingPetals />
     </div>

@@ -1,6 +1,7 @@
 import { resolveCard } from '@/features/occasions/campaign'
 import OccasionDetailContent from '@/features/occasions/components/occasion-detail-content'
 import { getOccasionCard } from '@/features/occasions/queries.server'
+import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -67,5 +68,12 @@ export default async function OccasionPage({ params }: { params: Promise<{ local
           }
         ]
 
-  return <OccasionDetailContent card={card} badge={resolved.badge} sections={sections} />
+  return (
+    <OccasionDetailContent
+      card={card}
+      badge={resolved.badge}
+      sections={sections}
+      promiseSection={<ProductsPromiseSection />}
+    />
+  )
 }

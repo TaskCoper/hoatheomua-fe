@@ -5,6 +5,30 @@ export const CategoryProductType = {
 
 export type CategoryProductType = (typeof CategoryProductType)[keyof typeof CategoryProductType]
 
+export const CategoryProductPage = {
+  Home: 'Home',
+  Products: 'Products',
+  Business: 'Business',
+  About: 'About',
+  News: 'News',
+  Recruitment: 'Recruitment',
+  Contact: 'Contact'
+} as const
+
+export type CategoryProductPage = (typeof CategoryProductPage)[keyof typeof CategoryProductPage]
+
+export const CategoryProductPageLabel: Record<CategoryProductPage, string> = {
+  [CategoryProductPage.Home]: 'productCategories.pageOption.home',
+  [CategoryProductPage.Products]: 'productCategories.pageOption.products',
+  [CategoryProductPage.Business]: 'productCategories.pageOption.business',
+  [CategoryProductPage.About]: 'productCategories.pageOption.about',
+  [CategoryProductPage.News]: 'productCategories.pageOption.news',
+  [CategoryProductPage.Recruitment]: 'productCategories.pageOption.recruitment',
+  [CategoryProductPage.Contact]: 'productCategories.pageOption.contact'
+} as const
+
+export type CategoryProductPageLabel = (typeof CategoryProductPageLabel)[keyof typeof CategoryProductPageLabel]
+
 export interface Category {
   categoryId: string
   name: string

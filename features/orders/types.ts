@@ -209,3 +209,25 @@ export interface GeoResponse {
   results: GeoResult[]
   status: string
 }
+
+export interface GeocodeSuggestion {
+  refId: string
+  name: string
+  address: string
+  display: string
+}
+
+export interface GeocodeAutocompleteResponse {
+  results: GeocodeSuggestion[]
+}
+
+export interface GeocodeResult {
+  latitude: number
+  longitude: number
+  mapId: string
+  display: string
+}
+
+export interface GeocodeResponse {
+  result: GeocodeResult | null
+}

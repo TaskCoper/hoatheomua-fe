@@ -1,28 +1,41 @@
-import { productDetailQuery } from '@/features/products/queries'
-import { getProductDetail } from '@/features/products/queries.server'
-// import { getAllProductIds, getProductDetail } from '@/features/products/queries.server'
-import { buildProductDetailJsonLd, generateProductDetailMetadata } from '@/features/products/seo'
-import type { Locale } from '@/lib/i18n/routing'
-// import { routing } from '@/lib/i18n/routing'
 import ProductDetailContent from '@/features/products/components/product-detail-content'
+import { productDetailQuery } from '@/features/products/queries'
+import { getAllProductIds, getProductDetail } from '@/features/products/queries.server'
+import { buildProductDetailJsonLd, generateProductDetailMetadata } from '@/features/products/seo'
+import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
+import { routing, type Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
+import type { ProductSignatureMap, ProductsSignatureConfigItem } from '@/types/config.type'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-// const STATIC_PRODUCT_LIMIT = 10
+// pre-render the latest products at build time for faster initial loads.
+// older products are generated on first request (`dynamicParams = true`)
+// invalidate through ISR = 3600 and the revalidation webhook
+const STATIC_PRODUCT_LIMIT = 20
 
-// export const revalidate = 3600
-// export const dynamicParams = true
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
+export const dynamicParams = true
 
-// export async function generateStaticParams() {
-//   const ids = await getAllProductIds(STATIC_PRODUCT_LIMIT)
-//   return routing.locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
-// }
+export async function generateStaticParams() {
+  const ids = await getAllProductIds(STATIC_PRODUCT_LIMIT)
+  return routing.locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+}
+
+// look up whether this product is mapped to a dedicated signature landing page on the server and passing
+async function getSignatureLandingUrl(productId: string): Promise<string | null> {
+  try {
+    const configs = await getPublicConfigsGroup<ProductsSignatureConfigItem>('products', 'products.signature')
+    const map = JSON.parse(configs[0]?.value.value ?? '{}') as ProductSignatureMap
+    return map[productId]?.trim() || null
+  } catch {
+    return null
+  }
+}
 
 export async function generateMetadata({
   params
@@ -44,6 +57,8 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
     notFound()
   }
 
+  const landingUrl = await getSignatureLandingUrl(product.id)
+
   const queryClient = getQueryClient()
   queryClient.setQueryData(productDetailQuery(id).queryKey, product)
 
@@ -53,7 +68,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={null}>
-          <ProductDetailContent product={product} />
+          <ProductDetailContent product={product} landingUrl={landingUrl} />
         </Suspense>
       </HydrationBoundary>
     </>

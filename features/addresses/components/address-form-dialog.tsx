@@ -15,9 +15,8 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Spinner } from '@/components/ui/spinner'
-import { useGetLatLng } from '@/features/orders/hooks/use-get-lat-lng'
+import { AddressAutocomplete } from '@/features/orders/components/address-autocomplete'
 import { useGetShippingLocations } from '@/features/orders/hooks/use-get-shipping-locations'
-import { pickBestGeocodeResult } from '@/features/orders/services'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -26,7 +25,6 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
-import { useDebounce } from 'use-debounce'
 import { useCreateAddress } from '../hooks/use-create-address'
 import { useGetAddress } from '../hooks/use-get-address'
 import { useUpdateAddress } from '../hooks/use-update-address'
@@ -79,7 +77,6 @@ export function AddressFormDialog({
     resolver: zodResolver(schema)
   })
 
-  const addressLineValue = useWatch({ control: methods.control, name: 'addressLine' }) ?? ''
   const cityValue = useWatch({ control: methods.control, name: 'city' }) ?? ''
   const wardValue = useWatch({ control: methods.control, name: 'ward' }) ?? ''
   const selectedCity = useMemo(() => cityValue.trim(), [cityValue])
@@ -97,11 +94,6 @@ export function AddressFormDialog({
     parentId: selectedCityId,
     enabled: selectedCityId !== -1
   })
-
-  const fullAddress =
-    addressLineValue && wardValue && cityValue ? `${addressLineValue}, ${wardValue}, ${cityValue}` : ''
-  const [debouncedAddress] = useDebounce(fullAddress, 300)
-  const { latLng } = useGetLatLng({ address: debouncedAddress, enabled: !!debouncedAddress && open })
 
   useEffect(() => {
     if (!open) return
@@ -123,22 +115,6 @@ export function AddressFormDialog({
         : defaultValues
     )
   }, [activeAddress, methods, open])
-
-  useEffect(() => {
-    if (!debouncedAddress) {
-      methods.setValue('latitude', 0, { shouldDirty: true, shouldValidate: true })
-      methods.setValue('longitude', 0, { shouldDirty: true, shouldValidate: true })
-      methods.setValue('mapId', '', { shouldDirty: true, shouldValidate: true })
-      return
-    }
-
-    const best = pickBestGeocodeResult(debouncedAddress, latLng)
-    if (!best) return
-
-    methods.setValue('latitude', best.geometry.location.lat, { shouldDirty: true, shouldValidate: true })
-    methods.setValue('longitude', best.geometry.location.lng, { shouldDirty: true, shouldValidate: true })
-    methods.setValue('mapId', best.place_id, { shouldDirty: true, shouldValidate: true })
-  }, [debouncedAddress, latLng, methods])
 
   const close = () => {
     setOpen(false)
@@ -207,20 +183,6 @@ export function AddressFormDialog({
                   )}
                 />
 
-                <Controller
-                  name='addressLine'
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                      <FieldLabel htmlFor={field.name}>{t('profile.addressLine')}</FieldLabel>
-                      <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
-                      <div className='min-h-4'>
-                        {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                      </div>
-                    </Field>
-                  )}
-                />
-
                 <div className='grid gap-3 md:grid-cols-2'>
                   <Controller
                     name='city'
@@ -271,6 +233,45 @@ export function AddressFormDialog({
                     )}
                   />
                 </div>
+
+                <Controller
+                  name='addressLine'
+                  control={methods.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                      <FieldLabel htmlFor={field.name}>{t('profile.addressLine')}</FieldLabel>
+                      <AddressAutocomplete
+                        id={field.name}
+                        value={field.value ?? ''}
+                        onValueChange={field.onChange}
+                        onResolve={({ latitude, longitude, mapId }) => {
+                          methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
+                          methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
+                          methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
+                        }}
+                        onClear={() => {
+                          methods.setValue('latitude', 0, { shouldDirty: true, shouldValidate: true })
+                          methods.setValue('longitude', 0, { shouldDirty: true, shouldValidate: true })
+                          methods.setValue('mapId', '', { shouldDirty: true, shouldValidate: true })
+                        }}
+                        ward={wardValue}
+                        city={cityValue}
+                        placeholder={
+                          wardValue && cityValue
+                            ? t('profile.addressLinePlaceholder')
+                            : t('profile.addressLineDisabledPlaceholder')
+                        }
+                        searchingLabel={t('profile.addressLineSearching')}
+                        emptyLabel={t('profile.addressLineEmpty')}
+                        disabled={!wardValue || !cityValue}
+                        invalid={fieldState.invalid}
+                      />
+                      <div className='min-h-4'>
+                        {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                      </div>
+                    </Field>
+                  )}
+                />
 
                 <Controller
                   name='isDefault'

@@ -1,7 +1,7 @@
 'use client'
 
 import type { SortableCategory } from '@/features/categories/types'
-import { getCategoryName, parseCategoryMetadata } from '@/features/categories/utils'
+import { getCategoryDescription, getCategoryName, parseCategoryMetadata } from '@/features/categories/utils'
 import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
 import ProductGrid from '@/features/products/components/product-grid'
 import { PRICE_MAX } from '@/features/products/constants'
@@ -93,6 +93,7 @@ export default function CategoryFilterSection({ category }: { category: Sortable
     search.q.trim() !== '' || search.pmin !== null || search.pmax !== null || search.cats.length > 0
 
   const title = getCategoryName(category, locale)
+  const description = getCategoryDescription(category, locale)
 
   const grid = (
     <ProductGrid
@@ -133,6 +134,12 @@ export default function CategoryFilterSection({ category }: { category: Sortable
             color='#516c6c'
           />
         </div>
+
+        {description && (
+          <p className='mx-auto mt-2 max-w-full text-left text-xs leading-relaxed text-foreground sm:max-w-140 sm:text-center sm:text-sm md:max-w-200'>
+            {description}
+          </p>
+        )}
       </motion.div>
 
       <div className='mx-auto mt-6 w-full max-w-7xl'>

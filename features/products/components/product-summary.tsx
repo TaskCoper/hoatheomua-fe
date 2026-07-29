@@ -1,9 +1,7 @@
-'use client'
-
 import { Badge } from '@/components/ui/badge'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DeliveryTruck01Icon, Flower2Icon, HandHeartIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { getTranslations } from 'next-intl/server'
 
 const TRUST_BADGES = [
   { icon: Flower2Icon, labelKey: 'products.summary.trustBadges.fresh' },
@@ -11,7 +9,7 @@ const TRUST_BADGES = [
   { icon: DeliveryTruck01Icon, labelKey: 'products.summary.trustBadges.delivery' }
 ] as const
 
-export default function ProductSummary({
+export default async function ProductSummary({
   name,
   brand,
   type,
@@ -22,7 +20,7 @@ export default function ProductSummary({
   type: string | null
   available: number
 }) {
-  const { t } = useTranslation()
+  const t = await getTranslations()
   const inStock = available > 0
   const specs: { label: string; value: string }[] = []
 

@@ -1,11 +1,12 @@
 'use client'
 
 import { useGetCategories } from '@/features/categories/hooks/use-get-categories'
+import { CategoryProductPage } from '@/features/categories/types'
 import CategoryFilterSection from '@/features/products/components/category-filter-section'
 import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 
 export default function ProductsCategorySections() {
-  const { categories, isGettingCategories } = useGetCategories()
+  const { categories, isGettingCategories } = useGetCategories({ page: [CategoryProductPage.Products] })
 
   if (isGettingCategories && !categories) {
     return (

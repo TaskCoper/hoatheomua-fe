@@ -597,6 +597,9 @@
       "phonePlaceholder": "Nhập số điện thoại",
       "addressLine": "Địa chỉ",
       "addressLinePlaceholder": "Số nhà, tên đường",
+      "addressLineDisabledPlaceholder": "Chọn tỉnh / thành và phường / xã trước",
+      "addressLineSearching": "Đang tìm địa chỉ…",
+      "addressLineEmpty": "Không tìm thấy địa chỉ phù hợp",
       "city": "Tỉnh / Thành phố",
       "cityPlaceholder": "Chọn tỉnh / thành",
       "citySearchPlaceholder": "Tìm tỉnh / thành",
@@ -938,31 +941,6 @@
           "description": "Với những trường hợp ngoài kiểm soát, bạn luôn được hoàn tiền minh bạch."
         }
       }
-    },
-    "signatureBouquets": {
-      "title": "Bó Hoa Signature",
-      "description": "Mỗi sản phẩm là một dấu ấn riêng - nơi sự tinh tế thể hiện trong từng chi tiết sản phẩm để mang đến vẻ đẹp không thể nhầm lẫn.",
-      "addToCart": "Thêm {name} vào giỏ",
-      "flowers": {
-        "peony": "Mẫu Đơn — Paeonia lactiflora",
-        "phalaenopsis": "Hồ Điệp — Phalaenopsis Amabilis",
-        "calla": "Hoa Loa Kèn — Zantedeschia aethiopica",
-        "lilyOfTheValley": "Linh Lan — Convallaria Majalis",
-        "birdOfParadise": "Thiên Điểu — Strelitzia Reginae",
-        "hyacinth": "Dạ Lan Hương — Hyacinthus Orientalis",
-        "tulip": "Tulip (Giống Cao Cấp) — Tulipa gesneriana",
-        "gardenRose": "Hồng Vườn (David Austin) — Rosa × Hybrida",
-        "anemone": "Phong Quỳ — Anemone Coronaria"
-      },
-      "bouquets": {
-        "classicRose": "Hồng Cổ Điển",
-        "pinkRose": "Hồng Phấn",
-        "peachBloom": "Đào Bung Nở",
-        "sweetBerry": "Berry Ngọt Ngào",
-        "pastelRose": "Hồng Pastel",
-        "wildflower": "Hoa Dại"
-      },
-      "price": "550.000đ/Bó"
     },
     "testimonial": {
       "title": "Khách Hàng Nói Gì",
@@ -2241,6 +2219,10 @@
     "addressReceiverName": "Tên người nhận",
     "addressPhoneNumber": "Số điện thoại",
     "addressLine": "Địa chỉ",
+    "addressLinePlaceholder": "Số nhà, tên đường",
+    "addressLineDisabledPlaceholder": "Chọn tỉnh / thành và phường / xã trước",
+    "addressLineSearching": "Đang tìm địa chỉ…",
+    "addressLineEmpty": "Không tìm thấy địa chỉ phù hợp",
     "addressWard": "Phường/Xã",
     "addressCity": "Thành phố",
     "addressCountry": "Quốc gia",

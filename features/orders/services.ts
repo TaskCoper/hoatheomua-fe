@@ -4,6 +4,8 @@ import { AhamoveResult, ProductNhanhResult } from './ahamove.type'
 import type {
   CheckoutPayload,
   EstimatePayload,
+  GeocodeAutocompleteResponse,
+  GeocodeResponse,
   GeoResponse,
   GeoResult,
   Order,
@@ -135,6 +137,36 @@ class OrderService {
   getLatLngFromAddress = async ({ address }: { address?: string }) => {
     const { data } = await axios.get<GeoResponse>('https://rsapi.goong.io/geocode', {
       params: { address, api_key: process.env.NEXT_PUBLIC_GOONG_MAP_API_KEY }
+    })
+
+    return data
+  }
+
+  autocompleteAddress = async ({
+    text,
+    focus,
+    ward,
+    city
+  }: {
+    text: string
+    focus?: string
+    ward?: string
+    city?: string
+  }): Promise<GeocodeAutocompleteResponse> => {
+    if (text.trim().length < 2) {
+      return { results: [] }
+    }
+
+    const { data } = await axios.get<GeocodeAutocompleteResponse>('/api/geocode/autocomplete', {
+      params: { text, focus, ward, city }
+    })
+
+    return data
+  }
+
+  resolveGeocodePlace = async ({ refId }: { refId: string }): Promise<GeocodeResponse> => {
+    const { data } = await axios.get<GeocodeResponse>('/api/geocode/place', {
+      params: { refId }
     })
 
     return data

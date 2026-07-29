@@ -20,3 +20,9 @@ export const parseCategoryMetadata = (metaData: string | null): CategoryMetadata
 /** Localized display name for a category. `SortableCategory` uses `nameEn`; fall back to `name` (vi). */
 export const getCategoryName = (category: Pick<SortableCategory, 'name' | 'nameEn'>, locale: Locale): string =>
   locale === 'en' ? (category.nameEn ?? category.name) : category.name
+
+/** Localized description for a category. `SortableCategory` uses `descriptionEn`; fall back to `description` (vi). */
+export const getCategoryDescription = (
+  category: Pick<SortableCategory, 'description' | 'descriptionEn'>,
+  locale: Locale
+): string | null => (locale === 'en' ? (category.descriptionEn ?? category.description) : category.description)

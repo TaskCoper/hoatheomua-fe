@@ -1,11 +1,15 @@
 import api, { BaseResponse } from '@/lib/axios'
-import { SortableCategory } from './types'
+import { CategoryProductPage, SortableCategory } from './types'
 
 class CategoryService {
   private readonly baseUrl = 'category-products'
 
-  getCategories = async () => {
-    const { data } = await api.get<BaseResponse<SortableCategory[]>>(`v1/${this.baseUrl}/with-children`)
+  getCategories = async ({ page }: { page?: CategoryProductPage[] } = {}) => {
+    const { data } = await api.get<BaseResponse<SortableCategory[]>>(`v1/${this.baseUrl}/with-children`, {
+      params: {
+        Page: page
+      }
+    })
 
     return data.value
   }
