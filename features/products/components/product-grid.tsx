@@ -19,7 +19,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { cn } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
-import { useState } from 'react'
+import { type CSSProperties, useState } from 'react'
 
 const cardStagger: Variants = {
   hidden: {},
@@ -56,7 +56,8 @@ export default function ProductGrid({
   onPageChange,
   pageSize = PRODUCTS_PAGE_SIZE,
   className,
-  columnsClassName = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+  columnsClassName = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+  columnsStyle
 }: {
   categoryIds: string[]
   search?: string
@@ -67,6 +68,7 @@ export default function ProductGrid({
   pageSize?: number
   className?: string
   columnsClassName?: string
+  columnsStyle?: CSSProperties
 }) {
   const { t } = useTranslation()
   const [activeIndex, setActiveIndex] = useState(0)
@@ -115,7 +117,7 @@ export default function ProductGrid({
   if (isLoading && items.length === 0) {
     return (
       <div className={cn('min-w-0', className)}>
-        <ProductGridSkeleton count={pageSize} />
+        <ProductGridSkeleton count={pageSize} columnsClassName={columnsClassName} style={columnsStyle} />
       </div>
     )
   }
@@ -135,6 +137,7 @@ export default function ProductGrid({
         initial='hidden'
         animate='visible'
         variants={cardStagger}
+        style={columnsStyle}
         className={cn('grid w-full gap-3 sm:gap-4 lg:gap-5', columnsClassName)}
       >
         {items.map((product, index) => (

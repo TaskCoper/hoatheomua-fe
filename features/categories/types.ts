@@ -61,6 +61,8 @@ export interface CategoryMetadata {
   filterByName?: boolean
   filterByPrice?: boolean
   isFilterable?: boolean
+  rows?: number
+  cols?: number
 }
 
 export interface SortableCategory {

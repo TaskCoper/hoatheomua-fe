@@ -1,7 +1,13 @@
 'use client'
 
 import type { SortableCategory } from '@/features/categories/types'
-import { getCategoryDescription, getCategoryName, parseCategoryMetadata } from '@/features/categories/utils'
+import {
+  getCategoryDescription,
+  getCategoryGrid,
+  getCategoryName,
+  getResponsiveGridColumns,
+  parseCategoryMetadata
+} from '@/features/categories/utils'
 import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
 import ProductGrid from '@/features/products/components/product-grid'
 import { PRICE_MAX } from '@/features/products/constants'
@@ -41,6 +47,15 @@ export default function CategoryFilterSection({ category }: { category: Sortable
   const showName = Boolean(meta.filterByName)
   const showPrice = Boolean(meta.filterByPrice)
   const hasFilters = showName || showPrice || filterableChildren.length > 0
+
+  // `rows × cols` (default 1×4) is the per-page product limit. When a filter panel
+  // sits alongside the grid it eats ~25% of the width, so cap the visible columns
+  // at 3 there to keep cards readable — the page limit itself stays untouched.
+  const { cols, pageSize } = useMemo(() => getCategoryGrid(meta), [meta])
+  const gridColumns = useMemo(
+    () => getResponsiveGridColumns(hasFilters ? Math.min(cols, 3) : cols),
+    [cols, hasFilters]
+  )
 
   const urlKeys = useMemo(() => buildSectionUrlKeys(category.categoryId), [category.categoryId])
   const [search, setSearch] = useQueryStates(sectionSearchParsers, { urlKeys })
@@ -104,10 +119,9 @@ export default function CategoryFilterSection({ category }: { category: Sortable
   const grid = (
     <ProductGrid
       className='w-full'
-      columnsClassName={
-        hasFilters ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
-      }
-      pageSize={hasFilters ? 9 : 4}
+      columnsClassName={gridColumns.className}
+      columnsStyle={gridColumns.style}
+      pageSize={pageSize}
       categoryIds={effectiveCategoryIds}
       search={search.q}
       priceFrom={search.pmin ?? undefined}
