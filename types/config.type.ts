@@ -210,6 +210,33 @@ export type ContactConfigItem =
       }
     }
 
+// Ahamove (shipping)
+export type AhamoveConfigGroup = 'ahamove'
+
+export type AhamoveConfigInputType = 'number'
+
+interface BaseAhamoveConfigValue {
+  group: AhamoveConfigGroup
+  label: string
+  value: string
+  options: ConfigOption[]
+  required: boolean
+  inputType: AhamoveConfigInputType
+  description?: string
+  validations: ConfigValidation[]
+}
+
+export type AhamoveConfigItem = {
+  key: 'ahamove.free_ship'
+  value: BaseAhamoveConfigValue & {
+    value: number
+    inputType: 'number'
+    required: true
+    options: []
+    validations: []
+  }
+}
+
 // Occasions
 export interface OccasionCampaign {
   id: string

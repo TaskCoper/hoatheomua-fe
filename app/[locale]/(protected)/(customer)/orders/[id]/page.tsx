@@ -25,8 +25,6 @@ import {
   PaymentMethodLabel,
   type OrderDetail
 } from '@/features/orders/types'
-import { productDetailQuery } from '@/features/products/queries'
-import type { ProductDetail } from '@/features/products/types'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -53,7 +51,7 @@ import {
   UserIcon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useQueries, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
@@ -214,20 +212,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   const showSepayQr = isPendingOrder && !order.paymentUrl && Boolean(order.sepayUrl) && Boolean(sepayDetails)
 
   const items = useMemo(() => order.details ?? [], [order.details])
-  const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.orderDetailsId))), [items])
-
-  const productQueries = useQueries({
-    queries: productIds.map((id) => productDetailQuery(id))
-  })
-
-  const productById = useMemo(() => {
-    const map = new Map<string, ProductDetail | null>()
-    productIds.forEach((id, index) => {
-      const query = productQueries[index]
-      map.set(id, query?.data ?? null)
-    })
-    return map
-  }, [productIds, productQueries])
 
   const recipientRows = [
     order.receiptFullName
@@ -360,14 +344,13 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               >
                 <ul className='divide-y divide-border/60'>
                   {items.map((item) => {
-                    const product = productById.get(item.orderDetailsId) ?? null
-                    const avatar = product?.coverImage ?? null
-                    const displayName = product?.productName ?? item.name
+                    const avatar = item.coverImage
+                    const displayName = item.name
                     return (
                       <li key={item.orderDetailsId} className='flex items-center gap-3 py-3 first:pt-0 last:pb-0'>
-                        {product?.id ? (
+                        {item.productId ? (
                           <Link
-                            href={`/products/${product.id}`}
+                            href={`/products/${item.productId}`}
                             className='relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-primary/10 sm:size-20'
                           >
                             {avatar ? (
@@ -389,9 +372,9 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                           </div>
                         )}
                         <div className='min-w-0 flex-1'>
-                          {product?.id ? (
+                          {item.productId ? (
                             <Link
-                              href={`/products/${product.id}`}
+                              href={`/products/${item.productId}`}
                               className='font-title line-clamp-2 text-sm font-bold leading-tight text-primary hover:text-primary/80'
                             >
                               {displayName}

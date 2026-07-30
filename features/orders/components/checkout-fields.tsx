@@ -338,34 +338,50 @@ export function CheckoutFields({
                   emptyLabel={t('orders.checkout.addressLineEmpty')}
                   invalid={fieldState.invalid}
                 />
-                <div className='min-h-4'>
+                {/* <div className='min-h-4'>
                   {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                </div>
+                </div> */}
               </Field>
             )}
           />
 
-          {/* Map preview only appears once an address has resolved to a point. */}
-          {!(latitudeForm === 0 && longitudeForm === 0) && Number.isFinite(latitudeForm) && Number.isFinite(longitudeForm) ? (
-            <AddressMapField
-              latitude={latitudeForm}
-              longitude={longitudeForm}
-              onResolve={({ latitude, longitude, mapId }) => {
-                // Map picks fine-tune the coordinate only — leave the address line
-                // the user typed/selected untouched.
-                setValue('latitude', latitude, { shouldDirty: true })
-                setValue('longitude', longitude, { shouldDirty: true })
-                setValue('mapId', mapId, { shouldDirty: true })
-              }}
-              anchorLatitude={mapAnchor?.latitude}
-              anchorLongitude={mapAnchor?.longitude}
-              hint={t('orders.checkout.mapHint')}
-              useLocationLabel={t('orders.checkout.mapUseLocation')}
-              resolvingLabel={t('orders.checkout.mapResolving')}
-              locationErrorLabel={t('orders.checkout.mapLocationError')}
-              tooFarLabel={t('orders.checkout.mapTooFar')}
-            />
-          ) : null}
+          {/* The "use my location" button is always available; the map itself
+              appears once a point exists (typed, picked, or located). */}
+          <AddressMapField
+            latitude={latitudeForm}
+            longitude={longitudeForm}
+            onResolve={({ latitude, longitude, mapId, addressLine, ward, city }) => {
+              // Sync every field to whatever the reverse geocode landed on:
+              // coordinate, address line, and the city/ward selectors.
+              setValue('latitude', latitude, { shouldDirty: true })
+              setValue('longitude', longitude, { shouldDirty: true })
+              setValue('mapId', mapId, { shouldDirty: true })
+              if (addressLine) {
+                setValue('addressLine', addressLine, { shouldDirty: true })
+              }
+
+              // Lift the resolved ward/city into their own selectors.
+              const matchedCity = matchShippingLocation(cities, city)
+              const cityChanged = Boolean(matchedCity && matchedCity.id !== cityCodeForm)
+              if (cityChanged && matchedCity) {
+                setValue('city', matchedCity.name, { shouldDirty: true })
+                setValue('cityCode', matchedCity.id, { shouldDirty: true, shouldValidate: true })
+                setValue('ward', '', { shouldDirty: true })
+                setValue('wardCode', -1, { shouldDirty: true, shouldValidate: true })
+              }
+              pendingWardRef.current = ward || null
+              // Same city → its ward list is already loaded, resolve now;
+              // a changed city resolves via the effect once wards reload.
+              if (!cityChanged) resolvePendingWard()
+            }}
+            anchorLatitude={mapAnchor?.latitude}
+            anchorLongitude={mapAnchor?.longitude}
+            hint={t('orders.checkout.mapHint')}
+            useLocationLabel={t('orders.checkout.mapUseLocation')}
+            resolvingLabel={t('orders.checkout.mapResolving')}
+            locationErrorLabel={t('orders.checkout.mapLocationError')}
+            tooFarLabel={t('orders.checkout.mapTooFar')}
+          />
         </>
       ) : null}
 
@@ -377,7 +393,7 @@ export function CheckoutFields({
           const displayDate = selectedDate ?? new Date()
 
           return (
-            <Field data-invalid={fieldState.invalid} className='gap-1'>
+            <Field data-invalid={fieldState.invalid} className='gap-1 mt-2'>
               <FieldLabel htmlFor={field.name} className='gap-0.5'>
                 {t('orders.checkout.orderTime')}
                 <span className='text-xs text-muted-foreground'>({t('common.ui.optional')})</span>

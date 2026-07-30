@@ -3,9 +3,11 @@
 import { Button } from '@/components/ui/button'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
+import type { AhamoveConfigItem } from '@/types/config.type'
 import { ArrowLeft02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
@@ -34,6 +36,10 @@ export function CheckoutClient() {
 
   const { addresses, isLoading: isLoadingAddresses } = useGetAddresses({ enabled: true })
   const { orderTags } = useGetOrderTags()
+
+  // Free-shipping distance threshold (km). Deliveries closer than this ship free.
+  const { configs: ahamoveConfigs } = useGetPublicConfigs<AhamoveConfigItem>({ group: 'ahamove' })
+  const freeShipKm = Number(ahamoveConfigs.find((config) => config.key === 'ahamove.free_ship')?.value.value)
 
   const { selectedAddressId, handleSelectAddress } = useCheckoutAddressSelection({ addresses, methods })
 
@@ -64,7 +70,12 @@ export function CheckoutClient() {
   )
   const [pickedServiceId, setPickedServiceId] = useState<string | null>(null)
   const selectedServiceId = pickedServiceId ?? sortedAhamove[0]?.service_id ?? ''
-  const shippingFee = sortedAhamove.find((s) => s.service_id === selectedServiceId)?.data?.total_fee ?? 0
+  const selectedService = sortedAhamove.find((s) => s.service_id === selectedServiceId)
+  // Ahamove returns the delivery distance in km; a trip shorter than the
+  // configured free-ship threshold waives the shipping fee entirely.
+  const distanceKm = selectedService?.data?.distance ?? 0
+  const isFreeShip = freeShipKm > 0 && distanceKm > 0 && distanceKm < freeShipKm
+  const shippingFee = isFreeShip ? 0 : (selectedService?.data?.total_fee ?? 0)
 
   const watchedAddressLine = useWatch({ control: methods.control, name: 'addressLine' })
   const watchedWard = useWatch({ control: methods.control, name: 'ward' })
@@ -99,7 +110,7 @@ export function CheckoutClient() {
       : step === 2
         ? {
             label: t('orders.checkout.sidebar.payForBooking'),
-            onClick: () => handleConfirmOrder(paymentMethod, gateway),
+            onClick: () => handleConfirmOrder(paymentMethod, gateway, shippingFee),
             disabled: !selectedServiceId,
             loading: isCreatingOrder
           }

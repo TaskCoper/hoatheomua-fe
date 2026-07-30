@@ -67,12 +67,12 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
     }
   }
 
-  const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway) =>
+  const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway, shippingFee: number) =>
     methods.handleSubmit(
       async (values) => {
         try {
           const { mrc_order_id } = await createOrder({
-            body: buildCheckoutPayload(values, items, productById, paymentMethod, gateway)
+            body: buildCheckoutPayload(values, items, productById, paymentMethod, gateway, shippingFee)
           })
 
           if (source === 'cart') {

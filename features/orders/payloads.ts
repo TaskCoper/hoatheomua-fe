@@ -32,7 +32,8 @@ export const buildCheckoutPayload = (
   items: CartItem[],
   productById: Map<string, ProductDetail>,
   paymentMethod: PaymentMethod,
-  gateway: PaymentGateway
+  gateway: PaymentGateway,
+  shippingFee: number
 ): CheckoutPayload => {
   const base = buildEstimatePayload(values, items, productById)
 
@@ -48,7 +49,8 @@ export const buildCheckoutPayload = (
       isExportInvoice: false,
       invoiceType: null,
       paymentMethod,
-      gateway
+      gateway,
+      shippingFee
     }
   }
 
@@ -63,6 +65,7 @@ export const buildCheckoutPayload = (
     isExportInvoice: true,
     invoiceType: values.invoiceType,
     paymentMethod,
-    gateway
+    gateway,
+    shippingFee
   }
 }

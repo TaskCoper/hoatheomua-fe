@@ -124,6 +124,8 @@ export interface OrderItem {
   length: number
   width: number
   height: number
+  productId: string
+  coverImage: string | null
 }
 
 export const InvoiceType = {
@@ -164,6 +166,8 @@ export interface CheckoutPayload extends EstimatePayload {
   invoiceType: InvoiceType | null
   paymentMethod: PaymentMethod
   gateway: PaymentGateway
+  // Client-computed shipping fee (0 when the free-ship distance rule applies).
+  shippingFee: number
 }
 
 export interface TaxBusinessInfo {
