@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Skeleton } from '@/components/ui/skeleton'
 import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
@@ -438,6 +439,8 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
               <HugeiconsIcon icon={FlowerIcon} className='size-9 text-primary/40' />
             )}
           </Link>
+        ) : isResolving ? (
+          <Skeleton className='size-24 shrink-0 sm:size-28' />
         ) : (
           <div className='flex size-24 shrink-0 items-center justify-center rounded-2xl bg-secondary/40 ring-1 ring-foreground/5 sm:size-28'>
             <HugeiconsIcon icon={FlowerIcon} className='size-9 text-muted-foreground/50' />
@@ -452,10 +455,10 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             >
               {product.productName}
             </Link>
+          ) : isResolving ? (
+            <Skeleton className='h-4 w-32' />
           ) : (
-            <div className='text-sm font-semibold text-muted-foreground'>
-              {t('cart.fallbackName', { productId: cartItem.productId })}
-            </div>
+            <div className='text-sm font-semibold text-muted-foreground'>{t('cart.unavailable.missing')}</div>
           )}
 
           {unitName && (
@@ -464,7 +467,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             </p>
           )}
 
-          {isResolving && !isUnavailable && <p className='text-xs text-muted-foreground'>{t('cart.loadingPrice')}</p>}
+          {isResolving && <Skeleton className='h-4 w-20' />}
 
           {product && !isResolving && (
             <div className='flex items-baseline gap-2'>

@@ -12,6 +12,7 @@ interface StepPersonalProps {
   onSelectAddress: (id: string) => void
   manualAddress: boolean
   onManualAddressChange: (value: boolean) => void
+  onLoadingShippingLocationsChange?: (isLoading: boolean) => void
 }
 
 export function StepPersonal({
@@ -20,7 +21,8 @@ export function StepPersonal({
   selectedAddressId,
   onSelectAddress,
   manualAddress,
-  onManualAddressChange
+  onManualAddressChange,
+  onLoadingShippingLocationsChange
 }: StepPersonalProps) {
   const { t } = useTranslation()
 
@@ -42,6 +44,7 @@ export function StepPersonal({
           onSelectAddress={onSelectAddress}
           manualAddress={manualAddress}
           onManualAddressChange={onManualAddressChange}
+          onLoadingShippingLocationsChange={onLoadingShippingLocationsChange}
         />
       )}
     </section>

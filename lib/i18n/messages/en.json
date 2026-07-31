@@ -561,9 +561,7 @@
       "selectAll": "Select all",
       "selectLine": "Select this item"
     },
-    "fallbackName": "Product #{productId}",
     "price": "Price: {price}",
-    "loadingPrice": "Loading price…",
     "unavailable": {
       "missing": "This product is no longer available.",
       "inactive": "This product is currently inactive.",

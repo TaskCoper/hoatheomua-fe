@@ -32,6 +32,7 @@ interface CheckoutFieldsProps {
   onSelectAddress: (id: string) => void
   manualAddress: boolean
   onManualAddressChange: (value: boolean) => void
+  onLoadingShippingLocationsChange?: (isLoading: boolean) => void
 }
 
 export function CheckoutFields({
@@ -39,7 +40,8 @@ export function CheckoutFields({
   selectedAddressId,
   onSelectAddress,
   manualAddress,
-  onManualAddressChange
+  onManualAddressChange,
+  onLoadingShippingLocationsChange
 }: CheckoutFieldsProps) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
@@ -89,13 +91,23 @@ export function CheckoutFields({
   const { orderTags, isGettingOrderTags } = useGetOrderTags()
 
   const { shippingLocations: cities, isLoadingShippingLocations: isLoadingCities } = useGetShippingLocations({
-    type: 'CITY'
+    type: 'CITY',
+    enabled: showManualFields
   })
   const { shippingLocations: wards, isLoadingShippingLocations: isLoadingWards } = useGetShippingLocations({
     type: 'WARD',
     parentId: cityCodeForm,
-    enabled: cityCodeForm !== -1
+    enabled: showManualFields && cityCodeForm !== -1
   })
+
+  useEffect(() => {
+    onLoadingShippingLocationsChange?.(isLoadingCities || isLoadingWards)
+  }, [isLoadingCities, isLoadingWards, onLoadingShippingLocationsChange])
+
+  useEffect(() => {
+    return () => onLoadingShippingLocationsChange?.(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!cityForm || cities.length === 0) return

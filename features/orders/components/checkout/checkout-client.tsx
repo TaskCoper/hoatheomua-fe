@@ -50,6 +50,7 @@ export function CheckoutClient() {
   })
 
   const [manualAddress, setManualAddress] = useState(false)
+  const [isLoadingShippingLocations, setIsLoadingShippingLocations] = useState(false)
   const [gateway, setGateway] = useState<PaymentGateway>(PaymentGateway.BaoKim)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('1')
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
@@ -99,19 +100,21 @@ export function CheckoutClient() {
     shippingFee
   })
 
+  const isLoading = isEstimatingOrder || isCreatingOrder || isLoadingAddresses || isLoadingShippingLocations
+
   const sidebarAction =
     step === 1
       ? {
           label: t('orders.checkout.sidebar.goToPayment'),
           onClick: () => handleGoToPayment(),
-          disabled: items.length === 0,
+          disabled: items.length === 0 || isLoading,
           loading: isEstimatingOrder
         }
       : step === 2
         ? {
             label: t('orders.checkout.sidebar.payForBooking'),
             onClick: () => handleConfirmOrder(paymentMethod, gateway, shippingFee),
-            disabled: !selectedServiceId,
+            disabled: !selectedServiceId || isLoading,
             loading: isCreatingOrder
           }
         : {
@@ -156,6 +159,7 @@ export function CheckoutClient() {
                 onSelectAddress={handleSelectAddress}
                 manualAddress={manualAddress}
                 onManualAddressChange={setManualAddress}
+                onLoadingShippingLocationsChange={setIsLoadingShippingLocations}
               />
             ) : step === 2 ? (
               <StepPayment

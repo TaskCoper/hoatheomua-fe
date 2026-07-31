@@ -561,9 +561,7 @@
       "selectAll": "Chọn tất cả",
       "selectLine": "Chọn sản phẩm này"
     },
-    "fallbackName": "Sản phẩm #{productId}",
     "price": "Giá: {price}",
-    "loadingPrice": "Đang tải giá…",
     "unavailable": {
       "missing": "Sản phẩm này không còn tồn tại.",
       "inactive": "Sản phẩm này hiện không hoạt động.",
