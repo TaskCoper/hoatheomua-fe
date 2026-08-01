@@ -203,6 +203,9 @@ export function StepPayment({
             {shippingOptions.map((service) => {
               const isActive = service.service_id === selectedServiceId
               const id = `ship-${service.service_id}`
+              const distanceKm = service.data?.distance ?? 0
+              const rawFee = service.data?.total_fee ?? 0
+
               return (
                 <label
                   key={service.service_id}
@@ -219,12 +222,12 @@ export function StepPayment({
                     <p className='truncate text-sm font-medium'>{service.service_id}</p>
                     <p className='text-xs text-muted-foreground'>
                       {t('orders.checkout.shippingMeta', {
-                        km: (service.data?.distance ?? 0).toFixed(1),
+                        km: distanceKm.toFixed(1),
                         min: Math.max(1, Math.round((service.data?.duration ?? 0) / 60))
                       })}
                     </p>
                   </div>
-                  <span className='text-sm font-semibold text-primary'>{formatVnd(service.data?.total_fee ?? 0)}</span>
+                  <span className='text-sm font-semibold text-primary'>{formatVnd(rawFee)}</span>
                 </label>
               )
             })}

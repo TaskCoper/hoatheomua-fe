@@ -660,6 +660,7 @@
       "subtotal": "Tạm tính",
       "vat": "VAT 8%",
       "shippingFee": "Phí vận chuyển",
+      "shippingFeeDiscount": "Giảm giá (bán kính miễn phí ship)",
       "total": "Tổng cộng",
       "back": "Quay lại",
       "confirm": "Xác nhận đặt hàng",
@@ -674,7 +675,7 @@
       "gatewayTitle": "Cổng thanh toán",
       "gatewayDescription": "Chọn cổng thanh toán bạn muốn sử dụng để tiếp tục.",
       "paymentTitle": "Phương thức thanh toán",
-      "paymentDescription": "Hiện tại chúng tôi chỉ hỗ trợ chuyển khoản ngân hàng. Hướng dẫn thanh toán sẽ được hiển thị sau khi bạn xác nhận đơn.",
+      "paymentDescription": "Hiện tại chúng tôi chỉ hỗ trợ chuyển khoản ngân hàng.",
       "bankTransferTitle": "Chuyển khoản ngân hàng",
       "bankTransferHint": "Bạn sẽ nhận được thông tin tài khoản và mã QR để hoàn tất thanh toán sau khi đặt đơn.",
       "shippingDescription": "Chọn dịch vụ giao hàng từ Ahamove.",
@@ -712,7 +713,7 @@
       "paymentGateway": {
         "baoKim": {
           "label": "BaoKim",
-          "description": "Thanh toán qua VA — thông tin tài khoản và mã QR gửi sau khi xác nhận."
+          "description": "Thanh toán qua VA - thông tin tài khoản và mã QR gửi sau khi xác nhận."
         },
         "sePay": {
           "label": "Sepay",

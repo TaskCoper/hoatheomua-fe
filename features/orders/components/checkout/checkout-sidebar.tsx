@@ -42,6 +42,8 @@ interface CheckoutSidebarProps {
   vatAmount: number
   hasTaxCode: boolean
   shippingFee: number
+  shippingDiscount?: number
+  showShipping?: boolean
   grandTotal: number
   action: {
     label: string
@@ -63,6 +65,8 @@ export function CheckoutSidebar({
   vatAmount,
   hasTaxCode,
   shippingFee,
+  shippingDiscount = 0,
+  showShipping = true,
   grandTotal,
   action,
   showTerms = true
@@ -114,7 +118,14 @@ export function CheckoutSidebar({
           <dl className='space-y-2 text-sm'>
             <SidebarRow label={t('orders.checkout.subtotal')} value={formatVnd(productsSubtotal)} />
             {hasTaxCode ? <SidebarRow label={t('orders.checkout.vat')} value={formatVnd(vatAmount)} /> : null}
-            <SidebarRow label={t('orders.checkout.shippingFee')} value={formatVnd(shippingFee)} />
+            {showShipping ? (
+              <>
+                <SidebarRow label={t('orders.checkout.shippingFee')} value={formatVnd(shippingFee)} />
+                {shippingDiscount > 0 ? (
+                  <SidebarRow label={t('orders.checkout.shippingFeeDiscount')} value={formatVnd(-shippingDiscount)} />
+                ) : null}
+              </>
+            ) : null}
           </dl>
           <div className='mt-3 flex items-center justify-between border-t border-border/70 pt-3'>
             <span className='text-sm font-semibold'>{t('orders.checkout.total')}</span>

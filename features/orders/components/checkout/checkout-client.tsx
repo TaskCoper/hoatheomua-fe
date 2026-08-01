@@ -75,8 +75,10 @@ export function CheckoutClient() {
   // Ahamove returns the delivery distance in km; a trip shorter than the
   // configured free-ship threshold waives the shipping fee entirely.
   const distanceKm = selectedService?.data?.distance ?? 0
-  const isFreeShip = freeShipKm > 0 && distanceKm > 0 && distanceKm < freeShipKm
-  const shippingFee = isFreeShip ? 0 : (selectedService?.data?.total_fee ?? 0)
+  const isFreeShip = freeShipKm >= 0 && distanceKm >= 0 && distanceKm < freeShipKm
+  const rawShippingFee = selectedService?.data?.total_fee ?? 0
+  const shippingFee = isFreeShip ? 0 : rawShippingFee
+  const shippingDiscount = isFreeShip ? rawShippingFee : 0
 
   const watchedAddressLine = useWatch({ control: methods.control, name: 'addressLine' })
   const watchedWard = useWatch({ control: methods.control, name: 'ward' })
@@ -190,7 +192,9 @@ export function CheckoutClient() {
               productsSubtotal={productsSubtotal}
               vatAmount={vatAmount}
               hasTaxCode={hasTaxCode}
-              shippingFee={shippingFee}
+              shippingFee={rawShippingFee}
+              shippingDiscount={shippingDiscount}
+              showShipping={step >= 2}
               grandTotal={grandTotal}
               action={sidebarAction}
               showTerms={step < 3}
