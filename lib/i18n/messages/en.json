@@ -398,8 +398,11 @@
         "share": "Share job",
         "apply": "Apply now",
         "viewMore": "View more",
-        "viewLess": "View less"
+        "viewLess": "View less",
+        "backToList": "Back to careers",
+        "viewFullPage": "View full page"
       },
+      "notFoundTitle": "Job not found",
       "posted": "Posted {time}",
       "sections": {
         "overview": "Overview",

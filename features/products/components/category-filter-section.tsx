@@ -8,7 +8,8 @@ import { useGetMaxPriceProduct } from '@/features/products/hooks/use-get-max-pri
 import { getSectionBaseCategoryIds } from '@/features/products/section-defaults'
 import { buildSectionUrlKeys, sectionSearchParsers } from '@/features/products/section-search-params'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
-import { useQueryStates } from 'nuqs'
+import { useSearchParams } from 'next/navigation'
+import { createSerializer, useQueryStates } from 'nuqs'
 import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -18,6 +19,13 @@ export default function CategoryFilterSection({ category }: { category: Sortable
 
   const urlKeys = useMemo(() => buildSectionUrlKeys(category.categoryId), [category.categoryId])
   const [search, setSearch] = useQueryStates(sectionSearchParsers, { urlKeys })
+
+  // Pagination links get real, scoped URLs (e.g. `?<catId>_page=2`). Serializing
+  // onto the *current* query string preserves this section's own filters and every
+  // sibling section's params, so open-in-new-tab doesn't reset the rest of the page.
+  const currentSearchParams = useSearchParams()
+  const serializePage = useMemo(() => createSerializer(sectionSearchParsers, { urlKeys }), [urlKeys])
+  const pageHref = (page: number) => serializePage(new URLSearchParams(currentSearchParams.toString()), { page })
 
   const baseCategoryIds = getSectionBaseCategoryIds(category)
   const effectiveCategoryIds = search.cats.length > 0 ? search.cats : baseCategoryIds
@@ -88,7 +96,8 @@ export default function CategoryFilterSection({ category }: { category: Sortable
     onPriceCommit: handlePriceCommit,
     onCatsChange: handleCatsChange,
     onReset: handleReset,
-    onPageChange: (page) => setSearch({ page })
+    onPageChange: (page) => setSearch({ page }),
+    pageHref
   }
 
   return <SectionView category={category} state={state} handlers={handlers} />

@@ -1,3 +1,4 @@
+import { getAllJobSlugs } from '@/features/recruitment/queries.server'
 import { routing, type Locale } from '@/lib/i18n/routing'
 import { SITE_URL } from '@/shared/seo'
 import type { MetadataRoute } from 'next'
@@ -18,10 +19,10 @@ const PUBLIC_PATHS = [
 
 const localePath = (locale: Locale, path: string) => (locale === routing.defaultLocale ? path : `/${locale}${path}`)
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  return PUBLIC_PATHS.flatMap(({ path, priority, changeFrequency }) =>
+  const staticEntries: MetadataRoute.Sitemap = PUBLIC_PATHS.flatMap(({ path, priority, changeFrequency }) =>
     routing.locales.map((locale) => ({
       url: `${SITE_URL}${localePath(locale, path)}`,
       lastModified: now,
@@ -32,4 +33,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       }
     }))
   )
+
+  // Every job gets its own indexable URL so crawlers find roles beyond the list's
+  // first page (the list only server-renders page 1). Best-effort — if the fetch
+  // fails, the static entries above still ship.
+  const jobSlugs = await getAllJobSlugs()
+  const jobEntries: MetadataRoute.Sitemap = jobSlugs.flatMap((slug) =>
+    routing.locales.map((locale) => ({
+      url: `${SITE_URL}${localePath(locale, `/recruitment/${slug}`)}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
+      alternates: {
+        languages: Object.fromEntries(
+          routing.locales.map((l) => [l, `${SITE_URL}${localePath(l, `/recruitment/${slug}`)}`])
+        )
+      }
+    }))
+  )
+
+  return [...staticEntries, ...jobEntries]
 }

@@ -17,7 +17,7 @@ import { useGetProducts } from '@/features/products/hooks/use-get-products'
 import type { ProductDetail } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
-import { cn } from '@/shared/utils'
+import { cn, isModifiedClick } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
 import { type CSSProperties, useState } from 'react'
 
@@ -54,6 +54,7 @@ export default function ProductGrid({
   priceTo,
   page,
   onPageChange,
+  pageHref,
   pageSize = PRODUCTS_PAGE_SIZE,
   className,
   columnsClassName = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
@@ -65,6 +66,11 @@ export default function ProductGrid({
   priceTo?: number
   page: number
   onPageChange: (page: number) => void
+  /**
+   * Builds a real URL for a given page so the links work as anchors
+   * (open-in-new-tab, crawlable) while `onClick` keeps the fast client transition.
+   */
+  pageHref?: (page: number) => string
   pageSize?: number
   className?: string
   columnsClassName?: string
@@ -95,20 +101,24 @@ export default function ProductGrid({
   const totalCount = value?.totalCount ?? 0
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
   const pageNumbers = getPageNumbers(page, totalPages)
+  const hrefFor = (target: number) => (pageHref ? pageHref(target) || '#' : '#')
 
   const goToPage = (event: React.MouseEvent<HTMLAnchorElement>, target: number) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     if (isFetching || target < 1 || target > totalPages || target === page) return
     onPageChange(target)
   }
 
   const handlePreviousPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasPreviousPage || isFetching) return
     onPageChange(page - 1)
   }
 
   const handleNextPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasNextPage || isFetching) return
     onPageChange(page + 1)
@@ -156,7 +166,7 @@ export default function ProductGrid({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href='#'
+              href={hrefFor(page - 1)}
               text={t('products.grid.previous')}
               aria-disabled={!hasPreviousPage || isFetching}
               className={!hasPreviousPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
@@ -171,7 +181,7 @@ export default function ProductGrid({
             ) : (
               <PaginationItem key={entry}>
                 <PaginationLink
-                  href='#'
+                  href={hrefFor(entry)}
                   isActive={entry === page}
                   aria-disabled={isFetching}
                   className={isFetching && entry !== page ? 'pointer-events-none opacity-50' : undefined}
@@ -184,7 +194,7 @@ export default function ProductGrid({
           )}
           <PaginationItem>
             <PaginationNext
-              href='#'
+              href={hrefFor(page + 1)}
               text={t('products.grid.next')}
               aria-disabled={!hasNextPage || isFetching}
               className={!hasNextPage || isFetching ? 'pointer-events-none opacity-50' : undefined}

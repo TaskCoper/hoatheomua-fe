@@ -1,4 +1,4 @@
-export type Job = {
+export interface Job {
   id: string
   slug: string
   title: string
@@ -13,12 +13,21 @@ export type Job = {
   openings: number
   status: string
 }
+
+export interface JobDetail extends Job {
+  minExperienceYears: number
+  maxExperienceYears: number
+  createdAt: string
+  updatedAt: string | null
+}
+
 export type SendRecruitmentRequestForm = {
   jobDescriptionId: string
   title: string
   coverLetter: string
   attachments: string[]
 }
+
 export type JobDescriptionParam = {
   pageIndex: number
   pageSize: number

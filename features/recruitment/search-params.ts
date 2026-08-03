@@ -15,7 +15,13 @@ export const recruitmentSearchParsers = {
   employmentType: parseAsString,
   salaryMin: parseAsInteger,
   salaryMax: parseAsInteger,
-  page: parseAsInteger.withDefault(DEFAULT_PAGE_INDEX)
+  page: parseAsInteger.withDefault(DEFAULT_PAGE_INDEX),
+  /**
+   * Slug of the job whose detail is open in the right pane (LinkedIn-style
+   * `?currentJobId`). Read client-side only — the server prefetch never looks at
+   * it — so the page stays ISR/static. Absent means "auto-select the first result".
+   */
+  job: parseAsString
 }
 
 export type RecruitmentSearch = {
@@ -25,6 +31,7 @@ export type RecruitmentSearch = {
   salaryMin: number | null
   salaryMax: number | null
   page: number
+  job: string | null
 }
 
 export const loadRecruitmentSearch = createLoader(recruitmentSearchParsers)

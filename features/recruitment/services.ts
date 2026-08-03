@@ -1,4 +1,4 @@
-import { Job, JobDescriptionParam, SendRecruitmentRequestForm } from '@/features/recruitment/types'
+import { Job, JobDescriptionParam, JobDetail, SendRecruitmentRequestForm } from '@/features/recruitment/types'
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 
 class RecruitmentRequestService {
@@ -36,12 +36,9 @@ class JobDescription {
     return data
   }
 
-  getDescriptionById = async (id: string) => {
-    const { data } = await api.get<BaseResponse<Job>>(`v1/public/${this.baseUrl}`, {
-      params: {
-        id
-      }
-    })
+  getDescription = async ({ slug }: { slug: string }) => {
+    const { data } = await api.get<BaseResponse<JobDetail>>(`v1/public/${this.baseUrl}/${slug}`)
+
     return data.value
   }
 

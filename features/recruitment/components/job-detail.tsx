@@ -1,3 +1,5 @@
+'use client'
+
 import SanitizedHtml from '@/components/sanitized-html'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -11,6 +13,7 @@ import { Link, usePathname } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import {
   ArrowDown01Icon,
+  ArrowRight02Icon,
   ArrowUp01Icon,
   Flower2Icon,
   Location01Icon,
@@ -22,15 +25,25 @@ import {
   WorkIcon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { formatJobSalary, getJobAvatarFallback, getJobEmploymentTypeLabel } from '../helpers'
 import type { Job } from '../types'
 
+const subscribeToHydration = () => () => {}
+const getClientSnapshot = () => true
+const getServerSnapshot = () => false
+
 type JobDetailProps = {
   job: Job
+  /**
+   * When set, a "view full page" button is shown next to the apply CTA linking to
+   * the job's own SEO page. Passed only from the list's master-detail view — the
+   * standalone `/recruitment/[slug]` page omits it (you're already there).
+   */
+  detailHref?: string
 }
 
-export default function JobDetail({ job }: JobDetailProps) {
+export default function JobDetail({ job, detailHref }: JobDetailProps) {
   const { t } = useTranslation()
   const pathname = usePathname()
   const salary = formatJobSalary(job)
@@ -43,6 +56,13 @@ export default function JobDetail({ job }: JobDetailProps) {
   const [descriptionElement, setDescriptionElement] = useState<HTMLDivElement | null>(null)
 
   const { me, isAuthenticated, isVerificationRequired, isGettingMe } = useGetMe()
+
+  // The apply CTA depends on `me`, which SSR doesn't have but the client's
+  // persisted React Query cache does. Because this card renders inside the
+  // recruitment page's Suspense fallback on the server, that difference would
+  // hydrate a real button over a server-rendered skeleton. Gate the CTA on mount
+  // so the server and first client render both show the neutral skeleton.
+  const isMounted = useSyncExternalStore(subscribeToHydration, getClientSnapshot, getServerSnapshot)
 
   useEffect(() => {
     if (!descriptionElement) return
@@ -82,7 +102,7 @@ export default function JobDetail({ job }: JobDetailProps) {
   ].filter((item) => item.value)
 
   return (
-    <Card className='w-full gap-0 p-0 overflow-hidden border border-primary/10 bg-card shadow-sm shadow-primary/5 xl:sticky xl:top-6'>
+    <Card className='w-full gap-0 p-0 overflow-hidden border border-primary/10 bg-card shadow-sm shadow-primary/5'>
       <JobCoverBanner coverImageUrl={job.coverImageUrl} title={job.title} />
       <CardHeader className='relative gap-0 bg-gradient-to-br from-card via-card to-secondary/15 px-4 pb-6 pt-0 sm:px-7'>
         <div className='flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
@@ -131,35 +151,46 @@ export default function JobDetail({ job }: JobDetailProps) {
           ))}
         </div>
 
-        <div className='mb-2'>
-          {isGettingMe ? (
-            <Skeleton className='h-10 w-full rounded-4xl' />
-          ) : isVerificationRequired ? (
-            <Button asChild size='lg' className='w-full'>
-              <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
-                {t('auth.verifyEmail.title')}
-                <HugeiconsIcon icon={MailValidation01Icon} strokeWidth={1.8} className='size-4' />
-              </Link>
-            </Button>
-          ) : isAuthenticated ? (
-            <ApplyJobDialog job={job}>
-              <Button
-                type='button'
-                size='lg'
-                className='transform-gpu w-full transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
-              >
-                <HugeiconsIcon icon={SentIcon} strokeWidth={1.8} className='size-4' />
-                {t('recruitment.jobDetail.actions.apply')}
+        <div className='mb-2 flex flex-col gap-2 sm:flex-row'>
+          <div className='flex-1'>
+            {!isMounted || isGettingMe ? (
+              <Skeleton className='h-10 w-full rounded-4xl' />
+            ) : isVerificationRequired ? (
+              <Button asChild size='lg' className='w-full'>
+                <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
+                  {t('auth.verifyEmail.title')}
+                  <HugeiconsIcon icon={MailValidation01Icon} strokeWidth={1.8} className='size-4' />
+                </Link>
               </Button>
-            </ApplyJobDialog>
-          ) : (
-            <Button asChild size='lg' className='w-full'>
-              <Link href={{ pathname: '/sign-in', query: { from: pathname } }}>
-                {t('auth.signIn.title')}
-                <HugeiconsIcon icon={LoginCircle01Icon} strokeWidth={1.8} className='size-4' />
+            ) : isAuthenticated ? (
+              <ApplyJobDialog job={job}>
+                <Button
+                  type='button'
+                  size='lg'
+                  className='transform-gpu w-full transition-all duration-500 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]'
+                >
+                  <HugeiconsIcon icon={SentIcon} strokeWidth={1.8} className='size-4' />
+                  {t('recruitment.jobDetail.actions.apply')}
+                </Button>
+              </ApplyJobDialog>
+            ) : (
+              <Button asChild size='lg' className='w-full'>
+                <Link href={{ pathname: '/sign-in', query: { from: pathname } }}>
+                  {t('auth.signIn.title')}
+                  <HugeiconsIcon icon={LoginCircle01Icon} strokeWidth={1.8} className='size-4' />
+                </Link>
+              </Button>
+            )}
+          </div>
+
+          {detailHref ? (
+            <Button asChild variant='outline' size='lg' className='w-full sm:w-auto'>
+              <Link href={detailHref}>
+                {t('recruitment.jobDetail.actions.viewFullPage')}
+                <HugeiconsIcon icon={ArrowRight02Icon} strokeWidth={1.8} className='size-4' />
               </Link>
             </Button>
-          )}
+          ) : null}
         </div>
 
         {description ? (

@@ -77,6 +77,14 @@ const decodeHtmlEntities = (input: string): string =>
     return NAMED_HTML_ENTITIES[entity.toLowerCase()] ?? match
   })
 
+export const isModifiedClick = (event: {
+  metaKey: boolean
+  ctrlKey: boolean
+  shiftKey: boolean
+  altKey: boolean
+  button: number
+}): boolean => event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0
+
 export const getFirstParagraphTextFromHtml = (html: string | null | undefined): string => {
   if (!html) return ''
 

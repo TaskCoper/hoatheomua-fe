@@ -12,3 +12,32 @@ export const getCachedJobs = (params: JobDescriptionParam, locale: string) =>
     ['recruitment-list', locale, JSON.stringify(params)],
     { tags: [RECRUITMENT_CACHE_TAG], revalidate: 600 }
   )()
+
+export const getCachedJobDescription = (slug: string) =>
+  unstable_cache(() => jobDescriptionService.getDescription({ slug }), ['recruitment-detail', slug], {
+    tags: [RECRUITMENT_CACHE_TAG],
+    revalidate: 600
+  })()
+
+export const getAllJobSlugs = async (): Promise<string[]> => {
+  const slugs: string[] = []
+  let pageIndex = 1
+
+  try {
+    while (true) {
+      const page = await jobDescriptionService.getJobDescriptions({ pageIndex, pageSize: 50 })
+
+      for (const job of page.value.items) {
+        slugs.push(job.slug)
+      }
+
+      if (!page.value.hasNextPage) break
+      pageIndex += 1
+    }
+  } catch (error) {
+    console.error('[SSR] job slugs enumeration failed:', error)
+    return slugs
+  }
+
+  return slugs
+}

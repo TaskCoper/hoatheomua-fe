@@ -8,14 +8,15 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { isModifiedClick } from '@/shared/utils'
 
 import JobCard from '@/features/recruitment/components/job-card'
 import type { Job } from '../types'
 
 type JobListProps = {
   jobs: Job[]
-  selectedJobId: string
-  onSelectJob: (jobId: string) => void
+  selectedSlug: string
+  onSelectJob: (slug: string) => void
   isLoading: boolean
   pageIndex: number
   pageSize: number
@@ -23,6 +24,11 @@ type JobListProps = {
   hasNextPage: boolean
   hasPreviousPage: boolean
   onPageChange: (page: number) => void
+  /**
+   * Builds a real URL for a given page so the links work as anchors
+   * (open-in-new-tab, crawlable) while `onClick` keeps the fast client transition.
+   */
+  pageHref?: (page: number) => string
 }
 
 const buildPageList = (current: number, total: number): Array<number | 'ellipsis'> => {
@@ -43,7 +49,7 @@ const buildPageList = (current: number, total: number): Array<number | 'ellipsis
 
 export default function JobList({
   jobs,
-  selectedJobId,
+  selectedSlug,
   onSelectJob,
   isLoading,
   pageIndex,
@@ -51,11 +57,13 @@ export default function JobList({
   totalCount,
   hasNextPage,
   hasPreviousPage,
-  onPageChange
+  onPageChange,
+  pageHref
 }: JobListProps) {
   const { t } = useTranslation()
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
   const pageList = buildPageList(pageIndex, totalPages)
+  const hrefFor = (page: number) => (pageHref ? pageHref(page) || '#' : '#')
 
   const goTo = (next: number) => {
     if (isLoading || next === pageIndex || next < 1 || next > totalPages) return
@@ -63,18 +71,21 @@ export default function JobList({
   }
 
   const handlePrevious = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasPreviousPage) return
     goTo(pageIndex - 1)
   }
 
   const handleNext = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasNextPage) return
     goTo(pageIndex + 1)
   }
 
   const handlePageClick = (page: number) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     goTo(page)
   }
@@ -83,7 +94,12 @@ export default function JobList({
     <section className='w-full min-w-0 space-y-4'>
       <div className='w-full space-y-2'>
         {jobs.map((job) => (
-          <JobCard key={job.id} job={job} isSelected={job.id === selectedJobId} onClick={() => onSelectJob(job.id)} />
+          <JobCard
+            key={job.id}
+            job={job}
+            isSelected={job.slug === selectedSlug}
+            onClick={() => onSelectJob(job.slug)}
+          />
         ))}
       </div>
 
@@ -91,7 +107,7 @@ export default function JobList({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href='#'
+              href={hrefFor(pageIndex - 1)}
               text={t('recruitment.pagination.previous')}
               aria-disabled={!hasPreviousPage || isLoading}
               className={!hasPreviousPage || isLoading ? 'pointer-events-none opacity-50' : undefined}
@@ -107,7 +123,7 @@ export default function JobList({
             ) : (
               <PaginationItem key={entry}>
                 <PaginationLink
-                  href='#'
+                  href={hrefFor(entry)}
                   isActive={entry === pageIndex}
                   aria-disabled={isLoading}
                   aria-label={t('recruitment.pagination.page', { page: entry })}
@@ -128,7 +144,7 @@ export default function JobList({
 
           <PaginationItem>
             <PaginationNext
-              href='#'
+              href={hrefFor(pageIndex + 1)}
               text={t('recruitment.pagination.next')}
               aria-disabled={!hasNextPage || isLoading}
               className={!hasNextPage || isLoading ? 'pointer-events-none opacity-50' : undefined}

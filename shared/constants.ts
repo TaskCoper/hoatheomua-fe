@@ -15,6 +15,7 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/products/[id]',
   '/about',
   '/recruitment',
+  '/recruitment/[slug]',
   '/contact',
   '/b2b',
   '/b2b/[service]',

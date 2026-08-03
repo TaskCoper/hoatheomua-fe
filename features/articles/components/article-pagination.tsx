@@ -10,6 +10,7 @@ import {
   PaginationPrevious
 } from '@/components/ui/pagination'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { isModifiedClick } from '@/shared/utils'
 
 /**
  * Sliding-window page list: anchors page 1 and the last page, and shows
@@ -39,8 +40,13 @@ interface ArticlePaginationProps {
   hasPreviousPage: boolean
   isFetching: boolean
   onPageChange: (page: number) => void
-  /** In-page anchor for the `href` (so right-click/middle-click still scrolls). */
+  /** In-page anchor used as the `href` when `pageHref` isn't supplied. */
   scrollAnchor?: string
+  /**
+   * Builds a real URL for a given page so the links work as anchors
+   * (open-in-new-tab, crawlable) while `onClick` keeps the fast client transition.
+   */
+  pageHref?: (page: number) => string
   className?: string
 }
 
@@ -52,6 +58,7 @@ export function ArticlePagination({
   isFetching,
   onPageChange,
   scrollAnchor,
+  pageHref,
   className = 'mt-8'
 }: ArticlePaginationProps) {
   const { t } = useTranslation()
@@ -59,7 +66,7 @@ export function ArticlePagination({
   if (totalPages <= 1) return null
 
   const pageList = buildPageList(pageIndex, totalPages)
-  const href = scrollAnchor ?? '#'
+  const hrefFor = (page: number) => (pageHref ? pageHref(page) || '#' : (scrollAnchor ?? '#'))
 
   const goTo = (next: number) => {
     if (isFetching || next === pageIndex || next < 1 || next > totalPages) return
@@ -67,18 +74,21 @@ export function ArticlePagination({
   }
 
   const handlePrevious = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasPreviousPage) return
     goTo(pageIndex - 1)
   }
 
   const handleNext = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasNextPage) return
     goTo(pageIndex + 1)
   }
 
   const handlePageClick = (page: number) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isModifiedClick(event)) return
     event.preventDefault()
     goTo(page)
   }
@@ -88,7 +98,7 @@ export function ArticlePagination({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={href}
+            href={hrefFor(pageIndex - 1)}
             text={t('products.grid.previous')}
             aria-disabled={!hasPreviousPage || isFetching}
             className={!hasPreviousPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
@@ -104,7 +114,7 @@ export function ArticlePagination({
           ) : (
             <PaginationItem key={entry}>
               <PaginationLink
-                href={href}
+                href={hrefFor(entry)}
                 isActive={entry === pageIndex}
                 aria-disabled={isFetching}
                 className={
@@ -124,7 +134,7 @@ export function ArticlePagination({
 
         <PaginationItem>
           <PaginationNext
-            href={href}
+            href={hrefFor(pageIndex + 1)}
             text={t('products.grid.next')}
             aria-disabled={!hasNextPage || isFetching}
             className={!hasNextPage || isFetching ? 'pointer-events-none opacity-50' : undefined}

@@ -1,4 +1,5 @@
 import NewsContent from '@/features/articles/components/news-content'
+import NewsDefault from '@/features/articles/components/news-default'
 import { getArticlesQuery } from '@/features/articles/queries'
 import { getCachedArticles } from '@/features/articles/queries.server'
 import { buildNewsCollectionJsonLd, generateNewsListMetadata } from '@/features/articles/seo'
@@ -38,11 +39,11 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: L
     <>
       <JsonLd data={buildNewsCollectionJsonLd(locale, initialNews)} />
 
-      <Suspense fallback={null}>
-        <HydrationBoundary state={dehydrate(queryClient)}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Suspense fallback={<NewsDefault locale={locale} />}>
           <NewsContent locale={locale} />
-        </HydrationBoundary>
-      </Suspense>
+        </Suspense>
+      </HydrationBoundary>
     </>
   )
 }

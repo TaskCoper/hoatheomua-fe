@@ -40,6 +40,12 @@ export type SectionHandlers = {
   onCatsChange: (ids: string[]) => void
   onReset: () => void
   onPageChange: (page: number) => void
+  /**
+   * Builds a real URL for a given page so the grid's pagination links work as
+   * anchors (open-in-new-tab, crawlable). Scoped per section by the caller so
+   * sibling sections on the same page keep their own params.
+   */
+  pageHref: (page: number) => string
 }
 
 export default function SectionView({
@@ -93,6 +99,7 @@ export default function SectionView({
       priceTo={state.priceTo}
       page={state.page}
       onPageChange={handlers.onPageChange}
+      pageHref={handlers.pageHref}
     />
   )
 

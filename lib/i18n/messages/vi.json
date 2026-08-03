@@ -398,8 +398,11 @@
         "share": "Chia sẻ tin tuyển dụng",
         "apply": "Ứng tuyển ngay",
         "viewMore": "Xem thêm",
-        "viewLess": "Thu gọn"
+        "viewLess": "Thu gọn",
+        "backToList": "Quay lại danh sách tuyển dụng",
+        "viewFullPage": "Xem trang chi tiết"
       },
+      "notFoundTitle": "Không tìm thấy vị trí tuyển dụng",
       "posted": "Đăng tuyển {time}",
       "sections": {
         "overview": "Tổng quan",

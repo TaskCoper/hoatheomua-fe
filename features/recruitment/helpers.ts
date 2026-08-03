@@ -39,8 +39,8 @@ const normalizeEmploymentType = (employmentType: string) =>
     .toLowerCase()
     .replace(/[\s_-]/g, '')
 
-export const getJobAvatarFallback = (title: string) => {
-  const normalizedTitle = title.trim()
+export const getJobAvatarFallback = (title: string | null | undefined) => {
+  const normalizedTitle = (title ?? '').trim()
 
   return normalizedTitle.charAt(0).toUpperCase() || 'H'
 }
@@ -64,7 +64,9 @@ export const formatJobSalary = ({ salaryMin, salaryMax }: Job) => {
   return ''
 }
 
-export const getJobEmploymentTypeLabel = (employmentType: string, t: TranslationFunction) => {
+export const getJobEmploymentTypeLabel = (employmentType: string | null | undefined, t: TranslationFunction) => {
+  if (!employmentType) return ''
+
   const translationKey = employmentTypeTranslationKeyByValue[normalizeEmploymentType(employmentType)]
 
   return translationKey ? t(translationKey) : employmentType
