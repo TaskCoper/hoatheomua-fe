@@ -1,69 +1,25 @@
 'use client'
 
 import type { SortableCategory } from '@/features/categories/types'
-import {
-  getCategoryDescription,
-  getCategoryGrid,
-  getCategoryName,
-  getResponsiveGridColumns,
-  parseCategoryMetadata
-} from '@/features/categories/utils'
-import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
-import ProductGrid from '@/features/products/components/product-grid'
+import { parseCategoryMetadata } from '@/features/categories/utils'
+import SectionView, { type SectionHandlers, type SectionState } from '@/features/products/components/section-view'
 import { PRICE_MAX } from '@/features/products/constants'
 import { useGetMaxPriceProduct } from '@/features/products/hooks/use-get-max-price-product'
+import { getSectionBaseCategoryIds } from '@/features/products/section-defaults'
 import { buildSectionUrlKeys, sectionSearchParsers } from '@/features/products/section-search-params'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
-import { motion, type Variants } from 'motion/react'
 import { useQueryStates } from 'nuqs'
 import { useEffect, useMemo, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 36 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 18 } }
-}
-
 export default function CategoryFilterSection({ category }: { category: SortableCategory }) {
-  const { locale } = useTranslation()
-
   const meta = useMemo(() => parseCategoryMetadata(category.metaData), [category.metaData])
-  const filterableChildren = useMemo<FilterChild[]>(() => {
-    // Recurse the category tree so nested facets (up to 3+ levels) are preserved,
-    // keeping only nodes flagged as filterable at each level.
-    const build = (cats: SortableCategory[]): FilterChild[] =>
-      cats
-        .filter((child) => parseCategoryMetadata(child.metaData).isFilterable)
-        .map((child) => ({
-          categoryId: child.categoryId,
-          label: getCategoryName(child, locale),
-          children: build(child.children)
-        }))
-    return build(category.children)
-  }, [category.children, locale])
-
-  const showName = Boolean(meta.filterByName)
   const showPrice = Boolean(meta.filterByPrice)
-  const hasFilters = showName || showPrice || filterableChildren.length > 0
-
-  // `rows × cols` (default 1×4) is the per-page product limit. When a filter panel
-  // sits alongside the grid it eats ~25% of the width, so cap the visible columns
-  // at 3 there to keep cards readable — the page limit itself stays untouched.
-  const { cols, pageSize } = useMemo(() => getCategoryGrid(meta), [meta])
-  const gridColumns = useMemo(
-    () => getResponsiveGridColumns(hasFilters ? Math.min(cols, 3) : cols),
-    [cols, hasFilters]
-  )
 
   const urlKeys = useMemo(() => buildSectionUrlKeys(category.categoryId), [category.categoryId])
   const [search, setSearch] = useQueryStates(sectionSearchParsers, { urlKeys })
 
-  // Selected category facets drive the listing; with none selected we fall back to
-  // every filterable child (or the parent category when there are no child facets).
-  const baseCategoryIds =
-    filterableChildren.length > 0 ? filterableChildren.map((child) => child.categoryId) : [category.categoryId]
+  const baseCategoryIds = getSectionBaseCategoryIds(category)
   const effectiveCategoryIds = search.cats.length > 0 ? search.cats : baseCategoryIds
 
   const { maxPrice } = useGetMaxPriceProduct({ categoryIds: effectiveCategoryIds, enabled: showPrice })
@@ -113,82 +69,27 @@ export default function CategoryFilterSection({ category }: { category: Sortable
   const hasActiveFilters =
     search.q.trim() !== '' || search.pmin !== null || search.pmax !== null || search.cats.length > 0
 
-  const title = getCategoryName(category, locale)
-  const description = getCategoryDescription(category, locale)
+  const state: SectionState = {
+    nameValue: nameDraft,
+    priceValue: priceDraft,
+    priceCeil,
+    checkedCats: search.cats,
+    hasActiveFilters,
+    search: search.q,
+    page: search.page,
+    effectiveCategoryIds,
+    priceFrom: search.pmin ?? undefined,
+    priceTo: search.pmax ?? undefined
+  }
 
-  const grid = (
-    <ProductGrid
-      className='w-full'
-      columnsClassName={gridColumns.className}
-      columnsStyle={gridColumns.style}
-      pageSize={pageSize}
-      categoryIds={effectiveCategoryIds}
-      search={search.q}
-      priceFrom={search.pmin ?? undefined}
-      priceTo={search.pmax ?? undefined}
-      page={search.page}
-      onPageChange={(page) => setSearch({ page })}
-    />
-  )
+  const handlers: SectionHandlers = {
+    onNameChange: setNameDraft,
+    onPriceChange: setPriceDraft,
+    onPriceCommit: handlePriceCommit,
+    onCatsChange: handleCatsChange,
+    onReset: handleReset,
+    onPageChange: (page) => setSearch({ page })
+  }
 
-  return (
-    <section className='relative mt-8 px-4 sm:mt-10 md:mt-12 lg:mt-14'>
-      <motion.div
-        initial='hidden'
-        whileInView='visible'
-        viewport={{ once: true, margin: '-80px' }}
-        variants={fadeUp}
-        className='mx-auto w-full max-w-7xl'
-      >
-        <div className='flex items-center justify-start gap-3 sm:justify-center'>
-          <SparkleDivider
-            className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-            iconClassName='sm:size-5 md:size-6 lg:size-7'
-            color='#516c6c'
-          />
-          <h2 className='shrink-0 text-center font-title text-2xl font-bold md:text-3xl lg:text-4xl'>{title}</h2>
-          <SparkleDivider
-            className='hidden min-w-0 max-w-96 flex-1 sm:flex'
-            iconClassName='sm:size-5 md:size-6 lg:size-7'
-            direction='rtl'
-            color='#516c6c'
-          />
-        </div>
-
-        {description && (
-          <p className='mx-auto mt-2 max-w-full text-left text-xs leading-relaxed text-foreground sm:max-w-140 sm:text-center sm:text-sm md:max-w-200'>
-            {description}
-          </p>
-        )}
-      </motion.div>
-
-      <div className='mx-auto mt-6 w-full max-w-7xl'>
-        {hasFilters ? (
-          <div className='grid grid-cols-1 gap-6 lg:grid-cols-12'>
-            <CategoryFilterPanel
-              className='lg:col-span-3'
-              orientation='vertical'
-              sectionId={category.categoryId}
-              hasActiveFilters={hasActiveFilters}
-              onReset={handleReset}
-              showName={showName}
-              nameValue={nameDraft}
-              onNameChange={setNameDraft}
-              showPrice={showPrice}
-              priceMax={priceCeil}
-              priceValue={priceDraft}
-              onPriceChange={setPriceDraft}
-              onPriceCommit={handlePriceCommit}
-              filterChildren={filterableChildren}
-              checkedCats={search.cats}
-              onCatsChange={handleCatsChange}
-            />
-            <div className='min-w-0 lg:col-span-9'>{grid}</div>
-          </div>
-        ) : (
-          grid
-        )}
-      </div>
-    </section>
-  )
+  return <SectionView category={category} state={state} handlers={handlers} />
 }

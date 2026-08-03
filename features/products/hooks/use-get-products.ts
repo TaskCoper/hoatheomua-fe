@@ -13,6 +13,16 @@ export interface GetProductsParams {
   sortBy?: string[]
 }
 
+export const productsQueryKey = ({
+  pageIndex = DEFAULT_PAGE_INDEX,
+  pageSize = PRODUCTS_PAGE_SIZE,
+  search,
+  categoryIds,
+  priceFrom,
+  priceTo,
+  sortBy
+}: GetProductsParams) => ['products', pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy] as const
+
 export const useGetProducts = ({
   pageIndex = DEFAULT_PAGE_INDEX,
   pageSize = PRODUCTS_PAGE_SIZE,
@@ -27,7 +37,7 @@ export const useGetProducts = ({
     isLoading: isGettingProducts,
     isFetching: isFetchingProducts
   } = useQuery({
-    queryKey: ['products', pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy],
+    queryKey: productsQueryKey({ pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy }),
     queryFn: () => productService.getProducts({ pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy }),
     placeholderData: keepPreviousData
   })

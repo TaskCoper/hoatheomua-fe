@@ -2,6 +2,9 @@ import categoryService from '@/features/categories/services'
 import { CategoryProductPage } from '@/features/categories/types'
 import ProductsContent from '@/features/products/components/products-content'
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
+import { productsQueryKey } from '@/features/products/hooks/use-get-products'
+import { getCachedProducts } from '@/features/products/queries.server'
+import { getSectionDefaultParams } from '@/features/products/section-defaults'
 import { buildProductsCollectionJsonLd, generateProductsListMetadata } from '@/features/products/seo'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
@@ -12,8 +15,12 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 
-// URL-driven filters (nuqs) make this route request-specific → render on the server per request.
-export const dynamic = 'force-dynamic'
+// This page looks the same for every visitor — it's a public catalog with no
+// per-user data, and filters are applied in the browser, not on the server. So
+// rather than rendering it fresh on each request, we prerender the HTML once and
+// serve it from cache, rebuilding it at most this often. Genuine catalog changes
+// don't wait for that window: the webhook in app/api/revalidate purges it on demand.
+export const revalidate = 300
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
@@ -29,10 +36,27 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   const categoryPage = [CategoryProductPage.Products]
 
   try {
-    await queryClient.prefetchQuery({
+    const categories = await queryClient.fetchQuery({
       queryKey: ['categories', categoryPage],
       queryFn: () => categoryService.getCategories({ page: categoryPage })
     })
+
+    // Fetch each section's first page of products here on the server and store it
+    // under the same cache key the grid will look for. The product data then ships
+    // inside the prerendered HTML, so the grids show up instantly on load instead
+    // of every section firing its own request after the page hydrates.
+    await Promise.all(
+      categories.map(async (category) => {
+        const params = getSectionDefaultParams(category)
+
+        try {
+          const products = await getCachedProducts(params)
+          queryClient.setQueryData(productsQueryKey(params), products)
+        } catch (error) {
+          console.error(`[SSR] products prefetch failed for category ${category.categoryId}:`, error)
+        }
+      })
+    )
   } catch (error) {
     console.error('[SSR] categories prefetch failed:', error)
   }
