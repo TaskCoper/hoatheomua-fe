@@ -2,6 +2,9 @@ import categoryService from '@/features/categories/services'
 import { CategoryProductPage } from '@/features/categories/types'
 import HomeContent from '@/features/home/components/home-content'
 import { buildHomeJsonLd, generateHomeMetadata } from '@/features/home/seo'
+import { productsQueryKey } from '@/features/products/hooks/use-get-products'
+import { getCachedProducts } from '@/features/products/queries.server'
+import { getSectionDefaultParams } from '@/features/products/section-defaults'
 import { routing, type Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
@@ -11,8 +14,7 @@ import { hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 
-// URL-driven filters (nuqs) in the home category sections make this route request-specific → render on the server per request.
-export const dynamic = 'force-dynamic'
+export const revalidate = 86400
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -30,10 +32,22 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
   const categoryPage = [CategoryProductPage.Home]
 
   try {
-    await queryClient.prefetchQuery({
-      queryKey: ['categories', categoryPage],
-      queryFn: () => categoryService.getCategories({ page: categoryPage })
-    })
+    const categories = await categoryService.getCategories({ page: categoryPage })
+
+    queryClient.setQueryData(['categories', categoryPage], categories)
+
+    await Promise.all(
+      categories.map(async (category) => {
+        const params = getSectionDefaultParams(category)
+
+        try {
+          const products = await getCachedProducts(params)
+          queryClient.setQueryData(productsQueryKey(params), products)
+        } catch (error) {
+          console.error(`[SSR] home products prefetch failed for category ${category.categoryId}:`, error)
+        }
+      })
+    )
   } catch (error) {
     console.error('[SSR] home categories prefetch failed:', error)
   }
