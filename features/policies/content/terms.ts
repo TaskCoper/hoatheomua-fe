@@ -23,7 +23,7 @@ export const TERMS_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Chào mừng bạn đến với Hoa Theo Mùa (hoatheomua.net). Website này cùng toàn bộ thông tin, nội dung được cung cấp bởi Công ty TNHH Hoa Theo Mùa (sau đây gọi tắt là "Hoa Theo Mùa" hoặc "chúng tôi").'
+          text: 'Chào mừng bạn đến với Hoa Theo Mùa (hoatheomua.com). Website này cùng toàn bộ thông tin, nội dung được cung cấp bởi Công ty TNHH Hoa Theo Mùa (sau đây gọi tắt là "Hoa Theo Mùa" hoặc "chúng tôi").'
         },
         {
           type: 'paragraph',
@@ -182,7 +182,7 @@ export const TERMS_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Welcome to Hoa Theo Mua (hoatheomua.net). This website and its content are provided by Hoa Theo Mua Company Limited (hereafter "Hoa Theo Mua" or "we").'
+          text: 'Welcome to Hoa Theo Mua (hoatheomua.com). This website and its content are provided by Hoa Theo Mua Company Limited (hereafter "Hoa Theo Mua" or "we").'
         },
         {
           type: 'paragraph',

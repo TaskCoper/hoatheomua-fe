@@ -23,7 +23,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Cảm ơn bạn đã đến với website Hoa Theo Mùa của Công ty TNHH Hoa Theo Mùa (sau đây gọi là "Công ty" hoặc "Hoa Theo Mùa" hoặc "chúng tôi"). Website hoatheomua.net là website bán hàng trực tuyến được xây dựng và quản lý bởi Công ty TNHH Hoa Theo Mùa.'
+          text: 'Cảm ơn bạn đã đến với website Hoa Theo Mùa của Công ty TNHH Hoa Theo Mùa (sau đây gọi là "Công ty" hoặc "Hoa Theo Mùa" hoặc "chúng tôi"). Website hoatheomua.com là website bán hàng trực tuyến được xây dựng và quản lý bởi Công ty TNHH Hoa Theo Mùa.'
         },
         {
           type: 'paragraph',
@@ -59,7 +59,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
       number: '02',
       icon: Database02Icon,
       title: 'Phạm vi sử dụng thông tin',
-      intro: 'Chúng tôi thu thập thông tin cá nhân khi bạn tiến hành đặt hàng trên website hoatheomua.net, bao gồm:',
+      intro: 'Chúng tôi thu thập thông tin cá nhân khi bạn tiến hành đặt hàng trên website hoatheomua.com, bao gồm:',
       blocks: [
         {
           type: 'list',
@@ -154,7 +154,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Tại website hoatheomua.net, việc bảo vệ thông tin cá nhân của bạn là rất quan trọng. Hoa Theo Mùa cam kết không chia sẻ, bán hoặc cho thuê thông tin cá nhân cho bất kỳ bên thứ ba nào.'
+          text: 'Tại website hoatheomua.com, việc bảo vệ thông tin cá nhân của bạn là rất quan trọng. Hoa Theo Mùa cam kết không chia sẻ, bán hoặc cho thuê thông tin cá nhân cho bất kỳ bên thứ ba nào.'
         },
         {
           type: 'subheading',
@@ -205,7 +205,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Thank you for visiting Hoa Theo Mua, operated by Hoa Theo Mua Company Limited (hereafter the "Company", "Hoa Theo Mua", or "we"). hoatheomua.net is an online retail site built and managed by the Company.'
+          text: 'Thank you for visiting Hoa Theo Mua, operated by Hoa Theo Mua Company Limited (hereafter the "Company", "Hoa Theo Mua", or "we"). hoatheomua.com is an online retail site built and managed by the Company.'
         },
         {
           type: 'paragraph',
@@ -238,7 +238,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
       number: '02',
       icon: Database02Icon,
       title: 'How we use the information',
-      intro: 'When you place an order on hoatheomua.net we collect:',
+      intro: 'When you place an order on hoatheomua.com we collect:',
       blocks: [
         {
           type: 'list',
@@ -333,7 +333,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Protecting your personal information at hoatheomua.net is critical. Hoa Theo Mua commits to never selling, sharing, or renting your data to any third party.'
+          text: 'Protecting your personal information at hoatheomua.com is critical. Hoa Theo Mua commits to never selling, sharing, or renting your data to any third party.'
         },
         {
           type: 'subheading',

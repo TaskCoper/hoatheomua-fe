@@ -1,24 +1,30 @@
-'use client'
-
+import type { SortableCategory } from '@/features/categories/types'
 import ProductsCategorySections from '@/features/products/components/products-category-sections'
 import ProductsHeroSection from '@/features/products/components/products-hero-section'
-import dynamic from 'next/dynamic'
+import FloatingPetalsClient from '@/shared/components/floating-petals-client'
 import type { ReactNode } from 'react'
 
-const FloatingPetals = dynamic(() => import('@/shared/components/floating-petals'), { ssr: false })
-
-export default function ProductsContent({ promiseSection }: { promiseSection: ReactNode }) {
+// Server component: this is pure composition. The interactive/animated pieces
+// (hero motion, category filters, product grids, floating petals) each declare
+// their own 'use client' boundary, so nothing here ships as client JS.
+export default function ProductsContent({
+  categories,
+  promiseSection
+}: {
+  categories: SortableCategory[]
+  promiseSection: ReactNode
+}) {
   return (
     <div className='relative overflow-hidden'>
       <ProductsHeroSection />
 
       {/* <ProductsOccasionsSection /> */}
 
-      <ProductsCategorySections />
+      <ProductsCategorySections categories={categories} />
 
       {promiseSection}
 
-      <FloatingPetals />
+      <FloatingPetalsClient />
     </div>
   )
 }

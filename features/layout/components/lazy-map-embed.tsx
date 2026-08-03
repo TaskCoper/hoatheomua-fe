@@ -45,7 +45,7 @@ export default function LazyMapEmbed({ src, title, className }: LazyMapEmbedProp
         <button
           type='button'
           onClick={() => setShouldLoad(true)}
-          className='flex h-full w-full items-center justify-center bg-secondary/40 text-xs text-primary'
+          className='flex h-full w-full items-center justify-center bg-secondary/40 text-xs text-secondary-foreground'
           aria-label={title}
         >
           {title}

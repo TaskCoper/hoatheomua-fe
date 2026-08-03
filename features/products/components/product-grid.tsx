@@ -19,16 +19,12 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { cn } from '@/shared/utils'
 import { motion, type Variants } from 'motion/react'
-import { type CSSProperties, useState, useSyncExternalStore } from 'react'
+import { type CSSProperties, useState } from 'react'
 
 const cardStagger: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } }
 }
-
-// useSyncExternalStore requires a subscribe function, but our value only flips
-// once (server → client) and never emits again, so there's nothing to subscribe to.
-const subscribeNoop = () => () => {}
 
 /**
  * Windowed page list around the current page: always shows the first and last
@@ -76,20 +72,6 @@ export default function ProductGrid({
 }) {
   const { t } = useTranslation()
   const [activeIndex, setActiveIndex] = useState(0)
-
-  // The cards fly in with an entrance animation that starts them at opacity:0.
-  // That's nice once the page is interactive, but on the very first (server-rendered)
-  // paint it would hide the products — hurting LCP and causing a flash-in on hydration.
-  // So we hold the animation back until after that first render. useSyncExternalStore
-  // reports `false` on the server and the initial client render (they must match to
-  // avoid a hydration mismatch), then `true`. Flipping to `true` later doesn't restart
-  // the animation on the already-mounted grid; only a filter/page change — which
-  // remounts it via a new `key` — replays it.
-  const entered = useSyncExternalStore(
-    subscribeNoop,
-    () => true,
-    () => false
-  )
 
   const trimmedSearch = search.trim()
 
@@ -152,8 +134,9 @@ export default function ProductGrid({
     <div className={cn('min-w-0', className)}>
       <motion.div
         key={items[0]?.id ?? 'empty'}
-        initial={entered ? 'hidden' : false}
-        animate='visible'
+        initial='hidden'
+        whileInView='visible'
+        viewport={{ once: true, margin: '-80px' }}
         variants={cardStagger}
         style={columnsStyle}
         className={cn('grid w-full gap-3 sm:gap-4 lg:gap-5', columnsClassName)}

@@ -32,7 +32,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
       number: '01',
       icon: ShoppingBasket03Icon,
       title: 'Cách 1 — Đặt hàng trực tiếp trên website',
-      intro: 'Truy cập website hoatheomua.net và thực hiện theo các bước sau:',
+      intro: 'Truy cập website hoatheomua.com và thực hiện theo các bước sau:',
       blocks: [
         {
           type: 'subheading',
@@ -221,7 +221,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Sau khi đơn được xác nhận, bạn có thể đăng nhập tài khoản tại hoatheomua.net để theo dõi tình trạng đơn. Tư vấn viên cũng sẽ cập nhật chủ động qua tin nhắn / cuộc gọi nếu có thay đổi.'
+          text: 'Sau khi đơn được xác nhận, bạn có thể đăng nhập tài khoản tại hoatheomua.com để theo dõi tình trạng đơn. Tư vấn viên cũng sẽ cập nhật chủ động qua tin nhắn / cuộc gọi nếu có thay đổi.'
         }
       ]
     },
@@ -275,7 +275,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
       number: '01',
       icon: ShoppingBasket03Icon,
       title: 'Option 1 — Order on the website',
-      intro: 'Visit hoatheomua.net and follow these steps:',
+      intro: 'Visit hoatheomua.com and follow these steps:',
       blocks: [
         {
           type: 'subheading',
@@ -461,7 +461,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Once confirmed, log in to your account on hoatheomua.net to track order status. Our concierge will also reach out by message or call if anything changes.'
+          text: 'Once confirmed, log in to your account on hoatheomua.com to track order status. Our concierge will also reach out by message or call if anything changes.'
         }
       ]
     },

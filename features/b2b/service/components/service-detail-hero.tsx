@@ -63,8 +63,6 @@ export default function ServiceDetailHero({ detail, locale }: { detail: B2BServi
           ) : null}
         </motion.div>
 
-        {/* Large hero media on a mint offset backdrop — image or video, CMS-provided.
-            No fallback: skip the whole visual when the service has none. */}
         {hasHeroMedia ? (
           <motion.div variants={fadeUp} className='relative mt-10'>
             <span

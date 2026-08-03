@@ -1,25 +1,12 @@
-'use client'
-
-import { useGetCategories } from '@/features/categories/hooks/use-get-categories'
-import { CategoryProductPage } from '@/features/categories/types'
+import type { SortableCategory } from '@/features/categories/types'
 import CategoryFilterSection from '@/features/products/components/category-filter-section'
 import CategorySectionDefault from '@/features/products/components/category-section-default'
-import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 import { Suspense } from 'react'
 
-export default function ProductsCategorySections() {
-  const { categories, isGettingCategories } = useGetCategories({ page: [CategoryProductPage.Products] })
-
-  if (isGettingCategories && !categories) {
-    return (
-      <div className='px-4'>
-        <div className='mx-auto w-full max-w-7xl'>
-          <ProductGridSkeleton count={8} />
-        </div>
-      </div>
-    )
-  }
-
+// Server component: the category list is fetched once on the server (see the
+// products page) and passed straight down, so no client-side categories query is
+// needed. Only the per-section interactive/filterable parts cross into the client.
+export default function ProductsCategorySections({ categories }: { categories: SortableCategory[] }) {
   return (
     <>
       {categories.map((category) => (

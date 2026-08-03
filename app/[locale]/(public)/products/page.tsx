@@ -1,5 +1,5 @@
 import categoryService from '@/features/categories/services'
-import { CategoryProductPage } from '@/features/categories/types'
+import { CategoryProductPage, type SortableCategory } from '@/features/categories/types'
 import ProductsContent from '@/features/products/components/products-content'
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import { productsQueryKey } from '@/features/products/hooks/use-get-products'
@@ -35,11 +35,13 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
 
   const categoryPage = [CategoryProductPage.Products]
 
+  // Categories are read straight down as props by the (server) section list, so we
+  // fetch them directly instead of through the query cache — that keeps them out of
+  // the dehydrated payload the client hydrates.
+  let categories: SortableCategory[] = []
+
   try {
-    const categories = await queryClient.fetchQuery({
-      queryKey: ['categories', categoryPage],
-      queryFn: () => categoryService.getCategories({ page: categoryPage })
-    })
+    categories = await categoryService.getCategories({ page: categoryPage })
 
     // Fetch each section's first page of products here on the server and store it
     // under the same cache key the grid will look for. The product data then ships
@@ -67,7 +69,10 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <Suspense fallback={null}>
-          <ProductsContent promiseSection={<ProductsPromiseSection slot={BANNER_SLOTS.products} />} />
+          <ProductsContent
+            categories={categories}
+            promiseSection={<ProductsPromiseSection slot={BANNER_SLOTS.products} />}
+          />
         </Suspense>
       </HydrationBoundary>
     </>

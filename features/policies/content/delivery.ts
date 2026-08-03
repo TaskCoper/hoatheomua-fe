@@ -67,7 +67,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
       icon: PackageOpenIcon,
       title: 'Kiểm tra hàng',
       intro:
-        'Sau khi bạn đặt hàng thành công tại hoatheomua.net, Hoa Theo Mùa sẽ gọi điện xác nhận đơn hàng. Quá trình giao – nhận luôn đi kèm bước kiểm tra để đảm bảo bạn yên tâm tuyệt đối.',
+        'Sau khi bạn đặt hàng thành công tại hoatheomua.com, Hoa Theo Mùa sẽ gọi điện xác nhận đơn hàng. Quá trình giao – nhận luôn đi kèm bước kiểm tra để đảm bảo bạn yên tâm tuyệt đối.',
       blocks: [
         {
           type: 'subheading',
@@ -200,7 +200,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
       icon: PackageOpenIcon,
       title: 'On-spot inspection',
       intro:
-        'After your order is confirmed on hoatheomua.net, we call to verify the details. The handover always includes inspection so you receive your flowers with confidence.',
+        'After your order is confirmed on hoatheomua.com, we call to verify the details. The handover always includes inspection so you receive your flowers with confidence.',
       blocks: [
         {
           type: 'subheading',

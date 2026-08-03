@@ -168,7 +168,7 @@ export default function Footer() {
             </div>
 
             <Link href='http://online.gov.vn/nen-tang/0cd662c6-4166-4a40-80c4-aa499ca6d727' target='_blank'>
-              <Image src={boCongThuong} alt='bo-cong-thuong' height={72} />
+              <Image src={boCongThuong} alt='bo-cong-thuong' width={190} height={72} sizes='190px' />
             </Link>
           </div>
         </div>
