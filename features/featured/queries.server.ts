@@ -2,9 +2,10 @@ import 'server-only'
 
 import configService from '@/services/config.service'
 import type { FeaturedCard, FeaturedCollection, FeaturedCollectionConfigItem } from '@/types/config.type'
+import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 
-export const getFeaturedCollection = cache(async (): Promise<FeaturedCollection | null> => {
+const fetchFeaturedCollection = async (): Promise<FeaturedCollection | null> => {
   try {
     const configs = await configService.getPublicConfigs<FeaturedCollectionConfigItem>({
       group: 'products',
@@ -16,7 +17,14 @@ export const getFeaturedCollection = cache(async (): Promise<FeaturedCollection 
   } catch {
     return null
   }
-})
+}
+
+export const getFeaturedCollection = cache(() =>
+  unstable_cache(fetchFeaturedCollection, ['featured-collection'], {
+    revalidate: 60 * 60,
+    tags: ['configs:products']
+  })()
+)
 
 export interface FeaturedCardWithFlags {
   card: FeaturedCard
@@ -29,3 +37,9 @@ export const getFeaturedCard = cache(async (id: string): Promise<FeaturedCardWit
   const card = collection.cards.find((c) => c.id === id && c.enabled)
   return card ? { card, hasCampaigns: collection.hasCampaigns } : null
 })
+
+/** Enabled card ids, for `generateStaticParams` to prebuild the hot detail pages. */
+export const getAllFeaturedIds = async (): Promise<string[]> => {
+  const collection = await getFeaturedCollection()
+  return collection?.cards.filter((c) => c.enabled).map((c) => c.id) ?? []
+}

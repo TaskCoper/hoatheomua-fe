@@ -1,11 +1,11 @@
-import categoryService from '@/features/categories/services'
+import { getCachedCategories } from '@/features/categories/queries.server'
 import type { SortableCategory } from '@/features/categories/types'
-import { getFeaturedCard } from '@/features/featured/queries.server'
+import { getAllFeaturedIds, getFeaturedCard } from '@/features/featured/queries.server'
 import { resolveCard } from '@/features/occasions/campaign'
 import OccasionDetailContent from '@/features/occasions/components/occasion-detail-content'
 import { prefetchDetailSections } from '@/features/occasions/section-prefetch.server'
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
-import type { Locale } from '@/lib/i18n/routing'
+import { routing, type Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
@@ -16,6 +16,15 @@ import { Suspense } from 'react'
 // page stays ISR: we prerender the HTML once and serve it from cache, rebuilding at
 // most this often (the revalidate webhook purges it on demand for real changes).
 export const revalidate = 300
+export const dynamicParams = true
+
+// Prebuild the enabled featured cards at build time so the first visit to a hot
+// detail page is served from cache instead of paying the full render waterfall.
+// The long tail is still generated on demand (`dynamicParams = true`).
+export async function generateStaticParams() {
+  const ids = await getAllFeaturedIds()
+  return routing.locales.flatMap((locale) => ids.map((id) => ({ locale, id })))
+}
 
 export async function generateMetadata({
   params
@@ -50,26 +59,27 @@ export async function generateMetadata({
 
 export default async function FeaturedPage({ params }: { params: Promise<{ locale: Locale; id: string }> }) {
   const { id } = await params
-  const result = await getFeaturedCard(id)
+
+  const queryClient = getQueryClient()
+
+  // The card and the (cached) category tree are independent, so fetch them in
+  // parallel. Categories seed the client `useGetCategories` cache and resolve the
+  // sections' category ids for the products prefetch below.
+  const [result, categories] = await Promise.all([
+    getFeaturedCard(id),
+    getCachedCategories().catch((error): SortableCategory[] => {
+      console.error('[SSR] categories prefetch failed:', error)
+      return []
+    })
+  ])
 
   if (!result) {
     notFound()
   }
 
+  queryClient.setQueryData(['categories', undefined], categories)
+
   const { card, hasCampaigns } = result
-
-  const queryClient = getQueryClient()
-
-  // Fetch categories directly so we can both seed the client `useGetCategories`
-  // cache and resolve the sections' category ids for the products prefetch below.
-  let categories: SortableCategory[] = []
-
-  try {
-    categories = await categoryService.getCategories()
-    queryClient.setQueryData(['categories', undefined], categories)
-  } catch (error) {
-    console.error('[SSR] categories prefetch failed:', error)
-  }
 
   if (hasCampaigns) {
     const resolved = resolveCard(card)

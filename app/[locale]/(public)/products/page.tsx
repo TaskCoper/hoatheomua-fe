@@ -1,4 +1,4 @@
-import categoryService from '@/features/categories/services'
+import { getCachedCategories } from '@/features/categories/queries.server'
 import { CategoryProductPage, type SortableCategory } from '@/features/categories/types'
 import ProductsContent from '@/features/products/components/products-content'
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
@@ -41,7 +41,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   let categories: SortableCategory[] = []
 
   try {
-    categories = await categoryService.getCategories({ page: categoryPage })
+    categories = await getCachedCategories({ page: categoryPage })
 
     // Fetch each section's first page of products here on the server and store it
     // under the same cache key the grid will look for. The product data then ships

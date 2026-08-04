@@ -40,7 +40,7 @@ export default function HomeHeroVideo({ videoSrc }: HomeHeroVideoProps) {
       muted
       loop
       playsInline
-      preload='auto'
+      preload='metadata'
       disableRemotePlayback
       onPlaying={() => setPlaying(true)}
       onCanPlay={() => setPlaying(true)}

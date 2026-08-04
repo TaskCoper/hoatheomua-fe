@@ -6,6 +6,9 @@ const withNextIntl = createNextIntlPlugin('./lib/i18n/request.ts')
 const withBundleAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === 'true' })
 
 const nextConfig: NextConfig = {
+  // Emit a self-contained server bundle (.next/standalone) for the upcoming VPS
+  // migration — run with `node .next/standalone/server.js`. No-op cost on Vercel.
+  output: 'standalone',
   reactStrictMode: true,
   images: {
     remotePatterns: [

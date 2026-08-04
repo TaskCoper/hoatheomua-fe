@@ -1,4 +1,4 @@
-import categoryService from '@/features/categories/services'
+import { getCachedCategories } from '@/features/categories/queries.server'
 import { CategoryProductPage } from '@/features/categories/types'
 import HomeContent from '@/features/home/components/home-content'
 import { buildHomeJsonLd, generateHomeMetadata } from '@/features/home/seo'
@@ -31,8 +31,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
   const queryClient = getQueryClient()
   const categoryPage = [CategoryProductPage.Home]
 
+  // JSON-LD only needs company config (gpkd + hotlines), which is independent of
+  // the category/products fetch below — kick it off now and await at the end so it
+  // runs alongside instead of adding another serial round-trip.
+  const homeJsonLdPromise = buildHomeJsonLd()
+
   try {
-    const categories = await categoryService.getCategories({ page: categoryPage })
+    const categories = await getCachedCategories({ page: categoryPage })
 
     queryClient.setQueryData(['categories', categoryPage], categories)
 
@@ -52,7 +57,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
     console.error('[SSR] home categories prefetch failed:', error)
   }
 
-  const homeJsonLd = await buildHomeJsonLd()
+  const homeJsonLd = await homeJsonLdPromise
 
   return (
     <>
