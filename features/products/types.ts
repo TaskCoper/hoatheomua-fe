@@ -10,6 +10,8 @@ export interface Product {
   isPinned: boolean
   categories: ProductCategory[]
 
+  otherImages: string[] | null
+
   sourceRowNumber: number
 
   // A - ID sản phẩm

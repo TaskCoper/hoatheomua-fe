@@ -1,6 +1,8 @@
 import categoryService from '@/features/categories/services'
+import type { SortableCategory } from '@/features/categories/types'
 import { getMainlineCard } from '@/features/mainline/queries.server'
 import OccasionDetailContent from '@/features/occasions/components/occasion-detail-content'
+import { prefetchDetailSections } from '@/features/occasions/section-prefetch.server'
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
@@ -9,9 +11,10 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-// The detail sections now carry URL-driven category filters (nuqs) → render on
-// the server per request instead of ISR.
-export const dynamic = 'force-dynamic'
+// Filters are read from the URL in the browser (nuqs), not on the server, so the
+// page stays ISR: we prerender the HTML once and serve it from cache, rebuilding at
+// most this often (the revalidate webhook purges it on demand for real changes).
+export const revalidate = 300
 
 export async function generateMetadata({
   params
@@ -61,14 +64,18 @@ export default async function MainlinePage({ params }: { params: Promise<{ local
 
   const queryClient = getQueryClient()
 
+  // Fetch categories directly so we can both seed the client `useGetCategories`
+  // cache and resolve the sections' category ids for the products prefetch below.
+  let categories: SortableCategory[] = []
+
   try {
-    await queryClient.prefetchQuery({
-      queryKey: ['categories', undefined],
-      queryFn: () => categoryService.getCategories()
-    })
+    categories = await categoryService.getCategories()
+    queryClient.setQueryData(['categories', undefined], categories)
   } catch (error) {
     console.error('[SSR] categories prefetch failed:', error)
   }
+
+  await prefetchDetailSections(queryClient, categories, sections)
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

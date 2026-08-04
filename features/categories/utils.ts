@@ -57,6 +57,25 @@ export const getResponsiveGridColumns = (cols: number): { className: string; sty
   }
 }
 
+/**
+ * Resolve a list of category ids to their `SortableCategory` objects. The tree is
+ * flattened first so nested children are matchable, not just roots; ids with no
+ * match are dropped. Order follows the input `ids`. Shared so the server prefetch
+ * and the client section resolve to the identical set of categories.
+ */
+export const resolveCategoriesByIds = (categories: SortableCategory[], ids: string[]): SortableCategory[] => {
+  const byId = new Map<string, SortableCategory>()
+  const index = (list: SortableCategory[]) => {
+    for (const category of list) {
+      byId.set(category.categoryId, category)
+      if (category.children.length > 0) index(category.children)
+    }
+  }
+  index(categories)
+
+  return ids.map((id) => byId.get(id)).filter((category): category is SortableCategory => Boolean(category))
+}
+
 /** Localized display name for a category. `SortableCategory` uses `nameEn`; fall back to `name` (vi). */
 export const getCategoryName = (category: Pick<SortableCategory, 'name' | 'nameEn'>, locale: Locale): string =>
   locale === 'en' ? (category.nameEn ?? category.name) : category.name
