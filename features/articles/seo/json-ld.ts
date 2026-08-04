@@ -53,7 +53,7 @@ export const buildNewsCollectionJsonLd = (locale: Locale, items: Article[]) => {
         '@type': 'CollectionPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — Hoa Theo Mùa`,
+        name: `${copy.title} - Hoa Theo Mùa`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },

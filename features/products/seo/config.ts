@@ -9,7 +9,7 @@ export const PRODUCTS_LIST_COPY = {
   vi: {
     title: 'Bộ Sưu Tập Hoa Tươi',
     description:
-      'Khám phá bộ sưu tập hoa tươi cao cấp của Hoa Theo Mùa — bó hoa sinh nhật, hoa khai trương, lan hồ điệp, hoa cưới và hơn 50 thiết kế theo mùa, giao tận nơi trong 2 giờ tại TP. HCM.',
+      'Khám phá bộ sưu tập hoa tươi cao cấp của Hoa Theo Mùa - bó hoa sinh nhật, hoa khai trương, lan hồ điệp, hoa cưới và hơn 50 thiết kế theo mùa, giao tận nơi trong 2 giờ tại TP. HCM.',
     keywords: [
       'bó hoa tươi',
       'hoa sinh nhật',
@@ -28,7 +28,7 @@ export const PRODUCTS_LIST_COPY = {
   en: {
     title: 'Fresh Flower Collection',
     description:
-      'Discover Hoa Theo Mùa premium fresh flower collection — birthday bouquets, opening flowers, orchids, wedding bouquets and 50+ seasonal designs, delivered in 2 hours in Ho Chi Minh City.',
+      'Discover Hoa Theo Mùa premium fresh flower collection - birthday bouquets, opening flowers, orchids, wedding bouquets and 50+ seasonal designs, delivered in 2 hours in Ho Chi Minh City.',
     keywords: [
       'fresh flower bouquet',
       'birthday flowers Vietnam',
@@ -39,7 +39,7 @@ export const PRODUCTS_LIST_COPY = {
       'order flowers online',
       'seasonal flowers Vietnam'
     ],
-    ogAlt: 'Hoa Theo Mùa — Fresh flower collection',
+    ogAlt: 'Hoa Theo Mùa - Fresh flower collection',
     breadcrumb: 'Products'
   }
 } satisfies LocaleCopy<ProductsCopy>

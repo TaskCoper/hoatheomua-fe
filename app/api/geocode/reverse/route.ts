@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /**
- * VietMap Reverse v4 proxy — resolves a `lat`/`lng` (e.g. from a map pin) to
+ * VietMap Reverse v4 proxy - resolves a `lat`/`lng` (e.g. from a map pin) to
  * the nearest address. Called once per map pick, never per drag frame. Uses
  * `display_type=1` (new 2-level ward/city boundaries) to stay consistent with
  * the autocomplete/place proxies.

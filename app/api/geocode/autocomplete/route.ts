@@ -5,7 +5,7 @@ const MAX_RESULTS = 8
 
 const QuerySchema = z.object({
   text: z.string().trim().min(2),
-  // `lat,lng` — optional proximity hint passed straight through to VietMap.
+  // `lat,lng` - optional proximity hint passed straight through to VietMap.
   focus: z
     .string()
     .trim()
@@ -41,7 +41,7 @@ const adminCoreName = (value: string) => normalize(value).replace(ADMIN_PREFIX, 
 // Matches a ward/city against a result's structured admin boundaries rather than
 // its free-text `address` string. `boundaries` carries each admin level as a
 // discrete { name, full_name }, so this survives abbreviations (e.g. "TP. HCM")
-// and address strings that omit the ward — which the old substring match on
+// and address strings that omit the ward - which the old substring match on
 // `address` silently dropped.
 const boundaryMatchesCore = (boundaries: { name: string; full_name: string }[], core: string): boolean =>
   boundaries.some((boundary) => {

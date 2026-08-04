@@ -34,7 +34,7 @@ const serializeRecruitmentSearch = createSerializer(recruitmentSearchParsers)
  * as props (not read from the URL here), so this can be rendered both by the
  * interactive `RecruitmentView` (nuqs-driven) and by the server-side
  * `RecruitmentDefaultView` fallback. Job data comes from `useGetJobDescriptions`,
- * which reads the route's prefetched React Query cache — so page 1 with no filters
+ * which reads the route's prefetched React Query cache - so page 1 with no filters
  * renders real HTML on the server. Job selection stays local state; it isn't in the URL.
  */
 export default function RecruitmentListView({
@@ -190,7 +190,7 @@ export default function RecruitmentListView({
               >
                 {/* `detailHref` renders a crawlable, shareable button beside the apply
                     CTA that links to the job's own SEO page. Only passed here in the
-                    master-detail view — the detail page itself omits it. */}
+                    master-detail view - the detail page itself omits it. */}
                 <JobDetail job={selectedJob} detailHref={`/recruitment/${selectedJob.slug}`} />
               </div>
             ) : null}

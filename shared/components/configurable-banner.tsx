@@ -39,14 +39,7 @@ export default function ConfigurableBanner({
       quality={quality}
     />
   ) : (
-    <Image
-      src={fallbackSrc}
-      alt={fallbackAlt}
-      className={className}
-      sizes={sizes}
-      loading='lazy'
-      quality={quality}
-    />
+    <Image src={fallbackSrc} alt={fallbackAlt} className={className} sizes={sizes} loading='lazy' quality={quality} />
   )
 
   if (!banner?.href) return image

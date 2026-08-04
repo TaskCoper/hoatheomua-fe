@@ -83,7 +83,7 @@ export default function FlowersCarousel() {
                   isActive ? 'relative z-20' : isCornerItem ? 'relative z-10' : ''
                 ].join(' ')}
                 onClick={() => emblaApi?.scrollTo(index)}
-                aria-label={`${item.label} — ${item.price}`}
+                aria-label={`${item.label} - ${item.price}`}
               >
                 <div
                   className='flex flex-col items-center text-center'

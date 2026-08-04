@@ -10,7 +10,7 @@ import type { RecruitmentFilters } from '../types'
 /**
  * Interactive recruitment page: reads filters and the current page from the URL
  * (nuqs) and drives them. Because it reads search params it can't be
- * server-rendered — Next shows the `RecruitmentDefaultView` fallback in the
+ * server-rendered - Next shows the `RecruitmentDefaultView` fallback in the
  * static/ISR HTML, then this swaps in over identical markup once the client hydrates.
  */
 export default function RecruitmentView() {
@@ -34,7 +34,7 @@ export default function RecruitmentView() {
       ...('employmentType' in nextFilters ? { employmentType: nextFilters.employmentType ?? null } : {}),
       ...('salaryMin' in nextFilters ? { salaryMin: nextFilters.salaryMin ?? null } : {}),
       ...('salaryMax' in nextFilters ? { salaryMax: nextFilters.salaryMax ?? null } : {}),
-      // The open job likely isn't in the new result set — drop it so the list
+      // The open job likely isn't in the new result set - drop it so the list
       // auto-selects the first match of the filtered page.
       job: null,
       page: DEFAULT_PAGE_INDEX

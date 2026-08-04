@@ -39,7 +39,7 @@ export const generateProductDetailMetadata = ({ locale, product }: GenerateProdu
   if (!product) return PRODUCT_NOT_FOUND_METADATA
 
   const productName = product.productName ?? 'Hoa Theo Mùa'
-  const rawDescription = `${productName} — Hoa Theo Mùa`
+  const rawDescription = `${productName} - Hoa Theo Mùa`
   const description = truncate(rawDescription, META_DESCRIPTION_MAX_LENGTH)
 
   const bestAvatar = product.coverImage ?? null
@@ -55,9 +55,15 @@ export const generateProductDetailMetadata = ({ locale, product }: GenerateProdu
 
   const keywords = Array.from(
     new Set(
-      [productName, product.categoryName, product.brand, 'hoa tươi', 'shop hoa', 'Hoa Theo Mùa', 'giao hoa TP HCM'].filter(
-        (value): value is string => Boolean(value)
-      )
+      [
+        productName,
+        product.categoryName,
+        product.brand,
+        'hoa tươi',
+        'shop hoa',
+        'Hoa Theo Mùa',
+        'giao hoa TP HCM'
+      ].filter((value): value is string => Boolean(value))
     )
   )
 
@@ -82,8 +88,8 @@ export const generateProductDetailMetadata = ({ locale, product }: GenerateProdu
     basePath: `${PRODUCTS_BASE_PATH}/${product.id}`,
     ogImage,
     extras: {
-      openGraph: { title: `${productName} — Hoa Theo Mùa` },
-      twitter: { title: `${productName} — Hoa Theo Mùa` },
+      openGraph: { title: `${productName} - Hoa Theo Mùa` },
+      twitter: { title: `${productName} - Hoa Theo Mùa` },
       category: 'shopping',
       other: productOgTags
     }

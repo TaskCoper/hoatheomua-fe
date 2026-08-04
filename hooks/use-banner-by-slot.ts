@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  BannerItem,
-  BannerSlot,
-  BannersCollection,
-  BannersCollectionConfigItem
-} from '@/types/config.type'
+import { BannerItem, BannerSlot, BannersCollection, BannersCollectionConfigItem } from '@/types/config.type'
 import { useMemo } from 'react'
 import { useGetPublicConfigs } from './use-get-public-configs'
 

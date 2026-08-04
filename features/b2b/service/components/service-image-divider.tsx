@@ -8,7 +8,7 @@ type Props = {
   src: string | null
   alt: string
   className?: string
-  /** Aspect ratio helper — defaults to a wide editorial band. */
+  /** Aspect ratio helper - defaults to a wide editorial band. */
   ratio?: string
 }
 

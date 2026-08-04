@@ -308,7 +308,7 @@
   "recruitment": {
     "hero": {
       "title": "Grow your career with us",
-      "description": "Join a team that treats every bloom — and every teammate — with care."
+      "description": "Join a team that treats every bloom - and every teammate - with care."
     },
     "filter": {
       "positionPlaceholder": "Search by position",
@@ -787,7 +787,7 @@
         "timelineDeliveryImmediate": "Immediately after payment",
         "remarksHeading": "Customer notes",
         "trackingHeading": "Tracking",
-        "noValue": "—",
+        "noValue": "-",
         "cancelCta": "Cancel order",
         "cancelConfirmTitle": "Cancel this order?",
         "cancelConfirmDescription": "This will cancel your order and cannot be undone.",
@@ -1113,7 +1113,7 @@
     },
     "press": {
       "title": "Featured In The Press",
-      "description": "Hoa Theo Mua's journey has been recognised and accompanied by reputable press outlets across the country — a source of pride that pushes us to keep spreading Vietnamese beauty.",
+      "description": "Hoa Theo Mua's journey has been recognised and accompanied by reputable press outlets across the country - a source of pride that pushes us to keep spreading Vietnamese beauty.",
       "footer": {
         "thankYou": "Thank you for walking this path with Hoa Theo Mua",
         "message": "Every bouquet is a story; every story is an emotion. We believe Vietnamese beauty will travel even further with your love.",
@@ -1122,7 +1122,7 @@
       "items": {
         "dongkhoi": {
           "name": "Báo Đồng Khởi",
-          "headline": "Hoa Theo Mua — the leading flower-ordering shop in Ho Chi Minh City"
+          "headline": "Hoa Theo Mua - the leading flower-ordering shop in Ho Chi Minh City"
         },
         "tuyenquang": {
           "name": "Báo Tuyên Quang",
@@ -1416,7 +1416,7 @@
     "hero": {
       "eyebrow": "Hoa Theo Mùa for Business",
       "title": "A Refined Floral Partner For Businesses & Organizations",
-      "subtitle": "From boardrooms to grand lobbies — we craft floral experiences for hotels, offices and brands that value craft and consistency.",
+      "subtitle": "From boardrooms to grand lobbies - we craft floral experiences for hotels, offices and brands that value craft and consistency.",
       "audienceLine": "For 4–5 star hotels, offices and brands looking for a long-term floral partner.",
       "primaryCta": "Request a quote",
       "secondaryCta": "Talk to our team",
@@ -1470,7 +1470,7 @@
             }
           },
           "enterprise": {
-            "label": "Enterprise — Retail — Construction",
+            "label": "Enterprise - Retail - Construction",
             "items": {
               "sevenEleven": {
                 "name": "Seven-Eleven"
@@ -1504,27 +1504,27 @@
         "outsourced": {
           "tag": "Hospitality",
           "name": "Outsourced Florist Department",
-          "description": "End-to-end floral operations for 4–5 star hotels — lobby, F&B, VIP rooms — run as your in-house flower team, without you keeping one."
+          "description": "End-to-end floral operations for 4–5 star hotels - lobby, F&B, VIP rooms - run as your in-house flower team, without you keeping one."
         },
         "eventsMice": {
           "tag": "Events & MICE",
           "name": "Openings, Events & MICE",
-          "description": "Conferences, galas, product launches and showroom openings — full floral direction from stage and ballroom to ribbon-cutting podium."
+          "description": "Conferences, galas, product launches and showroom openings - full floral direction from stage and ballroom to ribbon-cutting podium."
         },
         "officeSubscription": {
           "tag": "Subscription",
           "name": "Recurring Office Flowers",
-          "description": "Weekly or bi-weekly fresh-flower rotation on a long-term contract — keeps reception, lobbies and meeting rooms always alive."
+          "description": "Weekly or bi-weekly fresh-flower rotation on a long-term contract - keeps reception, lobbies and meeting rooms always alive."
         },
         "corporateGifts": {
           "tag": "Gifting",
           "name": "Corporate Gifts",
-          "description": "Fresh-flower gifting for clients and employees — designed to fit each company's specific occasion and budget."
+          "description": "Fresh-flower gifting for clients and employees - designed to fit each company's specific occasion and budget."
         },
         "brandExperience": {
           "tag": "Brand experience",
           "name": "Brand Experiences With Flowers",
-          "description": "Floral workshops, mindful flower mini-events, VIP customer and partner care — flowers as an emotional touchpoint, not just decor."
+          "description": "Floral workshops, mindful flower mini-events, VIP customer and partner care - flowers as an emotional touchpoint, not just decor."
         }
       }
     },
@@ -1538,9 +1538,9 @@
       },
       "indigo": {
         "logoAlt": "Indigo Saigon Hotel",
-        "badge": "5-star international hotel — IHG Group",
-        "summary": "For over a year, Hoa Theo Mùa has run the full floral programme at Indigo Saigon Hotel — across the lobby, meeting and event spaces, and F&B — with weekly rotations. Instead of keeping an in-house florist team, the hotel hands the whole flow to a single partner: seasonal design, sourcing, daily care and replacement — so every space a guest walks through stays on brand and on standard.",
-        "quote": "The Hoa Theo Mùa team brings ideas to life across every space in the hotel — guests and our leadership both notice.",
+        "badge": "5-star international hotel - IHG Group",
+        "summary": "For over a year, Hoa Theo Mùa has run the full floral programme at Indigo Saigon Hotel - across the lobby, meeting and event spaces, and F&B - with weekly rotations. Instead of keeping an in-house florist team, the hotel hands the whole flow to a single partner: seasonal design, sourcing, daily care and replacement - so every space a guest walks through stays on brand and on standard.",
+        "quote": "The Hoa Theo Mùa team brings ideas to life across every space in the hotel - guests and our leadership both notice.",
         "quoteAuthor": "Nicole Đoàn",
         "quoteRole": "Marketing Manager, Indigo Saigon Hotel",
         "images": {
@@ -1558,32 +1558,32 @@
         "fusion": {
           "name": "Fusion",
           "role": "Hotel & resort group",
-          "summary": "Fusion chose Hoa Theo Mùa as their partner for recurring floral services across the lobby, F&B and payment areas — with concepts that rotate by season and fit each space, adding aesthetic accents and refined touchpoints for every guest.",
+          "summary": "Fusion chose Hoa Theo Mùa as their partner for recurring floral services across the lobby, F&B and payment areas - with concepts that rotate by season and fit each space, adding aesthetic accents and refined touchpoints for every guest.",
           "logoAlt": "Fusion Hotel Group logo"
         },
         "masan": {
           "name": "Masan Group",
           "role": "Consumer enterprise",
-          "summary": "Masan trusts Hoa Theo Mùa to deliver recurring fresh flowers at the lobby and reception — building a professional workspace and shaping a positive first impression for clients and partners from the very first touchpoint.",
+          "summary": "Masan trusts Hoa Theo Mùa to deliver recurring fresh flowers at the lobby and reception - building a professional workspace and shaping a positive first impression for clients and partners from the very first touchpoint.",
           "logoAlt": "Masan Group logo"
         },
         "tanCang": {
           "name": "Tân Cảng Sài Gòn",
           "role": "Nationwide corporate gifting",
-          "summary": "Tân Cảng partners with Hoa Theo Mùa to roll out corporate flowers and partner-birthday floral gifts nationwide — from bespoke design and quality control to on-time, on-address delivery across the country.",
+          "summary": "Tân Cảng partners with Hoa Theo Mùa to roll out corporate flowers and partner-birthday floral gifts nationwide - from bespoke design and quality control to on-time, on-address delivery across the country.",
           "logoAlt": "Tân Cảng Sài Gòn logo"
         },
         "eastin": {
           "name": "Eastin",
           "role": "4-star international hotel",
-          "summary": "Eastin chose Hoa Theo Mùa for conference and event flowers, wedding banquets, plus greenery trimming and recurring flower replacement in the F&B area — keeping the hotel space polished and full of life.",
+          "summary": "Eastin chose Hoa Theo Mùa for conference and event flowers, wedding banquets, plus greenery trimming and recurring flower replacement in the F&B area - keeping the hotel space polished and full of life.",
           "logoAlt": "Eastin Hotel logo"
         }
       }
     },
     "packages": {
       "title": "Reception Orchid Packages",
-      "description": "Three options for reception and office spaces — efficient, convenient, premium. Every package includes full care and replacement.",
+      "description": "Three options for reception and office spaces - efficient, convenient, premium. Every package includes full care and replacement.",
       "popular": "Most chosen",
       "fromLabel": "From",
       "cta": "Choose this package",
@@ -1634,11 +1634,11 @@
       "items": {
         "onTime": {
           "title": "On Time, On Quality",
-          "description": "One delivery or a hundred, flowers arrive on schedule and at full freshness — so every event stays flawless."
+          "description": "One delivery or a hundred, flowers arrive on schedule and at full freshness - so every event stays flawless."
         },
         "singlePoc": {
           "title": "One Single Point Of Contact",
-          "description": "A dedicated florist stays with you end-to-end — knows your brand, your calendar, and your specific requirements."
+          "description": "A dedicated florist stays with you end-to-end - knows your brand, your calendar, and your specific requirements."
         },
         "brandAligned": {
           "title": "Designs Aligned With Your Brand",
@@ -1646,14 +1646,14 @@
         },
         "transparent": {
           "title": "Transparent Operations, Lasting Trust",
-          "description": "Clear contracts, clean invoicing and a transparent payment flow — built for long-term partnerships."
+          "description": "Clear contracts, clean invoicing and a transparent payment flow - built for long-term partnerships."
         }
       }
     },
     "process": {
       "eyebrow": "How We Work",
       "title": "Our Partnership Process",
-      "description": "Four simple steps that guarantee the three rights: right brand spirit — right schedule — right budget.",
+      "description": "Four simple steps that guarantee the three rights: right brand spirit - right schedule - right budget.",
       "steps": {
         "listen": {
           "label": "STEP 01",
@@ -1663,7 +1663,7 @@
         "propose": {
           "label": "STEP 02",
           "title": "Propose Ideas",
-          "description": "Mood boards, a flower palette and a transparent quote — usually within 48 hours."
+          "description": "Mood boards, a flower palette and a transparent quote - usually within 48 hours."
         },
         "sample": {
           "label": "STEP 03",
@@ -1673,7 +1673,7 @@
         "produce": {
           "label": "STEP 04",
           "title": "Run Production",
-          "description": "We source, condition and arrange every piece — then deliver, install and walk through on the day."
+          "description": "We source, condition and arrange every piece - then deliver, install and walk through on the day."
         }
       }
     },
@@ -1683,11 +1683,11 @@
       "items": {
         "pricing": {
           "question": "How is B2B floral service pricing calculated?",
-          "answer": "Pricing depends on three factors: delivery frequency (daily/weekly), the flower selection, and the number of locations. HTM offers packages from essentials to premium — matched to office, hotel or bank budgets. Send your specific requirements via <zalo>Zalo</zalo> and our team will quote within 30 minutes."
+          "answer": "Pricing depends on three factors: delivery frequency (daily/weekly), the flower selection, and the number of locations. HTM offers packages from essentials to premium - matched to office, hotel or bank budgets. Send your specific requirements via <zalo>Zalo</zalo> and our team will quote within 30 minutes."
         },
         "quality": {
           "question": "How does HTM handle deliveries that don't meet quality standards?",
-          "answer": "Flowers that arrive wilted, off-brief or delivered late are replaced free of charge the same day. This is built into every corporate contract — partner satisfaction is our benchmark."
+          "answer": "Flowers that arrive wilted, off-brief or delivered late are replaced free of charge the same day. This is built into every corporate contract - partner satisfaction is our benchmark."
         },
         "moq": {
           "question": "What's the minimum order quantity (MOQ) for corporate contracts?",
@@ -1695,7 +1695,7 @@
         },
         "contractTerm": {
           "question": "What's the minimum contract length?",
-          "answer": "3 months lets your business experience the quality before committing longer — no lock-in if it doesn't feel right."
+          "answer": "3 months lets your business experience the quality before committing longer - no lock-in if it doesn't feel right."
         },
         "customization": {
           "question": "Can HTM customise flowers to match our brand colours or identity?",
@@ -1715,7 +1715,7 @@
       "eyebrow": "B2B",
       "subEyebrow": "Hoa Theo Mùa for Business",
       "title": "Let's create something blooming together",
-      "description": "Tell us about your project — we'll get back within 4 working hours with first ideas and a clear next step.",
+      "description": "Tell us about your project - we'll get back within 4 working hours with first ideas and a clear next step.",
       "callLabel": "Hotline",
       "emailLabel": "Partnerships",
       "primary": "Send a brief",
@@ -1769,7 +1769,7 @@
         "metaDescription": "End-to-end outsourced floral operations for 4–5 star hotels, resorts and premium buildings. Hoa Theo Mùa's florists run as your in-house flower team at international standards.",
         "breadcrumb": "Outsourced florist department",
         "heading": "Outsourced Florist Department",
-        "lede": "A solution that outsources the entire floral operation of an international 4–5 star hotel — from the lobby and restaurant to VIP suites — running as if it were your in-house florist department, without your team having to keep any florists on payroll.",
+        "lede": "A solution that outsources the entire floral operation of an international 4–5 star hotel - from the lobby and restaurant to VIP suites - running as if it were your in-house florist department, without your team having to keep any florists on payroll.",
         "intro": {
           "01": "Instead of building an in-house florist department with the cost of recruiting, training and managing florists, businesses can choose an outsourced florist service as a professional, flexible and budget-optimised operating model.",
           "02": "We provide an end-to-end outsourced floral operation for 4–5 star hotels, resorts, retreats and premium buildings, taking care of everything from concept, design and fresh flower sourcing to installation, upkeep and scheduled refresh. Our experienced florists run as an in-house flower team, helping your hotel maintain a luxurious image without needing dedicated staff on payroll."
@@ -1799,7 +1799,7 @@
         },
         "closing": {
           "paragraphs": {
-            "01": "Hoa Theo Mùa doesn't only supply fresh flowers — we accompany the hotel in building guest experience through the art of flower arrangement, elevating brand image, leaving a mark on your guests and raising the value of your service spaces."
+            "01": "Hoa Theo Mùa doesn't only supply fresh flowers - we accompany the hotel in building guest experience through the art of flower arrangement, elevating brand image, leaving a mark on your guests and raising the value of your service spaces."
           }
         }
       },
@@ -1810,7 +1810,7 @@
         "heading": "Openings, Events & MICE Flowers",
         "lede": "End-to-end floral design and installation for corporate events",
         "intro": {
-          "01": "Every event is a milestone in a company's journey. From grand openings, customer conferences, seminars, signing ceremonies and product launches to large-scale MICE programmes, fresh flowers do more than decorate — they carry the brand image, punctuate the space and elevate the guest experience.",
+          "01": "Every event is a milestone in a company's journey. From grand openings, customer conferences, seminars, signing ceremonies and product launches to large-scale MICE programmes, fresh flowers do more than decorate - they carry the brand image, punctuate the space and elevate the guest experience.",
           "02": "We provide end-to-end event floral design and installation, walking with each business through the entire process: concept consulting, design, production, transport, installation and post-event teardown. Every design is personalised to the brand identity, the palette and the message of the programme, keeping every touchpoint of the event consistent."
         },
         "inclusions": {
@@ -1840,7 +1840,7 @@
           "items": {
             "01": {
               "title": "Designed to your brand identity",
-              "description": "Every floral element is built on the brand palette, event style and message — reinforcing professionalism and brand recognition."
+              "description": "Every floral element is built on the brand palette, event style and message - reinforcing professionalism and brand recognition."
             },
             "02": {
               "title": "Delivered on schedule",
@@ -1856,7 +1856,7 @@
             },
             "05": {
               "title": "Turnkey installation",
-              "description": "Clients only need to share their goals — we handle the entire workflow from consulting, design, transport and installation to post-event teardown."
+              "description": "Clients only need to share their goals - we handle the entire workflow from consulting, design, transport and installation to post-event teardown."
             }
           }
         },
@@ -1864,19 +1864,19 @@
           "heading": "By your side for every important milestone",
           "paragraphs": {
             "01": "An event space thoughtfully dressed with professional fresh flowers helps create that all-important first impression, elevates the value of the brand image and leaves attendees with a memorable experience.",
-            "02": "With experience across grand openings, conferences, exhibitions, gala dinners, corporate events and MICE programmes, we commit to polished designs delivered on time and matched to each scale — helping every event run successfully and leave a professional impression with partners, customers and guests."
+            "02": "With experience across grand openings, conferences, exhibitions, gala dinners, corporate events and MICE programmes, we commit to polished designs delivered on time and matched to each scale - helping every event run successfully and leave a professional impression with partners, customers and guests."
           }
         }
       },
       "officeSubscription": {
         "metaTitle": "Recurring Office Flower Service",
-        "metaDescription": "Recurring fresh flowers for offices, corporations, banks and showrooms — designed on-brand, refreshed on schedule and saving your team the management overhead.",
+        "metaDescription": "Recurring fresh flowers for offices, corporations, banks and showrooms - designed on-brand, refreshed on schedule and saving your team the management overhead.",
         "breadcrumb": "Recurring office flowers",
         "heading": "Recurring Office Flowers",
         "lede": "A recurring fresh flower service that helps businesses maintain a professional workplace",
         "intro": {
-          "01": "The office isn't only a place to work — it is the face of the business welcoming customers, partners and candidates. Fresh arrangements cared for at reception, meeting rooms or lounge areas create a positive atmosphere, elevate the brand image and deliver a professional experience from the very first impression.",
-          "02": "With a recurring office flower service, businesses no longer spend time choosing flowers, changing water, tending or replacing them when they wilt. We handle the whole workflow — consulting, design, sourcing, arrangement, transport, upkeep and scheduled refresh — so the office always looks fresh every day."
+          "01": "The office isn't only a place to work - it is the face of the business welcoming customers, partners and candidates. Fresh arrangements cared for at reception, meeting rooms or lounge areas create a positive atmosphere, elevate the brand image and deliver a professional experience from the very first impression.",
+          "02": "With a recurring office flower service, businesses no longer spend time choosing flowers, changing water, tending or replacing them when they wilt. We handle the whole workflow - consulting, design, sourcing, arrangement, transport, upkeep and scheduled refresh - so the office always looks fresh every day."
         },
         "inclusions": {
           "heading": "What does the recurring office flower service include?",
@@ -1913,7 +1913,7 @@
             },
             "02": {
               "title": "Save time and cost",
-              "description": "No need to assign staff to buy flowers, arrange them or care for them on a schedule. Businesses simply pick a service package — our team handles the rest."
+              "description": "No need to assign staff to buy flowers, arrange them or care for them on a schedule. Businesses simply pick a service package - our team handles the rest."
             },
             "03": {
               "title": "Designed in step with your brand",
@@ -1957,18 +1957,18 @@
         "closing": {
           "heading": "Bringing nature into the workplace",
           "paragraphs": {
-            "01": "Fresh flowers not only make the office more beautiful — they create a sense of ease, spark inspiration at work and help build a positive workplace. With a recurring office flower service, businesses consistently keep a professional image, save management time and offer a better experience to customers, partners and their entire team."
+            "01": "Fresh flowers not only make the office more beautiful - they create a sense of ease, spark inspiration at work and help build a positive workplace. With a recurring office flower service, businesses consistently keep a professional image, save management time and offer a better experience to customers, partners and their entire team."
           }
         }
       },
       "corporateGifts": {
         "metaTitle": "Corporate Gifts with Fresh Flowers",
-        "metaDescription": "Corporate flower gifting for customers, partners and staff — designed to your brand identity, delivered on time and flexible for any budget or scale.",
+        "metaDescription": "Corporate flower gifting for customers, partners and staff - designed to your brand identity, delivered on time and flexible for any budget or scale.",
         "breadcrumb": "Corporate gifts",
         "heading": "Corporate Gifts",
         "lede": "A fresh-flower gifting solution that helps businesses build lasting relationships",
         "intro": {
-          "01": "Every corporate gift is more than a wish or a thank you — it is an expression of professionalism, taste and brand value. A well-chosen floral design helps a business leave a positive impression on customers, partners and staff, while nurturing long-term relationships.",
+          "01": "Every corporate gift is more than a wish or a thank you - it is an expression of professionalism, taste and brand value. A well-chosen floral design helps a business leave a positive impression on customers, partners and staff, while nurturing long-term relationships.",
           "02": "We provide corporate flower gifting solutions tailored to each purpose, budget and brand identity. From elegant bouquets and premium baskets to luxury flower boxes, phalaenopsis orchids or combined gift sets, every product is crafted around aesthetics, message and the recipient's experience."
         },
         "inclusions": {
@@ -1981,7 +1981,7 @@
             },
             "02": {
               "title": "Partner gifts",
-              "description": "Elegant arrangements that let businesses send congratulations, appreciation or mark important partnership milestones — reinforcing a professional and lasting image in the partnership."
+              "description": "Elegant arrangements that let businesses send congratulations, appreciation or mark important partnership milestones - reinforcing a professional and lasting image in the partnership."
             },
             "03": {
               "title": "Employee gifts",
@@ -1999,7 +1999,7 @@
         },
         "personalization": {
           "heading": "Designed to your corporate brand identity",
-          "intro": "Every business has its own style and message. So we don't just design beautiful flowers — we also focus on consistency with the brand image.",
+          "intro": "Every business has its own style and message. So we don't just design beautiful flowers - we also focus on consistency with the brand image.",
           "subIntro": "Products can be personalised with:",
           "items": {
             "01": "Colours from the brand identity palette.",
@@ -2047,20 +2047,20 @@
         "closing": {
           "heading": "By your side for every important occasion",
           "paragraphs": {
-            "01": "A carefully prepared gift not only brings joy to the recipient — it also spreads the brand image and builds lasting relationships. With our corporate flower gifting service, we bring a flexible, professional solution matched to each communications, customer-care and culture-building goal.",
+            "01": "A carefully prepared gift not only brings joy to the recipient - it also spreads the brand image and builds lasting relationships. With our corporate flower gifting service, we bring a flexible, professional solution matched to each communications, customer-care and culture-building goal.",
             "02": "From appreciation bouquets and congratulatory baskets to bespoke gift sets, we're ready to walk with businesses in sending gratitude through every gift and creating memorable experiences for customers, partners and staff."
           }
         }
       },
       "brandExperience": {
         "metaTitle": "Brand Experience with Flowers",
-        "metaDescription": "Flower workshops, 'Meditate with Flowers' mini events, VIP client experiences and internal engagement activities — turning flowers into an emotional bridge between your brand and customers.",
+        "metaDescription": "Flower workshops, 'Meditate with Flowers' mini events, VIP client experiences and internal engagement activities - turning flowers into an emotional bridge between your brand and customers.",
         "breadcrumb": "Brand experience with flowers",
         "heading": "Brand Experience with Flowers",
         "lede": "A solution that elevates brand experience through the art of fresh flowers",
         "intro": {
-          "01": "As businesses focus more on Customer Experience and Employee Engagement, fresh flowers are no longer just a decorative element — they have become a tool for carrying emotion, telling brand stories and showing care for every attendee.",
-          "02": "We bring a flower-led brand experience that combines the art of flower arrangement with interactive activities, workshops and corporate events. Every programme is designed around the communications goal, corporate culture and audience — creating memorable moments and strengthening the connection between the brand and its customers, partners and staff."
+          "01": "As businesses focus more on Customer Experience and Employee Engagement, fresh flowers are no longer just a decorative element - they have become a tool for carrying emotion, telling brand stories and showing care for every attendee.",
+          "02": "We bring a flower-led brand experience that combines the art of flower arrangement with interactive activities, workshops and corporate events. Every programme is designed around the communications goal, corporate culture and audience - creating memorable moments and strengthening the connection between the brand and its customers, partners and staff."
         },
         "inclusions": {
           "heading": "What does the brand experience with flowers service include?",
@@ -2068,7 +2068,7 @@
           "items": {
             "01": {
               "title": "Corporate flower workshops",
-              "description": "Hosting flower arrangement workshops for employees, customers or partners with content designed around a bespoke theme. The programme blends knowledge about flowers, creative practice and inspiring stories — offering a relaxing and connecting experience."
+              "description": "Hosting flower arrangement workshops for employees, customers or partners with content designed around a bespoke theme. The programme blends knowledge about flowers, creative practice and inspiring stories - offering a relaxing and connecting experience."
             },
             "02": {
               "title": "\"Meditate with Flowers\" mini event",
@@ -2084,7 +2084,7 @@
             },
             "05": {
               "title": "Brand experience at events",
-              "description": "We design flower-based experience areas such as flower bars, flower stations, photo corners, interactive flower-arrangement tables or check-in spaces on the event's concept — giving guests another activity to engage with and generating natural social content."
+              "description": "We design flower-based experience areas such as flower bars, flower stations, photo corners, interactive flower-arrangement tables or check-in spaces on the event's concept - giving guests another activity to engage with and generating natural social content."
             }
           }
         },
@@ -2097,11 +2097,11 @@
             },
             "02": {
               "title": "Stronger corporate culture",
-              "description": "Flower workshops give employees a chance to relax, create and connect with colleagues — building a positive workplace and raising engagement across the organisation."
+              "description": "Flower workshops give employees a chance to relax, create and connect with colleagues - building a positive workplace and raising engagement across the organisation."
             },
             "03": {
               "title": "Higher brand value",
-              "description": "Programmes are personalised to the brand's colours, message and identity — helping the business convey a professional image and leave a distinctive mark at every event."
+              "description": "Programmes are personalised to the brand's colours, message and identity - helping the business convey a professional image and leave a distinctive mark at every event."
             },
             "04": {
               "title": "Naturally shareable moments",
@@ -2138,7 +2138,7 @@
         "closing": {
           "paragraphs": {
             "01": "A memorable experience always begins with the finer details. Instead of using flowers only to decorate, businesses can turn them into an emotional bridge between the brand and its customers, partners and staff through richly interactive and creative activities.",
-            "02": "With experience designing corporate flower workshops, mini experience events, VIP customer care activities and internal engagement programmes, we deliver solutions personalised to each brand — helping every event look beautiful and leave a deep imprint on every attendee."
+            "02": "With experience designing corporate flower workshops, mini experience events, VIP customer care activities and internal engagement programmes, we deliver solutions personalised to each brand - helping every event look beautiful and leave a deep imprint on every attendee."
           }
         }
       }

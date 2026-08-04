@@ -115,7 +115,7 @@ export default function B2BCaseStudySection({
 
   const slides = photos.map((photo) => ({
     src: photo.src,
-    alt: `${hotelName} — ${photo.id}`
+    alt: `${hotelName} - ${photo.id}`
   }))
   const MIN_ITEMS_PER_SET = 10
   const repeatsPerSet = Math.max(1, Math.ceil(MIN_ITEMS_PER_SET / photos.length))
@@ -212,12 +212,12 @@ export default function B2BCaseStudySection({
                 type='button'
                 key={`${photo.id}-${index}`}
                 onClick={() => setLightboxIndex(index % photos.length)}
-                aria-label={`${hotelName} — ${photo.id}`}
+                aria-label={`${hotelName} - ${photo.id}`}
                 className='relative block shrink-0 h-40 sm:h-48 md:h-56 lg:h-64 overflow-hidden rounded-2xl ring-1 ring-foreground/5 shadow-[0_0.4rem_1rem_rgb(81_108_108/8%)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
               >
                 <Image
                   src={photo.src}
-                  alt={`${hotelName} — ${photo.id}`}
+                  alt={`${hotelName} - ${photo.id}`}
                   width={photo.width}
                   height={photo.height}
                   className='h-full w-auto object-cover transition-transform duration-500 hover:scale-105'

@@ -8,7 +8,7 @@ import type { ReactNode } from 'react'
 // detail sections. Left-aligned, kicker-led headings replace the old centered
 // SparkleDivider treatment inside the main reading column.
 //
-// Signature geometry: every surface is a "petal" — three soft corners and one
+// Signature geometry: every surface is a "petal" - three soft corners and one
 // pinched corner (top-left). Keep the pinched corner consistent so the page
 // reads as one pressed-flower system rather than a pile of generic cards.
 
@@ -35,7 +35,7 @@ export const cardItem: Variants = {
   visible: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 200, damping: 20 } }
 }
 
-/** Reveal wrapper shared by every section — plays the stagger once in view. */
+/** Reveal wrapper shared by every section - plays the stagger once in view. */
 export function Reveal({ className, children }: { className?: string; children: ReactNode }) {
   return (
     <motion.div

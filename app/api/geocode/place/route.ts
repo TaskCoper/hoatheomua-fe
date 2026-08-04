@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /**
- * VietMap Place v4 proxy — resolves an autocomplete suggestion's `ref_id` to
+ * VietMap Place v4 proxy - resolves an autocomplete suggestion's `ref_id` to
  * `lat`/`lng` + a formatted label. Called once per user selection, never per
  * keystroke. `ref_id` is opaque and passed through verbatim. Since the
  * ref_id came from Autocomplete v4's `display_type=1`, the resolved `display`

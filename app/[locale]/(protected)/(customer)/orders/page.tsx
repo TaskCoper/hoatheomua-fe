@@ -201,7 +201,7 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
             <div className='flex items-center gap-1 text-xs text-muted-foreground'>
               <dt className='shrink-0 font-medium'>{t('orders.list.createdAt')}:</dt>
               <dd className='truncate font-medium text-foreground/90'>
-                {order.createAt ? formatDateTime(order.createAt, 'dateTimeShort') : '—'}
+                {order.createAt ? formatDateTime(order.createAt, 'dateTimeShort') : '-'}
               </dd>
             </div>
             <div className='flex items-center gap-1 text-xs text-muted-foreground'>

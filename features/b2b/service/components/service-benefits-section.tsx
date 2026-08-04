@@ -37,7 +37,7 @@ export default function ServiceBenefitsSection({
   if (items.length === 0) return null
 
   const heading = pick(block!.heading, locale) || t('b2b.serviceDetails.common.benefitsTitle')
-  // Plain when no item carries a description — render as a compact two-column list.
+  // Plain when no item carries a description - render as a compact two-column list.
   const allPlain = items.every((item) => !item.description)
   const dividerImage = block?.image ?? null
   const serviceName = pick(detail.card.name, locale)

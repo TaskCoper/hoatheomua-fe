@@ -787,7 +787,7 @@
         "timelineDeliveryImmediate": "Ngay sau khi thanh toán",
         "remarksHeading": "Ghi chú của khách",
         "trackingHeading": "Theo dõi đơn hàng",
-        "noValue": "—",
+        "noValue": "-",
         "cancelCta": "Hủy đơn hàng",
         "cancelConfirmTitle": "Hủy đơn hàng này?",
         "cancelConfirmDescription": "Đơn hàng sẽ được hủy và không thể hoàn tác.",
@@ -897,7 +897,7 @@
   },
   "home": {
     "hero": {
-      "imageAlt": "Hoa Theo Mùa — Hoa Từ Trái Tim",
+      "imageAlt": "Hoa Theo Mùa - Hoa Từ Trái Tim",
       "title": "Hoa Từ Trái Tim",
       "tagline1": "Hoa tươi được tạo nên để gửi gắm mọi cảm xúc.",
       "tagline2": "Từ tình yêu, niềm vui đến những dịp lễ và bất ngờ.",
@@ -967,7 +967,7 @@
       "title": "Câu Chuyện Của Chúng Tôi",
       "intro": "Câu chuyện của Hoa Theo Mùa là câu chuyện về",
       "ceoName": "CEO Lê Thị Hoa Đào",
-      "introAfter": "— về những cảm xúc của hoa, của những ký ức và của sự đồng cảm từ tâm hồn người phụ nữ mong muốn mang đến những giá trị bình yên, nuôi dưỡng sự tích cực qua từng lời kể tâm tình.",
+      "introAfter": "- về những cảm xúc của hoa, của những ký ức và của sự đồng cảm từ tâm hồn người phụ nữ mong muốn mang đến những giá trị bình yên, nuôi dưỡng sự tích cực qua từng lời kể tâm tình.",
       "imageAlt": "Bó hoa Hoa Theo Mùa",
       "twelveLabel": "Mùa Hoa",
       "naturalLabel": "Tự Nhiên",
@@ -978,8 +978,8 @@
       "story3": "Và cũng với cảm xúc ấy trong một lần ngân nga theo giai điệu bài hát \"Hà Nội 12 mùa hoa\", tâm thức của tôi nhận ra điều gì đó thuộc về mình một cách rất tự nhiên.",
       "founderAvatarAlt": "Chân dung CEO Lê Thị Hoa Đào",
       "founderName": "Lê Thị Hoa Đào",
-      "founderRole": "Nhà sáng lập & CEO — Hoa Theo Mùa",
-      "closing": "Từ những mong muốn mang đến những giá trị cảm xúc, những bình yên tìm về ấy mà Hoa Theo Mùa đã đúc kết nên các giá trị riêng của thương hiệu — những điều tốt đẹp muốn dành đến cho khách hàng để gửi trao trong từng sản phẩm."
+      "founderRole": "Nhà sáng lập & CEO - Hoa Theo Mùa",
+      "closing": "Từ những mong muốn mang đến những giá trị cảm xúc, những bình yên tìm về ấy mà Hoa Theo Mùa đã đúc kết nên các giá trị riêng của thương hiệu - những điều tốt đẹp muốn dành đến cho khách hàng để gửi trao trong từng sản phẩm."
     },
     "visionMission": {
       "title": "Tầm Nhìn & Sứ Mệnh",
@@ -1009,7 +1009,7 @@
         },
         "simple": {
           "title": "Giản Dị",
-          "description": "Lấy cảm hứng từ vẻ tự nhiên thuần khiết — không cầu kỳ, không màu mè, Hoa Theo Mùa chọn cái đẹp chân thật nhất của hoa. Sự giản dị ấy giúp ai cũng dễ dàng chạm đến và cảm nhận."
+          "description": "Lấy cảm hứng từ vẻ tự nhiên thuần khiết - không cầu kỳ, không màu mè, Hoa Theo Mùa chọn cái đẹp chân thật nhất của hoa. Sự giản dị ấy giúp ai cũng dễ dàng chạm đến và cảm nhận."
         },
         "elegant": {
           "title": "Tinh Tế",
@@ -1017,17 +1017,17 @@
         },
         "eco": {
           "title": "Bảo Vệ Môi Trường",
-          "description": "Chúng tôi ưu tiên nguyên liệu bền vững, giảm thiểu rác thải và nói \"có\" với những sản phẩm vừa đẹp vừa thân thiện với thiên nhiên — vì một hành tinh xanh là điều xứng đáng để cùng gìn giữ."
+          "description": "Chúng tôi ưu tiên nguyên liệu bền vững, giảm thiểu rác thải và nói \"có\" với những sản phẩm vừa đẹp vừa thân thiện với thiên nhiên - vì một hành tinh xanh là điều xứng đáng để cùng gìn giữ."
         },
         "vietnamese": {
           "title": "Trân Trọng Giá Trị Việt",
-          "description": "Hoa Theo Mùa trân trọng và tôn vinh giá trị Việt — từ nguyên phụ liệu, hoa lá đến cách các nghệ nhân của chúng tôi gửi vào đó tâm tình của hoa Việt Nam."
+          "description": "Hoa Theo Mùa trân trọng và tôn vinh giá trị Việt - từ nguyên phụ liệu, hoa lá đến cách các nghệ nhân của chúng tôi gửi vào đó tâm tình của hoa Việt Nam."
         }
       }
     },
     "productLines": {
       "title": "Các Dòng Sản Phẩm Chính",
-      "description": "Những bó hoa tươi được thiết kế tinh tế, mang đậm phong cách tự nhiên — gói gọn vẻ đẹp và sức sống của từng mùa hoa, dành tặng cho những người thân yêu trong mọi dịp đặc biệt.",
+      "description": "Những bó hoa tươi được thiết kế tinh tế, mang đậm phong cách tự nhiên - gói gọn vẻ đẹp và sức sống của từng mùa hoa, dành tặng cho những người thân yêu trong mọi dịp đặc biệt.",
       "branchAlt": "Cành lá trang trí",
       "explore": "Khám phá bộ sưu tập",
       "items": {
@@ -1088,7 +1088,7 @@
     },
     "testimonials": {
       "title": "Khách Hàng Nói Gì",
-      "description": "Niềm vui lớn nhất của Hoa Theo Mùa là những lời chia sẻ chân thành từ khách hàng — họ chính là người tiếp lửa cho hành trình lan toả vẻ đẹp Việt.",
+      "description": "Niềm vui lớn nhất của Hoa Theo Mùa là những lời chia sẻ chân thành từ khách hàng - họ chính là người tiếp lửa cho hành trình lan toả vẻ đẹp Việt.",
       "featuredLabel": "Đánh Giá Nổi Bật",
       "items": {
         "myDuyen": {
@@ -1113,7 +1113,7 @@
     },
     "press": {
       "title": "Báo Chí Nói Về Chúng Tôi",
-      "description": "Hành trình của Hoa Theo Mùa được ghi nhận và đồng hành cùng nhiều cơ quan báo chí uy tín trên cả nước — niềm tự hào để chúng tôi tiếp tục lan toả vẻ đẹp Việt.",
+      "description": "Hành trình của Hoa Theo Mùa được ghi nhận và đồng hành cùng nhiều cơ quan báo chí uy tín trên cả nước - niềm tự hào để chúng tôi tiếp tục lan toả vẻ đẹp Việt.",
       "footer": {
         "thankYou": "Cảm ơn bạn đã đồng hành cùng Hoa Theo Mùa",
         "message": "Mỗi bó hoa là một câu chuyện, mỗi câu chuyện là một cảm xúc. Chúng tôi tin rằng vẻ đẹp Việt sẽ được lan toả xa hơn nữa với sự yêu thương của bạn.",
@@ -1122,7 +1122,7 @@
       "items": {
         "dongkhoi": {
           "name": "Báo Đồng Khởi",
-          "headline": "Hoa Theo Mùa — cửa hàng đặt hoa hàng đầu tại Hồ Chí Minh"
+          "headline": "Hoa Theo Mùa - cửa hàng đặt hoa hàng đầu tại Hồ Chí Minh"
         },
         "tuyenquang": {
           "name": "Báo Tuyên Quang",
@@ -1164,7 +1164,7 @@
       "title": "Bộ Sưu Tập Hoa Tươi",
       "description": "Mỗi bó hoa được tuyển chọn theo mùa, cắm thủ công tỉ mỉ, tinh tế và giao đến tay bạn trong 2 giờ tại TP. Hồ Chí Minh.",
       "headline": "Mỗi bó hoa, mỗi dịp tặng là một câu chuyện - chọn đúng bó hoa cho khoảnh khắc của bạn",
-      "body": "Hơn 50 thiết kế theo mùa — từ sinh nhật, khai trương, tốt nghiệp đến lan hồ điệp cao cấp. Hoa nhập trong ngày, đóng gói tinh tế, giao đúng hẹn cho mọi khoảnh khắc đặc biệt.",
+      "body": "Hơn 50 thiết kế theo mùa - từ sinh nhật, khai trương, tốt nghiệp đến lan hồ điệp cao cấp. Hoa nhập trong ngày, đóng gói tinh tế, giao đúng hẹn cho mọi khoảnh khắc đặc biệt.",
       "shopByType": "Chọn theo loại",
       "shopByOccasion": "Chọn theo dịp",
       "imageAlt": "Bó hoa tươi Hoa Theo Mùa",
@@ -1190,7 +1190,7 @@
         "love": {
           "occasion": "Tình Yêu",
           "name": "Hoa Hồng Tình Nhân",
-          "description": "Hồng nhung, hồng pastel cao cấp — biểu tượng tinh khôi cho tình yêu nồng nàn và dịu dàng."
+          "description": "Hồng nhung, hồng pastel cao cấp - biểu tượng tinh khôi cho tình yêu nồng nàn và dịu dàng."
         },
         "opening": {
           "occasion": "Khai Trương",
@@ -1205,12 +1205,12 @@
         "orchid": {
           "occasion": "Lan Hồ Điệp",
           "name": "Chậu Lan Cao Cấp",
-          "description": "Chậu lan bền sắc, sang trọng — món quà ý nghĩa cho biếu tặng đối tác và gia đình."
+          "description": "Chậu lan bền sắc, sang trọng - món quà ý nghĩa cho biếu tặng đối tác và gia đình."
         },
         "congrats": {
           "occasion": "Tốt Nghiệp",
           "name": "Bó Hoa Chúc Mừng",
-          "description": "Lời chúc tươi mới cho hành trình mới — bó hoa tự nhiên, đầy năng lượng tích cực."
+          "description": "Lời chúc tươi mới cho hành trình mới - bó hoa tự nhiên, đầy năng lượng tích cực."
         }
       },
       "detail": {
@@ -1231,7 +1231,7 @@
         },
         "products": {
           "title": "Hoa cho {name}",
-          "description": "Bộ sưu tập được nghệ nhân chăm chút riêng cho dịp này — hoa tươi, cắm thủ công và sẵn sàng giao tận tay.",
+          "description": "Bộ sưu tập được nghệ nhân chăm chút riêng cho dịp này - hoa tươi, cắm thủ công và sẵn sàng giao tận tay.",
           "empty": {
             "title": "Bộ sưu tập sắp ra mắt",
             "description": "Bộ sưu tập đang được nghệ nhân chuẩn bị. Vui lòng quay lại sau để khám phá những bó hoa tươi mới nhất cho dịp này."
@@ -1244,7 +1244,7 @@
       "description": "Bình cắm và phụ kiện chơi hoa được nghệ nhân tuyển chọn - điểm chạm hoàn thiện cho mỗi bó hoa thêm trọn vẹn.",
       "vaseFlowers": {
         "title": "Hoa Cắm Bình",
-        "description": "Những cành hoa theo mùa để bạn tự cắm vào chiếc bình yêu thích — tươi mới, dễ phối và giữ nhịp bình yên cho không gian sống.",
+        "description": "Những cành hoa theo mùa để bạn tự cắm vào chiếc bình yêu thích - tươi mới, dễ phối và giữ nhịp bình yên cho không gian sống.",
         "prompt": "Đã chọn được hoa yêu thích? Đừng quên chọn thêm bình cắm phù hợp 🌿"
       }
     },
@@ -1406,7 +1406,7 @@
           },
           "temperature": {
             "title": "Nhiệt độ phòng dễ chịu",
-            "description": "Nhiệt độ lý tưởng 18–22°C — phòng máy lạnh nhẹ sẽ giúp hoa giữ form đẹp hơn."
+            "description": "Nhiệt độ lý tưởng 18–22°C - phòng máy lạnh nhẹ sẽ giúp hoa giữ form đẹp hơn."
           }
         }
       }
@@ -1416,7 +1416,7 @@
     "hero": {
       "eyebrow": "Hoa Theo Mùa cho Doanh nghiệp",
       "title": "Đối Tác Hoa Tinh Tế Cho Doanh Nghiệp & Tổ Chức",
-      "subtitle": "Từ phòng họp đến đại sảnh — chúng tôi kiến tạo trải nghiệm hoa cho khách sạn, văn phòng và thương hiệu yêu thích sự chuẩn mực và đẳng cấp.",
+      "subtitle": "Từ phòng họp đến đại sảnh - chúng tôi kiến tạo trải nghiệm hoa cho khách sạn, văn phòng và thương hiệu yêu thích sự chuẩn mực và đẳng cấp.",
       "audienceLine": "Dành cho khách sạn 4–5 sao, văn phòng và thương hiệu đang tìm một đối tác hoa vận hành dài hạn.",
       "primaryCta": "Nhận báo giá",
       "secondaryCta": "Trao đổi cùng đội ngũ",
@@ -1456,7 +1456,7 @@
             }
           },
           "finance": {
-            "label": "Tài chính — Ngân hàng",
+            "label": "Tài chính - Ngân hàng",
             "items": {
               "shinhan": {
                 "name": "Shinhan Bank"
@@ -1470,7 +1470,7 @@
             }
           },
           "enterprise": {
-            "label": "Doanh nghiệp — Bán lẻ — Xây dựng",
+            "label": "Doanh nghiệp - Bán lẻ - Xây dựng",
             "items": {
               "sevenEleven": {
                 "name": "Seven-Eleven"
@@ -1504,17 +1504,17 @@
         "outsourced": {
           "tag": "Khách sạn",
           "name": "Phòng Hoa Thuê Ngoài",
-          "description": "Giải pháp outsource toàn bộ vận hành hoa cho khách sạn 4–5 sao chuẩn quốc tế: từ sảnh, nhà hàng đến phòng khách VIP — vận hành như một phòng hoa nội bộ, không cần khách sạn tự duy trì nhân sự florist."
+          "description": "Giải pháp outsource toàn bộ vận hành hoa cho khách sạn 4–5 sao chuẩn quốc tế: từ sảnh, nhà hàng đến phòng khách VIP - vận hành như một phòng hoa nội bộ, không cần khách sạn tự duy trì nhân sự florist."
         },
         "eventsMice": {
           "tag": "Sự kiện & MICE",
           "name": "Hoa Khai Trương, Sự Kiện & MICE",
-          "description": "Hội nghị, gala, lễ ra mắt sản phẩm, khai trương showroom — định hướng hoa trọn gói từ sân khấu, hội trường đến bục cắt băng khai trương."
+          "description": "Hội nghị, gala, lễ ra mắt sản phẩm, khai trương showroom - định hướng hoa trọn gói từ sân khấu, hội trường đến bục cắt băng khai trương."
         },
         "officeSubscription": {
           "tag": "Định kỳ",
           "name": "Hoa Văn Phòng Định Kỳ",
-          "description": "Luân chuyển hoa tươi hằng tuần hoặc hai tuần một lần theo hợp đồng dài hạn — giữ sảnh, bàn lễ tân và phòng họp luôn rực rỡ."
+          "description": "Luân chuyển hoa tươi hằng tuần hoặc hai tuần một lần theo hợp đồng dài hạn - giữ sảnh, bàn lễ tân và phòng họp luôn rực rỡ."
         },
         "corporateGifts": {
           "tag": "Quà tặng",
@@ -1524,7 +1524,7 @@
         "brandExperience": {
           "tag": "Trải nghiệm thương hiệu",
           "name": "Trải Nghiệm Thương Hiệu Cùng Hoa",
-          "description": "Workshop cắm hoa, mini event thiền hoa, chăm sóc khách VIP và đối tác — biến hoa thành điểm chạm cảm xúc, không chỉ là vật trang trí."
+          "description": "Workshop cắm hoa, mini event thiền hoa, chăm sóc khách VIP và đối tác - biến hoa thành điểm chạm cảm xúc, không chỉ là vật trang trí."
         }
       }
     },
@@ -1538,8 +1538,8 @@
       },
       "indigo": {
         "logoAlt": "Indigo Saigon Hotel",
-        "badge": "Khách sạn 5 sao quốc tế — IHG Group",
-        "summary": "Hơn 1 năm qua, Hoa Theo Mùa đảm nhận toàn diện công tác hoa tươi tại Indigo Saigon Hotel — từ sảnh, khu vực phòng họp/sự kiện đến không gian F&B — với tần suất thay hoa hàng tuần. Thay vì duy trì một bộ phận hoa nội bộ, khách sạn giao toàn bộ quy trình này cho một đầu mối duy nhất: từ lên thiết kế theo mùa, đặt hoa, đến chăm sóc và thay mới — đảm bảo mọi không gian khách lưu trú đi qua luôn đúng tiêu chuẩn thẩm mỹ và đúng tinh thần thương hiệu khách sạn.",
+        "badge": "Khách sạn 5 sao quốc tế - IHG Group",
+        "summary": "Hơn 1 năm qua, Hoa Theo Mùa đảm nhận toàn diện công tác hoa tươi tại Indigo Saigon Hotel - từ sảnh, khu vực phòng họp/sự kiện đến không gian F&B - với tần suất thay hoa hàng tuần. Thay vì duy trì một bộ phận hoa nội bộ, khách sạn giao toàn bộ quy trình này cho một đầu mối duy nhất: từ lên thiết kế theo mùa, đặt hoa, đến chăm sóc và thay mới - đảm bảo mọi không gian khách lưu trú đi qua luôn đúng tiêu chuẩn thẩm mỹ và đúng tinh thần thương hiệu khách sạn.",
         "quote": "Đội ngũ Hoa Theo Mùa truyền tải đúng ý tưởng vào thực tế ở nhiều không gian khác nhau trong khách sạn, được cả khách hàng và ban lãnh đạo đánh giá cao.",
         "quoteAuthor": "Chị Nicole Đoàn",
         "quoteRole": "Marketing Manager, Indigo Saigon Hotel",
@@ -1548,7 +1548,7 @@
           "winterTable": "Decor mùa đông tại khu vực F&B",
           "orchidVase": "Bình lan vàng cho phòng khách hành lang",
           "lotusSinger": "Hoa sen trang trí trên bàn cổ điển",
-          "banquetCenterpiece": "Bàn tiệc với centerpiece sen — gala sự kiện",
+          "banquetCenterpiece": "Bàn tiệc với centerpiece sen - gala sự kiện",
           "banquetDetail": "Chi tiết centerpiece bàn tiệc"
         }
       },
@@ -1558,7 +1558,7 @@
         "fusion": {
           "name": "Fusion",
           "role": "Chuỗi khách sạn & resort",
-          "summary": "Fusion lựa chọn Hoa Theo Mùa là đối tác triển khai dịch vụ hoa tươi định kỳ tại sảnh, nhà hàng và quầy thanh toán, với concept thay đổi theo mùa và phù hợp từng không gian — góp phần tạo điểm nhấn thẩm mỹ và trải nghiệm tinh tế cho khách lưu trú.",
+          "summary": "Fusion lựa chọn Hoa Theo Mùa là đối tác triển khai dịch vụ hoa tươi định kỳ tại sảnh, nhà hàng và quầy thanh toán, với concept thay đổi theo mùa và phù hợp từng không gian - góp phần tạo điểm nhấn thẩm mỹ và trải nghiệm tinh tế cho khách lưu trú.",
           "logoAlt": "Logo Fusion Hotel Group"
         },
         "masan": {
@@ -1570,13 +1570,13 @@
         "tanCang": {
           "name": "Tân Cảng Sài Gòn",
           "role": "Hoa doanh nghiệp toàn quốc",
-          "summary": "Tân Cảng hợp tác cùng Hoa Theo Mùa để triển khai dịch vụ hoa doanh nghiệp và hoa chúc mừng sinh nhật đối tác trên toàn quốc — từ thiết kế mẫu, kiểm soát chất lượng đến giao hoa đúng thời gian, đúng địa điểm.",
+          "summary": "Tân Cảng hợp tác cùng Hoa Theo Mùa để triển khai dịch vụ hoa doanh nghiệp và hoa chúc mừng sinh nhật đối tác trên toàn quốc - từ thiết kế mẫu, kiểm soát chất lượng đến giao hoa đúng thời gian, đúng địa điểm.",
           "logoAlt": "Logo Tân Cảng Sài Gòn"
         },
         "eastin": {
           "name": "Eastin",
           "role": "Khách sạn 4 sao quốc tế",
-          "summary": "Eastin lựa chọn Hoa Theo Mùa cho hoa hội nghị, hoa sự kiện, tiệc cưới, cùng dịch vụ cắt tỉa cây xanh và thay hoa định kỳ tại khu vực nhà hàng — luôn duy trì không gian chỉn chu và giàu sức sống.",
+          "summary": "Eastin lựa chọn Hoa Theo Mùa cho hoa hội nghị, hoa sự kiện, tiệc cưới, cùng dịch vụ cắt tỉa cây xanh và thay hoa định kỳ tại khu vực nhà hàng - luôn duy trì không gian chỉn chu và giàu sức sống.",
           "logoAlt": "Logo Eastin Hotel"
         }
       }
@@ -1598,7 +1598,7 @@
             "area": "Dưới 20m², bàn 1,2–1,6m",
             "potSize": "30W x 50H",
             "locations": "1 địa điểm",
-            "care": "Trọn gói 3 tháng — chăm sóc & thay hoa"
+            "care": "Trọn gói 3 tháng - chăm sóc & thay hoa"
           }
         },
         "locPhat": {
@@ -1610,7 +1610,7 @@
             "area": "25–40m², bàn 1,8–2,4m",
             "potSize": "45W x 60H",
             "locations": "1 địa điểm",
-            "care": "Trọn gói 3 tháng — chăm sóc & thay hoa"
+            "care": "Trọn gói 3 tháng - chăm sóc & thay hoa"
           }
         },
         "thinhVuong": {
@@ -1622,7 +1622,7 @@
             "area": "45–60m², quầy 2,6–3,6m",
             "potSize": "60W x 80H",
             "locations": "1 địa điểm",
-            "care": "Trọn gói 3 tháng — chăm sóc & thay hoa"
+            "care": "Trọn gói 3 tháng - chăm sóc & thay hoa"
           }
         }
       }
@@ -1634,7 +1634,7 @@
       "items": {
         "onTime": {
           "title": "Đúng Giờ, Đúng Chất Lượng",
-          "description": "Một lần hay hàng trăm lần, hoa luôn đến đúng giờ với độ tươi mới và cứng cáp — để sự kiện của bạn luôn hoàn hảo."
+          "description": "Một lần hay hàng trăm lần, hoa luôn đến đúng giờ với độ tươi mới và cứng cáp - để sự kiện của bạn luôn hoàn hảo."
         },
         "singlePoc": {
           "title": "Một Đầu Mối Duy Nhất",
@@ -1653,7 +1653,7 @@
     "process": {
       "eyebrow": "Cách Chúng Tôi Làm Việc",
       "title": "Quy Trình Hợp Tác",
-      "description": "Bốn bước đơn giản đảm bảo 3 đúng: đúng tinh thần thương hiệu — đúng tiến độ — đúng ngân sách.",
+      "description": "Bốn bước đơn giản đảm bảo 3 đúng: đúng tinh thần thương hiệu - đúng tiến độ - đúng ngân sách.",
       "steps": {
         "listen": {
           "label": "BƯỚC 01",
@@ -1663,7 +1663,7 @@
         "propose": {
           "label": "BƯỚC 02",
           "title": "Đề Xuất Ý Tưởng",
-          "description": "Mood board, bảng hoa và báo giá minh bạch — thường trong vòng 48 giờ."
+          "description": "Mood board, bảng hoa và báo giá minh bạch - thường trong vòng 48 giờ."
         },
         "sample": {
           "label": "BƯỚC 03",
@@ -1673,7 +1673,7 @@
         "produce": {
           "label": "BƯỚC 04",
           "title": "Tiến Hành Sản Xuất",
-          "description": "Chúng tôi đặt hoa, dưỡng, làm và giao tại chỗ — dựng và kiểm tra lần cuối trước giờ G."
+          "description": "Chúng tôi đặt hoa, dưỡng, làm và giao tại chỗ - dựng và kiểm tra lần cuối trước giờ G."
         }
       }
     },
@@ -1687,7 +1687,7 @@
         },
         "quality": {
           "question": "Nếu hoa giao không đạt chất lượng, HTM xử lý ra sao?",
-          "answer": "Hoa không tươi, không đúng mẫu hoặc giao trễ — HTM đổi mới miễn phí trong ngày. Đây là cam kết trong mọi hợp đồng doanh nghiệp, sự hài lòng của đối tác là mục tiêu phục vụ của chúng tôi."
+          "answer": "Hoa không tươi, không đúng mẫu hoặc giao trễ - HTM đổi mới miễn phí trong ngày. Đây là cam kết trong mọi hợp đồng doanh nghiệp, sự hài lòng của đối tác là mục tiêu phục vụ của chúng tôi."
         },
         "moq": {
           "question": "Đơn hàng tối thiểu (MOQ) cho hợp đồng doanh nghiệp là bao nhiêu?",
@@ -1695,7 +1695,7 @@
         },
         "contractTerm": {
           "question": "Thời gian hợp đồng tối thiểu là bao lâu?",
-          "answer": "3 tháng là thời gian phù hợp để doanh nghiệp trải nghiệm chất lượng trước khi cam kết dài hơn — không ràng buộc nếu chưa thấy phù hợp."
+          "answer": "3 tháng là thời gian phù hợp để doanh nghiệp trải nghiệm chất lượng trước khi cam kết dài hơn - không ràng buộc nếu chưa thấy phù hợp."
         },
         "customization": {
           "question": "HTM có thể tùy chỉnh hoa theo màu sắc/thương hiệu công ty không?",
@@ -1715,7 +1715,7 @@
       "eyebrow": "B2B",
       "subEyebrow": "Hoa Theo Mùa cho Doanh nghiệp",
       "title": "Cùng kiến tạo một điều gì đó nở rộ",
-      "description": "Kể chúng tôi nghe về dự án của bạn — chúng tôi sẽ phản hồi trong vòng 4 giờ làm việc với ý tưởng đầu tiên và bước tiếp theo rõ ràng.",
+      "description": "Kể chúng tôi nghe về dự án của bạn - chúng tôi sẽ phản hồi trong vòng 4 giờ làm việc với ý tưởng đầu tiên và bước tiếp theo rõ ràng.",
       "callLabel": "Hotline",
       "emailLabel": "Hợp tác",
       "primary": "Gửi brief",
@@ -1769,7 +1769,7 @@
         "metaDescription": "Giải pháp outsource toàn bộ vận hành hoa tươi cho khách sạn 4–5 sao, resort và tòa nhà cao cấp. Đội ngũ florist Hoa Theo Mùa vận hành như phòng hoa nội bộ chuẩn quốc tế.",
         "breadcrumb": "Phòng hoa thuê ngoài",
         "heading": "Phòng Hoa Thuê Ngoài",
-        "lede": "Giải pháp outsource toàn bộ vận hành hoa cho khách sạn 4–5 sao chuẩn quốc tế: từ sảnh, nhà hàng đến phòng khách VIP — vận hành như một phòng hoa nội bộ, không cần khách sạn tự duy trì nhân sự florist.",
+        "lede": "Giải pháp outsource toàn bộ vận hành hoa cho khách sạn 4–5 sao chuẩn quốc tế: từ sảnh, nhà hàng đến phòng khách VIP - vận hành như một phòng hoa nội bộ, không cần khách sạn tự duy trì nhân sự florist.",
         "intro": {
           "01": "Thay vì xây dựng một phòng hoa nội bộ với chi phí tuyển dụng, đào tạo và quản lý florist, doanh nghiệp có thể lựa chọn dịch vụ phòng hoa thuê ngoài như một giải pháp vận hành chuyên nghiệp, linh hoạt và tối ưu ngân sách.",
           "02": "Chúng tôi cung cấp giải pháp outsource toàn bộ vận hành hoa tươi cho khách sạn 4–5 sao, resort, khu nghỉ dưỡng và các tòa nhà cao cấp, đảm nhận từ khâu lên ý tưởng, thiết kế, cung ứng hoa tươi đến cắm mới, bảo dưỡng và thay thế định kỳ. Đội ngũ florist giàu kinh nghiệm vận hành như một phòng hoa nội bộ, giúp khách sạn luôn duy trì hình ảnh sang trọng mà không cần duy trì nhân sự chuyên trách."
@@ -1870,7 +1870,7 @@
       },
       "officeSubscription": {
         "metaTitle": "Dịch Vụ Hoa Văn Phòng Định Kỳ",
-        "metaDescription": "Hoa tươi định kỳ cho văn phòng, tập đoàn, ngân hàng, showroom — thiết kế đồng bộ với thương hiệu, thay hoa đúng lịch, tiết kiệm thời gian quản lý.",
+        "metaDescription": "Hoa tươi định kỳ cho văn phòng, tập đoàn, ngân hàng, showroom - thiết kế đồng bộ với thương hiệu, thay hoa đúng lịch, tiết kiệm thời gian quản lý.",
         "breadcrumb": "Hoa văn phòng định kỳ",
         "heading": "Hoa Văn Phòng Định Kỳ",
         "lede": "Dịch vụ hoa tươi định kỳ giúp doanh nghiệp duy trì không gian làm việc chuyên nghiệp",
@@ -1963,7 +1963,7 @@
       },
       "corporateGifts": {
         "metaTitle": "Quà Tặng Doanh Nghiệp Bằng Hoa Tươi",
-        "metaDescription": "Giải pháp quà tặng hoa tươi cho khách hàng, đối tác và nhân viên — thiết kế theo nhận diện thương hiệu, giao đúng hẹn, linh hoạt theo ngân sách và quy mô.",
+        "metaDescription": "Giải pháp quà tặng hoa tươi cho khách hàng, đối tác và nhân viên - thiết kế theo nhận diện thương hiệu, giao đúng hẹn, linh hoạt theo ngân sách và quy mô.",
         "breadcrumb": "Quà tặng doanh nghiệp",
         "heading": "Quà Tặng Doanh Nghiệp",
         "lede": "Giải pháp quà tặng hoa tươi giúp doanh nghiệp xây dựng mối quan hệ bền vững",
@@ -2054,7 +2054,7 @@
       },
       "brandExperience": {
         "metaTitle": "Trải Nghiệm Thương Hiệu Cùng Hoa",
-        "metaDescription": "Workshop cắm hoa, mini event 'Thiền cùng Hoa', trải nghiệm khách VIP và hoạt động gắn kết nội bộ — biến hoa thành cầu nối cảm xúc giữa thương hiệu và khách hàng.",
+        "metaDescription": "Workshop cắm hoa, mini event 'Thiền cùng Hoa', trải nghiệm khách VIP và hoạt động gắn kết nội bộ - biến hoa thành cầu nối cảm xúc giữa thương hiệu và khách hàng.",
         "breadcrumb": "Trải nghiệm thương hiệu cùng hoa",
         "heading": "Trải Nghiệm Thương Hiệu Cùng Hoa",
         "lede": "Giải pháp nâng tầm trải nghiệm thương hiệu bằng nghệ thuật hoa tươi",
@@ -2168,7 +2168,7 @@
     "returns": {
       "breadcrumb": "Chính sách đổi trả",
       "title": "Chính sách đổi trả",
-      "subtitle": "Hoa Theo Mùa luôn đặt sự hài lòng của khách hàng lên hàng đầu — chính sách đổi trả minh bạch, nhanh chóng và đúng cam kết."
+      "subtitle": "Hoa Theo Mùa luôn đặt sự hài lòng của khách hàng lên hàng đầu - chính sách đổi trả minh bạch, nhanh chóng và đúng cam kết."
     },
     "delivery": {
       "breadcrumb": "Chính sách giao – nhận và kiểm tra hàng",
@@ -2179,7 +2179,7 @@
     "ordering": {
       "breadcrumb": "Hướng dẫn đặt hàng & thanh toán",
       "title": "Hướng dẫn đặt hàng & thanh toán",
-      "subtitle": "Ba cách đặt hoa và hai phương thức thanh toán linh hoạt — Hoa Theo Mùa giúp bạn gửi yêu thương chỉ trong vài phút."
+      "subtitle": "Ba cách đặt hoa và hai phương thức thanh toán linh hoạt - Hoa Theo Mùa giúp bạn gửi yêu thương chỉ trong vài phút."
     }
   },
   "profile": {

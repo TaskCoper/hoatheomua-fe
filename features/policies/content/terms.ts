@@ -60,7 +60,7 @@ export const TERMS_CONTENT: Record<Locale, PolicySectionData[]> = {
           items: [
             'Email: hoatheomuaflowers@gmail.com',
             'Trang Liên hệ trên website để gửi câu hỏi nhanh chóng.',
-            'Hotline: 0931 734 353 — sẵn sàng hỗ trợ từ 7h00 đến 18h00.'
+            'Hotline: 0931 734 353 - sẵn sàng hỗ trợ từ 7h00 đến 18h00.'
           ]
         }
       ]
@@ -219,7 +219,7 @@ export const TERMS_CONTENT: Record<Locale, PolicySectionData[]> = {
           items: [
             'Email: hoatheomuaflowers@gmail.com',
             'The Contact page on the website for quick enquiries.',
-            'Hotline: 0931 734 353 — available from 7:00 AM to 6:00 PM.'
+            'Hotline: 0931 734 353 - available from 7:00 AM to 6:00 PM.'
           ]
         }
       ]

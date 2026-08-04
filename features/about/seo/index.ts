@@ -22,7 +22,7 @@ const ABOUT_COPY = {
   vi: {
     title: 'Câu Chuyện Của Chúng Tôi',
     description:
-      'Hoa Theo Mùa thành lập 12/11/2020 bởi CEO Lê Thị Hoa Đào — thương hiệu hoa tươi cao cấp lấy cảm hứng từ "Hà Nội 12 mùa hoa", mang đến giá trị bình yên qua từng bó hoa 100% tự nhiên.',
+      'Hoa Theo Mùa thành lập 12/11/2020 bởi CEO Lê Thị Hoa Đào - thương hiệu hoa tươi cao cấp lấy cảm hứng từ "Hà Nội 12 mùa hoa", mang đến giá trị bình yên qua từng bó hoa 100% tự nhiên.',
     keywords: [
       'về Hoa Theo Mùa',
       'câu chuyện thương hiệu hoa',
@@ -47,7 +47,7 @@ const ABOUT_COPY = {
       'seasonal flowers brand',
       'Hanoi flower seasons'
     ],
-    ogAlt: 'About Hoa Theo Mùa — Our story',
+    ogAlt: 'About Hoa Theo Mùa - Our story',
     breadcrumb: 'About'
   }
 } satisfies LocaleCopy<AboutCopy>
@@ -69,7 +69,7 @@ export const buildAboutJsonLd = async (locale: Locale) => {
         '@type': 'AboutPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — ${SITE_NAME}`,
+        name: `${copy.title} - ${SITE_NAME}`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },
@@ -87,7 +87,7 @@ export const buildAboutJsonLd = async (locale: Locale) => {
         taxID: taxId ?? undefined,
         slogan: 'Hà Nội 12 Mùa Hoa',
         description:
-          'Thương hiệu hoa tươi cao cấp tại TP. Hồ Chí Minh — mang đến giá trị cảm xúc, bình yên qua từng bó hoa theo mùa.',
+          'Thương hiệu hoa tươi cao cấp tại TP. Hồ Chí Minh - mang đến giá trị cảm xúc, bình yên qua từng bó hoa theo mùa.',
         address: {
           '@type': 'PostalAddress',
           streetAddress: 'Số 13A Đào Duy Anh, Phường 9, Quận Phú Nhuận',

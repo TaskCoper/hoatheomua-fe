@@ -33,7 +33,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
           type: 'ordered',
           items: [
             'Hoa Theo Mùa áp dụng theo giá cước của các đơn vị vận chuyển (Ahamove, Grab, …).',
-            'Trường hợp không đúng địa chỉ giao hàng do bạn cung cấp — chúng tôi chủ động liên lạc với người nhận (hoặc bạn) để chuyển sang địa chỉ chính xác. Phí vận chuyển tính theo điều 1.',
+            'Trường hợp không đúng địa chỉ giao hàng do bạn cung cấp - chúng tôi chủ động liên lạc với người nhận (hoặc bạn) để chuyển sang địa chỉ chính xác. Phí vận chuyển tính theo điều 1.',
             'Trường hợp không liên lạc được với người nhận và bạn, Hoa Theo Mùa lưu sản phẩm trong 03 tiếng. Sau thời gian này, nếu chưa nhận được địa chỉ chính xác, đơn hàng sẽ bị huỷ và không hoàn tiền.',
             'Trường hợp người nhận đi vắng, Hoa Theo Mùa sẽ giao cho người được uỷ quyền hoặc đặt nơi an toàn khi được người nhận cho phép.',
             'Trường hợp người nhận yêu cầu giao vào thời điểm khác trong 03 giờ kể từ lúc bạn yêu cầu, Florist sẽ chủ động báo lại bạn và điều chỉnh miễn phí. Sau thời gian này, vui lòng thanh toán chi phí phát sinh.',
@@ -55,7 +55,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
           type: 'list',
           items: [
             'Giờ nhận sớm nhất là 07h00, muộn nhất 18h00 hoặc tuỳ khả năng của từng chi nhánh. Vui lòng liên hệ hotline 0931 734 353 với các yêu cầu đặc biệt.',
-            'Các sản phẩm hoa (trừ bình cắm) không cắm sẵn và không trưng bày thành phẩm tại cửa hàng. Vui lòng đặt trước mẫu/loại hoa ưng ý — Hoa Theo Mùa sẽ giao trong 2 giờ kể từ khi xác nhận đặt hoa.',
+            'Các sản phẩm hoa (trừ bình cắm) không cắm sẵn và không trưng bày thành phẩm tại cửa hàng. Vui lòng đặt trước mẫu/loại hoa ưng ý - Hoa Theo Mùa sẽ giao trong 2 giờ kể từ khi xác nhận đặt hoa.',
             'Bạn có thể gửi lời chúc đặc biệt: tư vấn viên sẽ chọn hình thức tag hoặc thiệp thiết kế signature của Hoa Theo Mùa.',
             'Hoa Theo Mùa có gói cắm hoa dành riêng cho doanh nghiệp. Liên hệ Hotline 0931 734 353 hoặc Email hoatheomua.02@gmail.com để được tư vấn chi tiết.'
           ]
@@ -117,7 +117,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Hoa Theo Mùa luôn hướng đến dịch vụ giao hàng tốt nhất cho mọi đơn hoa. Mỗi đơn hàng đều được tư vấn viên đồng hành xuyên suốt — từ xác nhận chi tiết, sản xuất tỉ mỉ đến giao tận tay người nhận.'
+          text: 'Hoa Theo Mùa luôn hướng đến dịch vụ giao hàng tốt nhất cho mọi đơn hoa. Mỗi đơn hàng đều được tư vấn viên đồng hành xuyên suốt - từ xác nhận chi tiết, sản xuất tỉ mỉ đến giao tận tay người nhận.'
         },
         {
           type: 'note',
@@ -131,7 +131,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Nếu bạn cần giao trong khung giờ đặc biệt, chuẩn bị bất ngờ cho người thân, hoặc đặt hoa số lượng lớn cho sự kiện — nhắn cho Hoa Theo Mùa qua Zalo OA, Fanpage hoặc gọi trực tiếp hotline. Chúng tôi sẽ thiết kế một giải pháp riêng cho bạn.'
+          text: 'Nếu bạn cần giao trong khung giờ đặc biệt, chuẩn bị bất ngờ cho người thân, hoặc đặt hoa số lượng lớn cho sự kiện - nhắn cho Hoa Theo Mùa qua Zalo OA, Fanpage hoặc gọi trực tiếp hotline. Chúng tôi sẽ thiết kế một giải pháp riêng cho bạn.'
         }
       ]
     },
@@ -188,7 +188,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
           type: 'list',
           items: [
             'Earliest pickup is 7:00 AM, latest 6:00 PM, subject to each branch capacity. Reach hotline 0931 734 353 for special requirements.',
-            'Most arrangements (except vase compositions) are not pre-styled or displayed at the store. Place your order first — we deliver within 2 hours from confirmation.',
+            'Most arrangements (except vase compositions) are not pre-styled or displayed at the store. Place your order first - we deliver within 2 hours from confirmation.',
             'Want a special message? Our concierge will craft a signature tag or branded card on your behalf.',
             'We offer dedicated floral packages for businesses. Contact 0931 734 353 or hoatheomua.02@gmail.com for a tailored consultation.'
           ]
@@ -227,7 +227,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
           items: [
             'During inspection, our courier must wait for you. If they refuse, please call hotline 0931 734 353 right away.',
             'After 2 hours from delivery, Hoa Theo Mua is no longer responsible for product issues, defects, or quantity discrepancies.',
-            'Avoid using sharp tools to open the packaging — it may damage the arrangement inside.'
+            'Avoid using sharp tools to open the packaging - it may damage the arrangement inside.'
           ]
         }
       ]
@@ -250,7 +250,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Hoa Theo Mua strives to provide the best delivery experience for every order. A concierge accompanies each request — from detailed confirmation to careful production and the final handover.'
+          text: 'Hoa Theo Mua strives to provide the best delivery experience for every order. A concierge accompanies each request - from detailed confirmation to careful production and the final handover.'
         },
         {
           type: 'note',
@@ -264,7 +264,7 @@ export const DELIVERY_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'For a precise delivery window, a surprise plan, or bulk arrangements for an event — message us on Zalo OA, Facebook, or call the hotline directly. We will tailor a solution just for you.'
+          text: 'For a precise delivery window, a surprise plan, or bulk arrangements for an event - message us on Zalo OA, Facebook, or call the hotline directly. We will tailor a solution just for you.'
         }
       ]
     },

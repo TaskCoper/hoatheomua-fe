@@ -25,7 +25,7 @@ export default function ServiceDetailLayout({ detail, locale, sections, siblings
 
   return (
     <>
-      {/* Mobile quick-nav — horizontal scroll of section anchors */}
+      {/* Mobile quick-nav - horizontal scroll of section anchors */}
       <div className='lg:hidden sticky top-16 z-20 -mx-4 mt-6 border-y border-primary/10 bg-background/90 px-4 py-2.5 backdrop-blur'>
         <div className='profile-scrollbar flex gap-2 overflow-x-auto'>
           {sections.map((section) => (

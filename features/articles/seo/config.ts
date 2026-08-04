@@ -9,7 +9,7 @@ export const NEWS_LIST_COPY = {
   vi: {
     title: 'Tin Tức & Cảm Hứng Hoa',
     description:
-      'Cập nhật tin tức, mẹo chăm hoa và cảm hứng cắm hoa theo mùa từ Hoa Theo Mùa — từ bí quyết giữ hoa tươi lâu, ý tưởng decor đến những câu chuyện đẹp về 12 mùa hoa Hà Nội.',
+      'Cập nhật tin tức, mẹo chăm hoa và cảm hứng cắm hoa theo mùa từ Hoa Theo Mùa - từ bí quyết giữ hoa tươi lâu, ý tưởng decor đến những câu chuyện đẹp về 12 mùa hoa Hà Nội.',
     keywords: [
       'tin tức hoa tươi',
       'cách chăm sóc hoa',
@@ -26,7 +26,7 @@ export const NEWS_LIST_COPY = {
   en: {
     title: 'Flower Stories & Inspiration',
     description:
-      'Seasonal flower stories, care tips and arrangement ideas from Hoa Theo Mùa — keep blooms fresh longer, find decor inspiration and explore the 12 flower seasons of Hanoi.',
+      'Seasonal flower stories, care tips and arrangement ideas from Hoa Theo Mùa - keep blooms fresh longer, find decor inspiration and explore the 12 flower seasons of Hanoi.',
     keywords: [
       'flower news',
       'flower care tips',
@@ -37,7 +37,7 @@ export const NEWS_LIST_COPY = {
       'Hanoi flower seasons',
       'florist journal Vietnam'
     ],
-    ogAlt: 'Hoa Theo Mùa — Flower stories and inspiration',
+    ogAlt: 'Hoa Theo Mùa - Flower stories and inspiration',
     breadcrumb: 'News'
   }
 } satisfies LocaleCopy<NewsCopy>

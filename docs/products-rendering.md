@@ -57,7 +57,7 @@ Dùng cho `generateStaticParams`. Catch mọi lỗi → mảng rỗng → build 
 
 ---
 
-## 3. Trang danh sách — `app/[locale]/(public)/products/page.tsx`
+## 3. Trang danh sách - `app/[locale]/(public)/products/page.tsx`
 
 ### Kiến trúc
 
@@ -107,7 +107,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
 
 **Vì sao không dùng `HydrationBoundary`**: với một query duy nhất ở trang 1, dehydrate/rehydrate là 6 bước cho dữ liệu đã có sẵn dạng object. Truyền `Product[]` qua prop và seed `useQuery` bằng `initialData` đơn giản hơn, ít JS hơn.
 
-### 3.2 JSON-LD — CollectionPage + Breadcrumb + ItemList
+### 3.2 JSON-LD - CollectionPage + Breadcrumb + ItemList
 
 ```ts
 const buildProductsJsonLd = (locale: Locale, items: Product[]) => {
@@ -142,7 +142,7 @@ const buildProductsJsonLd = (locale: Locale, items: Product[]) => {
 
 Tất cả label (`inLanguage`, `name`, breadcrumb text) đều derive từ `locale` → trang `/products` và `/en/products` có structured data khớp với hreflang.
 
-### 3.3 `ProductGrid` — `initialData` seed + cursor pagination
+### 3.3 `ProductGrid` - `initialData` seed + cursor pagination
 
 ```tsx
 const { data, isFetching, isLoading } = useQuery<ProductListResponse>({
@@ -161,9 +161,9 @@ const { data, isFetching, isLoading } = useQuery<ProductListResponse>({
 - `isFirstPage = currentCursor === 0` → `initialData` chỉ gắn ở cursor 0.
 - `staleTime: 60_000` cho page 1 → hook coi data từ server là "fresh" 60s → **không refetch khi mount**. Đây là dòng load-bearing; bỏ đi là mất lợi ích của server fetch.
 - Cursor stack (`useState([0])`) lưu lịch sử → "Trước" pop, "Sau" push.
-- `hasNextPage = items.length === pageSize && nextCursor > 0 && nextCursor !== currentCursor` — guard chống infinite loop khi API trả cùng cursor.
+- `hasNextPage = items.length === pageSize && nextCursor > 0 && nextCursor !== currentCursor` - guard chống infinite loop khi API trả cùng cursor.
 
-### 3.4 LCP — eager 4 card đầu
+### 3.4 LCP - eager 4 card đầu
 
 ```tsx
 {
@@ -195,13 +195,13 @@ Sau: **1 `<h1>`** (hero: "Bộ Sưu Tập Hoa Tươi") + `<h2>` cho mọi sectio
 
 ---
 
-## 4. Trang chi tiết — `app/[locale]/(public)/products/[id]/page.tsx`
+## 4. Trang chi tiết - `app/[locale]/(public)/products/[id]/page.tsx`
 
 ### Kiến trúc
 
 ```
 ProductPage (RSC, ISR 3600s + generateStaticParams top 50)
-├── safeFetchProduct(id)                  ─ cache() wrapped — dedupe metadata + page
+├── safeFetchProduct(id)                  ─ cache() wrapped - dedupe metadata + page
 ├── notFound() nếu null
 ├── productJsonLd                         ─ Product + Offer + BreadcrumbList
 └── <ProductDetailContent product={product} />   ─ RSC compose
@@ -244,27 +244,27 @@ const safeFetchProduct = cache(async (id: string) => {
 ```
 
 - React `cache()` đảm bảo cùng một request render, `generateMetadata` và `ProductPage` chỉ thực hiện đúng **một** lệnh gọi network (kể cả khi response là `null`).
-- Bổ sung cho Next.js fetch dedupe — `cache()` cache cả nhánh catch, không cần phụ thuộc vào behavior của `fetch` cache.
+- Bổ sung cho Next.js fetch dedupe - `cache()` cache cả nhánh catch, không cần phụ thuộc vào behavior của `fetch` cache.
 
-### 4.3 Metadata — locale-aware, truncated description
+### 4.3 Metadata - locale-aware, truncated description
 
 ```tsx
-const cleanDescription = stripHtml(product.description) || `${product.name} — Hoa Theo Mùa`
+const cleanDescription = stripHtml(product.description) || `${product.name} - Hoa Theo Mùa`
 const description = truncate(cleanDescription, META_DESCRIPTION_MAX_LENGTH) // 155 chars
 const ogImage = product.images.avatar
   ? { url: avatar, alt: product.name } // tránh fake 1200×630
-  : { url: avatar, width: 1200, height: 630, alt: product.name } // fallback banner — kích thước thật
+  : { url: avatar, width: 1200, height: 630, alt: product.name } // fallback banner - kích thước thật
 ```
 
 **Vì sao**:
 
 - `truncate` ở 155 ký tự → Google cắt meta description ~160; tự cắt giữ câu nguyên vẹn, không bị dấu `…` của Google thêm vào.
 - `stripHtml` thay `<[^>]*>` bằng dấu cách + collapse whitespace → tránh nối từ kiểu `lan hồ điệp</p><p>cao cấp` → `lan hồ điệpcao cấp`.
-- OG image: chỉ đặt `width/height` khi dùng banner mặc định (đúng tỉ lệ 1.91:1). Ảnh sản phẩm là vuông (1:1), nên bỏ width/height để crawler tự đo — tránh khai sai metadata.
+- OG image: chỉ đặt `width/height` khi dùng banner mặc định (đúng tỉ lệ 1.91:1). Ảnh sản phẩm là vuông (1:1), nên bỏ width/height để crawler tự đo - tránh khai sai metadata.
 - `keywords` lọc bỏ null bằng type-guard `filter((v): v is string => Boolean(v))`.
 - Khi product = null → metadata có `robots: { index: false, follow: true }` → trang 404 không bị index.
 
-### 4.4 JSON-LD — Product + Offer + Breadcrumb
+### 4.4 JSON-LD - Product + Offer + Breadcrumb
 
 ```tsx
 const productJsonLd = {
@@ -300,14 +300,14 @@ const productJsonLd = {
 
 Các trường mới so với phiên bản trước:
 
-- `url` (cấp Product) — Google merchant feed yêu cầu.
-- `image` là **mảng URL tuyệt đối** (gộp avatar + others, lọc các URL không bắt đầu bằng `http`) — Rich Results Test chấm cao hơn khi có ≥3 ảnh.
-- `mpn` — chấp nhận thay cho GTIN/EAN khi chưa có barcode.
-- `category` — derive từ `product.category?.name`.
-- `itemCondition: NewCondition` — hết warning "Missing field itemCondition" trên Search Console.
+- `url` (cấp Product) - Google merchant feed yêu cầu.
+- `image` là **mảng URL tuyệt đối** (gộp avatar + others, lọc các URL không bắt đầu bằng `http`) - Rich Results Test chấm cao hơn khi có ≥3 ảnh.
+- `mpn` - chấp nhận thay cho GTIN/EAN khi chưa có barcode.
+- `category` - derive từ `product.category?.name`.
+- `itemCondition: NewCondition` - hết warning "Missing field itemCondition" trên Search Console.
 - `SITE_URL` fallback về `'https://hoatheomua.net'` (trước đây undefined → `undefined/products/123`).
 
-### 4.5 `ProductGallery` — `next/image` thực sự được optimize
+### 4.5 `ProductGallery` - `next/image` thực sự được optimize
 
 ```tsx
 {
@@ -316,7 +316,7 @@ Các trường mới so với phiên bản trước:
 ;<Image src={image} fill sizes='(min-width: 1280px) 5rem, (min-width: 640px) 6rem, 4rem' quality={55} />
 
 {
-  /* ảnh chính — LCP element của detail page */
+  /* ảnh chính - LCP element của detail page */
 }
 ;<Image
   src={activeImage}
@@ -330,7 +330,7 @@ Các trường mới so với phiên bản trước:
 
 Thay đổi quan trọng so với bản trước:
 
-- Bỏ `unoptimized` ở mọi `<Image />` — ảnh đi qua `/_next/image` với AVIF/WebP.
+- Bỏ `unoptimized` ở mọi `<Image />` - ảnh đi qua `/_next/image` với AVIF/WebP.
 - Bỏ `width={100} height={100}` (cùng `aspect-square w-full` → blurry trên retina). Dùng `fill` + parent `aspect-square` + `sizes` đúng breakpoint.
 - Thêm `priority + fetchPriority='high'` cho ảnh chính → cạnh tranh được với JS bundle khi tải đầu trang, LCP giảm 300-600ms trên 3G/4G.
 - Thumbnail wrap trong `<button>` thay vì `<Image onClick>` để accessible với keyboard và screen reader.
@@ -366,7 +366,7 @@ Thay đổi quan trọng so với bản trước:
 | `product-promise-card.tsx`   | **RSC** | 28  | Cam kết Hoa Theo Mùa                                    |
 | `product-details-tabs.tsx`   | Client  | 174 | Tabs: Mô tả / Chi tiết / Bảo quản (motion underline)    |
 
-> Tổng client JS chỉ chứa: gallery (state), purchase box (state), tabs (state). Mọi nội dung "đọc" đều SSR — crawler thấy đầy đủ name, price, description, brand, breadcrumb, JSON-LD trong response đầu tiên.
+> Tổng client JS chỉ chứa: gallery (state), purchase box (state), tabs (state). Mọi nội dung "đọc" đều SSR - crawler thấy đầy đủ name, price, description, brand, breadcrumb, JSON-LD trong response đầu tiên.
 
 ---
 
@@ -375,7 +375,7 @@ Thay đổi quan trọng so với bản trước:
 ### SEO
 
 - **Một `<h1>` per page** sau khi demote 2 section sub về `<h2>` → keyword relevance không bị dilute.
-- **HTML đầy đủ trong response đầu tiên** — tên, giá, mô tả có sẵn cho Googlebot, Facebook crawler, Zalo preview, không cần JS.
+- **HTML đầy đủ trong response đầu tiên** - tên, giá, mô tả có sẵn cho Googlebot, Facebook crawler, Zalo preview, không cần JS.
 - **JSON-LD đầy đủ trường**: `Product` + `Offer` (price, availability, condition, validUntil) + `BreadcrumbList` + `CollectionPage` + `ItemList` → đủ tiêu chuẩn rich snippet.
 - **`hreflang` + `inLanguage` khớp**: alternates trong Metadata API + `inLanguage` trong structured data + `<html lang>` đều derive từ `locale`.
 - **`og:image` đúng kích thước**: chỉ khai `width/height` khi ảnh thực sự là 1200×630.
@@ -401,6 +401,6 @@ Thay đổi quan trọng so với bản trước:
 
 1. **Top 50 pre-build cứng (sort `id desc`)**: chưa có analytics để chọn top theo view/sale. Khi có, đổi sang top theo `viewCount`.
 2. **`priceValidUntil` = cuối năm**: nếu mỗi offer có ngày hết hạn riêng (sale theo tuần), nên truyền giá trị đó.
-3. **Stagger motion ở cha của detail page đã bỏ**: vì cha là RSC, các con tự fade-in riêng — "polished feel" giảm nhẹ nhưng đổi lại được toàn bộ HTML server-side.
+3. **Stagger motion ở cha của detail page đã bỏ**: vì cha là RSC, các con tự fade-in riêng - "polished feel" giảm nhẹ nhưng đổi lại được toàn bộ HTML server-side.
 4. **`safeFetchProduct` nuốt mọi lỗi**: không phân biệt 404 vs 500. Nên log ở observability sau này.
 5. **Pagination dùng cursor + page-number stack**: không deep-linkable (không có `?page=2` trong URL). Nếu sau này cần SEO nhiều page con, cần đổi sang `searchParams`-based pagination.

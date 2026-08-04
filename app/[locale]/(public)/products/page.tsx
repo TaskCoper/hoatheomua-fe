@@ -15,7 +15,7 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 
-// This page looks the same for every visitor — it's a public catalog with no
+// This page looks the same for every visitor - it's a public catalog with no
 // per-user data, and filters are applied in the browser, not on the server. So
 // rather than rendering it fresh on each request, we prerender the HTML once and
 // serve it from cache, rebuilding it at most this often. Genuine catalog changes
@@ -36,7 +36,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
   const categoryPage = [CategoryProductPage.Products]
 
   // Categories are read straight down as props by the (server) section list, so we
-  // fetch them directly instead of through the query cache — that keeps them out of
+  // fetch them directly instead of through the query cache - that keeps them out of
   // the dehydrated payload the client hydrates.
   let categories: SortableCategory[] = []
 

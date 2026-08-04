@@ -54,11 +54,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.net'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Hoa Theo Mùa — Hoa tươi cao cấp, giao tận nơi trong 2 giờ tại TP.HCM',
+    default: 'Hoa Theo Mùa - Hoa tươi cao cấp, giao tận nơi trong 2 giờ tại TP.HCM',
     template: '%s | Hoa Theo Mùa'
   },
   description:
-    'Hoa Theo Mùa — Hệ thống hoa tươi online tại TP. Hồ Chí Minh, chuyên cung cấp hoa tươi cao cấp và giao hoa tận nơi siêu nhanh trong 2 giờ.',
+    'Hoa Theo Mùa - Hệ thống hoa tươi online tại TP. Hồ Chí Minh, chuyên cung cấp hoa tươi cao cấp và giao hoa tận nơi siêu nhanh trong 2 giờ.',
   applicationName: 'Hoa Theo Mùa',
   generator: 'Next.js',
   referrer: 'origin-when-cross-origin',

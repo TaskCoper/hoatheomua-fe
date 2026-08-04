@@ -16,7 +16,7 @@ import { z } from 'zod'
  *
  * Nhanh requires HTTP 200 to consider delivery successful. Failing responses
  * are retried up to 3 times, and repeated failures lower the app's priority
- * or disable webhooks entirely — so we ack fast and defer heavy work.
+ * or disable webhooks entirely - so we ack fast and defer heavy work.
  */
 
 const VERIFY_TOKEN = 'X7mK2qP9aL4vN8rT1cJ5wH3yUz6BfD0e'
@@ -65,14 +65,14 @@ export async function POST(req: Request) {
 
   const { event, businessId, data } = parsed.data
 
-  // Verification ping — Nhanh sends this when webhooks are enabled and when
+  // Verification ping - Nhanh sends this when webhooks are enabled and when
   // periodically checking the callback URL. Ack without side effects.
   if (event === 'webhooksEnabled') {
     return Response.json({ ok: true })
   }
 
   // TODO: enqueue for async processing (order/product/inventory handlers).
-  // Do not do heavy work inline — Nhanh throttles slow callbacks.
+  // Do not do heavy work inline - Nhanh throttles slow callbacks.
   console.log('[nhanh-webhook]', { event, businessId, data })
 
   return Response.json({ ok: true })

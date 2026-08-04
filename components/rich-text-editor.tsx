@@ -216,7 +216,7 @@ export default function RichTextEditor({
 
   useEffect(() => {
     if (!editor) return
-    // Skip if this `content` is just the echo of our own onUpdate — prevents a
+    // Skip if this `content` is just the echo of our own onUpdate - prevents a
     // feedback loop (setContent → onUpdate → onChange → new content prop → setContent…).
     if (content === lastEmittedHtmlRef.current) return
     if (content === editor.getHTML()) return

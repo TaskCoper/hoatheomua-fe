@@ -33,7 +33,7 @@ export const buildContactJsonLd = async (locale: Locale) => {
         '@type': 'ContactPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — ${SITE_NAME}`,
+        name: `${copy.title} - ${SITE_NAME}`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },

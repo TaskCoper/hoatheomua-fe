@@ -61,7 +61,7 @@ export const buildProductsCollectionJsonLd = (locale: Locale, items: Product[]) 
         '@type': 'CollectionPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — Hoa Theo Mùa`,
+        name: `${copy.title} - Hoa Theo Mùa`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },
@@ -81,7 +81,7 @@ export const buildProductDetailJsonLd = (locale: Locale, product: ProductDetail)
 
   const bestAvatar = product.coverImage ?? PRODUCT_DEFAULT_FALLBACK_IMAGE
   const inStock = (product.availableForSale ?? 0) > 0
-  const description = `${productName} — Hoa Theo Mùa`
+  const description = `${productName} - Hoa Theo Mùa`
 
   const listCopy = PRODUCTS_LIST_COPY[locale]
   const breadcrumbId = `${productUrl}#breadcrumb`

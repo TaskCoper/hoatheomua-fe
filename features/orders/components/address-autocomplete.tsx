@@ -65,7 +65,7 @@ export function AddressAutocomplete({
   }
 
   const handleSelect = async (suggestion: GeocodeSuggestion) => {
-    // Keep only the street/POI portion in the address line — the ward and city
+    // Keep only the street/POI portion in the address line - the ward and city
     // are lifted into their own selectors via onResolve below.
     const addressLine = suggestion.name || suggestion.display
     lastSelectedRef.current = addressLine

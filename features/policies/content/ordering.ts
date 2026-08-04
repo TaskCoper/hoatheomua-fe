@@ -31,12 +31,12 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
     {
       number: '01',
       icon: ShoppingBasket03Icon,
-      title: 'Cách 1 — Đặt hàng trực tiếp trên website',
+      title: 'Cách 1 - Đặt hàng trực tiếp trên website',
       intro: 'Truy cập website hoatheomua.com và thực hiện theo các bước sau:',
       blocks: [
         {
           type: 'subheading',
-          text: 'Bước 1 — Tìm sản phẩm cần mua'
+          text: 'Bước 1 - Tìm sản phẩm cần mua'
         },
         {
           type: 'list',
@@ -47,7 +47,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'subheading',
-          text: 'Bước 2 — Thêm vào giỏ hàng'
+          text: 'Bước 2 - Thêm vào giỏ hàng'
         },
         {
           type: 'list',
@@ -58,7 +58,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'subheading',
-          text: 'Bước 3 — Nhập ưu đãi & chọn phương thức thanh toán'
+          text: 'Bước 3 - Nhập ưu đãi & chọn phương thức thanh toán'
         },
         {
           type: 'list',
@@ -73,7 +73,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
     {
       number: '02',
       icon: CallIcon,
-      title: 'Cách 2 — Đặt hoa qua hotline',
+      title: 'Cách 2 - Đặt hoa qua hotline',
       blocks: [
         {
           type: 'paragraph',
@@ -84,11 +84,11 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
     {
       number: '03',
       icon: Facebook01Icon,
-      title: 'Cách 3 — Đặt hoa qua Fanpage Hoa Theo Mùa',
+      title: 'Cách 3 - Đặt hoa qua Fanpage Hoa Theo Mùa',
       blocks: [
         {
           type: 'subheading',
-          text: 'Bước 1 — Truy cập Fanpage'
+          text: 'Bước 1 - Truy cập Fanpage'
         },
         {
           type: 'list',
@@ -99,7 +99,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'subheading',
-          text: 'Bước 2 — Nhắn tin trao đổi cùng tư vấn viên'
+          text: 'Bước 2 - Nhắn tin trao đổi cùng tư vấn viên'
         },
         {
           type: 'paragraph',
@@ -153,7 +153,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         {
           type: 'list',
           items: [
-            'SHINHAN — Ngân hàng Shinhan Bank Việt Nam.',
+            'SHINHAN - Ngân hàng Shinhan Bank Việt Nam.',
             'Chủ tài khoản: Ho Kinh Doanh Hoa Theo Mua.',
             'Số tài khoản: 700037330511.'
           ]
@@ -165,7 +165,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         {
           type: 'list',
           items: [
-            'SHINHAN — Ngân hàng Shinhan Bank Việt Nam.',
+            'SHINHAN - Ngân hàng Shinhan Bank Việt Nam.',
             'Chủ tài khoản: Ho Kinh Doanh Hoa Theo Mua.',
             'Số tài khoản: 700037330511.'
           ]
@@ -255,7 +255,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'Với các đơn doanh nghiệp, sự kiện hoặc nhu cầu đặc biệt, Hoa Theo Mùa có gói tư vấn riêng. Hãy gửi yêu cầu qua trang Liên hệ hoặc hotline 0931 734 353 — đội ngũ florist sẽ thiết kế đơn hoa trọn gói cho bạn.'
+          text: 'Với các đơn doanh nghiệp, sự kiện hoặc nhu cầu đặc biệt, Hoa Theo Mùa có gói tư vấn riêng. Hãy gửi yêu cầu qua trang Liên hệ hoặc hotline 0931 734 353 - đội ngũ florist sẽ thiết kế đơn hoa trọn gói cho bạn.'
         }
       ]
     }
@@ -267,19 +267,19 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'No need to visit a store — order from Hoa Theo Mua online through any channel below. A concierge guides you all the way to make sure the arrangement is exactly what you dreamed of.'
+          text: 'No need to visit a store - order from Hoa Theo Mua online through any channel below. A concierge guides you all the way to make sure the arrangement is exactly what you dreamed of.'
         }
       ]
     },
     {
       number: '01',
       icon: ShoppingBasket03Icon,
-      title: 'Option 1 — Order on the website',
+      title: 'Option 1 - Order on the website',
       intro: 'Visit hoatheomua.com and follow these steps:',
       blocks: [
         {
           type: 'subheading',
-          text: 'Step 1 — Find the product'
+          text: 'Step 1 - Find the product'
         },
         {
           type: 'list',
@@ -290,7 +290,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'subheading',
-          text: 'Step 2 — Add to cart'
+          text: 'Step 2 - Add to cart'
         },
         {
           type: 'list',
@@ -298,7 +298,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'subheading',
-          text: 'Step 3 — Apply offer & choose payment'
+          text: 'Step 3 - Apply offer & choose payment'
         },
         {
           type: 'list',
@@ -313,7 +313,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
     {
       number: '02',
       icon: CallIcon,
-      title: 'Option 2 — Order by hotline',
+      title: 'Option 2 - Order by hotline',
       blocks: [
         {
           type: 'paragraph',
@@ -324,22 +324,22 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
     {
       number: '03',
       icon: Facebook01Icon,
-      title: 'Option 3 — Order via Facebook',
+      title: 'Option 3 - Order via Facebook',
       blocks: [
         {
           type: 'subheading',
-          text: 'Step 1 — Visit our fanpages'
+          text: 'Step 1 - Visit our fanpages'
         },
         {
           type: 'list',
           items: [
             'Hoa Theo Mua: facebook.com/lancaocapmokar',
-            'Mokar Orchids — Premium Phalaenopsis: facebook.com/lancaocapmokar'
+            'Mokar Orchids - Premium Phalaenopsis: facebook.com/lancaocapmokar'
           ]
         },
         {
           type: 'subheading',
-          text: 'Step 2 — Message our concierge'
+          text: 'Step 2 - Message our concierge'
         },
         {
           type: 'paragraph',
@@ -359,7 +359,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'paragraph',
-          text: 'Pay in cash directly to our courier when your order arrives — best for inspections you want to do in person.'
+          text: 'Pay in cash directly to our courier when your order arrives - best for inspections you want to do in person.'
         },
         {
           type: 'subheading',
@@ -393,7 +393,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         {
           type: 'list',
           items: [
-            'SHINHAN — Shinhan Bank Vietnam.',
+            'SHINHAN - Shinhan Bank Vietnam.',
             'Account holder: Ho Kinh Doanh Hoa Theo Mua.',
             'Account number: 700037330511.'
           ]
@@ -405,7 +405,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
         {
           type: 'list',
           items: [
-            'SHINHAN — Shinhan Bank Vietnam.',
+            'SHINHAN - Shinhan Bank Vietnam.',
             'Account holder: Ho Kinh Doanh Hoa Theo Mua.',
             'Account number: 700037330511.'
           ]
@@ -495,7 +495,7 @@ export const ORDERING_CONTENT: Record<Locale, PolicySectionData[]> = {
       blocks: [
         {
           type: 'paragraph',
-          text: 'For corporate, event, or special requests, Hoa Theo Mua offers tailored packages. Reach out via the Contact page or hotline 0931 734 353 — our florists will design an end-to-end solution for you.'
+          text: 'For corporate, event, or special requests, Hoa Theo Mua offers tailored packages. Reach out via the Contact page or hotline 0931 734 353 - our florists will design an end-to-end solution for you.'
         }
       ]
     }

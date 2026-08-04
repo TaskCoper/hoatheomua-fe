@@ -81,7 +81,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'paragraph',
-          text: 'Chúng tôi có thể chia sẻ tên và địa chỉ cho dịch vụ chuyển phát nhanh hoặc nhà cung cấp để hỗ trợ việc giao hàng. Khi bạn đăng ký làm thành viên, chúng tôi cũng sử dụng thông tin để gửi tin khuyến mãi và tiếp thị — bạn có thể huỷ đăng ký bất kỳ lúc nào.'
+          text: 'Chúng tôi có thể chia sẻ tên và địa chỉ cho dịch vụ chuyển phát nhanh hoặc nhà cung cấp để hỗ trợ việc giao hàng. Khi bạn đăng ký làm thành viên, chúng tôi cũng sử dụng thông tin để gửi tin khuyến mãi và tiếp thị - bạn có thể huỷ đăng ký bất kỳ lúc nào.'
         },
         {
           type: 'note',
@@ -260,7 +260,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'paragraph',
-          text: 'We may share your name and address with delivery partners or suppliers to fulfil orders. When you register as a member, we may also send marketing communications — you can unsubscribe at any time.'
+          text: 'We may share your name and address with delivery partners or suppliers to fulfil orders. When you register as a member, we may also send marketing communications - you can unsubscribe at any time.'
         },
         {
           type: 'note',
@@ -349,7 +349,7 @@ export const PRIVACY_CONTENT: Record<Locale, PolicySectionData[]> = {
         },
         {
           type: 'note',
-          text: 'For any concern or feedback relating to this policy — or if you suspect your data is being misused — please reach the hotline 0931 734 353 or email mkt.hoatheomua@gmail.com for direct support.'
+          text: 'For any concern or feedback relating to this policy - or if you suspect your data is being misused - please reach the hotline 0931 734 353 or email mkt.hoatheomua@gmail.com for direct support.'
         }
       ]
     },

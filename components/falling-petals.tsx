@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import petal1 from '@/public/images/petal-1.png'
 import petal2 from '@/public/images/petal-2.png'
 import petal3 from '@/public/images/petal-3.png'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 const petals = [petal1, petal2, petal3]
 
@@ -75,12 +75,14 @@ export function FallingPetals() {
         <div
           key={petal.id}
           className='falling-petal'
-          style={{
-            left: `${petal.left}%`,
-            animationDelay: `${petal.delay}s`,
-            animationDuration: `${petal.duration}s`,
-            '--opacity': petal.opacity
-          } as React.CSSProperties & { '--opacity': number }}
+          style={
+            {
+              left: `${petal.left}%`,
+              animationDelay: `${petal.delay}s`,
+              animationDuration: `${petal.duration}s`,
+              '--opacity': petal.opacity
+            } as React.CSSProperties & { '--opacity': number }
+          }
         >
           <Image
             src={petal.image}

@@ -3,7 +3,7 @@ import ProductGridSkeleton from '@/features/products/components/product-grid-ske
 
 /**
  * Streamed via `loading.tsx` for the occasions/featured/mainline detail routes
- * while an id that isn't prebuilt renders on demand — a hero block plus one
+ * while an id that isn't prebuilt renders on demand - a hero block plus one
  * product section so the page shell is instant instead of a blank wait.
  */
 export default function OccasionDetailSkeleton() {

@@ -46,10 +46,10 @@ export async function generateMetadata({
   const description = card.description[locale]
 
   return {
-    title: `${seoName} — Hoa Theo Mùa`,
+    title: `${seoName} - Hoa Theo Mùa`,
     description,
     openGraph: {
-      title: `${seoName} — Hoa Theo Mùa`,
+      title: `${seoName} - Hoa Theo Mùa`,
       description,
       images: card.image ? [{ url: card.image, alt: card.name[locale] }] : undefined
     }

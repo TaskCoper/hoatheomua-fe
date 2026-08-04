@@ -79,7 +79,7 @@ export function AddressFormDialog({
     resolver: zodResolver(schema)
   })
 
-  // The coordinate the typed address resolved to — map picks are constrained
+  // The coordinate the typed address resolved to - map picks are constrained
   // to a radius around it. `resolvedAnchor` is the user's most recent pick
   // (via autocomplete) within this session; it falls back to the saved
   // address's own coordinate, derived from `activeAddress` so it stays in

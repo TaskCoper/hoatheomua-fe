@@ -5,7 +5,7 @@ import type { LocalizedText } from '@/types/config.type'
 // ---------------------------------------------------------------------------
 // Runtime shape of a `b2bServices.<slug>` CMS document (value.value is a JSON
 // string). Mirrors the taskcoper `b2b-service-detail-palette.ts` seed shape.
-// Keep this file free of `server-only` — client section components import the
+// Keep this file free of `server-only` - client section components import the
 // types + `pick()` from here.
 // ---------------------------------------------------------------------------
 
@@ -162,7 +162,7 @@ export interface ServiceSeo {
   keywords: LocalizedText // comma-separated per locale
   ogAlt: LocalizedText
   breadcrumb: LocalizedText
-  serviceType: string // schema.org serviceType — locale-neutral
+  serviceType: string // schema.org serviceType - locale-neutral
 }
 
 export interface B2BServiceDetail {

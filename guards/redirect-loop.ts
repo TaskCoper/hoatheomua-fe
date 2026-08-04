@@ -5,7 +5,7 @@ export function isRedirectLoop(currentPathname: string, target: string, source: 
   if (currentPathname !== target) return false
 
   console.error(
-    `[guards] Redirect loop detected — ${source} would redirect to "${target}" ` +
+    `[guards] Redirect loop detected - ${source} would redirect to "${target}" ` +
       `which equals the current path. Check the guard's redirect target.`
   )
 

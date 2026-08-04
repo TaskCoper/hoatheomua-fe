@@ -63,6 +63,6 @@ const FLOATING_PETALS: Array<{
 })
 
 export default function FloatingPetals() {
-  // TODO: re-enable after Lighthouse perf audit — see lighthouse-report.html
+  // TODO: re-enable after Lighthouse perf audit - see lighthouse-report.html
   return null
 }

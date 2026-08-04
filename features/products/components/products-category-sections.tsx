@@ -12,7 +12,7 @@ export default function ProductsCategorySections({ categories }: { categories: S
       {categories.map((category) => (
         // Why wrap each section in Suspense? CategoryFilterSection reads the URL
         // (via nuqs), and Next.js won't server-render anything that reads search
-        // params — it shows the nearest Suspense fallback instead. So we hand it a
+        // params - it shows the nearest Suspense fallback instead. So we hand it a
         // real fallback: CategorySectionDefault renders the same unfiltered grid on
         // the server from data we already prefetched. The upshot is that crawlers
         // and the first paint see actual products, not an empty gap, and the

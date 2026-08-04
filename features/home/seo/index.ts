@@ -27,9 +27,9 @@ const HOME_OG_IMAGE_PATH = '/images/hero-poster.jpg'
 
 export const HOME_COPY = {
   vi: {
-    title: 'Hoa Theo Mùa — Hoa tươi cao cấp, giao tận nơi trong 2 giờ tại TP.HCM',
+    title: 'Hoa Theo Mùa - Hoa tươi cao cấp, giao tận nơi trong 2 giờ tại TP.HCM',
     description:
-      'Hoa Theo Mùa — Hệ thống hoa tươi online tại TP. Hồ Chí Minh, chuyên cung cấp hoa tươi cao cấp và giao hoa tận nơi siêu nhanh trong 2 giờ. Hoa sinh nhật, hoa khai trương, hoa 8/3, 20/10, 20/11, lan hồ điệp và nhiều bộ sưu tập theo mùa.',
+      'Hoa Theo Mùa - Hệ thống hoa tươi online tại TP. Hồ Chí Minh, chuyên cung cấp hoa tươi cao cấp và giao hoa tận nơi siêu nhanh trong 2 giờ. Hoa sinh nhật, hoa khai trương, hoa 8/3, 20/10, 20/11, lan hồ điệp và nhiều bộ sưu tập theo mùa.',
     keywords: [
       'hoa tươi',
       'hoa theo mùa',
@@ -45,10 +45,10 @@ export const HOME_COPY = {
       'hoa Noel',
       'bó hoa cao cấp'
     ],
-    ogAlt: 'Hoa Theo Mùa — Bộ sưu tập hoa tươi cao cấp'
+    ogAlt: 'Hoa Theo Mùa - Bộ sưu tập hoa tươi cao cấp'
   },
   en: {
-    title: 'Hoa Theo Mùa — Premium Seasonal Flowers, Delivered in 2 Hours in HCMC',
+    title: 'Hoa Theo Mùa - Premium Seasonal Flowers, Delivered in 2 Hours in HCMC',
     description:
       'Hoa Theo Mùa is a Ho Chi Minh City florist offering premium seasonal bouquets with same-day flower delivery within 2 hours. Birthday, opening, and gift flowers arranged by hand.',
     keywords: [
@@ -60,7 +60,7 @@ export const HOME_COPY = {
       'bouquet delivery Saigon',
       'send flowers Vietnam'
     ],
-    ogAlt: 'Hoa Theo Mùa — Premium seasonal flower collection'
+    ogAlt: 'Hoa Theo Mùa - Premium seasonal flower collection'
   }
 } satisfies LocaleCopy<SeoCopy>
 
@@ -84,7 +84,7 @@ export const generateHomeMetadata = (locale: Locale): Metadata => {
 /**
  * Site-wide `Organization` + `Florist` (LocalBusiness) + `WebSite` graph. Other
  * pages reference these via `@id`, so the home page is the canonical definition.
- * The graph itself is locale-agnostic — `WebSite.inLanguage` lists all supported
+ * The graph itself is locale-agnostic - `WebSite.inLanguage` lists all supported
  * locales rather than the current one.
  */
 export const buildHomeJsonLd = async () => {

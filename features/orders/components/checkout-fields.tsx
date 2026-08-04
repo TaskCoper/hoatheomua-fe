@@ -47,7 +47,7 @@ export function CheckoutFields({
   const { formatDate } = useDateFormat()
   const { control, setValue, watch } = useFormContext<CheckoutFormValues>()
   const [orderTimeOpen, setOrderTimeOpen] = useState(false)
-  // The coordinate the typed address resolved to — map picks are constrained to
+  // The coordinate the typed address resolved to - map picks are constrained to
   // a radius around it so the pin can be fine-tuned but not moved to a new area.
   const [mapAnchor, setMapAnchor] = useState<{ latitude: number; longitude: number } | null>(null)
 

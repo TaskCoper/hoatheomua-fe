@@ -40,7 +40,7 @@ function writeMutedPref(next: boolean) {
   try {
     localStorage.setItem(MUTED_STORAGE_KEY, next ? 'true' : 'false')
   } catch {
-    // localStorage may be unavailable (private mode, etc.) — ignore.
+    // localStorage may be unavailable (private mode, etc.) - ignore.
   }
   window.dispatchEvent(new Event(MUTED_CHANGE_EVENT))
 }

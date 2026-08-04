@@ -9,7 +9,7 @@ import { z } from 'zod'
  * Authentication: `x-revalidate-secret` header must match `REVALIDATE_SECRET`.
  * The endpoint rejects everything if the env var is unset.
  *
- * Body: { entity, id?, slug? } — see EntityBodySchema below for the contract.
+ * Body: { entity, id?, slug? } - see EntityBodySchema below for the contract.
  * Each entity expands to one `revalidatePath(...)` call per supported locale
  * (vi + en), so a single webhook call refreshes both language variants.
  *

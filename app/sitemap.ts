@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   )
 
   // Every job gets its own indexable URL so crawlers find roles beyond the list's
-  // first page (the list only server-renders page 1). Best-effort — if the fetch
+  // first page (the list only server-renders page 1). Best-effort - if the fetch
   // fails, the static entries above still ship.
   const jobSlugs = await getAllJobSlugs()
   const jobEntries: MetadataRoute.Sitemap = jobSlugs.flatMap((slug) =>

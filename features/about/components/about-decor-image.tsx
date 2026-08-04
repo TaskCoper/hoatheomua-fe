@@ -7,7 +7,7 @@ interface DecorImageProps {
   /** Path under /public, e.g. "/images/about/hero-hanoi-wash.png". */
   src: string
   alt?: string
-  /** Classes for the <Image> itself — positioning, object-fit, opacity, etc. */
+  /** Classes for the <Image> itself - positioning, object-fit, opacity, etc. */
   className?: string
   sizes?: string
   /** Must be one of next.config images.qualities ([50, 55, 65, 70, 75]). */

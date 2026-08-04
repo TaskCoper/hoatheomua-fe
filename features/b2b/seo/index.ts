@@ -20,7 +20,7 @@ const B2B_COPY = {
   vi: {
     title: 'Dịch Vụ Hoa Cho Doanh Nghiệp',
     description:
-      'Hoa Theo Mùa — đối tác hoa cho khách sạn 4–5 sao, văn phòng và thương hiệu: phòng hoa thuê ngoài, hoa văn phòng định kỳ, gói hoa lan lễ tân theo quý, hoa sự kiện MICE và quà tặng doanh nghiệp.',
+      'Hoa Theo Mùa - đối tác hoa cho khách sạn 4–5 sao, văn phòng và thương hiệu: phòng hoa thuê ngoài, hoa văn phòng định kỳ, gói hoa lan lễ tân theo quý, hoa sự kiện MICE và quà tặng doanh nghiệp.',
     keywords: [
       'hoa doanh nghiệp',
       'phòng hoa thuê ngoài',
@@ -37,7 +37,7 @@ const B2B_COPY = {
   en: {
     title: 'Flowers For Business',
     description:
-      'Hoa Theo Mùa — floral partner for 4–5 star hotels, offices and brands: outsourced florist department, recurring office flowers, quarterly reception orchid packages, MICE event florals and corporate gifting.',
+      'Hoa Theo Mùa - floral partner for 4–5 star hotels, offices and brands: outsourced florist department, recurring office flowers, quarterly reception orchid packages, MICE event florals and corporate gifting.',
     keywords: [
       'B2B flowers Vietnam',
       'outsourced florist department',
@@ -108,7 +108,7 @@ export const buildB2BJsonLd = (locale: Locale) => {
       {
         '@type': 'Service',
         '@id': `${SITE_URL}${path}#service`,
-        name: 'Hoa Theo Mùa — B2B Floral Services',
+        name: 'Hoa Theo Mùa - B2B Floral Services',
         serviceType: 'Corporate floral design and delivery',
         areaServed: ['Ho Chi Minh City', 'Hanoi', 'Da Nang'],
         provider: { '@id': ORGANIZATION_ID },

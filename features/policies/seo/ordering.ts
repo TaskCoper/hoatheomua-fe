@@ -42,7 +42,7 @@ const ORDERING_COPY = {
       'Shinhan Bank flower payment',
       'florist COD Saigon'
     ],
-    ogAlt: 'Hoa Theo Mua — Ordering & payment guide',
+    ogAlt: 'Hoa Theo Mua - Ordering & payment guide',
     breadcrumb: 'Ordering & payment guide'
   }
 } satisfies LocaleCopy<OrderingCopy>
@@ -62,7 +62,7 @@ export const buildOrderingJsonLd = (locale: Locale) => {
         '@type': 'WebPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — ${SITE_NAME}`,
+        name: `${copy.title} - ${SITE_NAME}`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },

@@ -59,7 +59,7 @@ const formatDimension = (shipping: ShippingDimensions | null | undefined) => {
   if (!shipping) return null
   const { width, height, length } = shipping
   if (!width && !height && !length) return null
-  return `${length || '—'} × ${width || '—'} × ${height || '—'} cm`
+  return `${length || '-'} × ${width || '-'} × ${height || '-'} cm`
 }
 
 const formatWeight = (weight: number | null | undefined) => {

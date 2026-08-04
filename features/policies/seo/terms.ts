@@ -21,7 +21,7 @@ const TERMS_COPY = {
   vi: {
     title: 'Điều khoản sử dụng',
     description:
-      'Điều khoản sử dụng website hoatheomua.com — quy định việc truy cập, sử dụng nội dung, quyền riêng tư và trách nhiệm khi mua hoa tại Hoa Theo Mùa.',
+      'Điều khoản sử dụng website hoatheomua.com - quy định việc truy cập, sử dụng nội dung, quyền riêng tư và trách nhiệm khi mua hoa tại Hoa Theo Mùa.',
     keywords: [
       'điều khoản sử dụng Hoa Theo Mùa',
       'terms of use hoatheomua',
@@ -35,14 +35,14 @@ const TERMS_COPY = {
   en: {
     title: 'Terms Of Use',
     description:
-      'The terms of use for hoatheomua.com — site access, content rights, privacy, and customer responsibilities when shopping with Hoa Theo Mua.',
+      'The terms of use for hoatheomua.com - site access, content rights, privacy, and customer responsibilities when shopping with Hoa Theo Mua.',
     keywords: [
       'Hoa Theo Mua terms of use',
       'florist terms and conditions',
       'online flower shop terms',
       'hoatheomua policy'
     ],
-    ogAlt: 'Hoa Theo Mua — Terms of use',
+    ogAlt: 'Hoa Theo Mua - Terms of use',
     breadcrumb: 'Terms of use'
   }
 } satisfies LocaleCopy<TermsCopy>
@@ -62,7 +62,7 @@ export const buildTermsJsonLd = (locale: Locale) => {
         '@type': 'WebPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — ${SITE_NAME}`,
+        name: `${copy.title} - ${SITE_NAME}`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },

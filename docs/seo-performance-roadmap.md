@@ -83,7 +83,7 @@ Khi `safeFetchProduct(id)` trả null, metadata trả về `robots: { index: fal
 
 ## 🔥 BẮT BUỘC
 
-### 1. `app/sitemap.ts` — Sitemap động
+### 1. `app/sitemap.ts` - Sitemap động
 
 Site chưa có sitemap. Google sẽ crawl chậm và bỏ sót page detail.
 
@@ -136,7 +136,7 @@ export default function robots(): MetadataRoute.Robots {
 
 ### 3. Organization + Website JSON-LD ở root layout
 
-Đặt **một lần** ở `app/[locale]/layout.tsx`. Các `@id` reference (`#organization`, `#website`) trong JSON-LD của products page đã trỏ về đây — nhưng node mục tiêu chưa tồn tại.
+Đặt **một lần** ở `app/[locale]/layout.tsx`. Các `@id` reference (`#organization`, `#website`) trong JSON-LD của products page đã trỏ về đây - nhưng node mục tiêu chưa tồn tại.
 
 ```tsx
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.net'
@@ -234,7 +234,7 @@ const articleJsonLd = {
 ### 6. OG image động cho news + product
 
 Hiện product detail dùng ảnh sản phẩm cho OG ✅.
-News slug chưa làm — nên dùng `next/og` để overlay tiêu đề lên ảnh nền.
+News slug chưa làm - nên dùng `next/og` để overlay tiêu đề lên ảnh nền.
 
 ```tsx
 // app/og/route.tsx
@@ -260,7 +260,7 @@ export async function GET(req: Request) {
 }
 ```
 
-### 7. Schema.org `Product` — bổ sung `aggregateRating` + `review`
+### 7. Schema.org `Product` - bổ sung `aggregateRating` + `review`
 
 ```ts
 aggregateRating: { '@type': 'AggregateRating', ratingValue: 4.8, reviewCount: 124 },
@@ -287,7 +287,7 @@ const FloatingPetals = dynamic(() => import('./floating-petals'), { ssr: false, 
 `ProductsContent` đã dynamic-import `FloatingPetals` ✅. Tiếp tục audit:
 
 - `ProductsHeroSection` còn dùng motion stagger nặng
-- `ProductCard` motion variants ở mỗi item — cân nhắc CSS animation cho hover effect
+- `ProductCard` motion variants ở mỗi item - cân nhắc CSS animation cho hover effect
 
 ---
 
@@ -402,11 +402,11 @@ Theo thứ tự ưu tiên:
 
 ## Cách đo lường
 
-1. **Google Search Console** — impressions, clicks, position. Submit `sitemap.xml`.
-2. **PageSpeed Insights** — chạy mỗi route công khai, mục tiêu mobile score > 90.
-3. **Rich Results Test** — paste URL, check rich snippet hiển thị đúng (Product card, breadcrumb, sitelinks).
-4. **Vercel Analytics** — Core Web Vitals dashboard nếu deploy Vercel.
-5. **`pnpm build`** — `First Load JS` và size từng route.
+1. **Google Search Console** - impressions, clicks, position. Submit `sitemap.xml`.
+2. **PageSpeed Insights** - chạy mỗi route công khai, mục tiêu mobile score > 90.
+3. **Rich Results Test** - paste URL, check rich snippet hiển thị đúng (Product card, breadcrumb, sitelinks).
+4. **Vercel Analytics** - Core Web Vitals dashboard nếu deploy Vercel.
+5. **`pnpm build`** - `First Load JS` và size từng route.
 
 ---
 

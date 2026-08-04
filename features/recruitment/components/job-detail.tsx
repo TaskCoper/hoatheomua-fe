@@ -34,7 +34,7 @@ type JobDetailProps = {
   job: Job
   /**
    * When set, a "view full page" button is shown next to the apply CTA linking to
-   * the job's own SEO page. Passed only from the list's master-detail view — the
+   * the job's own SEO page. Passed only from the list's master-detail view - the
    * standalone `/recruitment/[slug]` page omits it (you're already there).
    */
   detailHref?: string

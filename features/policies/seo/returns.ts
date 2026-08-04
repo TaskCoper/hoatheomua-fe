@@ -21,7 +21,7 @@ const RETURNS_COPY = {
   vi: {
     title: 'Chính sách đổi trả',
     description:
-      'Chính sách đổi trả Hoa Theo Mùa & Mokar — quy định đổi trả hoa tươi, lan hồ điệp và công cụ dụng cụ. Cam kết minh bạch, nhanh chóng, đúng cam kết.',
+      'Chính sách đổi trả Hoa Theo Mùa & Mokar - quy định đổi trả hoa tươi, lan hồ điệp và công cụ dụng cụ. Cam kết minh bạch, nhanh chóng, đúng cam kết.',
     keywords: [
       'chính sách đổi trả Hoa Theo Mùa',
       'đổi trả hoa tươi',
@@ -35,14 +35,14 @@ const RETURNS_COPY = {
   en: {
     title: 'Return Policy',
     description:
-      'Return policy for Hoa Theo Mua & Mokar — transparent guidelines for replacing fresh flowers, phalaenopsis orchids, and tools when something goes wrong.',
+      'Return policy for Hoa Theo Mua & Mokar - transparent guidelines for replacing fresh flowers, phalaenopsis orchids, and tools when something goes wrong.',
     keywords: [
       'Hoa Theo Mua return policy',
       'florist return policy',
       'fresh flower returns',
       'Mokar phalaenopsis returns'
     ],
-    ogAlt: 'Hoa Theo Mua — Return policy',
+    ogAlt: 'Hoa Theo Mua - Return policy',
     breadcrumb: 'Return policy'
   }
 } satisfies LocaleCopy<ReturnsCopy>
@@ -62,7 +62,7 @@ export const buildReturnsJsonLd = (locale: Locale) => {
         '@type': 'WebPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — ${SITE_NAME}`,
+        name: `${copy.title} - ${SITE_NAME}`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },

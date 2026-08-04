@@ -5,7 +5,7 @@ import { Building03Icon, Calendar03Icon, GiftIcon, HotelIcon, SparklesIcon } fro
 
 type ServiceAccent = 'primary' | 'leaf'
 
-// Static per-slug presentation metadata (icon + accent). NOT CMS-backed — mirrors
+// Static per-slug presentation metadata (icon + accent). NOT CMS-backed - mirrors
 // taskcoper's `SERVICE_META`. Keyed by slug so related-service links render the right
 // icon/accent regardless of what the CMS document carries.
 export const SERVICE_META: Record<B2BServiceSlug, { icon: typeof HotelIcon; accent: ServiceAccent }> = {
@@ -43,7 +43,7 @@ export type ServiceSection = {
 const listHas = (block?: { items: unknown[] }): boolean => (block?.items.length ?? 0) > 0
 
 // Ordered manifest of the sections actually rendered for a service, derived from
-// content presence — so the TOC never lists an absent section. A section renders
+// content presence - so the TOC never lists an absent section. A section renders
 // iff its block exists and carries content (non-empty items / paragraphs / text).
 export function getServiceSections(detail: B2BServiceDetail): ServiceSection[] {
   const order: { key: SectionKey; enabled: boolean }[] = [

@@ -26,7 +26,7 @@ export default function OccasionCategorySections({ categoryIds }: { categoryIds:
     <>
       {matched.map((category) => (
         // Mirror the products page: CategoryFilterSection reads the URL (nuqs), so it
-        // can't be server-rendered — Next.js shows the nearest Suspense fallback during
+        // can't be server-rendered - Next.js shows the nearest Suspense fallback during
         // static prerender. CategorySectionDefault renders the same unfiltered grid from
         // the prefetched cache, so ISR HTML carries real products and the interactive
         // filtered version swaps in once JS loads.

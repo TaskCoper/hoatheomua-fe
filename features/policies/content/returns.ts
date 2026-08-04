@@ -24,7 +24,7 @@ export const RETURNS_CONTENT: Record<Locale, PolicySectionData[]> = {
     {
       number: '01',
       icon: ToolsIcon,
-      title: 'Sản phẩm công cụ — dụng cụ',
+      title: 'Sản phẩm công cụ - dụng cụ',
       intro: 'Áp dụng cho bình, kéo, lót bình và các sản phẩm phụ kiện khác.',
       blocks: [
         {

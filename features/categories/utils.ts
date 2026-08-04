@@ -28,7 +28,7 @@ const toGridDimension = (value: number | undefined, fallback: number): number =>
 
 /**
  * Resolve a category's grid from its metadata. `rows` and `cols` default
- * independently to 1×4, and the page limit is simply `rows × cols` — so a section
+ * independently to 1×4, and the page limit is simply `rows × cols` - so a section
  * with no (or partial) grid config lists 4 products per page in a single row.
  */
 export const getCategoryGrid = (meta: CategoryMetadata): { rows: number; cols: number; pageSize: number } => {

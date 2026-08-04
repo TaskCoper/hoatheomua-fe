@@ -7,7 +7,7 @@ import { cookies } from 'next/headers'
  * Merge incoming request cookies into an axios config so a Server Component or
  * `*.server.ts` fetcher can call an authenticated endpoint as the current user.
  *
- * Server-only by virtue of importing `next/headers` — client modules that try
+ * Server-only by virtue of importing `next/headers` - client modules that try
  * to pull this in fail at build time.
  */
 export async function withForwardedCookies(config: AxiosRequestConfig = {}): Promise<AxiosRequestConfig> {

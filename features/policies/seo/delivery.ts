@@ -35,14 +35,14 @@ const DELIVERY_COPY = {
   en: {
     title: 'Delivery & Inspection Policy',
     description:
-      'Hoa Theo Mua delivery and inspection guidelines — delivery hours 7AM–6PM, on-spot inspection before payment, and 2-hour support after receiving the flowers.',
+      'Hoa Theo Mua delivery and inspection guidelines - delivery hours 7AM–6PM, on-spot inspection before payment, and 2-hour support after receiving the flowers.',
     keywords: [
       'Hoa Theo Mua delivery policy',
       'Saigon flower delivery',
       'florist inspection on delivery',
       'cod flower delivery Vietnam'
     ],
-    ogAlt: 'Hoa Theo Mua — Delivery & inspection policy',
+    ogAlt: 'Hoa Theo Mua - Delivery & inspection policy',
     breadcrumb: 'Delivery & inspection policy'
   }
 } satisfies LocaleCopy<DeliveryCopy>
@@ -62,7 +62,7 @@ export const buildDeliveryJsonLd = (locale: Locale) => {
         '@type': 'WebPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — ${SITE_NAME}`,
+        name: `${copy.title} - ${SITE_NAME}`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },

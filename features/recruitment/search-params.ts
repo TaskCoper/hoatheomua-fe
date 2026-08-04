@@ -18,8 +18,8 @@ export const recruitmentSearchParsers = {
   page: parseAsInteger.withDefault(DEFAULT_PAGE_INDEX),
   /**
    * Slug of the job whose detail is open in the right pane (LinkedIn-style
-   * `?currentJobId`). Read client-side only — the server prefetch never looks at
-   * it — so the page stays ISR/static. Absent means "auto-select the first result".
+   * `?currentJobId`). Read client-side only - the server prefetch never looks at
+   * it - so the page stays ISR/static. Absent means "auto-select the first result".
    */
   job: parseAsString
 }

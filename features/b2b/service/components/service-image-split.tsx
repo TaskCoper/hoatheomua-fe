@@ -23,7 +23,7 @@ export default function ServiceImageSplit({ src, alt, reverse = false, children,
   }
 
   return (
-    // items-stretch on md+ lets the image column match the text column's height —
+    // items-stretch on md+ lets the image column match the text column's height -
     // the picture is as tall as the content beside it, never an over-long strip.
     <div className={cn('grid items-center gap-6 md:grid-cols-2 md:items-stretch md:gap-10', className)}>
       <motion.div
@@ -33,7 +33,7 @@ export default function ServiceImageSplit({ src, alt, reverse = false, children,
         transition={{ type: 'spring', stiffness: 120, damping: 22 }}
         className={cn('relative md:h-full', reverse ? 'md:order-2' : 'md:order-1')}
       >
-        {/* Mint offset backdrop — mirrors the pinched corner toward the text column. */}
+        {/* Mint offset backdrop - mirrors the pinched corner toward the text column. */}
         <span
           aria-hidden='true'
           className={cn(

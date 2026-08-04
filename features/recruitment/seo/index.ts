@@ -24,7 +24,7 @@ const RECRUITMENT_COPY = {
   vi: {
     title: 'Cơ Hội Nghề Nghiệp Tại Hoa Theo Mùa',
     description:
-      'Khám phá các vị trí tuyển dụng tại Hoa Theo Mùa — gia nhập đội ngũ hoa tươi cao cấp tại TP. Hồ Chí Minh, cùng phát triển sự nghiệp và lan toả vẻ đẹp Việt qua từng bó hoa.',
+      'Khám phá các vị trí tuyển dụng tại Hoa Theo Mùa - gia nhập đội ngũ hoa tươi cao cấp tại TP. Hồ Chí Minh, cùng phát triển sự nghiệp và lan toả vẻ đẹp Việt qua từng bó hoa.',
     keywords: [
       'tuyển dụng Hoa Theo Mùa',
       'việc làm hoa tươi',
@@ -40,7 +40,7 @@ const RECRUITMENT_COPY = {
   en: {
     title: 'Careers At Hoa Theo Mùa',
     description:
-      'Explore open positions at Hoa Theo Mùa — join our premium florist team in Ho Chi Minh City and help bring Vietnamese floral artistry to more homes and businesses.',
+      'Explore open positions at Hoa Theo Mùa - join our premium florist team in Ho Chi Minh City and help bring Vietnamese floral artistry to more homes and businesses.',
     keywords: [
       'Hoa Theo Mua careers',
       'florist jobs Vietnam',
@@ -67,7 +67,12 @@ const JOB_POSTING_EMPLOYMENT_TYPE: Record<string, string> = {
 const toSchemaEmploymentType = (employmentType: string | null | undefined): string | undefined => {
   if (!employmentType) return undefined
 
-  return JOB_POSTING_EMPLOYMENT_TYPE[employmentType.trim().toLowerCase().replace(/[\s_-]/g, '')]
+  return JOB_POSTING_EMPLOYMENT_TYPE[
+    employmentType
+      .trim()
+      .toLowerCase()
+      .replace(/[\s_-]/g, '')
+  ]
 }
 
 const jobDetailBasePath = (job: Job) => `${RECRUITMENT_BASE_PATH}/${job.slug}`
@@ -90,7 +95,7 @@ export const generateJobDetailMetadata = ({
   const description = getFirstParagraphTextFromHtml(job.description ?? '') || listCopy.description
 
   const copy: SeoCopy = {
-    title: `${job.title} — ${suffix}`,
+    title: `${job.title} - ${suffix}`,
     description,
     keywords: [job.title, ...listCopy.keywords],
     ogAlt: job.title
@@ -105,7 +110,7 @@ export const generateJobDetailMetadata = ({
 }
 
 /**
- * `JobPosting` structured data — what makes a role eligible for Google's job
+ * `JobPosting` structured data - what makes a role eligible for Google's job
  * experience (the jobs box at the top of search) instead of a plain blue link.
  *
  * NOTE: `datePosted` and `validThrough` are intentionally absent because the job API
@@ -183,7 +188,7 @@ export const buildRecruitmentJsonLd = (locale: Locale) => {
         '@type': 'CollectionPage',
         '@id': `${SITE_URL}${path}#webpage`,
         url,
-        name: `${copy.title} — ${SITE_NAME}`,
+        name: `${copy.title} - ${SITE_NAME}`,
         description: copy.description,
         inLanguage: inLanguage(locale),
         isPartOf: { '@id': WEBSITE_ID },

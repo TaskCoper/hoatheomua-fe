@@ -9,7 +9,7 @@ import type { LocalizedText } from '@/types/config.type'
 // preserved so the FE can map them back to icons / logo srcs / package slugs.
 //
 // Non-text (icons, accent, image src, package slug, gradients, animation,
-// section order) stays in the section components — the CMS carries strings only.
+// section order) stays in the section components - the CMS carries strings only.
 // ---------------------------------------------------------------------------
 
 export { hasText, pick }
@@ -105,7 +105,7 @@ const parseTrustBar = (raw: unknown): OverviewTrustBar => {
 }
 
 // ---- services chrome ------------------------------------------------------
-// The 5 cards come from the per-service `card` docs — not stored here.
+// The 5 cards come from the per-service `card` docs - not stored here.
 export interface OverviewServices {
   title: LocalizedText
   description: LocalizedText
@@ -214,7 +214,7 @@ export interface OverviewPackages {
   items: PackageItem[]
 }
 // The CMS stores `features` as a positional array (pots, area, potSize,
-// locations, care) — map it back onto the named keys the section renders.
+// locations, care) - map it back onto the named keys the section renders.
 const parsePackageItem = (raw: unknown): PackageItem => {
   const o = asRecord(raw)
   const f = asArray(o.features)
