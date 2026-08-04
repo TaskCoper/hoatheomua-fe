@@ -174,14 +174,8 @@ export async function POST(req: Request) {
     revalidatePath(path, 'page')
   }
 
-  // Purge the data tags so the rebuilt HTML can't re-read the stale
-  // `unstable_cache` entries. Tags aren't locale-specific, so one purge covers
-  // both vi and en. Next 16's `revalidateTag` takes a second arg for how long
-  // stale data may still be served; 'max' is the documented drop-in for the old
-  // immediate purge. (`updateTag` reads cleaner but only works in Server
-  // Actions, not here.)
   for (const tag of tags) {
-    revalidateTag(tag, 'max')
+    revalidateTag(tag, { expire: 0 })
   }
 
   return Response.json({ revalidated: true, paths, tags })
