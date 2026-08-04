@@ -5,4 +5,5 @@ export const newsSearchParsers = {
   page: parseAsInteger.withDefault(DEFAULT_PAGE_INDEX)
 }
 
+// test
 export const loadNewsSearch = createLoader(newsSearchParsers)
