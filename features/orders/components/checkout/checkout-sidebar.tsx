@@ -9,6 +9,7 @@ import { cn } from '@/shared/utils'
 import { Tag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
+import { useState } from 'react'
 
 export interface CheckoutSummaryLine {
   lineId: string
@@ -72,6 +73,8 @@ export function CheckoutSidebar({
   showTerms = true
 }: CheckoutSidebarProps) {
   const { t } = useTranslation()
+  const [termsAccepted, setTermsAccepted] = useState(true)
+  const isActionDisabled = action.disabled || action.loading || (showTerms && !termsAccepted)
 
   return (
     <aside className='sticky top-6 space-y-2'>
@@ -140,7 +143,11 @@ export function CheckoutSidebar({
       <section className='space-y-3 rounded-3xl bg-card p-5 border border-border'>
         {showTerms ? (
           <label className='flex items-start gap-2 text-xs leading-relaxed text-muted-foreground'>
-            <Checkbox defaultChecked className='mt-0.5' />
+            <Checkbox
+              checked={termsAccepted}
+              onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+              className='mt-0.5'
+            />
             <span>
               {t('orders.checkout.sidebar.termsPrefix')}{' '}
               <Link href='/terms' className='text-primary underline underline-offset-2'>
@@ -160,7 +167,7 @@ export function CheckoutSidebar({
           size='lg'
           className='w-full'
           onClick={action.onClick}
-          disabled={action.disabled || action.loading}
+          disabled={isActionDisabled}
         >
           {action.loading ? <Spinner /> : null}
           {action.label}

@@ -1,7 +1,10 @@
+'use client'
+
 import { Badge } from '@/components/ui/badge'
+import { availableOf, useProductVariant } from '@/features/products/components/product-variant-context'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DeliveryTruck01Icon, Flower2Icon, HandHeartIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { getTranslations } from 'next-intl/server'
 
 const TRUST_BADGES = [
   { icon: Flower2Icon, labelKey: 'products.summary.trustBadges.fresh' },
@@ -9,19 +12,22 @@ const TRUST_BADGES = [
   { icon: DeliveryTruck01Icon, labelKey: 'products.summary.trustBadges.delivery' }
 ] as const
 
-export default async function ProductSummary({
+export default function ProductSummary({
   name,
   brand,
-  type,
-  available
+  type
 }: {
   name: string
   brand: string | null
   type: string | null
-  available: number
 }) {
-  const t = await getTranslations()
+  const { t } = useTranslation()
+  // Stock follows the selected variant so the header never says "out of stock"
+  // for an in-stock variant (the parent row's own stock is a null placeholder).
+  const { selected } = useProductVariant()
+  const available = availableOf(selected)
   const inStock = available > 0
+
   const specs: { label: string; value: string }[] = []
 
   if (brand) {

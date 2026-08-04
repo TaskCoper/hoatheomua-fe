@@ -1,5 +1,6 @@
 'use client'
 
+import { useProductVariant } from '@/features/products/components/product-variant-context'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import Image from 'next/image'
@@ -13,40 +14,53 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import 'yet-another-react-lightbox/styles.css'
 
-export default function ProductGallery({
-  name,
-  avatar,
-  others,
-  discountPercent,
-  categoryName
-}: {
-  name: string
-  avatar: string | null
-  others: string[]
-  discountPercent: number
-  categoryName: string | null
-}) {
+export default function ProductGallery() {
   const { t } = useTranslation()
-  const images = useMemo(() => {
-    const all = [avatar, ...(others ?? [])].filter((url): url is string => Boolean(url))
-    return Array.from(new Set(all))
-  }, [avatar, others])
+  // Each variant carries its own cover image; the gallery follows the shared
+  // selection so switching a variant (here or in the purchase box) swaps the
+  // hero image, and thumbnails double as the variant switcher.
+  const { product, hasVariants, variants, selectedId, selected, setSelectedId } = useProductVariant()
 
-  const [activeIndex, setActiveIndex] = useState(0)
+  const name = product.productName ?? ''
+  const categoryName = product.categoryName
+
+  const retail = selected.price ?? 0
+  const oldPrice = selected.oldPrice ?? 0
+  const discountPercent = oldPrice > retail ? Math.round(((oldPrice - retail) / oldPrice) * 100) : 0
+
+  // One entry per selectable row: variants when present, else the parent.
+  const entries = useMemo(() => {
+    const source = hasVariants ? variants : [product]
+    return source
+      .map((item) => ({ id: item.id, src: item.coverImage }))
+      .filter((entry): entry is { id: string; src: string } => Boolean(entry.src))
+  }, [hasVariants, variants, product])
+
+  const [localIndex, setLocalIndex] = useState(0)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
-  const safeIndex = activeIndex < images.length ? activeIndex : 0
-  const activeImage = images[safeIndex] ?? null
-  const hasThumbnails = images.length > 1
+
+  const selectedIndex = entries.findIndex((entry) => entry.id === selectedId)
+  const activeIndex = hasVariants ? (selectedIndex >= 0 ? selectedIndex : 0) : Math.min(localIndex, entries.length - 1)
+
+  const select = (index: number) => {
+    const entry = entries[index]
+    if (!entry) return
+    if (hasVariants) setSelectedId(entry.id)
+    else setLocalIndex(index)
+  }
+
+  const activeImage = selected.coverImage ?? entries[activeIndex]?.src ?? product.coverImage ?? null
+  const hasThumbnails = entries.length > 1
 
   const slides = useMemo(
     () =>
-      images.map((src, index) => ({
-        src,
+      entries.map((entry, index) => ({
+        src: entry.src,
         alt: t('products.detail.gallery.thumbAlt', { name, index: index + 1 }),
         width: 1600,
         height: 1600
       })),
-    [images, name, t]
+    [entries, name, t]
   )
 
   if (!activeImage) {
@@ -67,13 +81,13 @@ export default function ProductGallery({
               'xl:order-1 xl:w-24 xl:flex-col xl:items-stretch xl:gap-3 xl:overflow-x-hidden xl:overflow-y-auto xl:p-1.5'
             )}
           >
-            {images.map((image, index) => {
-              const isActive = index === safeIndex
+            {entries.map((entry, index) => {
+              const isActive = index === activeIndex
               return (
                 <button
-                  key={image}
+                  key={entry.id}
                   type='button'
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => select(index)}
                   aria-label={t('products.detail.gallery.viewImage', { index: index + 1 })}
                   aria-pressed={isActive}
                   className={cn(
@@ -82,7 +96,7 @@ export default function ProductGallery({
                   )}
                 >
                   <Image
-                    src={image}
+                    src={entry.src}
                     alt={t('products.detail.gallery.thumbAlt', { name, index: index + 1 })}
                     fill
                     sizes='(min-width: 1280px) 5rem, (min-width: 640px) 6rem, 4rem'
@@ -127,13 +141,13 @@ export default function ProductGallery({
       <Lightbox
         open={isLightboxOpen}
         close={() => setIsLightboxOpen(false)}
-        index={safeIndex}
+        index={activeIndex}
         on={{
-          view: ({ index }) => setActiveIndex(index)
+          view: ({ index }) => select(index)
         }}
         slides={slides}
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-        carousel={{ finite: images.length <= 1 }}
+        carousel={{ finite: entries.length <= 1 }}
         thumbnails={{ position: 'bottom', showToggle: true }}
         zoom={{ maxZoomPixelRatio: 3, scrollToZoom: true }}
       />

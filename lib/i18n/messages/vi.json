@@ -1357,6 +1357,7 @@
       },
       "purchase": {
         "packaging": "Đóng gói",
+        "variant": "Phân loại",
         "quantity": "Số lượng",
         "decreaseQuantity": "Giảm số lượng",
         "increaseQuantity": "Tăng số lượng",

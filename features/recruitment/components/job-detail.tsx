@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import ApplyJobDialog from '@/features/recruitment/components/apply-job-dialog'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
+import { useHasMounted } from '@/hooks/use-has-mounted'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
@@ -25,13 +26,9 @@ import {
   WorkIcon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useState } from 'react'
 import { formatJobSalary, getJobAvatarFallback, getJobEmploymentTypeLabel } from '../helpers'
 import type { Job } from '../types'
-
-const subscribeToHydration = () => () => {}
-const getClientSnapshot = () => true
-const getServerSnapshot = () => false
 
 type JobDetailProps = {
   job: Job
@@ -62,7 +59,7 @@ export default function JobDetail({ job, detailHref }: JobDetailProps) {
   // recruitment page's Suspense fallback on the server, that difference would
   // hydrate a real button over a server-rendered skeleton. Gate the CTA on mount
   // so the server and first client render both show the neutral skeleton.
-  const isMounted = useSyncExternalStore(subscribeToHydration, getClientSnapshot, getServerSnapshot)
+  const isMounted = useHasMounted()
 
   useEffect(() => {
     if (!descriptionElement) return

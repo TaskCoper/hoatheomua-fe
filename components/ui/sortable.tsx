@@ -1,3 +1,4 @@
+import { useHasMounted } from '@/hooks/use-has-mounted'
 import { useComposedRefs } from '@/lib/data-table/compose-refs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
@@ -60,10 +61,6 @@ const CONTENT_NAME = 'SortableContent'
 const ITEM_NAME = 'SortableItem'
 const ITEM_HANDLE_NAME = 'SortableItemHandle'
 const OVERLAY_NAME = 'SortableOverlay'
-
-const subscribeToHydration = () => () => {}
-const getClientSnapshot = () => true
-const getServerSnapshot = () => false
 
 interface SortableRootContextValue<T> {
   id: string
@@ -506,7 +503,7 @@ function SortableOverlay(props: SortableOverlayProps) {
 
   const context = useSortableContext(OVERLAY_NAME)
 
-  const mounted = React.useSyncExternalStore(subscribeToHydration, getClientSnapshot, getServerSnapshot)
+  const mounted = useHasMounted()
 
   const container = containerProp ?? (mounted ? globalThis.document?.body : null)
 

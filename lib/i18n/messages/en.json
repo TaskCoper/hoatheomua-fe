@@ -1357,6 +1357,7 @@
       },
       "purchase": {
         "packaging": "Packaging",
+        "variant": "Variant",
         "quantity": "Quantity",
         "decreaseQuantity": "Decrease quantity",
         "increaseQuantity": "Increase quantity",

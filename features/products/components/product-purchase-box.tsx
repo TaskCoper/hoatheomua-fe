@@ -1,9 +1,13 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { availableOf, useProductVariant } from '@/features/products/components/product-variant-context'
+import type { ProductDetail } from '@/features/products/types'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
+import { useHasMounted } from '@/hooks/use-has-mounted'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
+import { cn } from '@/shared/utils'
 import { buildLineId, MAX_QUANTITY, useCartStore, type CartItem } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { FlashIcon, MinusSignIcon, PlusSignIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
@@ -21,19 +25,20 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
 
 const formatVnd = (value: number) => vndFormatter.format(value)
 
-export default function ProductPurchaseBox({
-  productId,
-  productName,
-  available,
-  retail,
-  oldPrice
-}: {
-  productId: string
-  productName: string
-  available: number
-  retail: number
-  oldPrice: number
-}) {
+/**
+ * Human label for a variant chip. `productName` is the most distinctive field
+ * (e.g. "…L.2026" vs "…S.2026"); size/colour are frequently null or shared
+ * across children, so they're only a fallback.
+ */
+function variantLabel(child: ProductDetail): string {
+  const name = child.productName?.trim()
+  if (name) return name
+  const parts = [child.size, child.color].filter((part): part is string => Boolean(part && part.trim()))
+  if (parts.length) return parts.join(' · ')
+  return child.productCode?.trim() || child.id
+}
+
+export default function ProductPurchaseBox() {
   const { t } = useTranslation()
   const router = useRouter()
   const pathname = usePathname()
@@ -42,9 +47,19 @@ export default function ProductPurchaseBox({
 
   const addItem = useCartStore((state) => state.addItem)
   const setCheckoutIntent = useCheckoutIntentStore((state) => state.setIntent)
+
+  const { product, variants, hasVariants, selectedId, selected, setSelectedId } = useProductVariant()
+
+  const productId = selected.id
+  const productName = selected.productName ?? product.productName ?? ''
+  const available = availableOf(selected)
+  const retail = selected.price ?? 0
+  const oldPrice = selected.oldPrice ?? 0
   const inStock = available > 0
 
   const [quantity, setQuantity] = useState(1)
+
+  const mounted = useHasMounted()
 
   const hasDiscount = oldPrice > retail
   const discountPercent = hasDiscount ? Math.round(((oldPrice - retail) / oldPrice) * 100) : 0
@@ -57,11 +72,11 @@ export default function ProductPurchaseBox({
   )
 
   const isVerified = !!me?.isEmailVerified
-  const isQualifiedBuyer = isAuthenticated && isVerified
+  const isQualifiedBuyer = mounted && isAuthenticated && isVerified
   const remainingStock = Math.max(0, Math.min(available, MAX_QUANTITY) - inCartQuantity)
   const hasRoomInCart = remainingStock > 0
   const canAdd = isQualifiedBuyer && inStock && hasRoomInCart
-  const isPurchaseDisabled = isGettingMe || !inStock || (isQualifiedBuyer && !hasRoomInCart)
+  const isPurchaseDisabled = !mounted || isGettingMe || !inStock || (isQualifiedBuyer && !hasRoomInCart)
   const stepperCap = Math.max(remainingStock, 1)
   const effectiveQuantity = Math.min(Math.max(quantity, 1), stepperCap)
 
@@ -122,6 +137,35 @@ export default function ProductPurchaseBox({
   return (
     <div className='space-y-5 rounded-3xl bg-card px-4 py-5 shadow-[0_0.8rem_2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'>
       <div className='grid gap-4'>
+        {hasVariants ? (
+          <div className='space-y-2'>
+            <p className='text-sm font-semibold text-muted-foreground'>{t('products.detail.purchase.variant')}</p>
+            <div className='flex flex-wrap gap-2'>
+              {variants.map((child) => {
+                const isSelected = child.id === selectedId
+                const soldOut = availableOf(child) <= 0
+                return (
+                  <button
+                    key={child.id}
+                    type='button'
+                    onClick={() => setSelectedId(child.id)}
+                    aria-pressed={isSelected}
+                    className={cn(
+                      'rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
+                      isSelected
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-foreground/10 bg-secondary/20 text-secondary-foreground hover:border-primary/40',
+                      soldOut && !isSelected && 'opacity-50'
+                    )}
+                  >
+                    {variantLabel(child)}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        ) : null}
+
         <div className='space-y-2'>
           <p className='text-sm font-semibold text-muted-foreground'>{t('products.detail.purchase.quantity')}</p>
 

@@ -299,4 +299,6 @@ export interface ProductDetail extends Omit<Product, ProductRawFieldKey> {
 
   createdAt: string
   updatedAt: string | null
+
+  children: ProductDetail[] | null
 }
