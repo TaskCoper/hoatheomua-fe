@@ -3,8 +3,7 @@ import 'server-only'
 import { jobDescriptionService } from '@/features/recruitment/services'
 import type { JobDescriptionParam } from '@/features/recruitment/types'
 import { CACHE_LIFE } from '@/lib/cache-life'
-import { cacheLife, cacheTag } from 'next/cache'
-import { cache } from 'react'
+import { cacheLife, cacheTag, unstable_cache } from 'next/cache'
 
 export const RECRUITMENT_CACHE_TAG = 'recruitment'
 
@@ -18,9 +17,11 @@ export async function getCachedJobs(params: JobDescriptionParam) {
   return jobDescriptionService.getJobDescriptions(params)
 }
 
-export const getCachedJobDescription = cache(async (slug: string) => {
-  return jobDescriptionService.getDescription({ slug })
-})
+export const getCachedJobDescription = (slug: string) =>
+  unstable_cache(async () => jobDescriptionService.getDescription({ slug }), ['job-detail', slug], {
+    revalidate: 600,
+    tags: [RECRUITMENT_CACHE_TAG, jobDetailTag(slug)]
+  })()
 
 export const getAllJobSlugs = async (): Promise<string[]> => {
   const slugs: string[] = []
