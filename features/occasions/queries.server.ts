@@ -1,9 +1,8 @@
 import 'server-only'
 
-import { CACHE_LIFE } from '@/lib/cache-life'
 import configService from '@/services/config.service'
 import type { OccasionCard, OccasionsCollection, OccasionsCollectionConfigItem } from '@/types/config.type'
-import { cacheLife, cacheTag } from 'next/cache'
+import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 
 const fetchOccasionsCollection = async (): Promise<OccasionsCollection | null> => {
@@ -20,13 +19,12 @@ const fetchOccasionsCollection = async (): Promise<OccasionsCollection | null> =
   }
 }
 
-export async function getOccasionsCollection(): Promise<OccasionsCollection | null> {
-  'use cache'
-  cacheLife(CACHE_LIFE.static1h)
-  cacheTag('configs:products')
-
-  return fetchOccasionsCollection()
-}
+export const getOccasionsCollection = cache(() =>
+  unstable_cache(fetchOccasionsCollection, ['occasions-collection'], {
+    revalidate: 60 * 60,
+    tags: ['configs:products']
+  })()
+)
 
 export const getOccasionCard = cache(async (id: string): Promise<OccasionCard | null> => {
   const collection = await getOccasionsCollection()

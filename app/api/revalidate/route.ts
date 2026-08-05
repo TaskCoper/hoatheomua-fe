@@ -1,41 +1,68 @@
-import { ARTICLES_CACHE_TAG, articleDetailTag } from '@/features/articles/queries.server'
+import { ARTICLES_CACHE_TAG } from '@/features/articles/queries.server'
 import { CATEGORIES_CACHE_TAG } from '@/features/categories/queries.server'
-import { PRODUCTS_CACHE_TAG, productDetailTag } from '@/features/products/queries.server'
-import { RECRUITMENT_CACHE_TAG, jobDetailTag } from '@/features/recruitment/queries.server'
+import { PRODUCTS_CACHE_TAG } from '@/features/products/queries.server'
+import { RECRUITMENT_CACHE_TAG } from '@/features/recruitment/queries.server'
 import { routing } from '@/lib/i18n/routing'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
 
 /**
- * On-demand revalidation webhook. Full contract: docs/revalidate-webhook.vi.md
+ * On-demand revalidation webhook.
  *
- * Two cache layers must both be purged per mutation: `revalidateTag` for the
- * `'use cache'` data reads, `revalidatePath` for the ISR'd page HTML — see
- * `planForEntity` for the entity → (tags, paths) mapping.
+ * The storefront caches backend data in two layers:
+ *   1. `unstable_cache` wraps every backend read and is keyed by a **tag**
+ *      (e.g. `products`, `articles`, `configs:products`).
+ *   2. Route-segment **ISR** (`export const revalidate`) caches the rendered
+ *      HTML of each page.
+ * A real content change must purge BOTH: the tag (so the next render reads fresh
+ * data) and the page paths (so the cached HTML is rebuilt). Each admin mutation
+ * therefore maps to a set of `tags` + a set of `paths` — see `planForEntity`.
  *
- * curl -X POST $SITE/api/revalidate \
- *   -H "x-revalidate-secret: $REVALIDATE_SECRET" -H "content-type: application/json" \
- *   -d '{"entity":"product","id":"12345"}'
+ * Authentication: `x-revalidate-secret` header must match `REVALIDATE_SECRET`.
+ * The endpoint rejects everything if the env var is unset.
+ *
+ * Body: { entity, ...fields } - see EntityBodySchema below for the contract.
+ * Each path expands to one `revalidatePath(...)` call per supported locale
+ * (vi + en), so a single webhook call refreshes both language variants.
+ *
+ * Returns { revalidated: true, paths, tags } on success, or a 4xx with a reason.
+ *
+ * curl example:
+ *   curl -X POST $SITE/api/revalidate \
+ *     -H "x-revalidate-secret: $REVALIDATE_SECRET" \
+ *     -H "content-type: application/json" \
+ *     -d '{"entity":"product","id":"12345"}'
  */
 
-// `id` is the storefront product id (/products/{id}), not an admin id.
+// A single product changed (price/stock/pin/order/POS sync). `id` is the
+// storefront product id used in the /products/{id} URL.
 const ProductBody = z.object({ entity: z.literal('product'), id: z.string().min(1) })
+// Catalog-wide product change (bulk sync, mass price/stock edit) not tied to one
+// detail page.
 const ProductListBody = z.object({ entity: z.literal('productList') })
-// Also covers "campaign"/occasion categories.
+// A product category changed (create/update/delete/reorder, or product↔category
+// assignment). Also covers "campaign"/occasion categories.
 const CategoryBody = z.object({ entity: z.literal('category') })
-// `slug` is the public slug (/news/{slug}), not the admin's numeric id.
+// A news article changed. `slug` is the article's public slug used in the
+// /news/{slug} URL (NOT the admin's numeric id).
 const NewsBody = z.object({ entity: z.literal('news'), slug: z.string().min(1) })
+// News-list-wide change (new/deleted article, blog taxonomy edit) that should
+// refresh the listing but isn't tied to one article's page.
 const NewsListBody = z.object({ entity: z.literal('newsList') })
-// `group` matches a CONFIG_GROUP_PATHS key; `key` is informational only.
+// A public config (home content) changed. `group` is the config group name
+// (products, banners, feedbacks, company, contact, b2bServices, ...). `key` is
+// optional and informational.
 const ConfigBody = z.object({
   entity: z.literal('config'),
   group: z.string().min(1),
   key: z.string().min(1).optional()
 })
-// `slug` omitted = list-wide change.
+// A recruitment job description changed. `slug` optionally targets the detail
+// page; omit it for list-wide changes.
 const RecruitmentBody = z.object({ entity: z.literal('recruitment'), slug: z.string().min(1).optional() })
+// The company address changed (shown on the contact page + JSON-LD).
 const CompanyAddressBody = z.object({ entity: z.literal('companyAddress') })
-// Manual escape hatch to refresh the home page.
+// Manual "refresh the home page" escape hatch.
 const HomeBody = z.object({ entity: z.literal('home') })
 
 const EntityBodySchema = z.discriminatedUnion('entity', [
@@ -52,13 +79,17 @@ const EntityBodySchema = z.discriminatedUnion('entity', [
 
 type EntityBody = z.infer<typeof EntityBodySchema>
 
-// Mirrors `configs:${group}` produced by the public-configs/featured/mainline/
-// occasions/company query loaders.
+// Cache tag for the config group. Mirrors `configs:${group}` produced inside the
+// public-configs / featured / mainline / occasions / company query loaders.
 const configTag = (group: string) => `configs:${group}`
 
-// Which pages bake in a given config group's data. A group not listed here
-// (e.g. `ahamove`, feeding the dynamic checkout) only needs its tag purged.
+// Which storefront pages a config group is baked into. A group not listed here
+// only needs its data tag purged (e.g. `ahamove`, which feeds the dynamic,
+// non-ISR checkout). Paths are locale-agnostic bases; `expandPaths` adds the
+// per-locale prefix.
 const CONFIG_GROUP_PATHS: Record<string, string[]> = {
+  // products.occasions / .featured / .mainline / .signature — the collection
+  // cards shown on the home page nav and the /products page.
   products: ['/', '/products'],
   banners: ['/'],
   feedbacks: ['/'],
@@ -67,28 +98,30 @@ const CONFIG_GROUP_PATHS: Record<string, string[]> = {
   b2bServices: ['/b2b']
 }
 
-/** Maps one admin mutation to the tags to purge and the (locale-agnostic) paths to rebuild. */
+/**
+ * Maps one admin mutation to the cache tags to purge and the (locale-agnostic)
+ * page paths to rebuild. See docs/revalidate-webhook.vi.md for the full contract.
+ */
 const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] } => {
   switch (body.entity) {
     case 'product':
-      // Home's occasions/featured/mainline grids also show products, but their
-      // own short ISR window covers them once the `products` tag is purged. The
-      // per-id tag purges this product's detail data (+ its ISR HTML).
-      return {
-        basePaths: [`/products/${body.id}`, '/products', '/'],
-        tags: [PRODUCTS_CACHE_TAG, productDetailTag(body.id)]
-      }
+      // Shows up on its own detail page, the /products grid, and the home page.
+      // The occasions/featured/mainline detail grids also show products; the
+      // `products` tag purge freshens their data on the next render, and their
+      // short (5 min) ISR rebuilds the HTML.
+      return { basePaths: [`/products/${body.id}`, '/products', '/'], tags: [PRODUCTS_CACHE_TAG] }
     case 'productList':
       return { basePaths: ['/products', '/'], tags: [PRODUCTS_CACHE_TAG] }
     case 'category':
-      // Membership drives which products appear per grid — purge both.
+      // Category membership drives which products appear in each grid, so purge
+      // both the category tree and the product lists.
       return { basePaths: ['/products', '/'], tags: [CATEGORIES_CACHE_TAG, PRODUCTS_CACHE_TAG] }
     case 'news':
       // The per-slug tag purges the detail page's own `getArticle` entry (and
       // its ISR HTML via propagation); `ARTICLES_CACHE_TAG` covers the list.
       return {
         basePaths: [`/news/${body.slug}`, '/news'],
-        tags: [ARTICLES_CACHE_TAG, articleDetailTag(body.slug)]
+        tags: [ARTICLES_CACHE_TAG]
       }
     case 'newsList':
       return { basePaths: ['/news'], tags: [ARTICLES_CACHE_TAG] }
@@ -99,11 +132,13 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] 
       // per-slug tag; without one it's a list-wide change, so the broad tag only.
       return {
         basePaths: body.slug ? [`/recruitment/${body.slug}`, '/recruitment'] : ['/recruitment'],
-        tags: body.slug ? [RECRUITMENT_CACHE_TAG, jobDetailTag(body.slug)] : [RECRUITMENT_CACHE_TAG]
+        tags: [RECRUITMENT_CACHE_TAG]
       }
     case 'companyAddress':
       return { basePaths: ['/contact'], tags: ['company-address'] }
     case 'home':
+      // Escape hatch: the home page renders products, category sections, and the
+      // config-driven collection cards — refresh all of them.
       return { basePaths: ['/'], tags: [PRODUCTS_CACHE_TAG, CATEGORIES_CACHE_TAG, configTag('products')] }
   }
 }

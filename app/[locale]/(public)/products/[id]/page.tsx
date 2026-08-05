@@ -43,27 +43,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, id } = await params
   setRequestLocale(locale)
-  let product: Awaited<ReturnType<typeof getProductDetail>> = null
-  try {
-    product = await getProductDetail(id)
-  } catch (error) {
-    console.error('[SSR] product metadata fetch failed:', error)
-    product = null
-  }
+  const product = await getProductDetail(id)
   return generateProductDetailMetadata({ locale, product })
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ locale: Locale; id: string }> }) {
   const { locale, id } = await params
   setRequestLocale(locale)
-
-  let product: Awaited<ReturnType<typeof getProductDetail>> = null
-  try {
-    product = await getProductDetail(id)
-  } catch (error) {
-    console.error('[SSR] product detail fetch failed:', error)
-    product = null
-  }
+  const product = await getProductDetail(id)
 
   if (!product) {
     notFound()

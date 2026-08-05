@@ -35,18 +35,7 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
   experimental: {
-    // Enables the `'use cache'` directive (our axios reads aren't auto-cached by
-    // fetch). Data freshness comes from `cacheLife()` on the cached readers
-    // (timespans live in lib/cache-life.ts).
-    //
-    // NOTE: PPR is intentionally NOT enabled. In Next 16 `experimental.ppr` was
-    // merged into `cacheComponents`, and `cacheComponents` is incompatible with
-    // this app's React Query server-prefetch/HydrationBoundary SSR pattern
-    // (React Query calls `Date.now()` during prefetch/dehydrate, which
-    // cacheComponents forbids at prerender). We keep classic ISR + `use cache`.
-    useCache: true,
-    // Inline all route CSS into <style> tags (replaces critters/optimizeCss)
-    inlineCss: true,
+    optimizeCss: true,
     optimizePackageImports: [
       'motion',
       '@hugeicons/react',

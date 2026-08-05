@@ -1,24 +1,19 @@
 import 'server-only'
 
-import { CACHE_LIFE } from '@/lib/cache-life'
 import { getQueryClient } from '@/lib/react-query-client'
-import { isAxiosError } from 'axios'
-import { cacheLife, cacheTag } from 'next/cache'
+import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 import type { GetProductsParams } from './hooks/use-get-products'
 import { fetchProductDetail, productListQuery } from './queries'
 import productService from './services'
 
 export const PRODUCTS_CACHE_TAG = 'products'
 
-export const productDetailTag = (id: string) => `product:${id}`
-
-export async function getCachedProducts(params: GetProductsParams) {
-  'use cache'
-  cacheLife(CACHE_LIFE.list)
-  cacheTag(PRODUCTS_CACHE_TAG)
-
-  return productService.getProducts(params)
-}
+export const getCachedProducts = (params: GetProductsParams) =>
+  unstable_cache(() => productService.getProducts(params), ['products-list', JSON.stringify(params)], {
+    tags: [PRODUCTS_CACHE_TAG],
+    revalidate: 60
+  })()
 
 /**
  * Returns the most-recent product IDs as strings, suitable for
@@ -37,16 +32,16 @@ export async function getAllProductIds(limit = 20): Promise<string[]> {
   }
 }
 
-export async function getProductDetail(id: string) {
-  'use cache'
-  cacheLife(CACHE_LIFE.static1h)
-  cacheTag(PRODUCTS_CACHE_TAG)
-  cacheTag(productDetailTag(id))
-
+/**
+ * React `cache()`-deduped product detail fetcher. Used by both
+ * `generateMetadata` and the page so a single backend call serves the whole
+ * render pass; the returned product is then hydrated into the query client via
+ * `setQueryData(productDetailQuery(id).queryKey, product)`.
+ */
+export const getProductDetail = cache(async (id: string) => {
   try {
     return await fetchProductDetail(id)
-  } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404) return null
-    throw error
+  } catch {
+    return null
   }
-}
+})
