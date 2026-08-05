@@ -97,12 +97,10 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] 
   }
 }
 
-/** Expands locale-agnostic base paths into concrete per-locale paths. */
 const expandPaths = (basePaths: string[]): string[] => {
-  const paths = routing.locales.flatMap((locale) => {
-    const prefix = locale === routing.defaultLocale ? '' : `/${locale}`
-    return basePaths.map((base) => (base === '/' ? prefix || '/' : `${prefix}${base}`))
-  })
+  const paths = routing.locales.flatMap((locale) =>
+    basePaths.map((base) => (base === '/' ? `/${locale}` : `/${locale}${base}`))
+  )
   return Array.from(new Set(paths))
 }
 
@@ -134,7 +132,7 @@ export async function POST(req: Request) {
 
   const paths = expandPaths(basePaths)
   for (const path of paths) {
-    revalidatePath(path, 'page')
+    revalidatePath(path)
   }
 
   for (const tag of tags) {
