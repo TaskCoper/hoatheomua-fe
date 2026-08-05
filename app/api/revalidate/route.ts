@@ -1,7 +1,7 @@
-import { ARTICLES_CACHE_TAG } from '@/features/articles/queries.server'
+import { ARTICLES_CACHE_TAG, articleDetailTag } from '@/features/articles/queries.server'
 import { CATEGORIES_CACHE_TAG } from '@/features/categories/queries.server'
-import { PRODUCTS_CACHE_TAG } from '@/features/products/queries.server'
-import { RECRUITMENT_CACHE_TAG } from '@/features/recruitment/queries.server'
+import { PRODUCTS_CACHE_TAG, productDetailTag } from '@/features/products/queries.server'
+import { RECRUITMENT_CACHE_TAG, jobDetailTag } from '@/features/recruitment/queries.server'
 import { routing } from '@/lib/i18n/routing'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -72,23 +72,34 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] 
   switch (body.entity) {
     case 'product':
       // Home's occasions/featured/mainline grids also show products, but their
-      // own short ISR window covers them once the `products` tag is purged.
-      return { basePaths: [`/products/${body.id}`, '/products', '/'], tags: [PRODUCTS_CACHE_TAG] }
+      // own short ISR window covers them once the `products` tag is purged. The
+      // per-id tag purges this product's detail data (+ its ISR HTML).
+      return {
+        basePaths: [`/products/${body.id}`, '/products', '/'],
+        tags: [PRODUCTS_CACHE_TAG, productDetailTag(body.id)]
+      }
     case 'productList':
       return { basePaths: ['/products', '/'], tags: [PRODUCTS_CACHE_TAG] }
     case 'category':
       // Membership drives which products appear per grid — purge both.
       return { basePaths: ['/products', '/'], tags: [CATEGORIES_CACHE_TAG, PRODUCTS_CACHE_TAG] }
     case 'news':
-      return { basePaths: [`/news/${body.slug}`, '/news'], tags: [ARTICLES_CACHE_TAG] }
+      // The per-slug tag purges the detail page's own `getArticle` entry (and
+      // its ISR HTML via propagation); `ARTICLES_CACHE_TAG` covers the list.
+      return {
+        basePaths: [`/news/${body.slug}`, '/news'],
+        tags: [ARTICLES_CACHE_TAG, articleDetailTag(body.slug)]
+      }
     case 'newsList':
       return { basePaths: ['/news'], tags: [ARTICLES_CACHE_TAG] }
     case 'config':
       return { basePaths: CONFIG_GROUP_PATHS[body.group] ?? [], tags: [configTag(body.group)] }
     case 'recruitment':
+      // With a slug, purge that job's detail data (+ its ISR HTML) via the
+      // per-slug tag; without one it's a list-wide change, so the broad tag only.
       return {
         basePaths: body.slug ? [`/recruitment/${body.slug}`, '/recruitment'] : ['/recruitment'],
-        tags: [RECRUITMENT_CACHE_TAG]
+        tags: body.slug ? [RECRUITMENT_CACHE_TAG, jobDetailTag(body.slug)] : [RECRUITMENT_CACHE_TAG]
       }
     case 'companyAddress':
       return { basePaths: ['/contact'], tags: ['company-address'] }
@@ -101,7 +112,11 @@ const expandPaths = (basePaths: string[]): string[] => {
   const paths = routing.locales.flatMap((locale) =>
     basePaths.map((base) => (base === '/' ? `/${locale}` : `/${locale}${base}`))
   )
-  return Array.from(new Set(paths))
+  // Under `localePrefix: 'as-needed'` the default locale is served without a
+  // prefix, so its Full Route Cache entry can be keyed by the bare request path
+  // (e.g. `/news/<slug>`). Purge that variant too — a no-op where unmatched.
+  const defaultLocalePaths = basePaths
+  return Array.from(new Set([...paths, ...defaultLocalePaths]))
 }
 
 export async function POST(req: Request) {

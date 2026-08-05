@@ -12,6 +12,11 @@ import articleService from './services'
 
 export const ARTICLES_CACHE_TAG = 'articles'
 
+// Per-article tag so one news mutation can purge just that article's detail
+// data — and, via tag propagation, its ISR page HTML — without waiting on the
+// broad `articles` list tag or fragile per-locale path matching.
+export const articleDetailTag = (slug: string) => `article:${slug}`
+
 export async function getCachedArticles(params: GetArticlesParams & { locale: string }) {
   'use cache'
   cacheLife(CACHE_LIFE.list)
@@ -47,6 +52,7 @@ export async function getArticle({ identifier, locale }: GetArticleParams & { lo
   'use cache'
   cacheLife(CACHE_LIFE.static1h)
   cacheTag(ARTICLES_CACHE_TAG)
+  cacheTag(articleDetailTag(identifier))
 
   try {
     return await articleService.getArticle({ identifier, locale })

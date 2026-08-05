@@ -7,6 +7,8 @@ import { cacheLife, cacheTag } from 'next/cache'
 
 export const RECRUITMENT_CACHE_TAG = 'recruitment'
 
+export const jobDetailTag = (slug: string) => `recruitment:${slug}`
+
 export async function getCachedJobs(params: JobDescriptionParam) {
   'use cache'
   cacheLife(CACHE_LIFE.recruitment)
@@ -19,6 +21,7 @@ export async function getCachedJobDescription(slug: string) {
   'use cache'
   cacheLife(CACHE_LIFE.recruitment)
   cacheTag(RECRUITMENT_CACHE_TAG)
+  cacheTag(jobDetailTag(slug))
 
   return jobDescriptionService.getDescription({ slug })
 }

@@ -10,6 +10,8 @@ import productService from './services'
 
 export const PRODUCTS_CACHE_TAG = 'products'
 
+export const productDetailTag = (id: string) => `product:${id}`
+
 export async function getCachedProducts(params: GetProductsParams) {
   'use cache'
   cacheLife(CACHE_LIFE.list)
@@ -39,6 +41,7 @@ export async function getProductDetail(id: string) {
   'use cache'
   cacheLife(CACHE_LIFE.static1h)
   cacheTag(PRODUCTS_CACHE_TAG)
+  cacheTag(productDetailTag(id))
 
   try {
     return await fetchProductDetail(id)
