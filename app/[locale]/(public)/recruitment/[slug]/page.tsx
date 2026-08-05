@@ -11,8 +11,6 @@ import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 600
-
 export const dynamicParams = true
 
 export async function generateStaticParams() {

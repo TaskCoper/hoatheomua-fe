@@ -4,7 +4,7 @@ import { CACHE_LIFE } from '@/lib/cache-life'
 import { getQueryClient } from '@/lib/react-query-client'
 import { DEFAULT_PAGE_SIZE } from '@/shared/constants'
 import { isAxiosError } from 'axios'
-import { cacheLife, cacheTag, unstable_cache } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { GetArticlesParams } from './hooks/use-get-articles'
 import { getArticlesQuery } from './queries'
 import articleService from './services'
@@ -47,16 +47,16 @@ export const getAllArticleSlugs = async () => {
   return slugs
 }
 
-export const getArticle = (identifier: string, locale: string) =>
-  unstable_cache(
-    async () => {
-      try {
-        return await articleService.getArticle({ identifier, locale })
-      } catch (error) {
-        if (isAxiosError(error) && error.response?.status === 404) return null
-        throw error
-      }
-    },
-    ['article-detail', identifier, locale],
-    { revalidate: 3600, tags: [ARTICLES_CACHE_TAG, articleDetailTag(identifier)] }
-  )()
+export async function getArticle(identifier: string, locale: string) {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag(ARTICLES_CACHE_TAG)
+  cacheTag(articleDetailTag(identifier))
+
+  try {
+    return await articleService.getArticle({ identifier, locale })
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.status === 404) return null
+    throw error
+  }
+}

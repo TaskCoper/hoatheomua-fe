@@ -18,7 +18,6 @@ import { Suspense } from 'react'
 // invalidate through ISR = 3600 and the revalidation webhook
 const STATIC_PRODUCT_LIMIT = 20
 
-export const revalidate = 3600
 export const dynamicParams = true
 
 export async function generateStaticParams() {

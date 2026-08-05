@@ -3,7 +3,7 @@ import 'server-only'
 import { CACHE_LIFE } from '@/lib/cache-life'
 import { getQueryClient } from '@/lib/react-query-client'
 import { isAxiosError } from 'axios'
-import { cacheLife, cacheTag, unstable_cache } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import type { GetProductsParams } from './hooks/use-get-products'
 import { fetchProductDetail, productListQuery } from './queries'
 import productService from './services'
@@ -37,16 +37,16 @@ export async function getAllProductIds(limit = 20): Promise<string[]> {
   }
 }
 
-export const getProductDetail = (id: string) =>
-  unstable_cache(
-    async () => {
-      try {
-        return await fetchProductDetail(id)
-      } catch (error) {
-        if (isAxiosError(error) && error.response?.status === 404) return null
-        throw error
-      }
-    },
-    ['product-detail', id],
-    { revalidate: 3600, tags: [PRODUCTS_CACHE_TAG, productDetailTag(id)] }
-  )()
+export async function getProductDetail(id: string) {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag(PRODUCTS_CACHE_TAG)
+  cacheTag(productDetailTag(id))
+
+  try {
+    return await fetchProductDetail(id)
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.status === 404) return null
+    throw error
+  }
+}

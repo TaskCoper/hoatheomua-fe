@@ -18,7 +18,6 @@ import { notFound } from 'next/navigation'
 const RELATED_FETCH_SIZE = 4
 const RELATED_RENDER_SIZE = 3
 
-export const revalidate = 3600
 export const dynamicParams = true
 
 export async function generateStaticParams() {
