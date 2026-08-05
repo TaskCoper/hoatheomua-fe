@@ -1,15 +1,13 @@
 import { FallingPetals } from '@/components/falling-petals'
 import SanitizedHtml from '@/components/sanitized-html'
 import { Button } from '@/components/ui/button'
-import { getArticlesQuery } from '@/features/articles/queries'
-import { getAllArticleSlugs, getArticle } from '@/features/articles/queries.server'
+import { getAllArticleSlugs, getArticle, getCachedArticles } from '@/features/articles/queries.server'
 import { buildNewsArticleJsonLd, generateNewsDetailMetadata } from '@/features/articles/seo'
 import { Article } from '@/features/articles/types'
 import { formatDate } from '@/lib/date'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
 import { routing } from '@/lib/i18n/routing'
-import { getQueryClient } from '@/lib/react-query-client'
 import heroImage from '@/public/images/bg-news.png'
 import { JsonLd } from '@/shared/seo'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
@@ -71,8 +69,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ loc
 
   let related: Article[] = []
   try {
-    const qc = getQueryClient()
-    const page = await qc.fetchQuery(getArticlesQuery({ pageIndex: 1, pageSize: RELATED_FETCH_SIZE, locale }))
+    const page = await getCachedArticles({ pageIndex: 1, pageSize: RELATED_FETCH_SIZE, locale })
 
     related = page.value.items.filter((item) => item.slug !== slug).slice(0, RELATED_RENDER_SIZE)
   } catch (error) {

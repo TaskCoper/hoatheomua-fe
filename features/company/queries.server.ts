@@ -1,131 +1,102 @@
 import 'server-only'
 
+import { CACHE_LIFE } from '@/lib/cache-life'
 import configService from '@/services/config.service'
 import type { CompanyConfigItem, ContactConfigItem } from '@/types/config.type'
-import { unstable_cache } from 'next/cache'
-import { cache } from 'react'
+import { cacheLife, cacheTag } from 'next/cache'
 
-const REVALIDATE_SECONDS = 60 * 60 // 1h
+export async function getCompanyBgVideo(): Promise<string | null> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:company')
 
-const withPersistentCache = <T>(fetcher: () => Promise<T>, key: string[], tag: string) =>
-  unstable_cache(fetcher, key, { revalidate: REVALIDATE_SECONDS, tags: [tag] })
+  try {
+    const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.bg_video' }>>({
+      group: 'company',
+      key: 'company.bg_video'
+    })
+    return configs[0]?.value.value ?? null
+  } catch {
+    return null
+  }
+}
 
-export const getCompanyBgVideo = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.bg_video' }>>(
-            {
-              group: 'company',
-              key: 'company.bg_video'
-            }
-          )
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['company-bg-video'],
-      'configs:company'
-    )()
-)
+export async function getCompanyBgMusic(): Promise<string | null> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:company')
 
-export const getCompanyBgMusic = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.bg_music' }>>(
-            {
-              group: 'company',
-              key: 'company.bg_music'
-            }
-          )
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['company-bg-music'],
-      'configs:company'
-    )()
-)
+  try {
+    const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.bg_music' }>>({
+      group: 'company',
+      key: 'company.bg_music'
+    })
+    return configs[0]?.value.value ?? null
+  } catch {
+    return null
+  }
+}
 
-export const getCompanyGpkd = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.gpkd' }>>({
-            group: 'company',
-            key: 'company.gpkd'
-          })
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['company-gpkd'],
-      'configs:company'
-    )()
-)
+export async function getCompanyGpkd(): Promise<string | null> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:company')
 
-export const getContactPhone = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<ContactConfigItem, { key: 'contact.phone' }>>({
-            group: 'contact',
-            key: 'contact.phone'
-          })
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['contact-phone'],
-      'configs:contact'
-    )()
-)
+  try {
+    const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.gpkd' }>>({
+      group: 'company',
+      key: 'company.gpkd'
+    })
+    return configs[0]?.value.value ?? null
+  } catch {
+    return null
+  }
+}
 
-export const getContactEmail = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<ContactConfigItem, { key: 'contact.email' }>>({
-            group: 'contact',
-            key: 'contact.email'
-          })
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['contact-email'],
-      'configs:contact'
-    )()
-)
+export async function getContactPhone(): Promise<string | null> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:contact')
 
-export const getCompanyHotlines = cache(
-  (): Promise<string[]> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.hotlines' }>>(
-            {
-              group: 'company',
-              key: 'company.hotlines'
-            }
-          )
-          return configs[0]?.value.options.map((option) => option.value) ?? []
-        } catch {
-          return []
-        }
-      },
-      ['company-hotlines'],
-      'configs:company'
-    )()
-)
+  try {
+    const configs = await configService.getPublicConfigs<Extract<ContactConfigItem, { key: 'contact.phone' }>>({
+      group: 'contact',
+      key: 'contact.phone'
+    })
+    return configs[0]?.value.value ?? null
+  } catch {
+    return null
+  }
+}
+
+export async function getContactEmail(): Promise<string | null> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:contact')
+
+  try {
+    const configs = await configService.getPublicConfigs<Extract<ContactConfigItem, { key: 'contact.email' }>>({
+      group: 'contact',
+      key: 'contact.email'
+    })
+    return configs[0]?.value.value ?? null
+  } catch {
+    return null
+  }
+}
+
+export async function getCompanyHotlines(): Promise<string[]> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:company')
+
+  try {
+    const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.hotlines' }>>({
+      group: 'company',
+      key: 'company.hotlines'
+    })
+    return configs[0]?.value.options.map((option) => option.value) ?? []
+  } catch {
+    return []
+  }
+}

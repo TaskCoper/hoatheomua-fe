@@ -30,7 +30,7 @@ export default async function RecruitmentPage({ params }: { params: Promise<{ lo
           </div>
         }
       >
-        <RecruitmentResults locale={locale} />
+        <RecruitmentResults />
       </Suspense>
     </ScopedIntlProvider>
   )

@@ -1,8 +1,9 @@
 import 'server-only'
 
+import { CACHE_LIFE } from '@/lib/cache-life'
 import configService from '@/services/config.service'
 import type { MainlineCard, MainlineCollection, MainlineCollectionConfigItem } from '@/types/config.type'
-import { unstable_cache } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
 const fetchMainlineCollection = async (): Promise<MainlineCollection | null> => {
@@ -19,12 +20,13 @@ const fetchMainlineCollection = async (): Promise<MainlineCollection | null> => 
   }
 }
 
-export const getMainlineCollection = cache(() =>
-  unstable_cache(fetchMainlineCollection, ['mainline-collection'], {
-    revalidate: 60 * 60,
-    tags: ['configs:products']
-  })()
-)
+export async function getMainlineCollection(): Promise<MainlineCollection | null> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:products')
+
+  return fetchMainlineCollection()
+}
 
 export const getMainlineCard = cache(async (id: string): Promise<MainlineCard | null> => {
   const collection = await getMainlineCollection()

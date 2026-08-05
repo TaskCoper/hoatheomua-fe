@@ -1,22 +1,24 @@
 import 'server-only'
 
+import { CACHE_LIFE } from '@/lib/cache-life'
 import { getQueryClient } from '@/lib/react-query-client'
 import { DEFAULT_PAGE_SIZE } from '@/shared/constants'
-import { unstable_cache } from 'next/cache'
-import { cache } from 'react'
+import { isAxiosError } from 'axios'
+import { cacheLife, cacheTag } from 'next/cache'
 import { GetArticleParams } from './hooks/use-get-article'
 import { GetArticlesParams } from './hooks/use-get-articles'
-import { getArticleQuery, getArticlesQuery } from './queries'
+import { getArticlesQuery } from './queries'
 import articleService from './services'
 
 export const ARTICLES_CACHE_TAG = 'articles'
 
-export const getCachedArticles = (params: GetArticlesParams & { locale: string }) =>
-  unstable_cache(
-    () => articleService.getArticles(params),
-    ['articles-list', params.locale, String(params.pageIndex ?? ''), String(params.pageSize ?? '')],
-    { tags: [ARTICLES_CACHE_TAG], revalidate: 60 }
-  )()
+export async function getCachedArticles(params: GetArticlesParams & { locale: string }) {
+  'use cache'
+  cacheLife(CACHE_LIFE.list)
+  cacheTag(ARTICLES_CACHE_TAG)
+
+  return articleService.getArticles(params)
+}
 
 export const getAllArticleSlugs = async () => {
   const slugs: string[] = []
@@ -41,6 +43,15 @@ export const getAllArticleSlugs = async () => {
   return slugs
 }
 
-export const getArticle = cache(({ identifier, locale }: GetArticleParams & { locale: string }) =>
-  getQueryClient().fetchQuery(getArticleQuery({ identifier, locale }))
-)
+export async function getArticle({ identifier, locale }: GetArticleParams & { locale: string }) {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag(ARTICLES_CACHE_TAG)
+
+  try {
+    return await articleService.getArticle({ identifier, locale })
+  } catch (error) {
+    if (isAxiosError(error) && error.response?.status === 404) return null
+    throw error
+  }
+}

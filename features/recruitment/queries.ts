@@ -2,8 +2,8 @@ import { jobDescriptionService } from '@/features/recruitment/services'
 import type { JobDescriptionParam } from '@/features/recruitment/types'
 import { queryOptions } from '@tanstack/react-query'
 
-export const jobsListQuery = (params: JobDescriptionParam, locale: string) =>
+export const jobsListQuery = (params: JobDescriptionParam) =>
   queryOptions({
-    queryKey: ['jobDescriptions', params, locale] as const,
+    queryKey: ['jobDescriptions', params] as const,
     queryFn: () => jobDescriptionService.getJobDescriptions(params)
   })

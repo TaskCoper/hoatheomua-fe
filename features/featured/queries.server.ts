@@ -1,8 +1,9 @@
 import 'server-only'
 
+import { CACHE_LIFE } from '@/lib/cache-life'
 import configService from '@/services/config.service'
 import type { FeaturedCard, FeaturedCollection, FeaturedCollectionConfigItem } from '@/types/config.type'
-import { unstable_cache } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
 const fetchFeaturedCollection = async (): Promise<FeaturedCollection | null> => {
@@ -19,12 +20,13 @@ const fetchFeaturedCollection = async (): Promise<FeaturedCollection | null> => 
   }
 }
 
-export const getFeaturedCollection = cache(() =>
-  unstable_cache(fetchFeaturedCollection, ['featured-collection'], {
-    revalidate: 60 * 60,
-    tags: ['configs:products']
-  })()
-)
+export async function getFeaturedCollection(): Promise<FeaturedCollection | null> {
+  'use cache'
+  cacheLife(CACHE_LIFE.static1h)
+  cacheTag('configs:products')
+
+  return fetchFeaturedCollection()
+}
 
 export interface FeaturedCardWithFlags {
   card: FeaturedCard
