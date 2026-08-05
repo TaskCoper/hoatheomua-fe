@@ -4,6 +4,7 @@ import { CACHE_LIFE } from '@/lib/cache-life'
 import { getQueryClient } from '@/lib/react-query-client'
 import { isAxiosError } from 'axios'
 import { cacheLife, cacheTag } from 'next/cache'
+import { cache } from 'react'
 import type { GetProductsParams } from './hooks/use-get-products'
 import { fetchProductDetail, productListQuery } from './queries'
 import productService from './services'
@@ -37,16 +38,11 @@ export async function getAllProductIds(limit = 20): Promise<string[]> {
   }
 }
 
-export async function getProductDetail(id: string) {
-  'use cache'
-  cacheLife(CACHE_LIFE.static1h)
-  cacheTag(PRODUCTS_CACHE_TAG)
-  cacheTag(productDetailTag(id))
-
+export const getProductDetail = cache(async (id: string) => {
   try {
     return await fetchProductDetail(id)
   } catch (error) {
     if (isAxiosError(error) && error.response?.status === 404) return null
     throw error
   }
-}
+})

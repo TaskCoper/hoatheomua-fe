@@ -4,6 +4,7 @@ import { jobDescriptionService } from '@/features/recruitment/services'
 import type { JobDescriptionParam } from '@/features/recruitment/types'
 import { CACHE_LIFE } from '@/lib/cache-life'
 import { cacheLife, cacheTag } from 'next/cache'
+import { cache } from 'react'
 
 export const RECRUITMENT_CACHE_TAG = 'recruitment'
 
@@ -17,14 +18,9 @@ export async function getCachedJobs(params: JobDescriptionParam) {
   return jobDescriptionService.getJobDescriptions(params)
 }
 
-export async function getCachedJobDescription(slug: string) {
-  'use cache'
-  cacheLife(CACHE_LIFE.recruitment)
-  cacheTag(RECRUITMENT_CACHE_TAG)
-  cacheTag(jobDetailTag(slug))
-
+export const getCachedJobDescription = cache(async (slug: string) => {
   return jobDescriptionService.getDescription({ slug })
-}
+})
 
 export const getAllJobSlugs = async (): Promise<string[]> => {
   const slugs: string[] = []

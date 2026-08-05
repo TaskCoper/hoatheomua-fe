@@ -35,7 +35,7 @@ export async function generateMetadata({
   const { locale, slug } = await params
   let article: Awaited<ReturnType<typeof getArticle>> | null = null
   try {
-    article = await getArticle({ identifier: slug, locale })
+    article = await getArticle(slug, locale)
   } catch (error) {
     console.error('[SSR] news article metadata fetch failed:', error)
     article = null
@@ -56,7 +56,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ loc
 
   let article: Awaited<ReturnType<typeof getArticle>> | null = null
   try {
-    article = await getArticle({ identifier: slug, locale })
+    article = await getArticle(slug, locale)
   } catch (error) {
     console.error('[SSR] news article fetch failed:', error)
     article = null

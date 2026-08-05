@@ -5,7 +5,7 @@ import { getQueryClient } from '@/lib/react-query-client'
 import { DEFAULT_PAGE_SIZE } from '@/shared/constants'
 import { isAxiosError } from 'axios'
 import { cacheLife, cacheTag } from 'next/cache'
-import { GetArticleParams } from './hooks/use-get-article'
+import { cache } from 'react'
 import { GetArticlesParams } from './hooks/use-get-articles'
 import { getArticlesQuery } from './queries'
 import articleService from './services'
@@ -48,16 +48,11 @@ export const getAllArticleSlugs = async () => {
   return slugs
 }
 
-export async function getArticle({ identifier, locale }: GetArticleParams & { locale: string }) {
-  'use cache'
-  cacheLife(CACHE_LIFE.static1h)
-  cacheTag(ARTICLES_CACHE_TAG)
-  cacheTag(articleDetailTag(identifier))
-
+export const getArticle = cache(async (identifier: string, locale: string) => {
   try {
     return await articleService.getArticle({ identifier, locale })
   } catch (error) {
     if (isAxiosError(error) && error.response?.status === 404) return null
     throw error
   }
-}
+})
