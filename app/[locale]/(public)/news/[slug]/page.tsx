@@ -7,7 +7,6 @@ import { Article } from '@/features/articles/types'
 import { formatDate } from '@/lib/date'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
-import { routing } from '@/lib/i18n/routing'
 import heroImage from '@/public/images/bg-news.png'
 import { JsonLd } from '@/shared/seo'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
@@ -25,7 +24,7 @@ export const dynamicParams = true
 export async function generateStaticParams() {
   const slugs = await getAllArticleSlugs()
 
-  return routing.locales.flatMap((locale) => slugs.map((slug) => ({ locale, slug })))
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({
