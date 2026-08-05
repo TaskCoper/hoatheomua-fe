@@ -1,4 +1,3 @@
-import { FallingPetals } from '@/components/falling-petals'
 import SanitizedHtml from '@/components/sanitized-html'
 import { Button } from '@/components/ui/button'
 import { getArticlesQuery } from '@/features/articles/queries'
@@ -34,13 +33,8 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale; slug: string }>
 }): Promise<Metadata> {
   const { locale, slug } = await params
-  let article: Awaited<ReturnType<typeof getArticle>> | null = null
-  try {
-    article = await getArticle({ identifier: slug, locale })
-  } catch (error) {
-    console.error('[SSR] news article metadata fetch failed:', error)
-    article = null
-  }
+
+  const article = await getArticle({ identifier: slug, locale })
   const t = await getTranslations()
 
   return generateNewsDetailMetadata({
@@ -55,13 +49,7 @@ export async function generateMetadata({
 export default async function NewsDetailPage({ params }: { params: Promise<{ locale: Locale; slug: string }> }) {
   const { slug, locale } = await params
 
-  let article: Awaited<ReturnType<typeof getArticle>> | null = null
-  try {
-    article = await getArticle({ identifier: slug, locale })
-  } catch (error) {
-    console.error('[SSR] news article fetch failed:', error)
-    article = null
-  }
+  const article = await getArticle({ identifier: slug, locale })
 
   if (!article) {
     notFound()
@@ -84,7 +72,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ loc
       <JsonLd data={buildNewsArticleJsonLd(locale, article)} />
 
       <div className='relative w-full overflow-hidden'>
-        <FallingPetals />
+        {/* <FallingPetals /> */}
         <div className='mx-auto w-full max-w-5xl px-4 pb-12 pt-8 space-y-8'>
           {/* Header */}
           <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>

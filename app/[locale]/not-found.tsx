@@ -1,4 +1,3 @@
-import { FallingPetals } from '@/components/falling-petals'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
@@ -20,7 +19,7 @@ export default async function NotFoundPage() {
 
   return (
     <div className='relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-6 py-20 text-center'>
-      <FallingPetals />
+      {/* <FallingPetals /> */}
 
       <Link
         href='/'

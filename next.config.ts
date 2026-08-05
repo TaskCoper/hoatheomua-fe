@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
   experimental: {
+    useCache: true,
     optimizeCss: true,
     optimizePackageImports: [
       'motion',

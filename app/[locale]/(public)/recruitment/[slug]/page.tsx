@@ -26,13 +26,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params
 
-  let job: Awaited<ReturnType<typeof getCachedJobDescription>> | null = null
-  try {
-    job = await getCachedJobDescription(slug)
-  } catch (error) {
-    console.error('[SSR] job detail metadata fetch failed:', error)
-    job = null
-  }
+  const job = await getCachedJobDescription(slug)
 
   const t = await getTranslations()
 
@@ -43,13 +37,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ loca
   const { locale, slug } = await params
   setRequestLocale(locale)
 
-  let job: Awaited<ReturnType<typeof getCachedJobDescription>> | null = null
-  try {
-    job = await getCachedJobDescription(slug)
-  } catch (error) {
-    console.error('[SSR] job detail fetch failed:', error)
-    job = null
-  }
+  const job = await getCachedJobDescription(slug)
 
   if (!job) {
     notFound()

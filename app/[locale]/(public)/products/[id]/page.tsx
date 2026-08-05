@@ -13,9 +13,6 @@ import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-// pre-render the latest products at build time for faster initial loads.
-// older products are generated on first request (`dynamicParams = true`)
-// invalidate through ISR = 3600 and the revalidation webhook
 const STATIC_PRODUCT_LIMIT = 20
 
 export const dynamicParams = true
