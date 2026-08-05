@@ -123,6 +123,8 @@ export async function POST(req: Request) {
     return Response.json({ revalidated: false, reason: 'invalid-json' }, { status: 400 })
   }
 
+  console.log('JSON: ', json)
+
   const parsed = EntityBodySchema.safeParse(json)
   if (!parsed.success) {
     return Response.json({ revalidated: false, reason: 'invalid-body', issues: parsed.error.issues }, { status: 400 })
@@ -138,6 +140,9 @@ export async function POST(req: Request) {
   for (const tag of tags) {
     revalidateTag(tag, { expire: 0 })
   }
+
+  console.log('basePaths: ', basePaths)
+  console.log('tags: ', tags)
 
   return Response.json({ revalidated: true, paths, tags })
 }
