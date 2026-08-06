@@ -3,7 +3,7 @@ import { buildOgImageUrl } from '@/shared/seo'
 
 export const NEWS_BASE_PATH = '/news'
 
-type NewsCopy = SeoCopy & { breadcrumb: string }
+type NewsCopy = SeoCopy & { breadcrumb: string; pageLabel: string }
 
 export const NEWS_LIST_COPY = {
   vi: {
@@ -21,7 +21,8 @@ export const NEWS_LIST_COPY = {
       'cẩm nang hoa tươi'
     ],
     ogAlt: 'Tin tức và cảm hứng hoa từ Hoa Theo Mùa',
-    breadcrumb: 'Tin tức'
+    breadcrumb: 'Tin tức',
+    pageLabel: 'Trang'
   },
   en: {
     title: 'Flower Stories & Inspiration',
@@ -38,7 +39,8 @@ export const NEWS_LIST_COPY = {
       'florist journal Vietnam'
     ],
     ogAlt: 'Hoa Theo Mùa - Flower stories and inspiration',
-    breadcrumb: 'News'
+    breadcrumb: 'News',
+    pageLabel: 'Page'
   }
 } satisfies LocaleCopy<NewsCopy>
 

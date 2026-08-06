@@ -2,6 +2,7 @@ import { getCompanyGpkd, getCompanyHotlines } from '@/features/company/queries.s
 import type { Locale } from '@/lib/i18n/routing'
 import {
   buildPageMetadata,
+  buildSiteNavigationElements,
   BUSINESS_ADDRESS,
   BUSINESS_AREA_SERVED,
   BUSINESS_CURRENCIES_ACCEPTED,
@@ -15,6 +16,7 @@ import {
   ORGANIZATION_ID,
   SITE_NAME,
   SITE_URL,
+  siteNavigationRefs,
   SUPPORTED_LOCALES,
   WEBSITE_ID,
   type LocaleCopy,
@@ -82,12 +84,13 @@ export const generateHomeMetadata = (locale: Locale): Metadata => {
 }
 
 /**
- * Site-wide `Organization` + `Florist` (LocalBusiness) + `WebSite` graph. Other
- * pages reference these via `@id`, so the home page is the canonical definition.
- * The graph itself is locale-agnostic - `WebSite.inLanguage` lists all supported
- * locales rather than the current one.
+ * Site-wide `Organization` + `Florist` (LocalBusiness) + `WebSite` graph, plus
+ * the `SiteNavigationElement` list that makes the site eligible for sitelinks.
+ * Other pages reference these via `@id`, so the home page is the canonical
+ * definition. Everything except the nav labels is locale-agnostic -
+ * `WebSite.inLanguage` lists all supported locales rather than the current one.
  */
-export const buildHomeJsonLd = async () => {
+export const buildHomeJsonLd = async (locale: Locale) => {
   const [taxId, hotlines] = await Promise.all([getCompanyGpkd(), getCompanyHotlines()])
 
   return {
@@ -136,8 +139,10 @@ export const buildHomeJsonLd = async () => {
         url: SITE_URL,
         name: SITE_NAME,
         publisher: { '@id': ORGANIZATION_ID },
-        inLanguage: SUPPORTED_LOCALES.map(inLanguage)
-      }
+        inLanguage: SUPPORTED_LOCALES.map(inLanguage),
+        hasPart: siteNavigationRefs()
+      },
+      ...buildSiteNavigationElements(locale)
     ]
   }
 }

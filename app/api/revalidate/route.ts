@@ -1,4 +1,4 @@
-import { ARTICLES_CACHE_TAG } from '@/features/articles/queries.server'
+import { ARTICLES_CACHE_TAG, articleCacheTag } from '@/features/articles/queries.server'
 import { CATEGORIES_CACHE_TAG } from '@/features/categories/queries.server'
 import { PRODUCTS_CACHE_TAG } from '@/features/products/queries.server'
 import { RECRUITMENT_CACHE_TAG } from '@/features/recruitment/queries.server'
@@ -10,8 +10,9 @@ import { z } from 'zod'
  * On-demand revalidation webhook.
  *
  * The storefront caches backend data in two layers:
- *   1. `unstable_cache` wraps every backend read and is keyed by a **tag**
- *      (e.g. `products`, `articles`, `configs:products`).
+ *   1. `unstable_cache` / `'use cache'` wraps every backend read and is keyed by
+ *      a **tag** (e.g. `products`, `articles`, `article:<slug>`,
+ *      `configs:products`).
  *   2. Route-segment **ISR** (`export const revalidate`) caches the rendered
  *      HTML of each page.
  * A real content change must purge BOTH: the tag (so the next render reads fresh
@@ -121,7 +122,7 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] 
       // its ISR HTML via propagation); `ARTICLES_CACHE_TAG` covers the list.
       return {
         basePaths: [`/news/${body.slug}`, '/news'],
-        tags: [ARTICLES_CACHE_TAG]
+        tags: [ARTICLES_CACHE_TAG, articleCacheTag(body.slug)]
       }
     case 'newsList':
       return { basePaths: ['/news'], tags: [ARTICLES_CACHE_TAG] }

@@ -1,16 +1,19 @@
 import type { Locale } from '@/lib/i18n/routing'
-import { buildPageMetadata, DEFAULT_OG_IMAGE_DIMENSIONS } from '@/shared/seo'
+import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
+import { buildPageMetadata, DEFAULT_OG_IMAGE_DIMENSIONS, localePath } from '@/shared/seo'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
 import type { Metadata } from 'next'
 import { Article } from '../types'
 import { NEWS_BASE_PATH, NEWS_LIST_COPY, NEWS_OG_IMAGE_PATH } from './config'
 
-export const generateNewsListMetadata = (locale: Locale): Metadata => {
+export const generateNewsListMetadata = (locale: Locale, pageIndex: number = DEFAULT_PAGE_INDEX): Metadata => {
   const copy = NEWS_LIST_COPY[locale]
+  const isFirstPage = pageIndex <= DEFAULT_PAGE_INDEX
+  const suffix = `${copy.pageLabel} ${pageIndex}`
 
-  return buildPageMetadata({
+  const base = buildPageMetadata({
     locale,
-    copy,
+    copy: isFirstPage ? copy : { ...copy, title: `${copy.title} - ${suffix}` },
     basePath: NEWS_BASE_PATH,
     ogImage: {
       url: NEWS_OG_IMAGE_PATH,
@@ -19,6 +22,21 @@ export const generateNewsListMetadata = (locale: Locale): Metadata => {
       alt: copy.ogAlt ?? copy.title
     }
   })
+
+  if (isFirstPage) return base
+
+  const query = `?page=${pageIndex}`
+
+  return {
+    ...base,
+    alternates: {
+      canonical: `${localePath(locale, NEWS_BASE_PATH)}${query}`,
+      languages: {
+        vi: `${NEWS_BASE_PATH}${query}`,
+        en: `/en${NEWS_BASE_PATH}${query}`
+      }
+    }
+  }
 }
 
 type GenerateNewsDetailMetadataInput = {
@@ -26,15 +44,13 @@ type GenerateNewsDetailMetadataInput = {
   slug: string
   article: Article | null
   notFoundTitle: string
-  titleSuffix: string
 }
 
 export const generateNewsDetailMetadata = ({
   locale,
   slug,
   article,
-  notFoundTitle,
-  titleSuffix
+  notFoundTitle
 }: GenerateNewsDetailMetadataInput): Metadata => {
   if (!article) {
     return { title: notFoundTitle, robots: { index: false, follow: true } }
@@ -52,7 +68,7 @@ export const generateNewsDetailMetadata = ({
   const base = buildPageMetadata({
     locale,
     copy: {
-      title: `${article.title}${titleSuffix}`,
+      title: article.title,
       description: getFirstParagraphTextFromHtml(article.description),
       keywords: article.categories.map((cat) => cat.categoryName)
     },

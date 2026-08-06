@@ -98,7 +98,7 @@ export function ArticlePagination({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={hrefFor(pageIndex - 1)}
+            href={hasPreviousPage ? hrefFor(pageIndex - 1) : '#'}
             text={t('products.grid.previous')}
             aria-disabled={!hasPreviousPage || isFetching}
             className={!hasPreviousPage || isFetching ? 'pointer-events-none opacity-50' : undefined}
@@ -134,7 +134,7 @@ export function ArticlePagination({
 
         <PaginationItem>
           <PaginationNext
-            href={hrefFor(pageIndex + 1)}
+            href={hasNextPage ? hrefFor(pageIndex + 1) : '#'}
             text={t('products.grid.next')}
             aria-disabled={!hasNextPage || isFetching}
             className={!hasNextPage || isFetching ? 'pointer-events-none opacity-50' : undefined}

@@ -1,3 +1,4 @@
+import { getAllArticleSlugs } from '@/features/articles/queries.server'
 import { getAllJobSlugs } from '@/features/recruitment/queries.server'
 import { routing, type Locale } from '@/lib/i18n/routing'
 import { SITE_URL } from '@/shared/seo'
@@ -34,10 +35,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
-  // Every job gets its own indexable URL so crawlers find roles beyond the list's
-  // first page (the list only server-renders page 1). Best-effort - if the fetch
-  // fails, the static entries above still ship.
-  const jobSlugs = await getAllJobSlugs()
+  const [jobSlugs, articleSlugs] = await Promise.all([getAllJobSlugs(), getAllArticleSlugs()])
+
   const jobEntries: MetadataRoute.Sitemap = jobSlugs.flatMap((slug) =>
     routing.locales.map((locale) => ({
       url: `${SITE_URL}${localePath(locale, `/recruitment/${slug}`)}`,
@@ -52,5 +51,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   )
 
-  return [...staticEntries, ...jobEntries]
+  const articleEntries: MetadataRoute.Sitemap = articleSlugs.flatMap((slug) =>
+    routing.locales.map((locale) => ({
+      url: `${SITE_URL}${localePath(locale, `/news/${slug}`)}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+      alternates: {
+        languages: Object.fromEntries(routing.locales.map((l) => [l, `${SITE_URL}${localePath(l, `/news/${slug}`)}`]))
+      }
+    }))
+  )
+
+  return [...staticEntries, ...articleEntries, ...jobEntries]
 }
