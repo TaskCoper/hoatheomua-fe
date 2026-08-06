@@ -1,4 +1,4 @@
-import { ARTICLES_CACHE_TAG, articleCacheTag } from '@/features/articles/queries.server'
+import { ARTICLES_CACHE_TAG } from '@/features/articles/queries.server'
 import { CATEGORIES_CACHE_TAG } from '@/features/categories/queries.server'
 import { PRODUCTS_CACHE_TAG } from '@/features/products/queries.server'
 import { RECRUITMENT_CACHE_TAG } from '@/features/recruitment/queries.server'
@@ -11,7 +11,7 @@ import { z } from 'zod'
  *
  * The storefront caches backend data in two layers:
  *   1. `unstable_cache` wraps every backend read and is keyed by a **tag**
- *      (e.g. `products`, `articles`, `article:<slug>`, `configs:products`).
+ *      (e.g. `products`, `articles`, `configs:products`).
  *      Do NOT switch these to `'use cache'`: without a configured
  *      `cacheHandlers.default`, `'use cache'` resolves to Next's in-memory
  *      `DefaultCacheHandler`, whose LRU *and* tags manifest are per-process. On
@@ -124,12 +124,10 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] 
       // both the category tree and the product lists.
       return { basePaths: ['/products', '/'], tags: [CATEGORIES_CACHE_TAG, PRODUCTS_CACHE_TAG] }
     case 'news':
-      // The per-slug tag purges the detail page's own `getArticle` entry (and
-      // its ISR HTML via propagation); `ARTICLES_CACHE_TAG` covers the list.
-      return {
-        basePaths: [`/news/${body.slug}`, '/news'],
-        tags: [ARTICLES_CACHE_TAG, articleCacheTag(body.slug)]
-      }
+      // Mirrors the 'product' case: no per-slug data tag, so the blanket
+      // `ARTICLES_CACHE_TAG` purge busts every cached article; `revalidatePath`
+      // rebuilds this article's own ISR HTML.
+      return { basePaths: [`/news/${body.slug}`, '/news'], tags: [ARTICLES_CACHE_TAG] }
     case 'newsList':
       return { basePaths: ['/news'], tags: [ARTICLES_CACHE_TAG] }
     case 'config':

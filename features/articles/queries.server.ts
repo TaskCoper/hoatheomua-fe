@@ -10,8 +10,6 @@ import type { Article } from './types'
 
 export const ARTICLES_CACHE_TAG = 'articles'
 
-export const articleCacheTag = (slug: string) => `article:${slug}`
-
 const SLUG_CRAWL_PAGE_SIZE = 50
 const REVALIDATE_SECONDS = 3600
 
@@ -39,7 +37,7 @@ const cachedGetArticle = cache(
         }
       },
       ['article-detail', identifier, locale],
-      { tags: [ARTICLES_CACHE_TAG, articleCacheTag(identifier)], revalidate: REVALIDATE_SECONDS }
+      { tags: [ARTICLES_CACHE_TAG], revalidate: REVALIDATE_SECONDS }
     )()
 )
 
