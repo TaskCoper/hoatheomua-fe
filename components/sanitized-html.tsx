@@ -1,8 +1,8 @@
 'use client'
 
 import { useRouter } from '@/lib/i18n/navigation'
+import { sanitizeRichText } from '@/lib/sanitize'
 import { cn } from '@/shared/utils'
-import DOMPurify from 'isomorphic-dompurify'
 import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
 
 interface SanitizedHtmlProps {
@@ -14,62 +14,13 @@ interface SanitizedHtmlProps {
   as?: keyof React.JSX.IntrinsicElements
 }
 
-// Configuration for DOMPurify to keep the component body clean
-const PURIFY_CONFIG = {
-  ALLOWED_TAGS: [
-    'p',
-    'br',
-    'hr',
-    'strong',
-    'em',
-    'u',
-    's',
-    'sub',
-    'sup',
-    'code',
-    'pre',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'ul',
-    'ol',
-    'li',
-    'blockquote',
-    'a',
-    'img',
-    'span',
-    'div',
-    'figure',
-    'figcaption',
-    'table',
-    'thead',
-    'tbody',
-    'tfoot',
-    'tr',
-    'th',
-    'td',
-    'caption',
-    'colgroup',
-    'col'
-  ],
-  ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'width', 'height', 'colspan', 'rowspan', 'align', 'data-type'],
-  FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'font'],
-  FORBID_ATTR: ['onclick', 'onerror', 'onload', 'style', 'color', 'bgcolor', 'face']
-}
-
 export default function SanitizedHtml({ html, className, as: Component = 'div' }: SanitizedHtmlProps) {
   const router = useRouter()
 
-  // Server-safe base markup. This must be identical on the server and on the
-  // first client render so hydration matches; the DOMParser refinement below
-  // only runs after mount.
-  const baseHtml = useMemo(
-    () => DOMPurify.sanitize(html, PURIFY_CONFIG).replace(/ (style|class|bgcolor|color|align|face|size)="[^"]*"/gi, ''),
-    [html]
-  )
+  // Server-safe base markup. `sanitizeRichText` is DOM-free precisely so this
+  // runs identically here and during SSR; hydration depends on the two matching.
+  // The DOM refinement below only runs after mount.
+  const baseHtml = useMemo(() => sanitizeRichText(html), [html])
 
   const containerRef = useRef<HTMLElement>(null)
 

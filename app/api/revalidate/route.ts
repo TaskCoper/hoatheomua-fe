@@ -51,8 +51,11 @@ const ProductListBody = z.object({ entity: z.literal('productList') })
 // assignment). Also covers "campaign"/occasion categories.
 const CategoryBody = z.object({ entity: z.literal('category') })
 // A news article changed. `slug` is the article's public slug used in the
-// /news/{slug} URL (NOT the admin's numeric id).
-const NewsBody = z.object({ entity: z.literal('news'), slug: z.string().min(1) })
+// /news/{slug} URL (NOT the admin's numeric id). It is optional on purpose: an
+// admin that posts its numeric id instead still gets the `articles` tag purged
+// (so every article re-reads fresh within the 30s ISR window) rather than being
+// rejected outright with `invalid-body`, which would purge nothing for an hour.
+const NewsBody = z.object({ entity: z.literal('news'), slug: z.string().min(1).optional() })
 // News-list-wide change (new/deleted article, blog taxonomy edit) that should
 // refresh the listing but isn't tied to one article's page.
 const NewsListBody = z.object({ entity: z.literal('newsList') })
@@ -124,10 +127,10 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] 
       // both the category tree and the product lists.
       return { basePaths: ['/products', '/'], tags: [CATEGORIES_CACHE_TAG, PRODUCTS_CACHE_TAG] }
     case 'news':
-      // Mirrors the 'product' case: no per-slug data tag, so the blanket
-      // `ARTICLES_CACHE_TAG` purge busts every cached article; `revalidatePath`
-      // rebuilds this article's own ISR HTML.
-      return { basePaths: [`/news/${body.slug}`, '/news'], tags: [ARTICLES_CACHE_TAG] }
+      return {
+        basePaths: body.slug ? [`/news/${body.slug}`, '/news'] : ['/news'],
+        tags: [ARTICLES_CACHE_TAG]
+      }
     case 'newsList':
       return { basePaths: ['/news'], tags: [ARTICLES_CACHE_TAG] }
     case 'config':
