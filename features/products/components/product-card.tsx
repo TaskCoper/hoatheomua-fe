@@ -46,6 +46,7 @@ export default function ProductCard({
   const hasDiscount = oldPrice > retail
   const discountPercent = hasDiscount ? Math.round(((oldPrice - retail) / oldPrice) * 100) : 0
   const avatar = product.coverImage
+  const isOutOfStock = (product.availableForSale ?? 0) <= 0
 
   return (
     <motion.article
@@ -120,6 +121,17 @@ export default function ProductCard({
                 -{discountPercent}%
               </Badge>
             </motion.span>
+          ) : null}
+
+          {isOutOfStock ? (
+            <span className='absolute right-2 top-2 inline-flex'>
+              <Badge
+                variant='secondary'
+                className='bg-rose-500 px-2 py-0.5 text-[0.625rem] font-semibold text-background shadow-sm backdrop-blur-sm'
+              >
+                {t('products.card.outOfStock')}
+              </Badge>
+            </span>
           ) : null}
         </Link>
 

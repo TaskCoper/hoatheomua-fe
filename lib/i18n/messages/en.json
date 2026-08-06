@@ -1314,7 +1314,8 @@
     "card": {
       "addToFavorites": "Add {name} to favorites",
       "addToCart": "Add {name} to cart",
-      "priceFrom": "From"
+      "priceFrom": "From",
+      "outOfStock": "Out of stock"
     },
     "summary": {
       "trustBadges": {

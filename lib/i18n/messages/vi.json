@@ -1314,7 +1314,8 @@
     "card": {
       "addToFavorites": "Thêm {name} vào yêu thích",
       "addToCart": "Thêm {name} vào giỏ",
-      "priceFrom": "Giá từ"
+      "priceFrom": "Giá từ",
+      "outOfStock": "Hết hàng"
     },
     "summary": {
       "trustBadges": {
