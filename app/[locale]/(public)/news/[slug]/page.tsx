@@ -33,6 +33,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params
 
+  setRequestLocale(locale)
+
   const article = await getArticle({ identifier: slug, locale })
   const t = await getTranslations()
 
