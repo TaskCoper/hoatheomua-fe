@@ -3,7 +3,8 @@ import 'server-only'
 import { jobDescriptionService } from '@/features/recruitment/services'
 import type { JobDescriptionParam, JobDetail } from '@/features/recruitment/types'
 import { isAxiosError } from 'axios'
-import { cacheLife, cacheTag, unstable_cache } from 'next/cache'
+import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 
 export const RECRUITMENT_CACHE_TAG = 'recruitment'
 
@@ -14,18 +15,21 @@ export const getCachedJobs = (params: JobDescriptionParam, locale: string) =>
     { tags: [RECRUITMENT_CACHE_TAG], revalidate: 600 }
   )()
 
-export async function getCachedJobDescription(slug: string): Promise<JobDetail | null> {
-  'use cache'
-  cacheLife('hours')
-  cacheTag(RECRUITMENT_CACHE_TAG)
-
-  try {
-    return await jobDescriptionService.getDescription({ slug })
-  } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404) return null
-    throw error
-  }
-}
+export const getCachedJobDescription = cache(
+  (slug: string): Promise<JobDetail | null> =>
+    unstable_cache(
+      async () => {
+        try {
+          return await jobDescriptionService.getDescription({ slug })
+        } catch (error) {
+          if (isAxiosError(error) && error.response?.status === 404) return null
+          throw error
+        }
+      },
+      ['recruitment-detail', slug],
+      { tags: [RECRUITMENT_CACHE_TAG], revalidate: 3600 }
+    )()
+)
 
 export const getAllJobSlugs = async (): Promise<string[]> => {
   const slugs: string[] = []

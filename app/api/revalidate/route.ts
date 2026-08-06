@@ -10,11 +10,17 @@ import { z } from 'zod'
  * On-demand revalidation webhook.
  *
  * The storefront caches backend data in two layers:
- *   1. `unstable_cache` / `'use cache'` wraps every backend read and is keyed by
- *      a **tag** (e.g. `products`, `articles`, `article:<slug>`,
- *      `configs:products`).
- *   2. Route-segment **ISR** (`export const revalidate`) caches the rendered
- *      HTML of each page.
+ *   1. `unstable_cache` wraps every backend read and is keyed by a **tag**
+ *      (e.g. `products`, `articles`, `article:<slug>`, `configs:products`).
+ *      Do NOT switch these to `'use cache'`: without a configured
+ *      `cacheHandlers.default`, `'use cache'` resolves to Next's in-memory
+ *      `DefaultCacheHandler`, whose LRU *and* tags manifest are per-process. On
+ *      Vercel that means `revalidateTag` only purges the lambda that happened to
+ *      serve the webhook, and every other instance keeps serving its own copy
+ *      until `cacheLife` expires. `unstable_cache` goes through the
+ *      IncrementalCache (Vercel Data Cache), which is shared across instances,
+ *      and is additionally bypassed outright during an on-demand revalidation.
+ *   2. Route-segment **ISR** caches the rendered HTML of each page.
  * A real content change must purge BOTH: the tag (so the next render reads fresh
  * data) and the page paths (so the cached HTML is rebuilt). Each admin mutation
  * therefore maps to a set of `tags` + a set of `paths` — see `planForEntity`.

@@ -25,11 +25,6 @@ const vndFormatter = new Intl.NumberFormat('vi-VN', {
 
 const formatVnd = (value: number) => vndFormatter.format(value)
 
-/**
- * Human label for a variant chip. `productName` is the most distinctive field
- * (e.g. "…L.2026" vs "…S.2026"); size/colour are frequently null or shared
- * across children, so they're only a fallback.
- */
 function variantLabel(child: ProductDetail): string {
   const name = child.productName?.trim()
   if (name) return name
@@ -151,7 +146,7 @@ export default function ProductPurchaseBox() {
                     onClick={() => setSelectedId(child.id)}
                     aria-pressed={isSelected}
                     className={cn(
-                      'rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
+                      'cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
                       isSelected
                         ? 'border-primary bg-primary/10 text-primary'
                         : 'border-foreground/10 bg-secondary/20 text-secondary-foreground hover:border-primary/40',

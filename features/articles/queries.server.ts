@@ -1,7 +1,8 @@
 import 'server-only'
 
 import { isAxiosError } from 'axios'
-import { cacheLife, cacheTag } from 'next/cache'
+import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 import { GetArticleParams } from './hooks/use-get-article'
 import { GetArticlesParams } from './hooks/use-get-articles'
 import articleService from './services'
@@ -12,64 +13,67 @@ export const ARTICLES_CACHE_TAG = 'articles'
 export const articleCacheTag = (slug: string) => `article:${slug}`
 
 const SLUG_CRAWL_PAGE_SIZE = 50
+const REVALIDATE_SECONDS = 3600
 
 type ArticlesListParams = GetArticlesParams & { locale: string }
 
 // used on first page for faster data
-export async function getCachedArticles(params: ArticlesListParams) {
-  'use cache'
-  cacheLife('hours')
-  cacheTag(ARTICLES_CACHE_TAG)
-
-  return articleService.getArticles(params)
-}
+export const getCachedArticles = (params: ArticlesListParams) =>
+  unstable_cache(() => articleService.getArticles(params), ['articles-list', JSON.stringify(params)], {
+    tags: [ARTICLES_CACHE_TAG],
+    revalidate: REVALIDATE_SECONDS
+  })()
 
 // user for other pages for live SSR
 export const getArticles = (params: ArticlesListParams) => articleService.getArticles(params)
 
-export async function getArticle({
-  identifier,
-  locale
-}: GetArticleParams & { locale: string }): Promise<Article | null> {
-  'use cache'
-  cacheLife('hours')
-  cacheTag(ARTICLES_CACHE_TAG, articleCacheTag(identifier))
+const cachedGetArticle = cache(
+  (identifier: string, locale: string): Promise<Article | null> =>
+    unstable_cache(
+      async () => {
+        try {
+          return await articleService.getArticle({ identifier, locale })
+        } catch (error) {
+          if (isAxiosError(error) && error.response?.status === 404) return null
+          throw error
+        }
+      },
+      ['article-detail', identifier, locale],
+      { tags: [ARTICLES_CACHE_TAG, articleCacheTag(identifier)], revalidate: REVALIDATE_SECONDS }
+    )()
+)
 
-  try {
-    return await articleService.getArticle({ identifier, locale })
-  } catch (error) {
-    if (isAxiosError(error) && error.response?.status === 404) return null
-    throw error
-  }
-}
+export const getArticle = ({ identifier, locale }: GetArticleParams & { locale: string }) =>
+  cachedGetArticle(identifier, locale)
 
-export async function getAllArticleSlugs(): Promise<string[]> {
-  'use cache'
-  cacheLife('hours')
-  cacheTag(ARTICLES_CACHE_TAG)
+export const getAllArticleSlugs = (): Promise<string[]> =>
+  unstable_cache(
+    async () => {
+      const slugs: string[] = []
+      let pageIndex = 1
 
-  const slugs: string[] = []
-  let pageIndex = 1
+      try {
+        while (true) {
+          const page = await articleService.getArticles({
+            pageIndex,
+            pageSize: SLUG_CRAWL_PAGE_SIZE,
+            locale: 'vi'
+          })
 
-  try {
-    while (true) {
-      const page = await articleService.getArticles({
-        pageIndex,
-        pageSize: SLUG_CRAWL_PAGE_SIZE,
-        locale: 'vi'
-      })
+          for (const item of page.value.items) {
+            slugs.push(item.slug)
+          }
 
-      for (const item of page.value.items) {
-        slugs.push(item.slug)
+          if (!page.value.hasNextPage) break
+          pageIndex += 1
+        }
+      } catch (error) {
+        console.error('[SSR] article slugs enumeration failed:', error)
+        return slugs
       }
 
-      if (!page.value.hasNextPage) break
-      pageIndex += 1
-    }
-  } catch (error) {
-    console.error('[SSR] article slugs enumeration failed:', error)
-    return slugs
-  }
-
-  return slugs
-}
+      return slugs
+    },
+    ['article-slugs'],
+    { tags: [ARTICLES_CACHE_TAG], revalidate: REVALIDATE_SECONDS }
+  )()
