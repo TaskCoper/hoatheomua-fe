@@ -29,9 +29,10 @@ export default async function TestimonialSection() {
       </div>
 
       <div className='mx-auto w-full max-w-7xl space-y-4 px-4 py-4 relative'>
-        <h1 className='animate-in fade-in slide-in-from-bottom-4 duration-700 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
+        {/* h2: the home page's single h1 is the "Hoa Mỗi Ngày" section heading. */}
+        <h2 className='animate-in fade-in slide-in-from-bottom-4 duration-700 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
           {t('home.testimonial.title')}
-        </h1>
+        </h2>
 
         <TestimonialCarousel items={items} locale={locale as Locale} />
       </div>

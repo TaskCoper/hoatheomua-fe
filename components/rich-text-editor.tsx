@@ -39,7 +39,7 @@ import { Card, CardBody } from './tiptap-ui-primitive/card'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './tiptap-ui-primitive/dropdown-menu'
 import { Progress } from './ui/progress'
 
-interface RichTextEditorProps {
+export interface RichTextEditorProps {
   isDisplay?: boolean
   isInitialFocus?: boolean
   compact?: boolean

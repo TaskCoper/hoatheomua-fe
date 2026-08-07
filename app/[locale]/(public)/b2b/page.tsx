@@ -12,11 +12,15 @@ import { getB2BOverview } from '@/features/b2b/data.server'
 import { buildB2BJsonLd, generateB2BMetadata } from '@/features/b2b/seo'
 import { getB2BServiceDetails } from '@/features/b2b/service/data.server'
 import type { Locale } from '@/lib/i18n/routing'
-import FloatingPetals from '@/shared/components/floating-petals'
+import FloatingPetalsClient from '@/shared/components/floating-petals-client'
 import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 
-export const revalidate = 30
+// The b2b content comes from the `b2bServices` config group, which the admin
+// webhook already purges (`configTag('b2bServices')` + `/b2b`) the moment it
+// changes. A 30s window just rebuilt this page 120x/hour for data that hadn't
+// moved; 1h is the safety net for a webhook that never arrives.
+export const revalidate = 3600
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params
@@ -35,7 +39,7 @@ export default async function B2BPage({ params }: { params: Promise<{ locale: Lo
     <ScopedIntlProvider namespaces={['b2b']}>
       <JsonLd data={buildB2BJsonLd(locale)} />
       <div className='relative overflow-hidden'>
-        <FloatingPetals />
+        <FloatingPetalsClient />
         <B2BHeroSection hero={overview.hero} locale={locale} />
         <B2BTrustBarSection trustBar={overview.trustBar} locale={locale} />
         <B2BServicesSection services={overview.services} cards={cards} locale={locale} />

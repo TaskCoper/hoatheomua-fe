@@ -1,4 +1,4 @@
-import RichTextEditor from '@/components/rich-text-editor'
+import RichTextEditor from '@/components/rich-text-editor-client'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

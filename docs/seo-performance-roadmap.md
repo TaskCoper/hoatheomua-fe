@@ -1,5 +1,10 @@
 # Lộ trình SEO & Performance
 
+> ⚠️ **LỖI THỜI (2026-08-07).** Phần lớn checklist ở đây đã hoàn thành hoặc đã bị thay thế
+> (sitemap, robots, JSON-LD gốc, webhook revalidate đều đã có; caching đã chuyển sang
+> `unstable_cache` + tag purge). Các bảng "rendering từng trang" bên dưới không còn khớp với code.
+> Giữ lại làm tư liệu lịch sử. Xem **[`toi-uu-hoa-audit.md`](./toi-uu-hoa-audit.md)** để biết hiện trạng đã đo.
+
 Tài liệu này liệt kê các việc **đã làm**, **phải làm tiếp**, và **nên làm** để site lên top tìm kiếm và đạt Core Web Vitals tốt. Mỗi mục có lý do, mức ưu tiên, và snippet code mẫu.
 
 > Ký hiệu: ✅ = đã xong, 🔥 = bắt buộc, ⚡ = ưu tiên cao, 💡 = nice-to-have.

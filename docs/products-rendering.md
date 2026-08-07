@@ -1,5 +1,10 @@
 # Rendering trang Sản phẩm
 
+> ⚠️ **LỖI THỜI (2026-08-07).** Tài liệu này mô tả một thiết kế đã bị thay thế: thư mục `_components/`,
+> cursor pagination, `React.cache()` bọc `fetch`, và `ItemList` dựng từ `initialItems` — đều không còn
+> đúng với code hiện tại (caching giờ là `unstable_cache` + tag purge; phân trang dùng nuqs).
+> Giữ lại làm tư liệu lịch sử. Xem **[`toi-uu-hoa-audit.md`](./toi-uu-hoa-audit.md)** để biết hành vi hiện tại.
+
 Tài liệu này mô tả **chính xác** cách hai trang `/products` và `/products/[id]` render trong branch `feat/21-products-page`, kèm lý do cho từng quyết định ở góc độ SEO và performance.
 
 > Tham chiếu code: `app/[locale]/(public)/products/`, `app/[locale]/(public)/products/[id]/`, `features/products/`.

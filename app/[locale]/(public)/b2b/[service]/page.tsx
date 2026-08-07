@@ -29,7 +29,8 @@ import { JsonLd } from '@/shared/seo'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 30
+// Same `b2bServices` config group as /b2b, same webhook purge - see the note there.
+export const revalidate = 3600
 
 const isValidSlug = (value: string): value is B2BServiceSlug => (B2B_SERVICE_SLUGS as readonly string[]).includes(value)
 

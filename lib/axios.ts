@@ -232,8 +232,15 @@ export const createApiClient = (
 }
 
 const AUTH_TOKEN_CODES = {
-  // Only these codes justify a silent refresh - MissingAccessToken means the
-  // caller was anonymous, which is not a refresh candidate.
+  // `MissingAccessToken` has to stay here: the access token cookie is short-lived,
+  // so a returning user routinely arrives with only the refresh token and the API
+  // reports the access token as missing rather than expired. Dropping it would log
+  // those sessions out.
+  //
+  // The cost this used to carry - anonymous visitors triggering a refresh that
+  // could never succeed - is handled upstream instead: `useGetMe` only fires when
+  // the middleware's `hasSession` hint cookie says there is a session to fetch, so
+  // an anonymous page view now makes no auth request at all.
   expiredAccessTokenCodes: ['ExpiredAccessToken', 'MissingAccessToken'],
   expiredRefreshTokenCodes: ['InvalidRefreshToken']
 } as const

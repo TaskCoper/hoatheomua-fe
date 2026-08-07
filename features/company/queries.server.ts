@@ -1,131 +1,67 @@
 import 'server-only'
 
+import { CONTENT_LIFE } from '@/lib/cache-life'
 import configService from '@/services/config.service'
 import type { CompanyConfigItem, ContactConfigItem } from '@/types/config.type'
-import { unstable_cache } from 'next/cache'
-import { cache } from 'react'
+import { cacheLife, cacheTag } from 'next/cache'
 
-const REVALIDATE_SECONDS = 60 * 60 // 1h
+async function readCompanyValue<K extends CompanyConfigItem['key']>(key: K): Promise<string | null> {
+  'use cache'
+  cacheTag('configs:company')
+  cacheLife(CONTENT_LIFE)
 
-const withPersistentCache = <T>(fetcher: () => Promise<T>, key: string[], tag: string) =>
-  unstable_cache(fetcher, key, { revalidate: REVALIDATE_SECONDS, tags: [tag] })
+  try {
+    const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: K }>>({
+      group: 'company',
+      key
+    })
 
-export const getCompanyBgVideo = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.bg_video' }>>(
-            {
-              group: 'company',
-              key: 'company.bg_video'
-            }
-          )
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['company-bg-video'],
-      'configs:company'
-    )()
-)
+    const value = configs[0]?.value.value
+    return typeof value === 'string' ? value : null
+  } catch {
+    return null
+  }
+}
 
-export const getCompanyBgMusic = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.bg_music' }>>(
-            {
-              group: 'company',
-              key: 'company.bg_music'
-            }
-          )
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['company-bg-music'],
-      'configs:company'
-    )()
-)
+async function readContactValue<K extends ContactConfigItem['key']>(key: K): Promise<string | null> {
+  'use cache'
+  cacheTag('configs:contact')
+  cacheLife(CONTENT_LIFE)
 
-export const getCompanyGpkd = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.gpkd' }>>({
-            group: 'company',
-            key: 'company.gpkd'
-          })
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['company-gpkd'],
-      'configs:company'
-    )()
-)
+  try {
+    const configs = await configService.getPublicConfigs<Extract<ContactConfigItem, { key: K }>>({
+      group: 'contact',
+      key
+    })
+    const value = configs[0]?.value.value
+    return typeof value === 'string' ? value : null
+  } catch {
+    return null
+  }
+}
 
-export const getContactPhone = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<ContactConfigItem, { key: 'contact.phone' }>>({
-            group: 'contact',
-            key: 'contact.phone'
-          })
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['contact-phone'],
-      'configs:contact'
-    )()
-)
+export const getCompanyBgVideo = () => readCompanyValue('company.bg_video')
 
-export const getContactEmail = cache(
-  (): Promise<string | null> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<ContactConfigItem, { key: 'contact.email' }>>({
-            group: 'contact',
-            key: 'contact.email'
-          })
-          return configs[0]?.value.value ?? null
-        } catch {
-          return null
-        }
-      },
-      ['contact-email'],
-      'configs:contact'
-    )()
-)
+export const getCompanyBgMusic = () => readCompanyValue('company.bg_music')
 
-export const getCompanyHotlines = cache(
-  (): Promise<string[]> =>
-    withPersistentCache(
-      async () => {
-        try {
-          const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.hotlines' }>>(
-            {
-              group: 'company',
-              key: 'company.hotlines'
-            }
-          )
-          return configs[0]?.value.options.map((option) => option.value) ?? []
-        } catch {
-          return []
-        }
-      },
-      ['company-hotlines'],
-      'configs:company'
-    )()
-)
+export const getCompanyGpkd = () => readCompanyValue('company.gpkd')
+
+export const getContactPhone = () => readContactValue('contact.phone')
+
+export const getContactEmail = () => readContactValue('contact.email')
+
+export async function getCompanyHotlines(): Promise<string[]> {
+  'use cache'
+  cacheTag('configs:company')
+  cacheLife(CONTENT_LIFE)
+
+  try {
+    const configs = await configService.getPublicConfigs<Extract<CompanyConfigItem, { key: 'company.hotlines' }>>({
+      group: 'company',
+      key: 'company.hotlines'
+    })
+    return configs[0]?.value.options.map((option) => option.value) ?? []
+  } catch {
+    return []
+  }
+}

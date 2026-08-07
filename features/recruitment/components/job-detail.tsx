@@ -1,6 +1,6 @@
 'use client'
 
-import SanitizedHtml from '@/components/sanitized-html'
+import RichTextBody from '@/components/rich-text-body'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useHasMounted } from '@/hooks/use-has-mounted'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname } from '@/lib/i18n/navigation'
+import { sanitizeRichText } from '@/lib/sanitize'
 import { cn } from '@/shared/utils'
 import {
   ArrowDown01Icon,
@@ -203,7 +204,9 @@ export default function JobDetail({ job, detailHref }: JobDetailProps) {
                   !isDescriptionExpanded && showDescriptionToggle && 'max-h-96'
                 )}
               >
-                <SanitizedHtml html={description} />
+                {/* Client component: the job arrives from a client query, so it
+                    sanitises here rather than through the server `SanitizedHtml`. */}
+                <RichTextBody html={sanitizeRichText(description)} />
               </div>
 
               {showDescriptionToggle && !isDescriptionExpanded ? (

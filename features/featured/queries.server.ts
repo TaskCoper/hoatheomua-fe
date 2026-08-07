@@ -1,11 +1,16 @@
 import 'server-only'
 
+import { CONTENT_LIFE } from '@/lib/cache-life'
 import configService from '@/services/config.service'
 import type { FeaturedCard, FeaturedCollection, FeaturedCollectionConfigItem } from '@/types/config.type'
-import { unstable_cache } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
-const fetchFeaturedCollection = async (): Promise<FeaturedCollection | null> => {
+export async function getFeaturedCollection(): Promise<FeaturedCollection | null> {
+  'use cache'
+  cacheTag('configs:products')
+  cacheLife(CONTENT_LIFE)
+
   try {
     const configs = await configService.getPublicConfigs<FeaturedCollectionConfigItem>({
       group: 'products',
@@ -19,18 +24,13 @@ const fetchFeaturedCollection = async (): Promise<FeaturedCollection | null> => 
   }
 }
 
-export const getFeaturedCollection = cache(() =>
-  unstable_cache(fetchFeaturedCollection, ['featured-collection'], {
-    revalidate: 60 * 60,
-    tags: ['configs:products']
-  })()
-)
-
 export interface FeaturedCardWithFlags {
   card: FeaturedCard
   hasCampaigns: boolean
 }
 
+// Plain React `cache()`, not `use cache`: this only filters an already-cached
+// collection, so it needs per-request dedupe rather than its own cache entry.
 export const getFeaturedCard = cache(async (id: string): Promise<FeaturedCardWithFlags | null> => {
   const collection = await getFeaturedCollection()
   if (!collection) return null

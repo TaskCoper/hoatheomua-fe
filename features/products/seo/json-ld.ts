@@ -1,4 +1,4 @@
-import type { Product, ProductDetail } from '@/features/products/types'
+import type { ProductDetail } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
 import { buildBreadcrumbList, inLanguage, ORGANIZATION_ID, SITE_URL, WEBSITE_ID } from '@/shared/seo'
 import { PRODUCT_DEFAULT_FALLBACK_IMAGE, PRODUCTS_LIST_COPY, PRODUCTS_OG_IMAGE_URL } from './config'
@@ -9,7 +9,10 @@ const priceValidUntil = () => {
   return new Date(now.getFullYear(), 11, 31).toISOString().split('T')[0]
 }
 
-export const buildProductsCollectionJsonLd = (locale: Locale, items: Product[]) => {
+// `items` are the products the page actually renders above the fold. Google uses
+// the ItemList to decide whether a collection page is eligible for the product
+// carousel in the SERP, so passing an empty array silently drops that eligibility.
+export const buildProductsCollectionJsonLd = (locale: Locale, items: ProductDetail[]) => {
   const copy = PRODUCTS_LIST_COPY[locale]
   const path = getProductsListPath(locale)
   const url = getProductsListUrl(locale)
@@ -23,8 +26,8 @@ export const buildProductsCollectionJsonLd = (locale: Locale, items: Product[]) 
           numberOfItems: items.length,
           itemListElement: items.map((product, index) => {
             const productUrl = getProductUrl(locale, product.id)
-            const available = Number(product.availableForSaleRaw) > 0
-            const price = Number(product.priceRaw)
+            const available = (product.availableForSale ?? 0) > 0
+            const price = product.price ?? 0
             return {
               '@type': 'ListItem' as const,
               position: index + 1,

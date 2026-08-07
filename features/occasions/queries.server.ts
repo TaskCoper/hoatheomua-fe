@@ -1,34 +1,40 @@
 import 'server-only'
 
+import { CONTENT_LIFE } from '@/lib/cache-life'
 import configService from '@/services/config.service'
 import type { OccasionCard, OccasionsCollection, OccasionsCollectionConfigItem } from '@/types/config.type'
-import { unstable_cache } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
-const fetchOccasionsCollection = async (): Promise<OccasionsCollection | null> => {
+export async function getOccasionsCollection(): Promise<OccasionsCollection | null> {
+  'use cache'
+  cacheTag('configs:products')
+  cacheLife(CONTENT_LIFE)
+
   try {
     const configs = await configService.getPublicConfigs<OccasionsCollectionConfigItem>({
       group: 'products',
       key: 'products.occasions'
     })
+
     const raw = configs[0]?.value.value
-    if (!raw) return null
+    if (!raw) {
+      return null
+    }
+
     return JSON.parse(raw) as OccasionsCollection
   } catch {
     return null
   }
 }
 
-export const getOccasionsCollection = cache(() =>
-  unstable_cache(fetchOccasionsCollection, ['occasions-collection'], {
-    revalidate: 60 * 60,
-    tags: ['configs:products']
-  })()
-)
-
 export const getOccasionCard = cache(async (id: string): Promise<OccasionCard | null> => {
   const collection = await getOccasionsCollection()
-  if (!collection) return null
+
+  if (!collection) {
+    return null
+  }
+
   const card = collection.cards.find((c) => c.id === id && c.enabled)
   return card ?? null
 })

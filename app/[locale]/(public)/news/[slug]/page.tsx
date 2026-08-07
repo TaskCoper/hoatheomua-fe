@@ -20,6 +20,12 @@ const RELATED_RENDER_SIZE = 3
 
 export const dynamicParams = true
 
+// Backstop for the on-demand purge. The `news` webhook accepts an optional slug
+// precisely because admins sometimes post a numeric id instead - in that case
+// only the `articles` tag is purged and this page's HTML would otherwise never
+// be rebuilt.
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   const slugs = await getAllArticleSlugs()
 

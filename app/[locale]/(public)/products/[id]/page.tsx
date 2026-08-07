@@ -17,6 +17,13 @@ const STATIC_PRODUCT_LIMIT = 20
 
 export const dynamicParams = true
 
+// Freshness normally arrives on-demand: the admin webhook purges the `products`
+// tag and revalidates `/products/{id}`. Without a window here, though, a webhook
+// that is missed, dropped, or sent with the wrong id leaves this HTML stale
+// forever. An hourly rebuild bounds that failure without meaningfully denting
+// the cache hit rate.
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   const ids = await getAllProductIds(STATIC_PRODUCT_LIMIT)
   return routing.locales.flatMap((locale) => ids.map((id) => ({ locale, id })))

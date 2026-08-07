@@ -43,9 +43,10 @@ export default async function WhyChooseUsSection() {
             color='#516c6c'
           />
 
-          <h1 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
+          {/* h2: the home page's single h1 is the "Hoa Mỗi Ngày" section heading. */}
+          <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
             {t('home.whyChooseUs.title')}
-          </h1>
+          </h2>
 
           <SparkleDivider
             className='min-w-0 max-w-96 flex-1 hidden sm:flex'

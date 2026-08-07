@@ -10,16 +10,25 @@ import { z } from 'zod'
  * On-demand revalidation webhook.
  *
  * The storefront caches backend data in two layers:
- *   1. `unstable_cache` wraps every backend read and is keyed by a **tag**
- *      (e.g. `products`, `articles`, `configs:products`).
- *      Do NOT switch these to `'use cache'`: without a configured
- *      `cacheHandlers.default`, `'use cache'` resolves to Next's in-memory
- *      `DefaultCacheHandler`, whose LRU *and* tags manifest are per-process. On
- *      Vercel that means `revalidateTag` only purges the lambda that happened to
- *      serve the webhook, and every other instance keeps serving its own copy
- *      until `cacheLife` expires. `unstable_cache` goes through the
- *      IncrementalCache (Vercel Data Cache), which is shared across instances,
- *      and is additionally bypassed outright during an on-demand revalidation.
+ *   1. `'use cache'` wraps every backend read, tagged via `cacheTag`
+ *      (e.g. `products`, `articles`, `configs:products`) with lifetimes from
+ *      `lib/cache-life.ts`.
+ *
+ *      KNOWN LIMITATION on Vercel: with no `cacheHandlers.default` configured,
+ *      `'use cache'` resolves to Next's in-memory `DefaultCacheHandler`, whose
+ *      LRU *and* tags manifest are per-process. `revalidateTag` below therefore
+ *      only purges the instance that happens to serve this webhook; other warm
+ *      instances keep their own copy until `cacheLife.revalidate` expires. This
+ *      is why `revalidatePath` (step 2) is the load-bearing half of the purge -
+ *      it goes through the shared route cache, so the rebuilt HTML is correct
+ *      even when a sibling instance still holds a stale data entry.
+ *      Cache entries also do not survive a deploy: the cache key includes the
+ *      build id.
+ *      The fix, when it is worth the cost, is a shared handler - either
+ *      `'use cache: remote'` (needs `cacheComponents: true`, which currently
+ *      conflicts with every `revalidate`/`dynamicParams` route export) or a
+ *      custom `cacheHandlers.default`. Required either way when self-hosting
+ *      behind more than one instance.
  *   2. Route-segment **ISR** caches the rendered HTML of each page.
  * A real content change must purge BOTH: the tag (so the next render reads fresh
  * data) and the page paths (so the cached HTML is rebuilt). Each admin mutation

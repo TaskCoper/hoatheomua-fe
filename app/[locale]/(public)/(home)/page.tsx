@@ -1,5 +1,5 @@
 import { getCachedCategories } from '@/features/categories/queries.server'
-import { CategoryProductPage } from '@/features/categories/types'
+import { CategoryProductPage, type SortableCategory } from '@/features/categories/types'
 import HomeContent from '@/features/home/components/home-content'
 import { buildHomeJsonLd, generateHomeMetadata } from '@/features/home/seo'
 import { productsQueryKey } from '@/features/products/hooks/use-get-products'
@@ -12,9 +12,13 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
-import { Suspense } from 'react'
 
-export const revalidate = 86400
+// Kept in step with `PRODUCTS_LIST_LIFE.revalidate` in lib/cache-life.ts: the
+// shortest cache a render touches wins, and `getCachedProducts` is a 300s
+// `'use cache'` scope, so declaring anything longer here would be fiction.
+// Prices are the freshest data on the page, so 5 minutes is the right floor
+// anyway, with the admin webhook purging on real changes.
+export const revalidate = 300
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -33,10 +37,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
 
   const homeJsonLdPromise = buildHomeJsonLd(locale)
 
-  try {
-    const categories = await getCachedCategories({ page: categoryPage })
+  // Read straight down as props by the (server) section list rather than through
+  // the query cache, matching /products. Keeps them out of the dehydrated payload
+  // and lets the sections render into the static HTML.
+  let categories: SortableCategory[] = []
 
-    queryClient.setQueryData(['categories', categoryPage], categories)
+  try {
+    categories = await getCachedCategories({ page: categoryPage })
 
     await Promise.all(
       categories.map(async (category) => {
@@ -61,9 +68,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
       <JsonLd data={homeJsonLd} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={null}>
-          <HomeContent />
-        </Suspense>
+        {/*
+          No blanket <Suspense> here. The category sections read search params
+          (nuqs), which pulls their nearest Suspense boundary out of the static
+          shell - a page-level boundary therefore took every static sibling with
+          it, and this page prerendered with no content at all. The boundary now
+          sits directly around the sections that need it, inside HomeContent.
+          Route-level streaming is already covered by loading.tsx.
+        */}
+        <HomeContent categories={categories} />
       </HydrationBoundary>
     </>
   )
