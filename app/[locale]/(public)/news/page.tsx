@@ -1,62 +1,57 @@
 import NewsContent from '@/features/articles/components/news-content'
 import NewsDefault from '@/features/articles/components/news-default'
 import { getArticlesQuery } from '@/features/articles/queries'
-import { getArticles, getCachedArticles } from '@/features/articles/queries.server'
-import { loadNewsSearch } from '@/features/articles/search-params'
+import { getCachedArticles } from '@/features/articles/queries.server'
+import { NEWS_CURATED_PAGE_SIZE, NEWS_OTHER_STORIES_PAGE_SIZE } from '@/features/articles/search-params'
 import { buildNewsCollectionJsonLd, generateNewsListMetadata } from '@/features/articles/seo'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
-import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/shared/constants'
+import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
-import type { SearchParams } from 'nuqs/server'
 import { Suspense } from 'react'
 
 type NewsPageProps = {
   params: Promise<{ locale: Locale }>
-  searchParams: Promise<SearchParams>
 }
 
-export async function generateMetadata({ params, searchParams }: NewsPageProps): Promise<Metadata> {
-  const [{ locale }, { page }] = await Promise.all([params, loadNewsSearch(searchParams)])
+export const revalidate = 3600
 
-  return generateNewsListMetadata(locale, page)
+export async function generateMetadata({ params }: NewsPageProps): Promise<Metadata> {
+  const { locale } = await params
+
+  return generateNewsListMetadata(locale)
 }
 
-export default async function NewsPage({ params, searchParams }: NewsPageProps) {
+export default async function NewsPage({ params }: NewsPageProps) {
   const { locale } = await params
   setRequestLocale(locale)
 
-  return <NewsList locale={locale} searchParams={searchParams} />
-}
-
-async function NewsList({ locale, searchParams }: { locale: Locale; searchParams: Promise<SearchParams> }) {
-  const { page } = await loadNewsSearch(searchParams)
-  const isFirstPage = page <= DEFAULT_PAGE_INDEX
-
   const queryClient = getQueryClient()
-  const listParams = { pageSize: DEFAULT_PAGE_SIZE, pageIndex: page, locale }
-  const options = getArticlesQuery(listParams)
+
+  const curatedParams = { pageIndex: DEFAULT_PAGE_INDEX, pageSize: NEWS_CURATED_PAGE_SIZE, locale }
+  const otherParams = { pageIndex: DEFAULT_PAGE_INDEX, pageSize: NEWS_OTHER_STORIES_PAGE_SIZE, locale }
 
   let initialNews: Awaited<ReturnType<typeof getCachedArticles>>['value']['items'] = []
 
   try {
-    const data = isFirstPage ? await getCachedArticles(listParams) : await getArticles(listParams)
+    const [curated, other] = await Promise.all([getCachedArticles(curatedParams), getCachedArticles(otherParams)])
 
-    queryClient.setQueryData(options.queryKey, data)
-    initialNews = data.value.items
+    queryClient.setQueryData(getArticlesQuery(curatedParams).queryKey, curated)
+    queryClient.setQueryData(getArticlesQuery(otherParams).queryKey, other)
+    initialNews = other.value.items
   } catch (error) {
     console.error('[SSR] news list prefetch failed:', error)
   }
 
   return (
     <>
-      <JsonLd data={buildNewsCollectionJsonLd(locale, initialNews, page)} />
+      <JsonLd data={buildNewsCollectionJsonLd(locale, initialNews)} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<NewsDefault locale={locale} pageIndex={page} />}>
+        <Suspense fallback={<NewsDefault locale={locale} />}>
           <NewsContent locale={locale} />
         </Suspense>
       </HydrationBoundary>

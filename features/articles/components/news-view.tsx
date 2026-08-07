@@ -26,7 +26,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { createSerializer } from 'nuqs'
-import { newsSearchParsers } from '../search-params'
+import { NEWS_CURATED_PAGE_SIZE, NEWS_OTHER_STORIES_PAGE_SIZE, newsSearchParsers } from '../search-params'
 
 const NEWS_IMAGES = [heroImage, bgNews1, image2, image3, image5, image6, image7, image8]
 
@@ -39,10 +39,6 @@ const cardStagger: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.1 } }
 }
-
-const CURATED_RESERVED = 4
-
-const OTHER_STORIES_PAGE_SIZE = 8
 
 const NEWS_SCROLL_ANCHOR = '#latest'
 
@@ -62,10 +58,13 @@ export default function NewsView({
   onPageChange: (page: number) => void
 }) {
   const { t } = useTranslation()
-  const { articles: curatedArticles } = useGetArticles({ pageIndex: DEFAULT_PAGE_INDEX, pageSize: CURATED_RESERVED })
+  const { articles: curatedArticles } = useGetArticles({
+    pageIndex: DEFAULT_PAGE_INDEX,
+    pageSize: NEWS_CURATED_PAGE_SIZE
+  })
   const { articles: otherArticles, isFetchingArticles } = useGetArticles({
     pageIndex,
-    pageSize: OTHER_STORIES_PAGE_SIZE
+    pageSize: NEWS_OTHER_STORIES_PAGE_SIZE
   })
 
   const curatedItems = curatedArticles.value.items
@@ -76,7 +75,7 @@ export default function NewsView({
 
   const featured = curatedItems[0]
   const sideStories = [curatedItems[1], curatedItems[2]].filter(Boolean) as typeof curatedItems
-  const overlayStories = curatedItems.slice(0, CURATED_RESERVED)
+  const overlayStories = curatedItems.slice(0, NEWS_CURATED_PAGE_SIZE)
   const wideStory = curatedItems[3] ?? featured
 
   return (

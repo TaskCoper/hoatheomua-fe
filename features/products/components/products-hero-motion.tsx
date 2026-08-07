@@ -14,7 +14,7 @@ import {
   ShoppingBag01Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { motion, type Variants } from 'motion/react'
+import { motion } from 'motion/react'
 import Image from 'next/image'
 
 export type HeroStrings = {
@@ -37,43 +37,10 @@ const HIGHLIGHTS = [
   { icon: CherryIcon, key: 'fresh' }
 ] as const
 
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 36 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 18 } }
-}
-
-const containerStagger: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } }
-}
-
-const flowerCircle: Variants = {
-  hidden: { opacity: 0, scale: 0.7, rotate: -6 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    rotate: 0,
-    transition: { type: 'spring', stiffness: 130, damping: 16, mass: 0.9 }
-  }
-}
-
-const chipPop: Variants = {
-  hidden: { opacity: 0, scale: 0.6, y: 12 },
-  visible: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 280, damping: 14 } }
-}
-
 export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }) {
   return (
-    <motion.section
-      initial='hidden'
-      animate='visible'
-      variants={containerStagger}
-      className='relative px-4 pt-4 sm:pt-6 md:pt-8 lg:pt-10'
-    >
-      <motion.div
-        variants={fadeUp}
-        className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'
-      >
+    <section className='relative px-4 pt-4 sm:pt-6 md:pt-8 lg:pt-10'>
+      <div className='mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2'>
         <div className='flex items-center justify-start sm:justify-center gap-3'>
           <SparkleDivider
             className='min-w-0 max-w-96 flex-1 hidden sm:flex'
@@ -96,15 +63,14 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
         <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
           {strings.description}
         </p>
-      </motion.div>
+      </div>
 
       <div className='relative mx-auto mt-6 grid w-full max-w-7xl grid-cols-1 gap-5 sm:gap-6 lg:mt-10 lg:grid-cols-12 lg:items-center lg:gap-10'>
-        <motion.div variants={containerStagger} className='space-y-4 lg:col-span-7'>
-          <motion.div variants={fadeUp} className='flex flex-wrap gap-2'>
+        <div className='space-y-4 lg:col-span-7'>
+          <div className='flex flex-wrap gap-2'>
             {HIGHLIGHTS.map((item) => (
               <motion.span
                 key={item.key}
-                variants={chipPop}
                 whileHover={{ y: -3, scale: 1.05 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 14 }}
                 className='inline-flex'
@@ -118,20 +84,15 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
                 </Badge>
               </motion.span>
             ))}
-          </motion.div>
+          </div>
 
-          <motion.h2
-            variants={fadeUp}
-            className='font-title text-2xl font-bold leading-tight text-primary sm:text-3xl lg:text-4xl'
-          >
+          <h2 className='font-title text-2xl font-bold leading-tight text-primary sm:text-3xl lg:text-4xl'>
             {strings.headline}
-          </motion.h2>
+          </h2>
 
-          <motion.p variants={fadeUp} className='text-xs leading-relaxed text-foreground sm:text-sm'>
-            {strings.body}
-          </motion.p>
+          <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{strings.body}</p>
 
-          <motion.div variants={fadeUp} className='flex flex-wrap items-center gap-3'>
+          <div className='flex flex-wrap items-center gap-3'>
             <motion.div
               whileHover={{ y: -5, scale: 1.06 }}
               whileTap={{ scale: 0.96 }}
@@ -202,14 +163,10 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
                 </Link>
               </Button>
             </motion.div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        <motion.div
-          variants={flowerCircle}
-          initial={false}
-          className='relative flex items-center justify-center lg:col-span-5'
-        >
+        <div className='relative flex items-center justify-center lg:col-span-5'>
           <div
             aria-hidden='true'
             className='absolute inset-0 m-auto h-48 w-48 rounded-full bg-secondary/40 blur-3xl sm:h-60 sm:w-60 lg:h-72 lg:w-72'
@@ -266,8 +223,8 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
               </p>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   )
 }

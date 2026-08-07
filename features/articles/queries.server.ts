@@ -15,15 +15,13 @@ const REVALIDATE_SECONDS = 3600
 
 type ArticlesListParams = GetArticlesParams & { locale: string }
 
-// used on first page for faster data
+// Server-side hydration only ever prefetches page 1, so the route can stay ISR;
+// any other page is fetched live by the client
 export const getCachedArticles = (params: ArticlesListParams) =>
   unstable_cache(() => articleService.getArticles(params), ['articles-list', JSON.stringify(params)], {
     tags: [ARTICLES_CACHE_TAG],
     revalidate: REVALIDATE_SECONDS
   })()
-
-// user for other pages for live SSR
-export const getArticles = (params: ArticlesListParams) => articleService.getArticles(params)
 
 const cachedGetArticle = cache(
   (identifier: string): Promise<Article | null> =>

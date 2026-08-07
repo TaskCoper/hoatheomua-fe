@@ -11,10 +11,14 @@ import type { ProductDetail } from './types'
 
 export const PRODUCTS_CACHE_TAG = 'products'
 
+// Prefetched by products/page.tsx, the home page, and every mainline/featured/
+// occasion detail page's section grids - matches their own 300s ISR window
+// (product price/stock is the freshest-changing data on the site, hence
+// shorter than the 3600s convention used elsewhere) rather than clipping it.
 export const getCachedProducts = (params: GetProductsParams) =>
   unstable_cache(() => productService.getProducts(params), ['products-list', JSON.stringify(params)], {
     tags: [PRODUCTS_CACHE_TAG],
-    revalidate: 60
+    revalidate: 300
   })()
 
 /**

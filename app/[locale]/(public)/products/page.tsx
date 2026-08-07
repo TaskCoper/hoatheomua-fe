@@ -15,11 +15,6 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { Suspense } from 'react'
 
-// This page looks the same for every visitor - it's a public catalog with no
-// per-user data, and filters are applied in the browser, not on the server. So
-// rather than rendering it fresh on each request, we prerender the HTML once and
-// serve it from cache, rebuilding it at most this often. Genuine catalog changes
-// don't wait for that window: the webhook in app/api/revalidate purges it on demand.
 export const revalidate = 300
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
