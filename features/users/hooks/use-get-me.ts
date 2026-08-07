@@ -1,14 +1,9 @@
+import { readSessionHint } from '@/shared/session-hint'
 import { useQuery } from '@tanstack/react-query'
 import { useSyncExternalStore } from 'react'
 import authService from '../services'
 
-// Mirror of the HttpOnly auth cookies, maintained by the middleware
-// (see `SESSION_HINT_COOKIE` in proxy.ts).
-const SESSION_HINT = 'hasSession=1'
-
 const noop = () => () => {}
-
-const readSessionHint = () => document.cookie.includes(SESSION_HINT)
 
 // Prerendered/ISR HTML is shared by every visitor, so it can only ever show the
 // signed-out header. The hint is re-read on the client, and any render after

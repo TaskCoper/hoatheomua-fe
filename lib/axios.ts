@@ -1,4 +1,5 @@
 import { isPublicRoutePath } from '@/shared/constants'
+import { clearSessionHint } from '@/shared/session-hint'
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
 
 interface ApiResponse {
@@ -111,6 +112,10 @@ const refreshAccessToken = async (
       error.response?.data?.messageCode &&
       expiredRefreshTokenCodes.includes(error.response.data.messageCode)
     ) {
+      // The session is gone for good - drop the hint so `useGetMe` stops firing
+      // requests that can only 401 until the next navigation refreshes it.
+      clearSessionHint()
+
       const isOnPublicRoute = isCurrentPublicRoutePath(window.location.pathname)
 
       if (!isOnPublicRoute) {

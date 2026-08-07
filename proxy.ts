@@ -1,7 +1,7 @@
 import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
-import { GUEST_ONLY_ROUTES, isPublicRoutePath } from './shared/constants'
+import { GUEST_ONLY_ROUTES, isPublicRoutePath, SESSION_HINT_COOKIE } from './shared/constants'
 
 const ACCESS_TOKEN_COOKIE = 'accessToken'
 const REFRESH_TOKEN_COOKIE = 'refreshToken'
@@ -28,29 +28,51 @@ const buildRedirect = (request: NextRequest, target: string, search?: URLSearchP
   return NextResponse.redirect(url)
 }
 
+const withSessionHint = <T extends NextResponse>(response: T, isProbablyAuthed: boolean): T => {
+  if (isProbablyAuthed) {
+    response.cookies.set(SESSION_HINT_COOKIE, '1', {
+      httpOnly: false,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/'
+    })
+  } else {
+    response.cookies.set(SESSION_HINT_COOKIE, '', {
+      httpOnly: false,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      maxAge: 0
+    })
+  }
+
+  return response
+}
+
 export default function proxy(request: NextRequest) {
   const intlResponse = intlMiddleware(request)
 
-  if (intlResponse.status >= 300 && intlResponse.status < 400) {
-    return intlResponse
-  }
-
-  const pathname = stripLocale(request.nextUrl.pathname)
   const hasAccessToken = request.cookies.has(ACCESS_TOKEN_COOKIE)
   const hasRefreshToken = request.cookies.has(REFRESH_TOKEN_COOKIE)
 
   const isProbablyAuthed = hasAccessToken || hasRefreshToken
 
+  if (intlResponse.status >= 300 && intlResponse.status < 400) {
+    return withSessionHint(intlResponse, isProbablyAuthed)
+  }
+
+  const pathname = stripLocale(request.nextUrl.pathname)
+
   if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed) {
-    return buildRedirect(request, '/')
+    return withSessionHint(buildRedirect(request, '/'), isProbablyAuthed)
   }
 
   if (!isPublicRoutePath(pathname) && !isProbablyAuthed) {
     const params = new URLSearchParams({ from: request.nextUrl.pathname })
-    return buildRedirect(request, '/sign-in', params)
+    return withSessionHint(buildRedirect(request, '/sign-in', params), isProbablyAuthed)
   }
 
-  return intlResponse
+  return withSessionHint(intlResponse, isProbablyAuthed)
 }
 
 export const config = {

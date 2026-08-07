@@ -1,5 +1,4 @@
 import NewsContent from '@/features/articles/components/news-content'
-import NewsDefault from '@/features/articles/components/news-default'
 import { getArticlesQuery } from '@/features/articles/queries'
 import { getCachedArticles } from '@/features/articles/queries.server'
 import { NEWS_CURATED_PAGE_SIZE, NEWS_OTHER_STORIES_PAGE_SIZE } from '@/features/articles/search-params'
@@ -11,7 +10,6 @@ import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
-import { Suspense } from 'react'
 
 type NewsPageProps = {
   params: Promise<{ locale: Locale }>
@@ -51,9 +49,7 @@ export default async function NewsPage({ params }: NewsPageProps) {
       <JsonLd data={buildNewsCollectionJsonLd(locale, initialNews)} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={<NewsDefault locale={locale} />}>
-          <NewsContent locale={locale} />
-        </Suspense>
+        <NewsContent locale={locale} />
       </HydrationBoundary>
     </>
   )

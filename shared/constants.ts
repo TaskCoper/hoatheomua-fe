@@ -3,6 +3,13 @@ export const DEFAULT_PAGE_SIZE = 10
 
 export const MAX_UPLOAD_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
+// Readable-by-JS mirror of the HttpOnly auth cookies. The client cannot see
+// `accessToken`/`refreshToken`, so this is the only way for `useGetMe` to know
+// whether there is a session worth fetching. Written by the middleware on every
+// navigation (see proxy.ts) and, so sign-in/sign-out do not have to wait for a
+// middleware round-trip, by the auth mutations themselves.
+export const SESSION_HINT_COOKIE = 'hasSession'
+
 export const PUBLIC_ROUTE_PATHS = new Set([
   '/',
   '/sign-in',
