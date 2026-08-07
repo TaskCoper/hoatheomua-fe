@@ -53,8 +53,8 @@ export function ArticleOverlayCard({
           className='absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-primary/5'
         />
         <div className='relative z-10 mt-auto flex w-full flex-col gap-2.5 p-5 text-primary-foreground sm:p-6'>
-          <div className='flex flex-wrap items-center gap-2 text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground/90'>
-            <span className='inline-flex items-center gap-1 rounded-full bg-primary-foreground/15 px-2.5 py-1 ring-1 ring-primary-foreground/25 backdrop-blur'>
+          <div className='flex flex-wrap items-center gap-2 text-[0.625rem] font-semibold text-primary-foreground/90'>
+            <span className='inline-flex items-center gap-1 rounded-full bg-primary-foreground/15 px-2 py-0.5 ring-1 ring-primary-foreground/25 backdrop-blur'>
               <HugeiconsIcon icon={FlowerIcon} className='size-3' />
               {item.categories.map((cat) => cat.categoryName).join(', ')}
             </span>
@@ -66,7 +66,7 @@ export function ArticleOverlayCard({
             <Tooltip>
               <TooltipTrigger asChild>
                 <h3
-                  className={`line-clamp-3 font-title font-bold leading-tight text-primary-foreground ${titleClassName}`}
+                  className={`line-clamp-2 font-title font-bold leading-tight text-primary-foreground ${titleClassName}`}
                 >
                   {item.title}
                 </h3>

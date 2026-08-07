@@ -19,6 +19,7 @@ import leftBranch from '@/public/images/left-branch.png'
 import rightBranch from '@/public/images/right-branch.png'
 import FloatingPetals from '@/shared/components/floating-petals'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
 import { ArrowRight02Icon, FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -41,6 +42,8 @@ const cardStagger: Variants = {
 
 const CURATED_RESERVED = 4
 
+const OTHER_STORIES_PAGE_SIZE = 8
+
 const NEWS_SCROLL_ANCHOR = '#latest'
 
 const serializeNewsSearch = createSerializer(newsSearchParsers)
@@ -59,18 +62,22 @@ export default function NewsView({
   onPageChange: (page: number) => void
 }) {
   const { t } = useTranslation()
-  const { articles, isFetchingArticles } = useGetArticles({ pageIndex })
+  const { articles: curatedArticles } = useGetArticles({ pageIndex: DEFAULT_PAGE_INDEX, pageSize: CURATED_RESERVED })
+  const { articles: otherArticles, isFetchingArticles } = useGetArticles({
+    pageIndex,
+    pageSize: OTHER_STORIES_PAGE_SIZE
+  })
 
-  const items = articles.value.items
-  const hasNextPage = articles.value.hasNextPage
-  const hasPreviousPage = articles.value.hasPreviousPage
-  const totalPages = Math.max(1, Math.ceil(articles.value.totalCount / articles.value.pageSize))
+  const curatedItems = curatedArticles.value.items
+  const otherStories = otherArticles.value.items
+  const hasNextPage = otherArticles.value.hasNextPage
+  const hasPreviousPage = otherArticles.value.hasPreviousPage
+  const totalPages = Math.max(1, Math.ceil(otherArticles.value.totalCount / otherArticles.value.pageSize))
 
-  const featured = items[0]
-  const sideStories = [items[1], items[2]].filter(Boolean) as typeof items
-  const overlayStories = items.slice(0, CURATED_RESERVED)
-  const wideStory = items[3] ?? featured
-  const otherStories = items.slice(CURATED_RESERVED)
+  const featured = curatedItems[0]
+  const sideStories = [curatedItems[1], curatedItems[2]].filter(Boolean) as typeof curatedItems
+  const overlayStories = curatedItems.slice(0, CURATED_RESERVED)
+  const wideStory = curatedItems[3] ?? featured
 
   return (
     <div className='relative w-full overflow-hidden mb-20'>
@@ -131,7 +138,7 @@ export default function NewsView({
               item={featured}
               image={getNewsImage(0)}
               locale={locale}
-              className='min-h-[430px] lg:min-h-[520px]'
+              className='min-h-96 lg:min-h-120'
               titleClassName='text-3xl sm:text-4xl'
             />
 
@@ -253,12 +260,7 @@ export default function NewsView({
                   className='scale-100 object-cover object-center transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
                   sizes='(min-width:1024px) 720px, 100vw'
                 />
-                <motion.div
-                  aria-hidden='true'
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                  className='pointer-events-none absolute inset-4 rounded-3xl border border-dashed border-primary-foreground/25'
-                />
+
                 <span
                   aria-hidden='true'
                   className='absolute inset-0 bg-gradient-to-tr from-primary/40 via-transparent to-transparent'
@@ -266,7 +268,7 @@ export default function NewsView({
               </div>
               <div className='flex flex-col justify-center gap-4 p-6 sm:p-8 lg:p-10'>
                 <div className='flex flex-wrap items-center gap-3'>
-                  <span className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-3 py-1 text-[0.625rem] font-bold uppercase tracking-widest text-primary ring-1 ring-primary/10'>
+                  <span className='inline-flex items-center gap-1 rounded-full bg-secondary/60 px-2 py-0.5 text-[0.625rem] font-bold text-primary ring-1 ring-primary/10'>
                     <HugeiconsIcon icon={FlowerIcon} className='size-3' />
                     {wideStory.categories.map((cat) => cat.categoryName).join(', ')}
                   </span>
@@ -333,7 +335,7 @@ export default function NewsView({
           </motion.div>
 
           <motion.div
-            key={pageIndex}
+            key={otherArticles.value.pageIndex}
             initial='hidden'
             animate='visible'
             variants={cardStagger}

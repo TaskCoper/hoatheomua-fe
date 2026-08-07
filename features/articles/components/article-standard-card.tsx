@@ -2,6 +2,7 @@
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { Article } from '@/features/articles/types'
+import { useDynamicLineClamp } from '@/hooks/use-dynamic-line-clamp'
 import { formatDate } from '@/lib/date'
 import { Link } from '@/lib/i18n/navigation'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
@@ -22,6 +23,8 @@ interface ArticleStandardCardProps {
 }
 
 export function ArticleStandardCard({ item, image, locale }: ArticleStandardCardProps) {
+  const { ref: descriptionRef, style: descriptionStyle } = useDynamicLineClamp<HTMLDivElement>()
+
   return (
     <motion.div
       variants={cardItem}
@@ -48,7 +51,7 @@ export function ArticleStandardCard({ item, image, locale }: ArticleStandardCard
           </span>
         </div>
         <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-5'>
-          <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
+          <p className='text-[0.625rem] font-semibold text-muted-foreground'>
             {formatDate(item.createdAt, 'dateLong', { locale })}
           </p>
 
@@ -69,9 +72,9 @@ export function ArticleStandardCard({ item, image, locale }: ArticleStandardCard
             </Tooltip>
           </TooltipProvider>
 
-          <p className='flex-1 text-xs leading-relaxed text-foreground'>
-            {getFirstParagraphTextFromHtml(item.description)}
-          </p>
+          <div ref={descriptionRef} className='min-h-[3.75rem] flex-1 text-xs leading-relaxed text-foreground'>
+            <p style={descriptionStyle}>{getFirstParagraphTextFromHtml(item.description)}</p>
+          </div>
         </div>
       </Link>
     </motion.div>

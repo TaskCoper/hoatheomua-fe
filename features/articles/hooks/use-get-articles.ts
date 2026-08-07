@@ -1,4 +1,3 @@
-import { useLocale } from '@/lib/i18n/dictionary-provider'
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/shared/constants'
 import { getDefaultPaginationResponse } from '@/shared/utils'
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
@@ -11,14 +10,12 @@ export interface GetArticlesParams {
 }
 
 export const useGetArticles = ({ pageIndex = DEFAULT_PAGE_INDEX, pageSize = DEFAULT_PAGE_SIZE }: GetArticlesParams) => {
-  const locale = useLocale()
-
   const {
     data: articles = getDefaultPaginationResponse<Article>(),
     isFetching: isFetchingArticles,
     isLoading: isLoadingArticles
   } = useQuery({
-    ...getArticlesQuery({ pageSize, pageIndex, locale }),
+    ...getArticlesQuery({ pageSize, pageIndex }),
     placeholderData: keepPreviousData
   })
 

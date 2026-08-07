@@ -26,23 +26,22 @@ export const getCachedArticles = (params: ArticlesListParams) =>
 export const getArticles = (params: ArticlesListParams) => articleService.getArticles(params)
 
 const cachedGetArticle = cache(
-  (identifier: string, locale: string): Promise<Article | null> =>
+  (identifier: string): Promise<Article | null> =>
     unstable_cache(
       async () => {
         try {
-          return await articleService.getArticle({ identifier, locale })
+          return await articleService.getArticle({ identifier })
         } catch (error) {
           if (isAxiosError(error) && error.response?.status === 404) return null
           throw error
         }
       },
-      ['article-detail', identifier, locale],
+      ['article-detail', identifier],
       { tags: [ARTICLES_CACHE_TAG], revalidate: REVALIDATE_SECONDS }
     )()
 )
 
-export const getArticle = ({ identifier, locale }: GetArticleParams & { locale: string }) =>
-  cachedGetArticle(identifier, locale)
+export const getArticle = ({ identifier }: GetArticleParams) => cachedGetArticle(identifier)
 
 export const getAllArticleSlugs = (): Promise<string[]> =>
   unstable_cache(
@@ -54,8 +53,7 @@ export const getAllArticleSlugs = (): Promise<string[]> =>
         while (true) {
           const page = await articleService.getArticles({
             pageIndex,
-            pageSize: SLUG_CRAWL_PAGE_SIZE,
-            locale: 'vi'
+            pageSize: SLUG_CRAWL_PAGE_SIZE
           })
 
           for (const item of page.value.items) {

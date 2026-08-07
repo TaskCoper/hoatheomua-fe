@@ -3,14 +3,14 @@ import { GetArticleParams } from './hooks/use-get-article'
 import { GetArticlesParams } from './hooks/use-get-articles'
 import articleService from './services'
 
-export const getArticlesQuery = ({ pageSize, pageIndex, locale }: GetArticlesParams & { locale: string }) =>
+export const getArticlesQuery = ({ pageSize, pageIndex }: GetArticlesParams) =>
   queryOptions({
-    queryKey: ['articles', { pageIndex, pageSize }, locale] as const,
-    queryFn: () => articleService.getArticles({ pageSize, pageIndex, locale })
+    queryKey: ['articles', { pageIndex, pageSize }] as const,
+    queryFn: () => articleService.getArticles({ pageSize, pageIndex })
   })
 
-export const getArticleQuery = ({ identifier, locale }: GetArticleParams & { locale: string }) =>
+export const getArticleQuery = ({ identifier }: GetArticleParams) =>
   queryOptions({
-    queryKey: ['articles', 'detail', identifier, locale] as const,
-    queryFn: () => articleService.getArticle({ identifier, locale })
+    queryKey: ['articles', 'detail', identifier] as const,
+    queryFn: () => articleService.getArticle({ identifier })
   })

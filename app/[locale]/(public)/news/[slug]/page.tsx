@@ -35,7 +35,7 @@ export async function generateMetadata({
 
   setRequestLocale(locale)
 
-  const article = await getArticle({ identifier: slug, locale })
+  const article = await getArticle({ identifier: slug })
   const t = await getTranslations()
 
   return generateNewsDetailMetadata({
@@ -50,7 +50,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ loc
   const { slug, locale } = await params
   setRequestLocale(locale)
 
-  const article = await getArticle({ identifier: slug, locale })
+  const article = await getArticle({ identifier: slug })
 
   if (!article) {
     notFound()
