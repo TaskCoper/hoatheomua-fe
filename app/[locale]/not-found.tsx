@@ -1,11 +1,13 @@
 import { Button } from '@/components/ui/button'
 import { Link } from '@/lib/i18n/navigation'
+import { routing } from '@/lib/i18n/routing'
 import logo from '@/public/images/logo.png'
 import type { Metadata } from 'next'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import Image from 'next/image'
 
 export async function generateMetadata(): Promise<Metadata> {
+  setRequestLocale(routing.defaultLocale)
   const t = await getTranslations('notFound')
 
   return {
@@ -15,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function NotFoundPage() {
+  setRequestLocale(routing.defaultLocale)
   const t = await getTranslations('notFound')
 
   return (
