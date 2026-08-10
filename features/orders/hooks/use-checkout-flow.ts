@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import type { CheckoutStep } from '../components/checkout/checkout-stepper'
-import { buildCheckoutPayload, buildEstimatePayload } from '../payloads'
+import { buildCheckoutPayload, buildEstimatePayload, type OrderContact } from '../payloads'
 import type { PaymentGateway, PaymentMethod } from '../types'
 import { createEstimateSchema, type CheckoutFormValues } from '../validations'
 import { useCreateOrder } from './use-create-order'
@@ -17,9 +17,10 @@ interface UseCheckoutFlowArgs {
   methods: UseFormReturn<CheckoutFormValues>
   estimateOrder: ReturnType<typeof useEstimateOrder>['estimateOrder']
   createOrder: ReturnType<typeof useCreateOrder>['createOrder']
+  contact: OrderContact
 }
 
-export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseCheckoutFlowArgs) => {
+export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }: UseCheckoutFlowArgs) => {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -39,11 +40,22 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
 
   const goBack = () => setStep((prev) => (prev - 1) as CheckoutStep)
 
+  // `fullName`/`phone` come from the signed-in account (`useGetUser`), never the
+  // form. Nothing on screen surfaces them, so a still-loading or incomplete
+  // profile would otherwise ship an order with both fields blank.
+  const hasContact = () => {
+    if (contact.fullName.trim() && contact.phone.trim()) return true
+    toast.error(t('orders.checkout.contactMissing'))
+    return false
+  }
+
   const handleGoToPayment = async () => {
     if (items.length === 0) {
       toast.error(t('orders.checkout.emptyCart'))
       return
     }
+
+    if (!hasContact()) return
 
     methods.clearErrors()
 
@@ -58,7 +70,7 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
     }
 
     try {
-      await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById) })
+      await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById, contact) })
       setStep(2)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (error) {
@@ -70,9 +82,11 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder }: UseChec
   const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway, shippingFee: number) =>
     methods.handleSubmit(
       async (values) => {
+        if (!hasContact()) return
+
         try {
           const { mrc_order_id } = await createOrder({
-            body: buildCheckoutPayload(values, items, productById, paymentMethod, gateway, shippingFee)
+            body: buildCheckoutPayload(values, items, productById, contact, paymentMethod, gateway, shippingFee)
           })
 
           if (source === 'cart') {

@@ -1,22 +1,12 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
-import {
-  createOptionalEmailSchema,
-  createOptionalPhoneNumberSchema,
-  createPhoneNumberSchema
-} from '@/shared/validations'
+import { createOptionalEmailSchema, createOptionalPhoneNumberSchema } from '@/shared/validations'
 import z from 'zod'
 import { InvoiceType } from './types'
 
-export const createEstimateSchema = (t: TranslationFunction) => {
+const createBaseCheckoutSchema = (t: TranslationFunction) => {
   const requiredFor = (field: string) => t('common.validation.required', { field })
 
   return z.object({
-    fullName: z
-      .string()
-      .trim()
-      .min(1, { error: requiredFor(t('orders.checkout.fullName')) })
-      .max(100, { error: t('common.validation.maxLength', { field: t('orders.checkout.fullName'), max: 100 }) }),
-    phone: createPhoneNumberSchema(t, t('orders.checkout.phone')),
     remarks: z
       .string()
       .max(500, { error: t('common.validation.maxLength', { field: t('orders.checkout.remarks'), max: 500 }) }),
@@ -39,10 +29,12 @@ export const createEstimateSchema = (t: TranslationFunction) => {
   })
 }
 
+export const createEstimateSchema = (t: TranslationFunction) => createBaseCheckoutSchema(t)
+
 export const createCheckoutSchema = (t: TranslationFunction) => {
   const requiredFor = (field: string) => t('common.validation.required', { field })
 
-  return createEstimateSchema(t)
+  return createBaseCheckoutSchema(t)
     .extend({
       taxCode: z
         .string()
