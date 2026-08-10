@@ -41,7 +41,8 @@ import { z } from 'zod'
  * Each path expands to one `revalidatePath(...)` call per supported locale
  * (vi + en), so a single webhook call refreshes both language variants.
  *
- * Returns { revalidated: true, paths, tags } on success, or a 4xx with a reason.
+ * Returns { revalidated: true, paths, routePatterns, tags } on success, or a 4xx
+ * with a reason.
  *
  * curl example:
  *   curl -X POST $SITE/api/revalidate \
@@ -110,18 +111,41 @@ const CONFIG_GROUP_PATHS: Record<string, string[]> = {
   // products.occasions / .featured / .mainline / .signature — the collection
   // cards shown on the home page nav and the /products page.
   products: ['/', '/products'],
-  banners: ['/'],
+  // The banner collection is prefetched in the `(public)` layout and dehydrated
+  // into every page beneath it, so a banner edit is not a home-only change:
+  // /products renders `BANNER_SLOTS.products` and each product detail page
+  // renders `BANNER_SLOTS.product` (see CONFIG_GROUP_ROUTE_PATTERNS).
+  banners: ['/', '/products'],
   feedbacks: ['/'],
   company: ['/', '/contact'],
   contact: ['/contact', '/b2b'],
   b2bServices: ['/b2b']
 }
 
+// Route *patterns* (as opposed to concrete paths) a config group is baked into.
+// `revalidatePath(pattern, 'page')` purges every generated entry of a dynamic
+// route in one call, which is the only way to reach an unbounded id set. These
+// deliberately bypass `expandPaths`: `[locale]` is a real route segment, so the
+// single pattern already covers vi + en - prefixing it would yield the
+// nonexistent `/vi/[locale]/products/[id]`.
+const PRODUCT_DETAIL_ROUTE = '/[locale]/products/[id]'
+
+const CONFIG_GROUP_ROUTE_PATTERNS: Record<string, string[]> = {
+  // `products.signature` decides whether a detail page links out to a dedicated
+  // signature landing page - read server-side in products/[id]/page.tsx.
+  products: [PRODUCT_DETAIL_ROUTE],
+  banners: [PRODUCT_DETAIL_ROUTE]
+}
+
 /**
  * Maps one admin mutation to the cache tags to purge and the (locale-agnostic)
  * page paths to rebuild. See docs/revalidate-webhook.vi.md for the full contract.
+ *
+ * `routePatterns` is the dynamic-route escape hatch - see
+ * CONFIG_GROUP_ROUTE_PATTERNS. It is left off entities that already name their
+ * one affected detail page concretely (product, news, recruitment).
  */
-const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] } => {
+const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[]; routePatterns?: string[] } => {
   switch (body.entity) {
     case 'product':
       // Shows up on its own detail page, the /products grid, and the home page.
@@ -143,7 +167,11 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[] 
     case 'newsList':
       return { basePaths: ['/news'], tags: [ARTICLES_CACHE_TAG] }
     case 'config':
-      return { basePaths: CONFIG_GROUP_PATHS[body.group] ?? [], tags: [configTag(body.group)] }
+      return {
+        basePaths: CONFIG_GROUP_PATHS[body.group] ?? [],
+        routePatterns: CONFIG_GROUP_ROUTE_PATTERNS[body.group] ?? [],
+        tags: [configTag(body.group)]
+      }
     case 'recruitment':
       // With a slug, purge that job's detail data (+ its ISR HTML) via the
       // per-slug tag; without one it's a list-wide change, so the broad tag only.
@@ -195,11 +223,18 @@ export async function POST(req: Request) {
     return Response.json({ revalidated: false, reason: 'invalid-body', issues: parsed.error.issues }, { status: 400 })
   }
 
-  const { basePaths, tags } = planForEntity(parsed.data)
+  const { basePaths, tags, routePatterns = [] } = planForEntity(parsed.data)
 
   const paths = expandPaths(basePaths)
   for (const path of paths) {
     revalidatePath(path)
+  }
+
+  // Not locale-expanded on purpose - `[locale]` is part of the pattern itself.
+  // `'page'` is required: without it Next treats the literal `[locale]` string
+  // as a path segment and the purge silently matches nothing.
+  for (const pattern of routePatterns) {
+    revalidatePath(pattern, 'page')
   }
 
   for (const tag of tags) {
@@ -207,7 +242,8 @@ export async function POST(req: Request) {
   }
 
   console.log('basePaths: ', basePaths)
+  console.log('routePatterns: ', routePatterns)
   console.log('tags: ', tags)
 
-  return Response.json({ revalidated: true, paths, tags })
+  return Response.json({ revalidated: true, paths, routePatterns, tags })
 }
