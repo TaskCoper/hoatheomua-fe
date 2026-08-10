@@ -182,6 +182,20 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
       />
 
       <Controller
+        name='phoneNumber'
+        control={methods.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+            <FieldLabel htmlFor={field.name}>{t('profile.phoneNumber')}</FieldLabel>
+            <Input {...field} id={field.name} type='tel' aria-invalid={fieldState.invalid} autoComplete='tel' />
+            <div className='min-h-4'>
+              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+            </div>
+          </Field>
+        )}
+      />
+
+      <Controller
         name='avatar'
         control={methods.control}
         render={({ field, fieldState }) => {
