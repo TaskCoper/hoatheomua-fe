@@ -3,11 +3,12 @@
 import { Button } from '@/components/ui/button'
 import { availableOf, useProductVariant } from '@/features/products/components/product-variant-context'
 import type { ProductDetail } from '@/features/products/types'
+import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useHasMounted } from '@/hooks/use-has-mounted'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { usePathname, useRouter } from '@/lib/i18n/navigation'
+import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
 import { buildLineId, MAX_QUANTITY, useCartStore, type CartItem } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
@@ -65,6 +66,12 @@ export default function ProductPurchaseBox() {
   const hasRoomInCart = remainingStock > 0
   const canAdd = isQualifiedBuyer && inStock && hasRoomInCart
   const isPurchaseDisabled = !mounted || isGettingMe || !inStock || (isQualifiedBuyer && !hasRoomInCart)
+
+  const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
+
+  const isPhoneMissing = isQualifiedBuyer && !isLoadingPhoneNumber && !hasPhoneNumber
+  const isBuyNowDisabled = isPurchaseDisabled || isPhoneMissing
+
   const stepperCap = Math.max(remainingStock, 1)
   const effectiveQuantity = Math.min(Math.max(quantity, 1), stepperCap)
 
@@ -118,6 +125,10 @@ export default function ProductPurchaseBox() {
 
   const handleBuyNow = () => {
     if (!guardPurchase()) return
+    if (!hasPhoneNumber) {
+      toast.error(t('orders.checkout.contactMissing'))
+      return
+    }
     setCheckoutIntent([buyNowItem], 'buy-now')
     router.push('/checkout')
   }
@@ -237,8 +248,8 @@ export default function ProductPurchaseBox() {
         </motion.div>
 
         <motion.div
-          whileHover={isPurchaseDisabled ? undefined : { y: -3, scale: 1.03 }}
-          whileTap={isPurchaseDisabled ? undefined : { scale: 0.97 }}
+          whileHover={isBuyNowDisabled ? undefined : { y: -3, scale: 1.03 }}
+          whileTap={isBuyNowDisabled ? undefined : { scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 320, damping: 14 }}
           className='min-w-32 flex-1'
         >
@@ -247,13 +258,22 @@ export default function ProductPurchaseBox() {
             size='lg'
             variant='secondary'
             className='w-full'
-            disabled={isPurchaseDisabled}
+            disabled={isBuyNowDisabled}
             onClick={handleBuyNow}
           >
             <HugeiconsIcon icon={FlashIcon} />
             {t('products.detail.purchase.buyNow')}
           </Button>
         </motion.div>
+
+        {isPhoneMissing && mySlug ? (
+          <div className='flex w-full items-center justify-between gap-3 rounded-xl bg-destructive/10 px-3.5 py-2.5'>
+            <p className='text-xs text-destructive'>{t('orders.checkout.contactMissing')}</p>
+            <Button asChild type='button' variant='outline' size='sm' className='shrink-0'>
+              <Link href={`/users/${mySlug}`}>{t('profile.editPersonalInfo')}</Link>
+            </Button>
+          </div>
+        ) : null}
       </div>
     </div>
   )

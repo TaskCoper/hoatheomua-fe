@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
 import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
+import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -71,6 +72,9 @@ export default function CartPage() {
   const clearCart = useCartStore((state) => state.clearCart)
 
   const [deselectedIds, setDeselectedIds] = useState<Set<string>>(() => new Set())
+
+  const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
+  const isPhoneMissing = !isLoadingPhoneNumber && !hasPhoneNumber
 
   const productIds = useMemo(
     () => (hasHydrated ? Array.from(new Set(items.map((item) => item.productId))) : []),
@@ -321,21 +325,31 @@ export default function CartPage() {
               whileTap={!noneChecked ? { scale: 0.97 } : undefined}
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
             >
-              <Button
-                disabled={noneChecked}
-                className='w-full'
-                size='lg'
-                onClick={() => {
-                  setCheckoutIntent(selectedCartItems, 'cart')
-                  router.push('/checkout')
-                }}
-              >
-                <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                {t('cart.actions.checkout')}
-              </Button>
+              {!noneChecked && isPhoneMissing && mySlug ? (
+                <Button asChild className='w-full' size='lg' variant='outline'>
+                  <Link href={`/users/${mySlug}`}>{t('profile.editPersonalInfo')}</Link>
+                </Button>
+              ) : (
+                <Button
+                  disabled={noneChecked}
+                  className='w-full'
+                  size='lg'
+                  onClick={() => {
+                    setCheckoutIntent(selectedCartItems, 'cart')
+                    router.push('/checkout')
+                  }}
+                >
+                  <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
+                  {t('cart.actions.checkout')}
+                </Button>
+              )}
             </motion.div>
 
             {noneChecked && <p className='text-center text-xs text-muted-foreground'>{t('cart.summary.empty')}</p>}
+
+            {!noneChecked && isPhoneMissing && (
+              <p className='text-center text-xs text-destructive'>{t('orders.checkout.contactMissing')}</p>
+            )}
           </motion.div>
         </aside>
       </div>

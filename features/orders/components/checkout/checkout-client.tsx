@@ -8,9 +8,9 @@ import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { useRouter } from '@/lib/i18n/navigation'
+import { Link, useRouter } from '@/lib/i18n/navigation'
 import type { AhamoveConfigItem } from '@/types/config.type'
-import { ArrowLeft02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
+import { ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
@@ -43,8 +43,10 @@ export function CheckoutClient() {
   // The order's contact is whoever created it: the signed-in account. A saved
   // address carries its own receiverName/phoneNumber, but that only says who
   // receives at that door — it never becomes the order's fullName/phone.
-  const { me } = useGetMe()
-  const { user } = useGetUser(me?.slug)
+  const { me, isGettingMe } = useGetMe()
+  const { user, isLoading: isLoadingUser } = useGetUser(me?.slug)
+  const isProfileLoading = isGettingMe || isLoadingUser
+  const hasPhoneNumber = !!user?.phoneNumber
   const contact: OrderContact = useMemo(
     () => ({
       fullName: [user?.firstName, user?.lastName].filter(Boolean).join(' '),
@@ -171,58 +173,68 @@ export function CheckoutClient() {
 
         <h1 className='mb-4 font-title text-2xl font-bold sm:mb-6 sm:text-3xl'>{t('orders.checkout.title')}</h1>
 
-        <div className='grid grid-cols-1 gap-2 lg:grid-cols-5'>
-          <div className='space-y-2 lg:col-span-3'>
-            {step === 1 ? (
-              <StepPersonal
-                addresses={addresses}
-                isLoadingAddresses={isLoadingAddresses}
-                selectedAddressId={selectedAddressId}
-                selectedAddress={selectedAddress}
-                onSelectAddress={handleSelectAddress}
-                onClearAddress={clearAddress}
-                manualAddress={manualAddress}
-                onManualAddressChange={setManualAddress}
-                onLoadingShippingLocationsChange={setIsLoadingShippingLocations}
-              />
-            ) : step === 2 ? (
-              <StepPayment
-                gateway={gateway}
-                onGatewayChange={handleGatewayChange}
-                paymentMethod={paymentMethod}
-                onPaymentMethodChange={setPaymentMethod}
-                shippingOptions={sortedAhamove}
-                selectedServiceId={selectedServiceId}
-                onSelectShipping={setPickedServiceId}
-                taxBusinessInfo={taxBusinessInfo}
-                taxBusinessLookupState={taxBusinessLookupState}
-                onTaxBusinessInfoChange={setTaxBusinessInfo}
-                onTaxBusinessLookupStateChange={setTaxBusinessLookupState}
-              />
-            ) : (
-              <StepComplete />
-            )}
+        {!isProfileLoading && !hasPhoneNumber && me?.slug ? (
+          <div className='flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed bg-muted/20 py-16 text-center text-muted-foreground'>
+            <HugeiconsIcon icon={Call02Icon} size={36} strokeWidth={1.5} />
+            <p className='text-sm'>{t('orders.checkout.contactMissing')}</p>
+            <Button asChild type='button'>
+              <Link href={`/users/${me.slug}`}>{t('profile.editPersonalInfo')}</Link>
+            </Button>
           </div>
+        ) : (
+          <div className='grid grid-cols-1 gap-2 lg:grid-cols-5'>
+            <div className='space-y-2 lg:col-span-3'>
+              {step === 1 ? (
+                <StepPersonal
+                  addresses={addresses}
+                  isLoadingAddresses={isLoadingAddresses}
+                  selectedAddressId={selectedAddressId}
+                  selectedAddress={selectedAddress}
+                  onSelectAddress={handleSelectAddress}
+                  onClearAddress={clearAddress}
+                  manualAddress={manualAddress}
+                  onManualAddressChange={setManualAddress}
+                  onLoadingShippingLocationsChange={setIsLoadingShippingLocations}
+                />
+              ) : step === 2 ? (
+                <StepPayment
+                  gateway={gateway}
+                  onGatewayChange={handleGatewayChange}
+                  paymentMethod={paymentMethod}
+                  onPaymentMethodChange={setPaymentMethod}
+                  shippingOptions={sortedAhamove}
+                  selectedServiceId={selectedServiceId}
+                  onSelectShipping={setPickedServiceId}
+                  taxBusinessInfo={taxBusinessInfo}
+                  taxBusinessLookupState={taxBusinessLookupState}
+                  onTaxBusinessInfoChange={setTaxBusinessInfo}
+                  onTaxBusinessLookupStateChange={setTaxBusinessLookupState}
+                />
+              ) : (
+                <StepComplete />
+              )}
+            </div>
 
-          <div className='lg:col-span-2 lg:sticky lg:top-23 lg:self-start'>
-            <CheckoutSidebar
-              lines={summaryLines}
-              totalItems={totalItems}
-              address={summaryAddress || undefined}
-              orderTimeLabel={summaryOrderTime}
-              deliveryTimeLabel={summaryDeliveryTime}
-              productsSubtotal={productsSubtotal}
-              vatAmount={vatAmount}
-              hasTaxCode={hasTaxCode}
-              shippingFee={rawShippingFee}
-              shippingDiscount={shippingDiscount}
-              showShipping={step >= 2}
-              grandTotal={grandTotal}
-              action={sidebarAction}
-              showTerms={step < 3}
-            />
+            <div className='lg:col-span-2 lg:sticky lg:top-23 lg:self-start'>
+              <CheckoutSidebar
+                lines={summaryLines}
+                totalItems={totalItems}
+                address={summaryAddress || undefined}
+                orderTimeLabel={summaryOrderTime}
+                deliveryTimeLabel={summaryDeliveryTime}
+                productsSubtotal={productsSubtotal}
+                vatAmount={vatAmount}
+                hasTaxCode={hasTaxCode}
+                shippingFee={rawShippingFee}
+                shippingDiscount={shippingDiscount}
+                showShipping={step >= 2}
+                grandTotal={grandTotal}
+                action={sidebarAction}
+                showTerms={step < 3}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </FormProvider>
   )

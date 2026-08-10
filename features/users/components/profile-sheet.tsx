@@ -213,6 +213,16 @@ function PasswordContent() {
   )
 }
 
+export const profileDialogContentProps = {
+  position: 'top-center' as const,
+  className: 'h-fit max-w-none max-h-[calc(100vh-2rem)] overflow-hidden p-0 shadow-2xl',
+  style: {
+    width: 'min(56rem, calc(100vw - 2rem))',
+    maxWidth: 'none',
+    borderRadius: '1.5rem'
+  }
+}
+
 interface ProfileSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -224,16 +234,7 @@ export function ProfileSheet({ open, onOpenChange, slug }: ProfileSheetProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        position='top-center'
-        className='h-fit max-w-none max-h-[calc(100vh-2rem)] overflow-hidden p-0 shadow-2xl'
-        style={{
-          width: 'min(56rem, calc(100vw - 2rem))',
-          maxWidth: 'none',
-          borderRadius: '1.5rem'
-        }}
-        showCloseButton
-      >
+      <DialogContent {...profileDialogContentProps} showCloseButton>
         <DialogTitle className='sr-only'>{t('profile.title')}</DialogTitle>
         <DialogDescription className='sr-only'>{t('profile.title')}</DialogDescription>
         <ProfileSheetBody slug={slug} />
