@@ -48,6 +48,7 @@ export default function SignInForm() {
             <InputGroup>
               <InputGroupInput
                 {...field}
+                id={field.name}
                 aria-invalid={fieldState.invalid}
                 placeholder={t('auth.signIn.passwordPlaceholder')}
                 type={isPasswordVisible ? 'text' : 'password'}

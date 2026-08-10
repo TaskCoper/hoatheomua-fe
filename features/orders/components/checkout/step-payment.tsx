@@ -1,6 +1,7 @@
 'use client'
 
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import type { I18nKey } from '@/lib/i18n/types'
 import { cn } from '@/shared/utils'
@@ -20,13 +21,6 @@ import {
 import { InvoiceFields } from '../invoice-fields'
 
 type LookupState = 'idle' | 'loading' | 'found' | 'not_found' | 'error'
-
-const vndFormatter = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-  maximumFractionDigits: 0
-})
-const formatVnd = (value: number) => vndFormatter.format(value)
 
 interface PaymentMethodOption {
   value: PaymentMethod

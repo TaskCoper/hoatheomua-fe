@@ -26,6 +26,7 @@ import {
   type OrderDetail
 } from '@/features/orders/types'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
@@ -56,14 +57,6 @@ import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
-
-const vndFormatter = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-  maximumFractionDigits: 0
-})
-
-const formatVnd = (value: number) => vndFormatter.format(value)
 
 interface SepayDetails {
   bank: string | null

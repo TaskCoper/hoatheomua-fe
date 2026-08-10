@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { productDetailQuery } from '@/features/products/queries'
 import type { ProductDetail } from '@/features/products/types'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
+import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
@@ -39,14 +40,6 @@ interface MergedCartLine {
   unitPrice: number
   lineSubtotal: number
 }
-
-const vndFormatter = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-  maximumFractionDigits: 0
-})
-
-const formatVnd = (value: number) => vndFormatter.format(value)
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 36 },
@@ -310,6 +303,7 @@ export default function CartPage() {
                 <span className='text-sm font-semibold text-foreground'>{t('cart.summary.subtotal')}</span>
                 <motion.span
                   key={subtotal}
+                  data-testid='cart-subtotal'
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25 }}
@@ -405,6 +399,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
 
   return (
     <motion.li
+      data-testid='cart-line'
       variants={cardItem}
       whileHover={!isUnavailable ? { y: -4, scale: 1.005 } : undefined}
       transition={{ type: 'spring', stiffness: 240, damping: 18 }}
@@ -509,7 +504,10 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           >
             <HugeiconsIcon icon={MinusSignIcon} className='size-3.5' />
           </Button>
-          <span className='min-w-8 text-center text-sm font-semibold tabular-nums text-primary'>
+          <span
+            data-testid='cart-line-quantity'
+            className='min-w-8 text-center text-sm font-semibold tabular-nums text-primary'
+          >
             {cartItem.quantity}
           </span>
           <Button
@@ -530,7 +528,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             <p className='text-[0.625rem] font-medium uppercase tracking-wider text-muted-foreground'>
               {t('cart.lineSubtotal')}
             </p>
-            <p className='font-title text-base font-bold text-primary'>{formatVnd(line.lineSubtotal)}</p>
+            <p data-testid='cart-line-subtotal' className='font-title text-base font-bold text-primary'>
+              {formatVnd(line.lineSubtotal)}
+            </p>
           </div>
         )}
 

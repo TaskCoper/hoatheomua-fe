@@ -5,6 +5,7 @@ import { availableOf, useProductVariant } from '@/features/products/components/p
 import type { ProductDetail } from '@/features/products/types'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useHasMounted } from '@/hooks/use-has-mounted'
+import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
@@ -16,14 +17,6 @@ import { motion } from 'motion/react'
 import { useSearchParams } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
-
-const vndFormatter = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-  maximumFractionDigits: 0
-})
-
-const formatVnd = (value: number) => vndFormatter.format(value)
 
 function variantLabel(child: ProductDetail): string {
   const name = child.productName?.trim()
@@ -130,7 +123,10 @@ export default function ProductPurchaseBox() {
   }
 
   return (
-    <div className='space-y-5 rounded-3xl bg-card px-4 py-5 shadow-[0_0.8rem_2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'>
+    <div
+      data-testid='purchase-box'
+      className='space-y-5 rounded-3xl bg-card px-4 py-5 shadow-[0_0.8rem_2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'
+    >
       <div className='grid gap-4'>
         {hasVariants ? (
           <div className='space-y-2'>
@@ -176,7 +172,9 @@ export default function ProductPurchaseBox() {
             >
               <HugeiconsIcon icon={MinusSignIcon} className='size-3.5' />
             </Button>
-            <span className='min-w-8 text-center text-sm font-semibold text-primary'>{effectiveQuantity}</span>
+            <span data-testid='purchase-quantity' className='min-w-8 text-center text-sm font-semibold text-primary'>
+              {effectiveQuantity}
+            </span>
             <Button
               type='button'
               size='icon-sm'

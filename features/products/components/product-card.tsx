@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { ProductDetail } from '@/features/products/types'
+import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
@@ -19,14 +20,6 @@ const cardItem: Variants = {
     transition: { type: 'spring', stiffness: 160, damping: 16 }
   }
 }
-
-const vndFormatter = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-  maximumFractionDigits: 0
-})
-
-const formatVnd = (value: number) => vndFormatter.format(value)
 
 export default function ProductCard({
   product,

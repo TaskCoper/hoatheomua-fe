@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Spinner } from '@/components/ui/spinner'
+import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
@@ -19,13 +20,6 @@ export interface CheckoutSummaryLine {
   unitPrice: number
   subtotal: number
 }
-
-const vndFormatter = new Intl.NumberFormat('vi-VN', {
-  style: 'currency',
-  currency: 'VND',
-  maximumFractionDigits: 0
-})
-const formatVnd = (value: number) => vndFormatter.format(value)
 
 interface SummaryLine {
   label: string
@@ -162,13 +156,7 @@ export function CheckoutSidebar({
           </label>
         ) : null}
 
-        <Button
-          type='button'
-          size='lg'
-          className='w-full'
-          onClick={action.onClick}
-          disabled={isActionDisabled}
-        >
+        <Button type='button' size='lg' className='w-full' onClick={action.onClick} disabled={isActionDisabled}>
           {action.loading ? <Spinner /> : null}
           {action.label}
         </Button>

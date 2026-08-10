@@ -126,13 +126,13 @@ export default function NavBar() {
             ) : (
               <>
                 <Button asChild variant='outline' size='icon-sm' className={CART_BUTTON_CLASS}>
-                  <Link href='/cart'>
+                  <Link href='/cart' aria-label={t('header.aria.openCart')}>
                     <HugeiconsIcon icon={ShoppingBasket03Icon} />
                   </Link>
                 </Button>
 
                 <Button asChild variant='outline' size='icon-sm' className={CART_BUTTON_CLASS}>
-                  <Link href='/orders'>
+                  <Link href='/orders' aria-label={t('header.aria.openOrders')}>
                     <HugeiconsIcon icon={PackageIcon} />
                   </Link>
                 </Button>

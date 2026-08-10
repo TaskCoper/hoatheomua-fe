@@ -2,6 +2,7 @@
 
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useGetUserHomePath } from '@/hooks/use-get-user-home-path'
+import { useHasMounted } from '@/hooks/use-has-mounted'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { useEffect, useRef } from 'react'
 import AuthGuardLoading from './auth-guard-loading'
@@ -16,6 +17,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
   const router = useRouter()
   const pathname = usePathname()
   const userHomePath = useGetUserHomePath()
+  const hasMounted = useHasMounted()
 
   const { me, isGettingMe, isAuthenticated, isVerificationRequired } = useGetMe()
 
@@ -39,7 +41,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
   const shouldRedirectToSignIn = !isAuthenticated && !isVerificationRequired && !isOnGuestAuthPage && !isOnGuestAuthPage
 
   useEffect(() => {
-    if (isGettingMe) return
+    if (!hasMounted || isGettingMe) return
 
     if (shouldRedirectToVerify) {
       const email = me?.email
@@ -60,6 +62,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
       router.replace(userHomePath)
     }
   }, [
+    hasMounted,
     isGettingMe,
     shouldRedirectToVerify,
     shouldRedirectToSignIn,

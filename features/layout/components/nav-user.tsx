@@ -61,7 +61,7 @@ export default function NavUser({ user }: NavUserProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger aria-label={t('account.account')}>
         <Avatar className='size-7 ring-2 ring-primary ring-offset-1 rounded-full cursor-pointer mr-0.5'>
           <AvatarImage src={user?.avatar || undefined} alt={user?.email} />
           <AvatarFallback className='rounded-full text-xs'>
