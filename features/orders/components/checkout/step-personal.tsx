@@ -2,14 +2,15 @@
 
 import { Spinner } from '@/components/ui/spinner'
 import type { Address } from '@/features/addresses/types'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { CheckoutFields } from '../checkout-fields'
 
 interface StepPersonalProps {
   addresses: Address[]
   isLoadingAddresses: boolean
   selectedAddressId: string
+  selectedAddress: Address | null
   onSelectAddress: (id: string) => void
+  onClearAddress: () => void
   manualAddress: boolean
   onManualAddressChange: (value: boolean) => void
   onLoadingShippingLocationsChange?: (isLoading: boolean) => void
@@ -19,34 +20,31 @@ export function StepPersonal({
   addresses,
   isLoadingAddresses,
   selectedAddressId,
+  selectedAddress,
   onSelectAddress,
+  onClearAddress,
   manualAddress,
   onManualAddressChange,
   onLoadingShippingLocationsChange
 }: StepPersonalProps) {
-  const { t } = useTranslation()
+  if (isLoadingAddresses) {
+    return (
+      <section className='flex items-center justify-center rounded-3xl bg-card p-5 py-12 sm:p-6 border border-border'>
+        <Spinner />
+      </section>
+    )
+  }
 
   return (
-    <section className='rounded-3xl bg-card p-5 sm:p-6 border border-border'>
-      <header className='mb-4 border-b border-border/70 pb-4'>
-        <h2 className='font-title text-lg font-semibold'>{t('orders.checkout.stepPersonal')}</h2>
-        <p className='text-xs text-muted-foreground'>{t('orders.checkout.stepPersonalDescription')}</p>
-      </header>
-
-      {isLoadingAddresses ? (
-        <div className='flex items-center justify-center py-12'>
-          <Spinner />
-        </div>
-      ) : (
-        <CheckoutFields
-          addresses={addresses}
-          selectedAddressId={selectedAddressId}
-          onSelectAddress={onSelectAddress}
-          manualAddress={manualAddress}
-          onManualAddressChange={onManualAddressChange}
-          onLoadingShippingLocationsChange={onLoadingShippingLocationsChange}
-        />
-      )}
-    </section>
+    <CheckoutFields
+      addresses={addresses}
+      selectedAddressId={selectedAddressId}
+      selectedAddress={selectedAddress}
+      onSelectAddress={onSelectAddress}
+      onClearAddress={onClearAddress}
+      manualAddress={manualAddress}
+      onManualAddressChange={onManualAddressChange}
+      onLoadingShippingLocationsChange={onLoadingShippingLocationsChange}
+    />
   )
 }

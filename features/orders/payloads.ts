@@ -3,10 +3,16 @@ import type { CartItem } from '@/stores/cart.store'
 import type { CheckoutPayload, EstimatePayload, PaymentGateway, PaymentMethod } from './types'
 import type { CheckoutFormValues, EstimateFormValues } from './validations'
 
+export interface OrderContact {
+  fullName: string
+  phone: string
+}
+
 export const buildEstimatePayload = (
   values: EstimateFormValues,
   items: CartItem[],
-  productById: Map<string, ProductDetail>
+  productById: Map<string, ProductDetail>,
+  contact: OrderContact
 ): EstimatePayload => {
   const fullAddress = `${values.addressLine}, ${values.ward}, ${values.city}`
 
@@ -15,8 +21,8 @@ export const buildEstimatePayload = (
     longitude: values.longitude,
     address: fullAddress,
     shortAddress: fullAddress,
-    fullName: values.fullName,
-    phone: values.phone,
+    fullName: contact.fullName,
+    phone: contact.phone,
     remarks: values.remarks,
     orderTime: values.orderTime,
     items: items.map((item) => ({
@@ -31,11 +37,12 @@ export const buildCheckoutPayload = (
   values: CheckoutFormValues,
   items: CartItem[],
   productById: Map<string, ProductDetail>,
+  contact: OrderContact,
   paymentMethod: PaymentMethod,
   gateway: PaymentGateway,
   shippingFee: number
 ): CheckoutPayload => {
-  const base = buildEstimatePayload(values, items, productById)
+  const base = buildEstimatePayload(values, items, productById, contact)
 
   if (!values.isExportInvoice) {
     return {

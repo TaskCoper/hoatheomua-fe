@@ -2,6 +2,8 @@
 
 import { Button } from '@/components/ui/button'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
+import { useGetMe } from '@/features/users/hooks/use-get-me'
+import { useGetUser } from '@/features/users/hooks/use-get-user'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useDateFormat } from '@/lib/date'
@@ -17,6 +19,7 @@ import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
+import type { OrderContact } from '../../payloads'
 import { PaymentGateway, PaymentMethod, type TaxBusinessInfo } from '../../types'
 import { CheckoutSidebar } from './checkout-sidebar'
 import { CheckoutStepper } from './checkout-stepper'
@@ -37,16 +40,33 @@ export function CheckoutClient() {
   const { addresses, isLoading: isLoadingAddresses } = useGetAddresses({ enabled: true })
   const { orderTags } = useGetOrderTags()
 
+  // The order's contact is whoever created it: the signed-in account. A saved
+  // address carries its own receiverName/phoneNumber, but that only says who
+  // receives at that door — it never becomes the order's fullName/phone.
+  const { me } = useGetMe()
+  const { user } = useGetUser(me?.slug)
+  const contact: OrderContact = useMemo(
+    () => ({
+      fullName: [user?.firstName, user?.lastName].filter(Boolean).join(' '),
+      phone: user?.phoneNumber ?? ''
+    }),
+    [user?.firstName, user?.lastName, user?.phoneNumber]
+  )
+
   // Free-shipping distance threshold (km). Deliveries closer than this ship free.
   const { configs: ahamoveConfigs } = useGetPublicConfigs<AhamoveConfigItem>({ group: 'ahamove' })
   const freeShipKm = Number(ahamoveConfigs.find((config) => config.key === 'ahamove.free_ship')?.value.value)
 
-  const { selectedAddressId, handleSelectAddress } = useCheckoutAddressSelection({ addresses, methods })
+  const { selectedAddressId, selectedAddress, handleSelectAddress, clearAddress } = useCheckoutAddressSelection({
+    addresses,
+    methods
+  })
 
   const { step, goBack, items, handleGoToPayment, handleConfirmOrder, handleCancel } = useCheckoutFlow({
     methods,
     estimateOrder,
-    createOrder
+    createOrder,
+    contact
   })
 
   const [manualAddress, setManualAddress] = useState(false)
@@ -158,7 +178,9 @@ export function CheckoutClient() {
                 addresses={addresses}
                 isLoadingAddresses={isLoadingAddresses}
                 selectedAddressId={selectedAddressId}
+                selectedAddress={selectedAddress}
                 onSelectAddress={handleSelectAddress}
+                onClearAddress={clearAddress}
                 manualAddress={manualAddress}
                 onManualAddressChange={setManualAddress}
                 onLoadingShippingLocationsChange={setIsLoadingShippingLocations}
