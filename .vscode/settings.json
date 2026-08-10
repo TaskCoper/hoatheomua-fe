@@ -1,4 +1,6 @@
 {
   "i18n-ally.localesPaths": ["lib/i18n", "lib/i18n/messages"],
-  "i18n-ally.keystyle": "nested"
+  "i18n-ally.keystyle": "nested",
+  "playwright.reuseBrowser": false,
+  "playwright.showTrace": false
 }
