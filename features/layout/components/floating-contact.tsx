@@ -1,10 +1,12 @@
 'use client'
 
+import { useLiveChat } from '@/features/layout/hooks/use-live-chat'
 import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { I18nKey } from '@/lib/i18n/types'
+import { cn } from '@/shared/utils'
 import { ContactConfigItem } from '@/types/config.type'
-import { VolumeHighIcon, VolumeMute02Icon } from '@hugeicons/core-free-icons'
+import { BotIcon, Cancel01Icon, Loading03Icon, VolumeHighIcon, VolumeMute02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
@@ -50,6 +52,14 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
   const audioRef = useRef<HTMLAudioElement>(null)
   const isMuted = useSyncExternalStore(subscribeMutedPref, readMutedPref, getServerMutedPref)
   const [audioMounted, setAudioMounted] = useState(false)
+
+  const {
+    isEnabled: isChatEnabled,
+    isOpen: isChatOpen,
+    isPending: isChatPending,
+    hasUnread,
+    toggle: toggleChat
+  } = useLiveChat()
 
   const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
   const zalo = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
@@ -171,56 +181,92 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
   }
 
   const musicLabel = t(isMuted ? 'floatingContact.musicOff' : 'floatingContact.musicOn')
+  const chatLabel = t(isChatOpen ? 'floatingContact.chatClose' : 'floatingContact.chat')
+  const chatIcon = isChatPending ? Loading03Icon : isChatOpen ? Cancel01Icon : BotIcon
 
   return (
-    <div className='pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6'>
-      {musicSrc ? (
-        <>
-          {audioMounted ? (
-            <audio ref={audioRef} src={musicSrc} loop playsInline preload='none' aria-hidden='true' />
-          ) : null}
+    <div className='pointer-events-none fixed bottom-4 right-4 z-[10000] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6'>
+      <div
+        className={cn(
+          'flex flex-col items-end gap-3 transition-opacity duration-300',
+          isChatOpen && 'max-sm:pointer-events-none max-sm:opacity-0'
+        )}
+      >
+        {musicSrc ? (
+          <>
+            {audioMounted ? (
+              <audio ref={audioRef} src={musicSrc} loop playsInline preload='none' aria-hidden='true' />
+            ) : null}
 
-          <button
-            type='button'
-            onClick={toggleMusic}
-            aria-label={musicLabel}
-            aria-pressed={!isMuted}
-            title={musicLabel}
-            className='pointer-events-auto group relative flex size-12 items-center justify-center rounded-full bg-card text-foreground shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
-          >
-            <HugeiconsIcon
-              icon={isMuted ? VolumeMute02Icon : VolumeHighIcon}
-              className='size-6 transition-transform duration-300 group-hover:scale-110 sm:size-7'
-            />
-          </button>
-        </>
-      ) : null}
+            <button
+              type='button'
+              onClick={toggleMusic}
+              aria-label={musicLabel}
+              aria-pressed={!isMuted}
+              title={musicLabel}
+              className='pointer-events-auto group relative flex size-12 items-center justify-center rounded-full bg-card text-foreground shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
+            >
+              <HugeiconsIcon
+                icon={isMuted ? VolumeMute02Icon : VolumeHighIcon}
+                className='size-6 transition-transform duration-300 group-hover:scale-110 sm:size-7'
+              />
+            </button>
+          </>
+        ) : null}
 
-      {CONTACT_CHANNELS.map((channel) => {
-        const label = t(channel.labelKey)
-        return (
-          <a
-            key={channel.key}
-            href={channel.href}
-            target='_blank'
-            rel='noopener noreferrer'
-            aria-label={label}
-            title={label}
-            className='pointer-events-auto group relative flex size-12 items-center justify-center rounded-full bg-card shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
-          >
-            <Image
-              src={channel.src}
-              alt=''
-              width={40}
-              height={40}
-              sizes='(min-width: 640px) 40px, 32px'
-              quality={70}
+        {CONTACT_CHANNELS.map((channel) => {
+          const label = t(channel.labelKey)
+          return (
+            <a
+              key={channel.key}
+              href={channel.href}
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label={label}
+              title={label}
+              className='pointer-events-auto group relative flex size-12 items-center justify-center rounded-full bg-card shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
+            >
+              <Image
+                src={channel.src}
+                alt=''
+                width={40}
+                height={40}
+                sizes='(min-width: 640px) 40px, 32px'
+                quality={70}
+                aria-hidden='true'
+                className='size-8 object-contain transition-transform duration-300 group-hover:scale-110 sm:size-10'
+              />
+            </a>
+          )
+        })}
+      </div>
+
+      {isChatEnabled ? (
+        <button
+          type='button'
+          onClick={toggleChat}
+          aria-label={chatLabel}
+          aria-expanded={isChatOpen}
+          aria-busy={isChatPending}
+          title={chatLabel}
+          className='pointer-events-auto cursor-pointer group relative flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
+        >
+          <HugeiconsIcon
+            icon={chatIcon}
+            className={cn(
+              'size-6 transition-transform duration-300 sm:size-7',
+              isChatPending ? 'animate-spin' : 'group-hover:scale-110'
+            )}
+          />
+
+          {hasUnread && !isChatOpen ? (
+            <span
               aria-hidden='true'
-              className='size-8 object-contain transition-transform duration-300 group-hover:scale-110 sm:size-10'
+              className='dot-pulse absolute right-1 top-1 size-2.5 rounded-full bg-destructive ring-2 ring-card'
             />
-          </a>
-        )
-      })}
+          ) : null}
+        </button>
+      ) : null}
     </div>
   )
 }

@@ -239,7 +239,9 @@
     "zalo": "Chat on Zalo",
     "messenger": "Chat on Messenger",
     "musicOn": "Mute background music",
-    "musicOff": "Play background music"
+    "musicOff": "Play background music",
+    "chat": "Chat with Hoa Theo Mua",
+    "chatClose": "Close the chat"
   },
   "contact": {
     "eyebrow": "Seasonal flower studio",
