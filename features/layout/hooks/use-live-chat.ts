@@ -342,10 +342,8 @@ ${scoped(`${CONTAINER} .livechat-widget-input > div:not(.files-bar)`, ':focus-wi
 ${scoped(`${CONTAINER} .livechat-widget-input textarea`)} {
   color: var(--foreground) !important;
   font-size: 0.8125rem !important;
-  padding: 0.25rem 0.375rem 0 !important;
-  /* The SDK ships a 60px floor and grows the box from there; a 2.25rem start keeps the
-     composer to one line until there is something to wrap. */
-  min-height: 2.25rem !important;
+  padding: 0.375rem !important;
+  min-height: 2.5rem !important;
   max-height: 6.5rem !important;
 }
 

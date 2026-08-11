@@ -1,15 +1,11 @@
 'use client'
 
 import { useLiveChat } from '@/features/layout/hooks/use-live-chat'
-import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { I18nKey } from '@/lib/i18n/types'
 import { cn } from '@/shared/utils'
-import { ContactConfigItem } from '@/types/config.type'
 import { BotIcon, Cancel01Icon, Loading03Icon, VolumeHighIcon, VolumeMute02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import Image from 'next/image'
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 const MUTED_STORAGE_KEY = 'floatingContact.musicMuted'
 const MUTED_CHANGE_EVENT = 'floating-contact:muted-change'
@@ -61,27 +57,27 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
     toggle: toggleChat
   } = useLiveChat()
 
-  const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
-  const zalo = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
-  const messenger = contactConfigs.find((item) => item.key === 'contact.messenger')?.value.value
+  // const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
+  // const zalo = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
+  // const messenger = contactConfigs.find((item) => item.key === 'contact.messenger')?.value.value
 
-  const CONTACT_CHANNELS = useMemo(
-    () => [
-      {
-        key: 'zalo',
-        href: zalo,
-        src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-4-1.webp',
-        labelKey: 'floatingContact.zalo' as I18nKey
-      },
-      {
-        key: 'messenger',
-        href: messenger,
-        src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-1-1.webp',
-        labelKey: 'floatingContact.messenger' as I18nKey
-      }
-    ],
-    [zalo, messenger]
-  )
+  // const CONTACT_CHANNELS = useMemo(
+  //   () => [
+  //     {
+  //       key: 'zalo',
+  //       href: zalo,
+  //       src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-4-1.webp',
+  //       labelKey: 'floatingContact.zalo' as I18nKey
+  //     },
+  //     {
+  //       key: 'messenger',
+  //       href: messenger,
+  //       src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-1-1.webp',
+  //       labelKey: 'floatingContact.messenger' as I18nKey
+  //     }
+  //   ],
+  //   [zalo, messenger]
+  // )
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -225,7 +221,7 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
             </>
           ) : null}
 
-          {CONTACT_CHANNELS.map((channel) => {
+          {/* {CONTACT_CHANNELS.map((channel) => {
             const label = t(channel.labelKey)
             return (
               <a
@@ -249,34 +245,42 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
                 />
               </a>
             )
-          })}
+          })} */}
         </div>
 
         {isChatEnabled ? (
-          <button
-            type='button'
-            onClick={toggleChat}
-            aria-label={chatLabel}
-            aria-expanded={isChatOpen}
-            aria-busy={isChatPending}
-            title={chatLabel}
-            className='pointer-events-auto cursor-pointer group relative flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
-          >
-            <HugeiconsIcon
-              icon={chatIcon}
-              className={cn(
-                'size-6 transition-transform duration-300 sm:size-7',
-                isChatPending ? 'animate-spin' : 'group-hover:scale-110'
-              )}
+          <div className='pointer-events-auto relative'>
+            <span
+              aria-hidden='true'
+              style={{ '--spin-duration': '3.5s' } as React.CSSProperties}
+              className='spin-loop pointer-events-none absolute -inset-[3px] rounded-full bg-[conic-gradient(from_0deg,transparent_0%,var(--color-primary)_20%,transparent_40%)] opacity-70'
             />
 
-            {hasUnread && !isChatOpen ? (
-              <span
-                aria-hidden='true'
-                className='dot-pulse absolute right-1 top-1 size-2.5 rounded-full bg-destructive ring-2 ring-card'
+            <button
+              type='button'
+              onClick={toggleChat}
+              aria-label={chatLabel}
+              aria-expanded={isChatOpen}
+              aria-busy={isChatPending}
+              title={chatLabel}
+              className='cursor-pointer group relative flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
+            >
+              <HugeiconsIcon
+                icon={chatIcon}
+                className={cn(
+                  'size-6 transition-transform duration-300 sm:size-7',
+                  isChatPending ? 'animate-spin' : 'group-hover:scale-110'
+                )}
               />
-            ) : null}
-          </button>
+
+              {hasUnread && !isChatOpen ? (
+                <span
+                  aria-hidden='true'
+                  className='dot-pulse absolute right-1 top-1 size-2.5 rounded-full bg-destructive ring-2 ring-card'
+                />
+              ) : null}
+            </button>
+          </div>
         ) : null}
       </div>
     </>
