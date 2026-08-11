@@ -74,30 +74,28 @@ export default function ProductCard({
             />
           ) : (
             <>
-              <motion.div
+              <div
                 aria-hidden='true'
-                animate={{ rotate: 360 }}
-                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-                className='absolute inset-3 rounded-2xl border border-dashed border-primary/15 sm:inset-2 lg:inset-3'
+                className='spin-loop absolute inset-3 rounded-2xl border border-dashed border-primary/15 sm:inset-2 lg:inset-3'
+                style={{ ['--spin-duration' as string]: '30s' }}
               />
 
-              <motion.div
-                animate={{ y: [0, -6, 0], rotate: [0, -2, 0, 2, 0] }}
-                whileHover={{ scale: 1.15, rotate: -6 }}
-                transition={{
-                  y: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
-                  rotate: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-                  scale: { type: 'spring', stiffness: 240, damping: 16 }
-                }}
-                className='flex items-center justify-center'
-              >
-                <div
-                  aria-hidden='true'
-                  className='flex h-32 w-32 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-36 sm:w-36 lg:h-40 lg:w-40'
+              {/* Keep the bob and the hover spring on separate elements: a CSS
+                  animation on `transform` outranks motion's inline transform. */}
+              <div className='card-bob flex items-center justify-center'>
+                <motion.div
+                  whileHover={{ scale: 1.15, rotate: -6 }}
+                  transition={{ type: 'spring', stiffness: 240, damping: 16 }}
+                  className='flex items-center justify-center'
                 >
-                  <HugeiconsIcon icon={FlowerIcon} className='size-12' />
-                </div>
-              </motion.div>
+                  <div
+                    aria-hidden='true'
+                    className='flex h-32 w-32 items-center justify-center rounded-full bg-primary/10 text-primary sm:h-36 sm:w-36 lg:h-40 lg:w-40'
+                  >
+                    <HugeiconsIcon icon={FlowerIcon} className='size-12' />
+                  </div>
+                </motion.div>
+              </div>
             </>
           )}
 

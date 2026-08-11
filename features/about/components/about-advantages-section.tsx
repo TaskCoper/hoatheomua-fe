@@ -130,18 +130,24 @@ export default function AdvantagesSection() {
               {String(index + 1).padStart(2, '0')}
             </motion.span>
 
-            <motion.div
-              whileHover={{ rotate: -16, scale: 1.2 }}
-              animate={{ y: [0, -2, 0] }}
-              transition={{
-                rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                scale: { type: 'spring', stiffness: 380, damping: 12 },
-                y: { duration: 2.5 + (index % 3) * 0.3, repeat: Infinity, ease: 'easeInOut' }
+            <div
+              className='icon-bob shrink-0'
+              style={{
+                ['--bob-distance' as string]: '-2px',
+                ['--bob-duration' as string]: `${2.5 + (index % 3) * 0.3}s`
               }}
-              className='grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground shadow-md sm:size-12'
             >
-              <HugeiconsIcon icon={advantage.icon} className='size-5 sm:size-6' />
-            </motion.div>
+              <motion.div
+                whileHover={{ rotate: -16, scale: 1.2 }}
+                transition={{
+                  rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                  scale: { type: 'spring', stiffness: 380, damping: 12 }
+                }}
+                className='grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground shadow-md sm:size-12'
+              >
+                <HugeiconsIcon icon={advantage.icon} className='size-5 sm:size-6' />
+              </motion.div>
+            </div>
 
             <div className='space-y-0.5'>
               <h2 className='font-title text-sm font-bold leading-tight text-primary sm:text-base'>

@@ -76,18 +76,24 @@ export default function B2BProcessSection({ process, locale }: { process: Overvi
             className='group relative flex flex-col gap-3 overflow-hidden rounded-3xl bg-card p-5 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'
           >
             <div className='relative flex items-center justify-between'>
-              <motion.div
-                whileHover={{ rotate: -12, scale: 1.18 }}
-                animate={{ y: [0, -2, 0] }}
-                transition={{
-                  rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                  scale: { type: 'spring', stiffness: 380, damping: 12 },
-                  y: { duration: 2.6 + (index % 3) * 0.3, repeat: Infinity, ease: 'easeInOut' }
+              <div
+                className='icon-bob relative z-10'
+                style={{
+                  ['--bob-distance' as string]: '-2px',
+                  ['--bob-duration' as string]: `${2.6 + (index % 3) * 0.3}s`
                 }}
-                className='relative z-10 grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-md ring-4 ring-background'
               >
-                <HugeiconsIcon icon={STEP_ICON[step.id] ?? SparklesIcon} className='size-5' />
-              </motion.div>
+                <motion.div
+                  whileHover={{ rotate: -12, scale: 1.18 }}
+                  transition={{
+                    rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                    scale: { type: 'spring', stiffness: 380, damping: 12 }
+                  }}
+                  className='grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-md ring-4 ring-background'
+                >
+                  <HugeiconsIcon icon={STEP_ICON[step.id] ?? SparklesIcon} className='size-5' />
+                </motion.div>
+              </div>
 
               <span className='font-title text-3xl font-bold leading-none text-secondary/60 sm:text-4xl'>
                 {String(index + 1).padStart(2, '0')}

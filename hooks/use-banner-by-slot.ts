@@ -4,10 +4,30 @@ import { BannerItem, BannerSlot, BannersCollection, BannersCollectionConfigItem 
 import { useMemo } from 'react'
 import { useGetPublicConfigs } from './use-get-public-configs'
 
+export type BannerSlotState = { status: 'banner'; banner: BannerItem } | { status: 'fallback' } | { status: 'hidden' }
+
+const FALLBACK: BannerSlotState = { status: 'fallback' }
+const HIDDEN: BannerSlotState = { status: 'hidden' }
+
+const normalizeSlot = (slot: BannerSlot) =>
+  slot
+    .trim()
+    .toLowerCase()
+    .replace(/[-_.\s]/g, '')
+
 interface BannersState {
+  /** True once a parseable config row exists - i.e. the config decides, not the fallbacks. */
+  configured: boolean
   sectionEnabled: boolean
   items: BannerItem[]
-  getBanner: (slot: BannerSlot) => BannerItem | undefined
+  getSlot: (slot: BannerSlot) => BannerSlotState
+}
+
+const UNCONFIGURED: BannersState = {
+  configured: false,
+  sectionEnabled: false,
+  items: [],
+  getSlot: () => FALLBACK
 }
 
 export function useBanners(): BannersState {
@@ -18,24 +38,30 @@ export function useBanners(): BannersState {
 
   return useMemo<BannersState>(() => {
     const raw = configs[0]?.value.value
-    if (!raw) return { sectionEnabled: false, items: [], getBanner: () => undefined }
+    if (!raw) return UNCONFIGURED
 
     try {
       const parsed = JSON.parse(raw) as BannersCollection
       const items = (parsed.items ?? []).filter((item) => item.enabled)
-      const bySlot = new Map(items.map((item) => [item.slot, item]))
+      const bySlot = new Map(items.map((item) => [normalizeSlot(item.slot), item]))
+      const sectionEnabled = parsed.section?.enabled ?? false
+
       return {
-        sectionEnabled: parsed.section?.enabled ?? false,
+        configured: true,
+        sectionEnabled,
         items,
-        getBanner: (slot) => bySlot.get(slot)
+        getSlot: (slot) => {
+          if (!sectionEnabled) return HIDDEN
+          const banner = bySlot.get(normalizeSlot(slot))
+          return banner ? { status: 'banner', banner } : HIDDEN
+        }
       }
     } catch {
-      return { sectionEnabled: false, items: [], getBanner: () => undefined }
+      return UNCONFIGURED
     }
   }, [configs])
 }
 
-export function useBannerBySlot(slot: BannerSlot): BannerItem | undefined {
-  const { sectionEnabled, getBanner } = useBanners()
-  return sectionEnabled ? getBanner(slot) : undefined
+export function useBannerSlot(slot: BannerSlot): BannerSlotState {
+  return useBanners().getSlot(slot)
 }

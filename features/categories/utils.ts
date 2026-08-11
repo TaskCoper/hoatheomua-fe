@@ -22,6 +22,17 @@ export const parseCategoryMetadata = (metaData: string | null): CategoryMetadata
   }
 }
 
+/**
+ * A category is time-active when `now` falls within [startTime, endTime]. Either bound
+ * being null/absent means that side is unconstrained, so a category with no dates set
+ * is always active.
+ */
+export const isCategoryTimeActive = (category: Pick<SortableCategory, 'startTime' | 'endTime'>, now: Date): boolean => {
+  if (category.startTime && now < new Date(category.startTime)) return false
+  if (category.endTime && now > new Date(category.endTime)) return false
+  return true
+}
+
 /** Coerce a metadata dimension to a positive integer, falling back when absent/invalid. */
 const toGridDimension = (value: number | undefined, fallback: number): number =>
   typeof value === 'number' && Number.isFinite(value) && value >= 1 ? Math.floor(value) : fallback

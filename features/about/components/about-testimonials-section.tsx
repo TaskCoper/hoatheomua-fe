@@ -117,13 +117,9 @@ export default function AboutTestimonialsSection() {
           transition={{ type: 'spring', stiffness: 220, damping: 18 }}
           className='relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-card p-5 shadow-[0_0.8rem_2rem_rgb(81_108_108/12%)] ring-1 ring-foreground/5 sm:p-6 lg:col-span-7'
         >
-          <motion.div
-            animate={{ rotate: [0, -10, 0, 8, 0], scale: [1, 1.1, 1, 1.05, 1] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            className='absolute -right-2 -top-2 sm:right-4 sm:top-4'
-          >
+          <div className='quote-pop-b absolute -right-2 -top-2 sm:right-4 sm:top-4'>
             <HugeiconsIcon icon={QuoteUpIcon} className='size-24 text-secondary/30 sm:size-28' aria-hidden='true' />
-          </motion.div>
+          </div>
 
           <div className='relative flex items-center gap-2'>
             <motion.span
@@ -131,11 +127,7 @@ export default function AboutTestimonialsSection() {
               transition={{ type: 'spring', stiffness: 360, damping: 14 }}
               className='inline-flex items-center gap-1.5 rounded-full bg-secondary/60 px-2.5 py-0.5 text-primary'
             >
-              <motion.span
-                animate={{ scale: [1, 1.6, 1], opacity: [1, 0.4, 1] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-                className='size-1.5 rounded-full bg-primary'
-              />
+              <span className='dot-pulse size-1.5 rounded-full bg-primary' />
               <span className='text-[0.625rem] font-semibold'>{t('about.testimonials.featuredLabel')}</span>
             </motion.span>
 
@@ -193,13 +185,9 @@ export default function AboutTestimonialsSection() {
                 transition={{ type: 'spring', stiffness: 260, damping: 16 }}
                 className='relative flex flex-col gap-2 rounded-3xl bg-card p-4 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1rem_2.5rem_rgb(81_108_108/16%)] sm:p-5'
               >
-                <motion.div
-                  animate={{ rotate: [0, -6, 0, 4, 0] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                  className='absolute right-3 top-3'
-                >
+                <div className='quote-sway absolute right-3 top-3'>
                   <HugeiconsIcon icon={QuoteUpIcon} className='size-7 text-secondary/60' aria-hidden='true' />
-                </motion.div>
+                </div>
 
                 <div className='flex items-center gap-0.5'>
                   {Array.from({ length: 5 }).map((_, index) => (

@@ -1,6 +1,6 @@
 'use client'
 
-import { useBannerBySlot } from '@/hooks/use-banner-by-slot'
+import { useBannerSlot } from '@/hooks/use-banner-by-slot'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { type BannerSlot } from '@/types/config.type'
@@ -12,6 +12,7 @@ type ConfigurableBannerProps = {
   fallbackSrc: StaticImageData
   fallbackAlt: string
   className?: string
+  wrapperClassName?: string
   sizes?: string
   quality?: number
 }
@@ -21,11 +22,16 @@ export default function ConfigurableBanner({
   fallbackSrc,
   fallbackAlt,
   className,
+  wrapperClassName,
   sizes,
   quality = 65
 }: ConfigurableBannerProps) {
   const { locale } = useTranslation()
-  const banner = useBannerBySlot(slot)
+  const state = useBannerSlot(slot)
+
+  if (state.status === 'hidden') return null
+
+  const banner = state.status === 'banner' ? state.banner : undefined
 
   const image: ReactNode = banner ? (
     <Image
@@ -42,19 +48,27 @@ export default function ConfigurableBanner({
     <Image src={fallbackSrc} alt={fallbackAlt} className={className} sizes={sizes} loading='lazy' quality={quality} />
   )
 
-  if (!banner?.href) return image
-
-  const externalRel = banner.openInNewTab ? 'noopener noreferrer' : undefined
-  const externalTarget = banner.openInNewTab ? '_blank' : undefined
-  const isInternal = banner.href.startsWith('/')
-
-  return isInternal ? (
-    <Link href={banner.href} target={externalTarget} rel={externalRel} className='block'>
+  const content = !banner?.href ? (
+    image
+  ) : banner.href.startsWith('/') ? (
+    <Link
+      href={banner.href}
+      target={banner.openInNewTab ? '_blank' : undefined}
+      rel={banner.openInNewTab ? 'noopener noreferrer' : undefined}
+      className='block'
+    >
       {image}
     </Link>
   ) : (
-    <a href={banner.href} target={externalTarget} rel={externalRel} className='block'>
+    <a
+      href={banner.href}
+      target={banner.openInNewTab ? '_blank' : undefined}
+      rel={banner.openInNewTab ? 'noopener noreferrer' : undefined}
+      className='block'
+    >
       {image}
     </a>
   )
+
+  return wrapperClassName ? <div className={wrapperClassName}>{content}</div> : content
 }

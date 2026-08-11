@@ -131,13 +131,9 @@ export default function PressSection() {
       </motion.div>
 
       <div className='mx-auto mt-5 flex w-full flex-col items-center gap-2 bg-secondary/50 px-5 py-5 text-center sm:mt-6 sm:gap-2.5 sm:py-6'>
-        <motion.p
-          animate={{ scale: [1, 1.015, 1] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className='font-title text-base font-bold text-primary sm:text-lg lg:text-xl'
-        >
+        <p className='soft-pulse font-title text-base font-bold text-primary sm:text-lg lg:text-xl'>
           {t('about.press.footer.thankYou')}
-        </motion.p>
+        </p>
 
         <p className='max-w-2xl text-xs leading-relaxed text-foreground'>{t('about.press.footer.message')}</p>
 
@@ -147,11 +143,9 @@ export default function PressSection() {
           transition={{ type: 'spring', stiffness: 320, damping: 14 }}
           className='group relative'
         >
-          <motion.span
+          <span
             aria-hidden='true'
-            animate={{ opacity: [0.45, 0.85, 0.45], scale: [1, 1.08, 1] }}
-            transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-            className='pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-primary/35 blur-xl'
+            className='glow-pulse pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-primary/35 blur-xl'
           />
           <Button
             asChild

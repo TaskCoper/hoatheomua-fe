@@ -239,7 +239,9 @@
     "zalo": "Nhắn tin Zalo",
     "messenger": "Nhắn tin Messenger",
     "musicOn": "Tắt nhạc nền",
-    "musicOff": "Bật nhạc nền"
+    "musicOff": "Bật nhạc nền",
+    "chat": "Chat với Hoa Theo Mùa",
+    "chatClose": "Đóng khung chat"
   },
   "contact": {
     "eyebrow": "Tiệm hoa theo mùa",

@@ -289,13 +289,9 @@ export default function NewsView({
                     className='inline-flex items-center gap-1 font-semibold text-primary'
                   >
                     {t('news.exploreCta')}
-                    <motion.span
-                      className='inline-flex'
-                      animate={{ x: [0, 6, 0] }}
-                      transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                    >
+                    <span className='nudge-x inline-flex'>
                       <HugeiconsIcon icon={ArrowRight02Icon} className='size-3.5' />
-                    </motion.span>
+                    </span>
                   </motion.span>
                 </div>
               </div>
