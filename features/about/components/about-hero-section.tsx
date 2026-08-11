@@ -100,22 +100,13 @@ export default function AboutHeroSection() {
           />
 
           <div className='relative flex flex-col items-center'>
-            <motion.div
-              animate={{ y: [0, -14, 0], rotate: [0, 1.2, 0, -1.2, 0] }}
-              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className='relative grid size-56 place-items-center rounded-full bg-card shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] ring-1 ring-foreground/5 sm:size-68 lg:size-80'
-            >
-              <motion.div
+            <div className='bob-tilt-lg relative grid size-56 place-items-center rounded-full bg-card shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] ring-1 ring-foreground/5 sm:size-68 lg:size-80'>
+              <div
                 aria-hidden='true'
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                className='absolute inset-2 rounded-full border border-dashed border-primary/15 sm:inset-3'
+                className='spin-loop absolute inset-2 rounded-full border border-dashed border-primary/15 sm:inset-3'
               />
 
-              <motion.div
-                animate={{ rotate: [0, -2, 0, 2, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              >
+              <div className='sway-soft'>
                 <Image
                   src={flower}
                   alt={t('about.hero.imageAlt')}
@@ -125,7 +116,7 @@ export default function AboutHeroSection() {
                   fetchPriority='high'
                   quality={75}
                 />
-              </motion.div>
+              </div>
 
               <motion.div
                 variants={badgePopRight}
@@ -150,7 +141,7 @@ export default function AboutHeroSection() {
                   {t('about.hero.naturalLabel')}
                 </p>
               </motion.div>
-            </motion.div>
+            </div>
 
             <motion.div
               variants={stampPop}
@@ -159,13 +150,9 @@ export default function AboutHeroSection() {
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
               className='relative z-10 -mt-3 flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-primary-foreground shadow-md'
             >
-              <motion.span
-                animate={{ rotate: [0, 12, -12, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className='inline-flex'
-              >
+              <span className='stamp-wiggle inline-flex'>
                 <HugeiconsIcon icon={Calendar03Icon} className='size-3.5' />
-              </motion.span>
+              </span>
               <span className='whitespace-nowrap text-[0.625rem] font-semibold leading-4 sm:text-xs'>
                 {t('about.hero.founded')}
               </span>
@@ -187,13 +174,9 @@ export default function AboutHeroSection() {
             transition={{ type: 'spring', stiffness: 220, damping: 18 }}
             className='relative space-y-2 rounded-2xl bg-card p-4 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 sm:p-5'
           >
-            <motion.div
-              animate={{ rotate: [0, -12, 0, 8, 0], scale: [1, 1.1, 1, 1.05, 1] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              className='absolute -left-2 -top-2'
-            >
+            <div className='quote-pop-a absolute -left-2 -top-2'>
               <HugeiconsIcon icon={QuoteUpIcon} className='size-7 text-secondary fill-secondary' aria-hidden='true' />
-            </motion.div>
+            </div>
 
             {STORY_PARAGRAPH_KEYS.map((paragraphKey) => (
               <p key={paragraphKey} className='text-xs leading-relaxed text-foreground italic'>

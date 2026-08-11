@@ -156,29 +156,27 @@ export default function BrandValuesSection() {
             }}
           /> */}
 
-          <motion.span
+          <span
             aria-hidden='true'
-            animate={{ rotate: [0, 12, 0, -4, 0], scale: [1, 1.06, 1] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-            className='pointer-events-none absolute -right-8 -bottom-10 font-title text-[10rem] font-bold leading-none text-primary-foreground/10 sm:-right-10 sm:-bottom-12 sm:text-[13rem]'
+            className='numeral-drift-value pointer-events-none absolute -right-8 -bottom-10 font-title text-[10rem] font-bold leading-none text-primary-foreground/10 sm:-right-10 sm:-bottom-12 sm:text-[13rem]'
           >
             {featuredValue.number}
-          </motion.span>
+          </span>
 
           <div className='relative z-10 flex h-full flex-col justify-between gap-6 p-5 sm:p-6'>
             <div className='flex items-start justify-between'>
-              <motion.div
-                whileHover={{ rotate: -16, scale: 1.18 }}
-                animate={{ y: [0, -3, 0] }}
-                transition={{
-                  rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                  scale: { type: 'spring', stiffness: 380, damping: 12 },
-                  y: { duration: 3, repeat: Infinity, ease: 'easeInOut' }
-                }}
-                className='grid size-11 place-items-center rounded-xl bg-primary-foreground/20 text-primary-foreground shadow-lg backdrop-blur-md ring-1 ring-primary-foreground/30 sm:size-12'
-              >
-                <HugeiconsIcon icon={featuredValue.icon} className='size-5 sm:size-6' />
-              </motion.div>
+              <div className='icon-bob'>
+                <motion.div
+                  whileHover={{ rotate: -16, scale: 1.18 }}
+                  transition={{
+                    rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                    scale: { type: 'spring', stiffness: 380, damping: 12 }
+                  }}
+                  className='grid size-11 place-items-center rounded-xl bg-primary-foreground/20 text-primary-foreground shadow-lg backdrop-blur-md ring-1 ring-primary-foreground/30 sm:size-12'
+                >
+                  <HugeiconsIcon icon={featuredValue.icon} className='size-5 sm:size-6' />
+                </motion.div>
+              </div>
               <span className='rounded-full bg-primary-foreground/15 px-3 py-1 font-title text-xs font-bold tracking-widest text-primary-foreground backdrop-blur ring-1 ring-primary-foreground/20 sm:text-sm'>
                 {featuredValue.number}
               </span>
@@ -222,30 +220,22 @@ export default function BrandValuesSection() {
               >
                 {isWide && (
                   <>
-                    <motion.div
-                      animate={{ y: [0, -4, 0], rotate: [0, 2, 0] }}
-                      transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-                      className='pointer-events-none absolute -bottom-3 -left-3 z-0 sm:-bottom-4 sm:-left-4'
-                    >
+                    <div className='corner-drift-left pointer-events-none absolute -bottom-3 -left-3 z-0 sm:-bottom-4 sm:-left-4'>
                       <Image
                         src={cornerFlowersLeft}
                         alt=''
                         aria-hidden='true'
                         className='h-28 w-auto select-none opacity-80 sm:h-32 lg:h-36'
                       />
-                    </motion.div>
-                    <motion.div
-                      animate={{ y: [0, -3, 0], rotate: [0, -2, 0] }}
-                      transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
-                      className='pointer-events-none absolute -bottom-2 -right-2 z-0 sm:-bottom-3 sm:-right-3'
-                    >
+                    </div>
+                    <div className='corner-drift-right pointer-events-none absolute -bottom-2 -right-2 z-0 sm:-bottom-3 sm:-right-3'>
                       <Image
                         src={cornerFlowersRight}
                         alt=''
                         aria-hidden='true'
                         className='h-28 w-auto select-none opacity-80 sm:h-32 lg:h-36'
                       />
-                    </motion.div>
+                    </div>
                   </>
                 )}
 

@@ -93,8 +93,7 @@ export default function ProductsPromiseMotion({
               whileHover={{ rotate: -14, scale: 1.18 }}
               transition={{
                 rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                scale: { type: 'spring', stiffness: 380, damping: 12 },
-                y: { duration: 3, repeat: Infinity, ease: 'easeInOut' }
+                scale: { type: 'spring', stiffness: 380, damping: 12 }
               }}
               className='grid size-11 shrink-0 place-items-center rounded-xl bg-secondary/70 text-primary shadow-sm ring-1 ring-primary/10'
             >

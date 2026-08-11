@@ -72,13 +72,9 @@ export default function OrdersPage() {
           variants={fadeUp}
           className='mx-auto mt-8 flex w-full max-w-md flex-col items-center gap-4 rounded-3xl bg-card px-6 py-12 text-center shadow-[0_0.8rem_2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'
         >
-          <motion.div
-            animate={{ y: [0, -6, 0], rotate: [0, -3, 0, 3, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className='grid size-20 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'
-          >
+          <div className='bob-tilt-sm grid size-20 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
             <HugeiconsIcon icon={PackageIcon} className='size-9' strokeWidth={1.5} />
-          </motion.div>
+          </div>
           <h2 className='font-title text-xl font-bold text-primary sm:text-2xl'>{t('orders.list.empty.title')}</h2>
           <p className='text-sm leading-relaxed text-muted-foreground'>{t('orders.list.empty.description')}</p>
           <Button asChild size='lg' className='mt-2'>

@@ -152,27 +152,30 @@ export default function B2BServicesSection({
                 </motion.span>
 
                 <div className='relative flex items-center gap-3'>
-                  <motion.div
-                    whileHover={{ rotate: -14, scale: 1.18 }}
-                    animate={{ y: [0, -3, 0] }}
-                    transition={{
-                      rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                      scale: { type: 'spring', stiffness: 380, damping: 12 },
-                      y: { duration: 2.6 + (index % 3) * 0.3, repeat: Infinity, ease: 'easeInOut' }
-                    }}
-                    className={`grid shrink-0 place-items-center rounded-2xl shadow-md ${
-                      isFeatured
-                        ? 'size-12 bg-card text-primary sm:size-14'
-                        : service.accent === 'leaf'
-                          ? 'size-11 bg-leaf text-leaf-foreground sm:size-12'
-                          : 'size-11 bg-primary text-primary-foreground sm:size-12'
-                    }`}
+                  <div
+                    className='icon-bob shrink-0'
+                    style={{ ['--bob-duration' as string]: `${2.6 + (index % 3) * 0.3}s` }}
                   >
-                    <HugeiconsIcon
-                      icon={service.icon}
-                      className={isFeatured ? 'size-6 sm:size-7' : 'size-5 sm:size-6'}
-                    />
-                  </motion.div>
+                    <motion.div
+                      whileHover={{ rotate: -14, scale: 1.18 }}
+                      transition={{
+                        rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                        scale: { type: 'spring', stiffness: 380, damping: 12 }
+                      }}
+                      className={`grid shrink-0 place-items-center rounded-2xl shadow-md ${
+                        isFeatured
+                          ? 'size-12 bg-card text-primary sm:size-14'
+                          : service.accent === 'leaf'
+                            ? 'size-11 bg-leaf text-leaf-foreground sm:size-12'
+                            : 'size-11 bg-primary text-primary-foreground sm:size-12'
+                      }`}
+                    >
+                      <HugeiconsIcon
+                        icon={service.icon}
+                        className={isFeatured ? 'size-6 sm:size-7' : 'size-5 sm:size-6'}
+                      />
+                    </motion.div>
+                  </div>
 
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold tracking-wide ring-1 ${
@@ -219,13 +222,9 @@ export default function B2BServicesSection({
                     }`}
                   >
                     {explore}
-                    <motion.span
-                      className='inline-flex'
-                      animate={{ x: [0, 6, 0] }}
-                      transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                    >
+                    <span className='nudge-x inline-flex'>
                       <HugeiconsIcon icon={ArrowRight02Icon} className={isFeatured ? 'size-4' : 'size-3'} />
-                    </motion.span>
+                    </span>
                   </motion.div>
                 </div>
               </Link>

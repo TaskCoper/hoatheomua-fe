@@ -133,13 +133,9 @@ export default function ProductLinesSection() {
                       transition={{ type: 'spring', stiffness: 360, damping: 14 }}
                       className='absolute left-3 top-3 z-10 inline-flex max-w-[calc(100%-1.5rem)] items-center gap-1 rounded-full bg-card/90 px-2 py-0.5 text-[0.625rem] font-medium text-primary backdrop-blur-sm ring-1 ring-foreground/5 sm:left-2 sm:top-2 sm:max-w-[calc(100%-1rem)] sm:text-[0.5625rem] md:text-[0.625rem] lg:left-3 lg:top-3 lg:max-w-[calc(100%-1.5rem)] lg:text-xs'
                     >
-                      <motion.span
-                        animate={{ rotate: [0, 12, -8, 0] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                        className='inline-flex'
-                      >
+                      <span className='flower-wiggle inline-flex'>
                         <HugeiconsIcon icon={FlowerIcon} className='size-3.5 shrink-0' />
-                      </motion.span>
+                      </span>
                       <span className='truncate'>{occasion}</span>
                     </motion.span>
                   ) : null}
@@ -171,13 +167,9 @@ export default function ProductLinesSection() {
                     className='mt-1 inline-flex w-fit items-center gap-1 text-xs font-semibold text-primary transition-colors group-hover:text-foreground'
                   >
                     {t('about.productLines.explore')}
-                    <motion.span
-                      className='inline-flex'
-                      animate={{ x: [0, 6, 0] }}
-                      transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
-                    >
+                    <span className='nudge-x inline-flex'>
                       <HugeiconsIcon icon={ArrowRight02Icon} className='size-3' />
-                    </motion.span>
+                    </span>
                   </motion.span>
                 </div>
               </Link>

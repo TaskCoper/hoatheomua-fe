@@ -91,18 +91,24 @@ export default function B2BAdvantagesSection({
               {String(index + 1).padStart(2, '0')}
             </motion.span>
 
-            <motion.div
-              whileHover={{ rotate: -14, scale: 1.18 }}
-              animate={{ y: [0, -2, 0] }}
-              transition={{
-                rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                scale: { type: 'spring', stiffness: 380, damping: 12 },
-                y: { duration: 2.5 + (index % 3) * 0.3, repeat: Infinity, ease: 'easeInOut' }
+            <div
+              className='icon-bob'
+              style={{
+                ['--bob-distance' as string]: '-2px',
+                ['--bob-duration' as string]: `${2.5 + (index % 3) * 0.3}s`
               }}
-              className='grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-md sm:size-12'
             >
-              <HugeiconsIcon icon={ADVANTAGE_ICON[advantage.id] ?? SparklesIcon} className='size-5 sm:size-6' />
-            </motion.div>
+              <motion.div
+                whileHover={{ rotate: -14, scale: 1.18 }}
+                transition={{
+                  rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                  scale: { type: 'spring', stiffness: 380, damping: 12 }
+                }}
+                className='grid size-11 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-md sm:size-12'
+              >
+                <HugeiconsIcon icon={ADVANTAGE_ICON[advantage.id] ?? SparklesIcon} className='size-5 sm:size-6' />
+              </motion.div>
+            </div>
 
             <div className='space-y-1'>
               <h3 className='font-title text-base font-bold leading-tight text-primary sm:text-lg'>

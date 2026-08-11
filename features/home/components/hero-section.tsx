@@ -33,14 +33,7 @@ export default function HeroSection() {
 
   return (
     <div className='relative mt-6 mb-10 flex items-center justify-center w-full max-w-7xl mx-auto px-4'>
-      <motion.div
-        animate={{ y: [0, -8, 0], rotate: [0, 0.8, 0, -0.8, 0] }}
-        transition={{
-          y: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-          rotate: { duration: 9, repeat: Infinity, ease: 'easeInOut' }
-        }}
-        className='relative z-10 flex items-center justify-center'
-      >
+      <div className='hero-bob relative z-10 flex items-center justify-center'>
         <Image
           src={slogan}
           alt={t('home.hero.imageAlt')}
@@ -50,7 +43,7 @@ export default function HeroSection() {
           fetchPriority='high'
           quality={70}
         />
-      </motion.div>
+      </div>
 
       <motion.div
         initial='hidden'

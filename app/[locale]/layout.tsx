@@ -1,6 +1,7 @@
 import { Toaster } from '@/components/ui/sonner'
 import { routing } from '@/lib/i18n/routing'
 import ReactQueryProvider from '@/lib/react-query'
+import RouteScrollReset from '@/shared/components/route-scroll-reset'
 import type { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
@@ -103,6 +104,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
+        <RouteScrollReset />
         <NuqsAdapter>
           <NextIntlClientProvider messages={clientMessages}>
             <ReactQueryProvider>

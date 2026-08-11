@@ -99,11 +99,9 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
               className='group relative'
             >
-              <motion.span
+              <span
                 aria-hidden='true'
-                animate={{ opacity: [0.45, 0.85, 0.45], scale: [1, 1.08, 1] }}
-                transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-                className='pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-primary/35 blur-xl'
+                className='glow-pulse pointer-events-none absolute -inset-1 -z-10 rounded-2xl bg-primary/35 blur-xl'
               />
               <Button
                 asChild
@@ -172,22 +170,13 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
             className='absolute inset-0 m-auto h-48 w-48 rounded-full bg-secondary/40 blur-3xl sm:h-60 sm:w-60 lg:h-72 lg:w-72'
           />
 
-          <motion.div
-            animate={{ y: [0, -14, 0], rotate: [0, 1.2, 0, -1.2, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-            className='relative grid size-56 place-items-center rounded-full bg-card shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] ring-1 ring-foreground/5 sm:size-68 lg:size-80'
-          >
-            <motion.div
+          <div className='bob-tilt-lg relative grid size-56 place-items-center rounded-full bg-card shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] ring-1 ring-foreground/5 sm:size-68 lg:size-80'>
+            <div
               aria-hidden='true'
-              animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-              className='absolute inset-2 rounded-full border border-dashed border-primary/15 sm:inset-3'
+              className='spin-loop absolute inset-2 rounded-full border border-dashed border-primary/15 sm:inset-3'
             />
 
-            <motion.div
-              animate={{ rotate: [0, -2, 0, 2, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            >
+            <div className='sway-soft'>
               <Image
                 src={flower}
                 alt={strings.imageAlt}
@@ -197,7 +186,7 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
                 fetchPriority='high'
                 quality={75}
               />
-            </motion.div>
+            </div>
 
             <motion.div
               whileHover={{ rotate: 0, scale: 1.12, y: -4 }}
@@ -222,7 +211,7 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
                 {strings.fastDeliveryLabel}
               </p>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

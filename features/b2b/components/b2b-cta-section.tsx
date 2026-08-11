@@ -34,14 +34,12 @@ export default function B2BCtaSection({ cta, locale }: { cta: OverviewCta; local
         variants={containerStagger}
         className='relative mx-auto w-full max-w-7xl overflow-hidden rounded-[2rem] bg-primary p-6 text-primary-foreground shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:p-8 lg:p-10'
       >
-        <motion.span
+        <span
           aria-hidden='true'
-          animate={{ rotate: [0, 12, 0, -8, 0], scale: [1, 1.08, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          className='pointer-events-none absolute -right-8 -bottom-10 font-title text-[10rem] font-bold leading-none text-primary-foreground/8 sm:text-[14rem]'
+          className='numeral-drift-cta pointer-events-none absolute -right-8 -bottom-10 font-title text-[10rem] font-bold leading-none text-primary-foreground/8 sm:text-[14rem]'
         >
           {pick(cta.eyebrow, locale)}
-        </motion.span>
+        </span>
 
         <div className='relative grid grid-cols-1 items-center gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:gap-10'>
           <motion.div variants={containerStagger} className='space-y-3'>

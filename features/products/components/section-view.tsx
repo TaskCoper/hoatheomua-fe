@@ -6,6 +6,7 @@ import {
   getCategoryGrid,
   getCategoryName,
   getResponsiveGridColumns,
+  isCategoryTimeActive,
   parseCategoryMetadata
 } from '@/features/categories/utils'
 import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
@@ -62,10 +63,12 @@ export default function SectionView({
   const meta = useMemo(() => parseCategoryMetadata(category.metaData), [category.metaData])
   const filterableChildren = useMemo<FilterChild[]>(() => {
     // Recurse the category tree so nested facets (up to 3+ levels) are preserved,
-    // keeping only nodes flagged as filterable at each level.
+    // keeping only nodes flagged as filterable and currently within their
+    // startTime/endTime window (unset bounds are unconstrained) at each level.
+    const now = new Date()
     const build = (cats: SortableCategory[]): FilterChild[] =>
       cats
-        .filter((child) => parseCategoryMetadata(child.metaData).isFilterable)
+        .filter((child) => parseCategoryMetadata(child.metaData).isFilterable && isCategoryTimeActive(child, now))
         .map((child) => ({
           categoryId: child.categoryId,
           label: getCategoryName(child, locale),

@@ -47,22 +47,16 @@ export default function AboutVisionMissionSection() {
           }}
         /> */}
 
-        <motion.div
-          variants={quoteIn}
-          animate={{ y: [0, -6, 0], rotate: [0, -4, 0, 4, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className='pointer-events-none absolute -left-2 -top-2 sm:left-2 sm:top-2'
-        >
-          <HugeiconsIcon icon={QuoteUpIcon} className='size-10 text-primary/25 fill-primary/15 sm:size-14' />
+        <motion.div variants={quoteIn} className='pointer-events-none absolute -left-2 -top-2 sm:left-2 sm:top-2'>
+          <div className='quote-float-a'>
+            <HugeiconsIcon icon={QuoteUpIcon} className='size-10 text-primary/25 fill-primary/15 sm:size-14' />
+          </div>
         </motion.div>
 
-        <motion.div
-          variants={quoteIn}
-          animate={{ y: [0, 6, 0], rotate: [0, 4, 0, -4, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-          className='pointer-events-none absolute -right-2 -bottom-2 sm:right-2 sm:bottom-2'
-        >
-          <HugeiconsIcon icon={QuoteDownIcon} className='size-10 text-primary/25 fill-primary/15 sm:size-14' />
+        <motion.div variants={quoteIn} className='pointer-events-none absolute -right-2 -bottom-2 sm:right-2 sm:bottom-2'>
+          <div className='quote-float-b'>
+            <HugeiconsIcon icon={QuoteDownIcon} className='size-10 text-primary/25 fill-primary/15 sm:size-14' />
+          </div>
         </motion.div>
 
         <motion.blockquote
@@ -96,18 +90,18 @@ export default function AboutVisionMissionSection() {
             />
 
             <div className='relative flex items-center gap-3'>
-              <motion.div
-                whileHover={{ rotate: -16, scale: 1.18 }}
-                animate={{ y: [0, -3, 0] }}
-                transition={{
-                  rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                  scale: { type: 'spring', stiffness: 380, damping: 12 },
-                  y: { duration: 3, repeat: Infinity, ease: 'easeInOut' }
-                }}
-                className='grid size-11 place-items-center rounded-2xl bg-secondary/70 text-primary ring-1 ring-primary/10 shadow-sm sm:size-12'
-              >
-                <HugeiconsIcon icon={EyeIcon} className='size-5 sm:size-6' />
-              </motion.div>
+              <div className='icon-bob'>
+                <motion.div
+                  whileHover={{ rotate: -16, scale: 1.18 }}
+                  transition={{
+                    rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                    scale: { type: 'spring', stiffness: 380, damping: 12 }
+                  }}
+                  className='grid size-11 place-items-center rounded-2xl bg-secondary/70 text-primary ring-1 ring-primary/10 shadow-sm sm:size-12'
+                >
+                  <HugeiconsIcon icon={EyeIcon} className='size-5 sm:size-6' />
+                </motion.div>
+              </div>
               <p className='text-[0.625rem] font-bold uppercase tracking-[0.25em] text-primary/70 sm:text-xs'>
                 {t('about.visionMission.vision.label')}
               </p>
@@ -130,18 +124,18 @@ export default function AboutVisionMissionSection() {
             />
 
             <div className='relative flex items-center gap-3'>
-              <motion.div
-                whileHover={{ rotate: 16, scale: 1.18 }}
-                animate={{ y: [0, -3, 0] }}
-                transition={{
-                  rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                  scale: { type: 'spring', stiffness: 380, damping: 12 },
-                  y: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }
-                }}
-                className='grid size-11 place-items-center rounded-2xl bg-secondary/70 text-primary ring-1 ring-primary/10 shadow-sm sm:size-12'
-              >
-                <HugeiconsIcon icon={HandHeartIcon} className='size-5 sm:size-6' />
-              </motion.div>
+              <div className='icon-bob' style={{ ['--bob-delay' as string]: '1s' }}>
+                <motion.div
+                  whileHover={{ rotate: 16, scale: 1.18 }}
+                  transition={{
+                    rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                    scale: { type: 'spring', stiffness: 380, damping: 12 }
+                  }}
+                  className='grid size-11 place-items-center rounded-2xl bg-secondary/70 text-primary ring-1 ring-primary/10 shadow-sm sm:size-12'
+                >
+                  <HugeiconsIcon icon={HandHeartIcon} className='size-5 sm:size-6' />
+                </motion.div>
+              </div>
               <p className='text-[0.625rem] font-bold uppercase tracking-[0.25em] text-primary/70 sm:text-xs'>
                 {t('about.visionMission.mission.label')}
               </p>
