@@ -1,10 +1,10 @@
 import type { SortableCategory } from '@/features/categories/types'
 import CriteriaSection from '@/features/home/components/criteria-section'
-import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 import HomeCategorySections from '@/features/home/components/home-category-sections'
 import ShopFreshFlowersSection from '@/features/home/components/shop-fresh-flowers-section'
 import TestimonialSection from '@/features/home/components/testimonial-section'
 import WhyChooseUsSection from '@/features/home/components/why-choose-us-section'
+import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 import bannerOne from '@/public/images/banner-one.webp'
 import saleBanner from '@/public/images/sale-banner.webp'
 import ConfigurableBanner from '@/shared/components/configurable-banner'
@@ -24,15 +24,14 @@ export default function HomeContent({ categories }: { categories: SortableCatego
 
       <ShopFreshFlowersSection />
 
-      <div className={bannerWrapperClass}>
-        <ConfigurableBanner
-          slot={BANNER_SLOTS.homeCollection}
-          fallbackSrc={bannerOne}
-          fallbackAlt='Bộ sưu tập hoa tươi Hoa Theo Mùa'
-          className={`${bannerImageClass} border-2 border-secondary/80`}
-          sizes='(min-width: 1280px) 1200px, 100vw'
-        />
-      </div>
+      <ConfigurableBanner
+        slot={BANNER_SLOTS.homeCollection}
+        fallbackSrc={bannerOne}
+        fallbackAlt='Bộ sưu tập hoa tươi Hoa Theo Mùa'
+        wrapperClassName={bannerWrapperClass}
+        className={`${bannerImageClass} border-2 border-secondary/80`}
+        sizes='(min-width: 1280px) 1200px, 100vw'
+      />
 
       <div className='cv-auto'>
         {/*
@@ -46,15 +45,14 @@ export default function HomeContent({ categories }: { categories: SortableCatego
         </Suspense>
       </div>
 
-      <div className={`${bannerWrapperClass} cv-auto`}>
-        <ConfigurableBanner
-          slot={BANNER_SLOTS.homeSale}
-          fallbackSrc={saleBanner}
-          fallbackAlt='Ưu đãi hoa tươi Hoa Theo Mùa'
-          className={`${bannerImageClass} border-2 border-primary/5`}
-          sizes='(min-width: 1280px) 1200px, 100vw'
-        />
-      </div>
+      <ConfigurableBanner
+        slot={BANNER_SLOTS.homeSale}
+        fallbackSrc={saleBanner}
+        fallbackAlt='Ưu đãi hoa tươi Hoa Theo Mùa'
+        wrapperClassName={`${bannerWrapperClass} cv-auto`}
+        className={`${bannerImageClass} border-2 border-primary/5`}
+        sizes='(min-width: 1280px) 1200px, 100vw'
+      />
 
       <div className='cv-auto'>
         <WhyChooseUsSection />

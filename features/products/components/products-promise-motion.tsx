@@ -1,5 +1,6 @@
 'use client'
 
+import { useBanners } from '@/hooks/use-banner-by-slot'
 import saleBanner from '@/public/images/sale-banner.webp'
 import ConfigurableBanner from '@/shared/components/configurable-banner'
 import { type BannerSlot } from '@/types/config.type'
@@ -37,36 +38,41 @@ export default function ProductsPromiseMotion({
     'w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg border-2 border-primary/5'
   const bannerSizes = '(min-width: 1280px) 1200px, 100vw'
 
+  const { getSlot } = useBanners()
+  const bannerHidden = slot ? getSlot(slot).status === 'hidden' : false
+
   return (
     <section className='relative mt-8 sm:mt-10 md:mt-12 lg:mt-14 px-4 pb-12'>
-      <motion.div
-        initial='hidden'
-        whileInView='visible'
-        viewport={{ once: true, margin: '-80px' }}
-        variants={bannerReveal}
-        whileHover={{ y: -8, scale: 1.015 }}
-        transition={{ type: 'spring', stiffness: 220, damping: 18 }}
-        className='mx-auto w-full max-w-7xl'
-      >
-        {slot ? (
-          <ConfigurableBanner
-            slot={slot}
-            fallbackSrc={saleBanner}
-            fallbackAlt={bannerAlt}
-            className={bannerClassName}
-            sizes={bannerSizes}
-          />
-        ) : (
-          <Image
-            src={saleBanner}
-            alt={bannerAlt}
-            className={bannerClassName}
-            sizes={bannerSizes}
-            loading='lazy'
-            quality={65}
-          />
-        )}
-      </motion.div>
+      {!bannerHidden && (
+        <motion.div
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, margin: '-80px' }}
+          variants={bannerReveal}
+          whileHover={{ y: -8, scale: 1.015 }}
+          transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+          className='mx-auto w-full max-w-7xl'
+        >
+          {slot ? (
+            <ConfigurableBanner
+              slot={slot}
+              fallbackSrc={saleBanner}
+              fallbackAlt={bannerAlt}
+              className={bannerClassName}
+              sizes={bannerSizes}
+            />
+          ) : (
+            <Image
+              src={saleBanner}
+              alt={bannerAlt}
+              className={bannerClassName}
+              sizes={bannerSizes}
+              loading='lazy'
+              quality={65}
+            />
+          )}
+        </motion.div>
+      )}
 
       <motion.div
         initial='hidden'
