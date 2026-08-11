@@ -994,14 +994,14 @@
     },
     "visionMission": {
       "title": "Tầm Nhìn & Sứ Mệnh",
-      "motto": "Hoa đẹp nhất khi nở đúng mùa, bạn đẹp nhất khi bạn hạnh phúc",
+      "motto": "Hoa đẹp nhất khi nở đúng mùa,\nbạn đẹp nhất khi bạn hạnh phúc",
       "vision": {
         "label": "Tầm nhìn",
-        "statement": "Một thế giới hạnh phúc, nơi cái đẹp hiện diện trong từng khoảnh khắc"
+        "statement": "Một thế giới hạnh phúc, nơi vẻ đẹp hiện diện trong từng khoảnh khắc"
       },
       "mission": {
         "label": "Sứ mệnh",
-        "statement": "Mang trải nghiệm cảm xúc đến với mọi người qua những đóa hoa tươi thu hái trực tiếp từ vườn, được gói ghém bằng yêu thương trao gửi đến người nhận"
+        "statement": "Mang trải nghiệm cảm xúc đến mọi người qua từng đóa hoa tươi hái trực tiếp từ vườn, gói ghém bằng yêu thương."
       }
     },
     "values": {

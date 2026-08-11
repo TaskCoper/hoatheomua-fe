@@ -53,7 +53,10 @@ export default function AboutVisionMissionSection() {
           </div>
         </motion.div>
 
-        <motion.div variants={quoteIn} className='pointer-events-none absolute -right-2 -bottom-2 sm:right-2 sm:bottom-2'>
+        <motion.div
+          variants={quoteIn}
+          className='pointer-events-none absolute -right-2 -bottom-2 sm:right-2 sm:bottom-2'
+        >
           <div className='quote-float-b'>
             <HugeiconsIcon icon={QuoteDownIcon} className='size-10 text-primary/25 fill-primary/15 sm:size-14' />
           </div>
@@ -61,7 +64,7 @@ export default function AboutVisionMissionSection() {
 
         <motion.blockquote
           variants={fadeUp}
-          className='relative mx-auto max-w-3xl text-center font-title text-lg font-bold italic leading-snug text-primary sm:text-2xl md:text-3xl lg:text-4xl'
+          className='relative mx-auto max-w-3xl whitespace-pre-line text-center font-title text-lg font-bold italic leading-snug text-primary sm:text-2xl md:text-3xl lg:text-4xl'
         >
           &ldquo;{t('about.visionMission.motto')}&rdquo;
         </motion.blockquote>
