@@ -8,9 +8,11 @@ const OVERRIDE_STYLE_ID = 'cloudgo-livechat-overrides'
 
 const IDLE_BOOT_DELAY_MS = 6000
 
-/** How long a queued open waits for the SDK's websocket before giving up and opening anyway. */
 const OPEN_TIMEOUT_MS = 12000
 const OPEN_POLL_MS = 150
+
+const ATTACH_TIMEOUT_MS = 15000
+const ATTACH_POLL_MS = 100
 
 const API_ORIGIN = 'https://livechat.cloudgo.vn'
 
@@ -45,15 +47,31 @@ const THEME_TOKENS = [
 const scoped = (selector: string, suffix = '') =>
   `#livechat-widget-inner ${selector}${suffix}, #${HOST_ID} ${selector}${suffix}`
 
+/** An agent row's avatar; a visitor row has no such column - see the bubble rules. */
+const AVATAR = '.message-container > div:first-child:not(:only-child)'
+
+/**
+ * Hugeicons' `BotIcon` as an alpha mask - the same glyph the floating bubble that opens this
+ * panel is drawn with. It stands in for the emoji the CloudGO dashboard hands out per agent.
+ */
+const BOT_MARK =
+  'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M13%207H11C8.19108%207%206.78661%207%205.77772%207.67412C5.34096%207.96596%204.96596%208.34096%204.67412%208.77772C4%209.78661%204%2011.1911%204%2014C4%2016.8089%204%2018.2134%204.67412%2019.2223C4.96596%2019.659%205.34096%2020.034%205.77772%2020.3259C6.78661%2021%208.19108%2021%2011%2021H13C15.8089%2021%2017.2134%2021%2018.2223%2020.3259C18.659%2020.034%2019.034%2019.659%2019.3259%2019.2223C20%2018.2134%2020%2016.8089%2020%2014C20%2011.1911%2020%209.78661%2019.3259%208.77772C19.034%208.34096%2018.659%207.96596%2018.2223%207.67412C17.2134%207%2015.8089%207%2013%207Z%22%2F%3E%3Cpath%20d%3D%22M4%2014H2%22%2F%3E%3Cpath%20d%3D%22M10%2017H14%22%2F%3E%3Cpath%20d%3D%22M22%2014H20%22%2F%3E%3Cpath%20d%3D%22M15%2011V13%22%2F%3E%3Cpath%20d%3D%22M9%2011V13%22%2F%3E%3Cpath%20d%3D%22M12%207C12%205.11438%2012%204.17157%2011.4142%203.58579C10.8284%203%209.88562%203%208%203%22%2F%3E%3C%2Fsvg%3E'
+
 const OVERRIDE_CSS = `
+/* The site draws every surface as \`ring-1 ring-foreground/5\` over a shadow tinted with the
+   light-mode \`--primary\` hardcoded - see the product and article cards - never a \`border\`
+   and never a neutral grey. Both ride on the container so every rule below inherits them. */
+${scoped(CONTAINER)} {
+  --chat-hairline: color-mix(in oklab, var(--foreground) 6%, transparent);
+  --chat-shadow-tint: 81 108 108;
+}
+
 ${scoped(`${CONTAINER} ${LAUNCHER}`)},
 ${scoped(`${CONTAINER} ${INFO}`)} {
   display: none !important;
 }
 
 ${scoped(`${CONTAINER} ${PANEL}`)} {
-  /* The panel ships as \`position: absolute\` inside a shrink-to-fit container, so a
-     left/right pair would resolve against a zero-width box. Pin it to the viewport. */
   position: fixed !important;
   top: auto !important;
   left: auto !important;
@@ -63,8 +81,13 @@ ${scoped(`${CONTAINER} ${PANEL}`)} {
   height: min(37.5rem, calc(100vh - 3rem)) !important;
   height: min(37.5rem, calc(100dvh - 3rem)) !important;
   max-height: none !important;
-  border-radius: calc(var(--radius) * 2.4) !important;
-  box-shadow: 0 1.5rem 3.5rem rgb(31 47 47 / 22%) !important;
+  /* Clips the square header and the pre-chat overlay to the rounded shell. */
+  overflow: hidden !important;
+  /* \`rounded-4xl\`, the radius the shadcn Card ships with. */
+  border-radius: calc(var(--radius) * 2.6) !important;
+  box-shadow:
+    0 0 0 1px var(--chat-hairline),
+    0 1.2rem 3rem rgb(var(--chat-shadow-tint) / 18%) !important;
   /* The SDK ships \`transition: all\`, which also animates the discrete \`pointer-events\`
      and \`display\` it flips on open - a reliable way to end up visible but unclickable. */
   transition-property: opacity, transform !important;
@@ -85,12 +108,6 @@ ${scoped(`${CONTAINER} ${PANEL}`, ':not([style*="display: none"])')} {
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Site theme. The palette itself rides in through the SDK's own \`primaryColor\`
-   config (see \`fetchBrandedConfig\`); these rules cover the surfaces it hardcodes
-   - slate greys, Inter, and 8/16px radii.
-   --------------------------------------------------------------------------- */
-
 ${scoped(`${CONTAINER} ${PANEL}`)},
 ${scoped(`${CONTAINER} ${PANEL} *`)} {
   font-family: var(--font-sans) !important;
@@ -99,19 +116,39 @@ ${scoped(`${CONTAINER} ${PANEL} *`)} {
 ${scoped(`${CONTAINER} ${PANEL}`)} {
   background: var(--card) !important;
   color: var(--foreground) !important;
-  border: 1px solid var(--border) !important;
+  /* The hairline is the ring above; a border here would double it. */
+  border: 0 !important;
 }
+
+/* ---------------------------------------------------------------------------
+   The header: a flat brand bar in the SDK's own \`space-between\` row - name and
+   status on the left, minimise on the right. The panel's \`overflow: hidden\`
+   clips its square top corners to the shell.
+   --------------------------------------------------------------------------- */
 
 ${scoped(`${CONTAINER} .livechat-widget-header`)} {
   /* Also set here so the header still matches if the branded config fetch falls through. */
   background: var(--primary) !important;
   color: var(--primary-foreground) !important;
-  border-bottom-color: color-mix(in oklab, var(--primary-foreground) 16%, transparent) !important;
-  padding: 0.75rem 1.25rem !important;
+  gap: 0.5rem !important;
+  padding: 0.625rem 0.875rem !important;
+  border-bottom: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* The channel name - \`header > left group > column > name row > name\`. The SDK inlines
+   its font on the leaf itself, so the site's title face has to be set there too. */
+${scoped(`${CONTAINER} .livechat-widget-header > div:first-child > div > div:first-child > div`)} {
+  font-family: var(--font-title, var(--font-sans)) !important;
+  font-size: 0.9375rem !important;
+  /* Headings across the site are the title face at 600. */
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
 }
 
 ${scoped(`${CONTAINER} .livechat-widget-header .status`)} {
-  color: color-mix(in oklab, var(--primary-foreground) 78%, transparent) !important;
+  color: color-mix(in oklab, var(--primary-foreground) 82%, transparent) !important;
+  font-size: 0.75rem !important;
 }
 
 ${scoped(`${CONTAINER} .livechat-widget-header .status-dot`)} {
@@ -119,13 +156,41 @@ ${scoped(`${CONTAINER} .livechat-widget-header .status-dot`)} {
   box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--leaf) 35%, transparent) !important;
 }
 
+/* The dialog's own close control is a round \`bg-secondary\` ghost button; on the filled
+   header that reads as a translucent circle. Site buttons never scale on hover - they
+   shift background and press down a pixel on \`:active\`. */
+${scoped(`${CONTAINER} .back-btn`)},
+${scoped(`${CONTAINER} .close-btn`)} {
+  color: var(--primary-foreground) !important;
+  background: color-mix(in oklab, var(--primary-foreground) 12%, transparent) !important;
+  border-radius: 9999px !important;
+  padding: 0.3125rem !important;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease !important;
+}
+
 ${scoped(`${CONTAINER} .back-btn`, ':hover')},
 ${scoped(`${CONTAINER} .close-btn`, ':hover')} {
-  background: color-mix(in oklab, var(--primary-foreground) 18%, transparent) !important;
+  background: color-mix(in oklab, var(--primary-foreground) 24%, transparent) !important;
+}
+
+${scoped(`${CONTAINER} .back-btn`, ':active')},
+${scoped(`${CONTAINER} .close-btn`, ':active')} {
+  transform: translateY(1px) !important;
 }
 
 ${scoped(`${CONTAINER} .livechat-widget-messages`)} {
-  background: var(--background) !important;
+  /* The header carries the colour, so the thread stays on the panel's own surface with
+     just enough of a wash under it to keep the two from reading as one flat sheet. */
+  background:
+    radial-gradient(
+      70rem 16rem at 50% -3rem,
+      color-mix(in oklab, var(--secondary) 22%, transparent),
+      transparent 70%
+    ),
+    var(--card) !important;
+  padding: 0.75rem 0.875rem 0.875rem !important;
   scrollbar-width: thin !important;
   scrollbar-color: color-mix(in oklab, var(--muted-foreground) 40%, transparent) transparent !important;
 }
@@ -134,18 +199,110 @@ ${scoped(`${CONTAINER} .livechat-widget-messages`, '::-webkit-scrollbar')} {
   width: 0.375rem !important;
 }
 
+/* Same thumb the site's \`.profile-scrollbar\` utility draws, hover shade included. */
 ${scoped(`${CONTAINER} .livechat-widget-messages`, '::-webkit-scrollbar-thumb')} {
   background-color: color-mix(in oklab, var(--muted-foreground) 40%, transparent) !important;
   border-radius: 9999px !important;
 }
 
-${scoped(`${CONTAINER} .message-timestamp`)} {
+${scoped(`${CONTAINER} .livechat-widget-messages`, '::-webkit-scrollbar-thumb:hover')} {
+  background-color: color-mix(in oklab, var(--muted-foreground) 62%, transparent) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Bubbles. Every one of them is inline-styled by the SDK and nothing marks who
+   sent it, so the two sides are told apart structurally: an agent row carries an
+   avatar before the content column, a visitor row is the column on its own.
+   Error rows keep the vendor's red - it is the only signal that a send failed.
+   --------------------------------------------------------------------------- */
+
+${scoped(`${CONTAINER} .message-container:not([data-message-state="error"]) > div:not(:first-child) > div:first-child`)} {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: 0 !important;
+  /* \`rounded-2xl\` with the house petal corner turned to the side the bubble hangs off. */
+  border-radius: calc(var(--radius) * 1.8) !important;
+  border-bottom-left-radius: calc(var(--radius) * 0.5) !important;
+  box-shadow: 0 0.35rem 1rem rgb(var(--chat-shadow-tint) / 16%) !important;
+}
+
+${scoped(`${CONTAINER} .message-container:not([data-message-state="error"]) > div:only-child > div:first-child`)} {
+  /* The soft counterpart the site uses for quiet panels - a secondary wash under the same
+     hairline ring the cards carry, rather than a grey box with a border. */
+  background: color-mix(in oklab, var(--secondary) 25%, var(--card)) !important;
+  color: var(--foreground) !important;
+  border: 0 !important;
+  border-radius: calc(var(--radius) * 1.8) !important;
+  border-bottom-right-radius: calc(var(--radius) * 0.5) !important;
+  box-shadow: 0 0 0 1px var(--chat-hairline) !important;
+}
+
+${scoped(`${CONTAINER} .message-container > div > div:first-child`)} {
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.5 !important;
+}
+
+/* The avatar is a plain circle behind an emoji or the channel logo; the spacer the SDK
+   renders for stacked messages is \`opacity: 0\`, so the shadow rides along invisibly. */
+${scoped(`${CONTAINER} ${AVATAR}`)} {
+  position: relative !important;
+  background: var(--primary) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0.35rem 1rem rgb(var(--chat-shadow-tint) / 14%) !important;
+}
+
+/* The dashboard hands each agent an emoji, which lands in the circle as a text node and
+   reads as clip art next to the rest of the site. Collapse it - \`color\` cannot hide a
+   colour glyph - and paint the launcher's own bot mark in its place. Rows that carry a
+   real logo keep it: the \`img\` is what the \`:has()\` guard is looking for. */
+${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img))')},
+${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img)) *')} {
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img))::after')} {
+  content: '' !important;
+  position: absolute !important;
+  inset: 24% !important;
+  background-color: var(--primary-foreground) !important;
+  -webkit-mask: url("${BOT_MARK}") center / contain no-repeat !important;
+  mask: url("${BOT_MARK}") center / contain no-repeat !important;
+}
+
+${scoped(`${CONTAINER} .message-timestamp`)},
+${scoped(`${CONTAINER} .message-timestamp span`)} {
+  color: var(--muted-foreground) !important;
+  font-size: 0.625rem !important;
+}
+
+${scoped(`${CONTAINER} .message-timestamp > span:first-child`)} {
+  color: color-mix(in oklab, var(--primary) 85%, var(--foreground)) !important;
+  font-weight: 600 !important;
+}
+
+/* Typing indicator - its own subtree, so it misses the bubble rules above. */
+${scoped(`${CONTAINER} .typing-indicator > div > div:not(:first-child) > div:first-child`)} {
+  background: color-mix(in oklab, var(--secondary) 25%, var(--card)) !important;
+  border: 0 !important;
+  border-radius: calc(var(--radius) * 1.8) !important;
+  border-bottom-left-radius: calc(var(--radius) * 0.5) !important;
+  box-shadow: 0 0 0 1px var(--chat-hairline) !important;
+}
+
+${scoped(`${CONTAINER} .typing-indicator span`)} {
   color: var(--muted-foreground) !important;
 }
 
+${scoped(`${CONTAINER} .typing-dots span`)} {
+  background: color-mix(in oklab, var(--primary) 70%, transparent) !important;
+}
+
 ${scoped(`${CONTAINER} .livechat-widget-input`)} {
-  background: var(--muted) !important;
+  background: var(--card) !important;
   border-top: 1px solid var(--border) !important;
+  padding: 0.625rem !important;
 }
 
 /* Their sheet forces \`.files-bar { display: flex !important }\`, which outranks the inline
@@ -155,44 +312,120 @@ ${scoped(`${CONTAINER} .files-bar`, ':empty')} {
   display: none !important;
 }
 
-/* The wrapper already draws the divider - drop the row's own so they don't stack into 2px. */
+/* The composer, stacked: the message field on its own line with the send button under its
+   right edge. The wrapper above already draws the divider, so the row's own border-top
+   would otherwise stack into 2px. This channel has file upload off and the SDK ships no
+   emoji picker, so the button strip only ever holds send. */
 ${scoped(`${CONTAINER} .livechat-widget-input > div:not(.files-bar)`)} {
-  background: var(--muted) !important;
-  border-top: 0 !important;
+  /* The site's fields are a half-strength \`--input\` wash behind a transparent border that
+     only takes the ring colour on focus - see the shared Input / Textarea. */
+  background: color-mix(in oklab, var(--input) 50%, transparent) !important;
+  border: 1px solid transparent !important;
+  border-radius: calc(var(--radius) * 1.8) !important;
+  align-items: flex-end !important;
+  gap: 0.375rem !important;
+  padding: 0.375rem 0.375rem 0.375rem 0.625rem !important;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+${scoped(`${CONTAINER} .livechat-widget-input > div:not(.files-bar) > div`)} {
+  margin-left: 0 !important;
+}
+
+${scoped(`${CONTAINER} .livechat-widget-input > div:not(.files-bar)`, ':focus-within')} {
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--ring) 30%, transparent) !important;
 }
 
 ${scoped(`${CONTAINER} .livechat-widget-input textarea`)} {
   color: var(--foreground) !important;
+  font-size: 0.8125rem !important;
+  padding: 0.25rem 0.375rem 0 !important;
+  /* The SDK ships a 60px floor and grows the box from there; a 2.25rem start keeps the
+     composer to one line until there is something to wrap. */
+  min-height: 2.25rem !important;
+  max-height: 6.5rem !important;
 }
 
 ${scoped(`${CONTAINER} .livechat-widget-input textarea`, '::placeholder')} {
   color: var(--muted-foreground) !important;
 }
 
+${scoped(`${CONTAINER} .send-btn`)} {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  /* The SDK's own sheet forces a 50% radius; the site's buttons are \`rounded-4xl\` squircles. */
+  border-radius: calc(var(--radius) * 2.6) !important;
+  box-shadow: 0 0.45rem 1.2rem rgb(var(--chat-shadow-tint) / 10%) !important;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+/* \`hover:bg-primary/80\` then \`active:translate-y-px\` - the shared Button, exactly. */
+${scoped(`${CONTAINER} .send-btn`, ':hover')} {
+  background: color-mix(in oklab, var(--primary) 80%, transparent) !important;
+}
+
+${scoped(`${CONTAINER} .send-btn`, ':active')} {
+  transform: translateY(1px) !important;
+}
+
+${scoped(`${CONTAINER} .send-btn svg`)},
+${scoped(`${CONTAINER} .upload-btn svg`)} {
+  width: 1.0625rem !important;
+  height: 1.0625rem !important;
+}
+
+${scoped(`${CONTAINER} .upload-btn`)} {
+  color: var(--muted-foreground) !important;
+}
+
+${scoped(`${CONTAINER} .upload-btn`, ':hover')} {
+  background: color-mix(in oklab, var(--primary) 12%, transparent) !important;
+}
+
 ${scoped(`${CONTAINER} .livechat-widget-footer`)} {
   display: none !important;
 }
 
+/* The shared Badge: \`rounded-3xl\`, transparent border, secondary pair, \`hover:bg-secondary/80\`. */
 ${scoped(`${CONTAINER} .suggestion-btn`)} {
-  border-color: var(--input) !important;
+  border-color: transparent !important;
   color: var(--secondary-foreground) !important;
   background: var(--secondary) !important;
-  border-radius: 9999px !important;
+  border-radius: calc(var(--radius) * 2.2) !important;
+  font-size: 0.75rem !important;
+  transition: background-color 0.2s ease !important;
 }
 
-/* Pre-chat form - \`collection_customer\` gates the conversation behind name + phone. */
+${scoped(`${CONTAINER} .suggestion-btn`, ':hover')} {
+  background: color-mix(in oklab, var(--secondary) 80%, transparent) !important;
+}
+
+/* Pre-chat form - \`collection_customer\` gates the conversation behind name + phone. It is a
+   dialog, so it takes the shared Dialog's scrim and shell rather than the panel's radii. */
 ${scoped(`${CONTAINER} .customer-form-popup`)} {
-  background: color-mix(in oklab, var(--foreground) 45%, transparent) !important;
+  background: rgb(0 0 0 / 30%) !important;
+  backdrop-filter: blur(0.25rem) !important;
 }
 
 ${scoped(`${CONTAINER} .customer-info-form-container`)} {
-  background: var(--card) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: calc(var(--radius) * 2.2) !important;
+  background: var(--popover) !important;
+  border: 0 !important;
+  border-radius: calc(var(--radius) * 1.4) !important;
+  box-shadow:
+    0 0 0 1px var(--chat-hairline),
+    0 1.25rem 3rem rgb(var(--chat-shadow-tint) / 24%) !important;
 }
 
 ${scoped(`${CONTAINER} .customer-form-header h3`)} {
   font-family: var(--font-title, var(--font-sans)) !important;
+  font-weight: 600 !important;
   color: var(--primary) !important;
 }
 
@@ -212,10 +445,10 @@ ${scoped(`${CONTAINER} .text-danger`)} {
 
 ${scoped(`${CONTAINER} .customer-form-input`)},
 ${scoped(`${CONTAINER} .customer-form-field select`)} {
-  background: var(--card) !important;
+  background: color-mix(in oklab, var(--input) 50%, transparent) !important;
   color: var(--foreground) !important;
-  border: 1px solid var(--input) !important;
-  border-radius: calc(var(--radius) * 0.8) !important;
+  border: 1px solid transparent !important;
+  border-radius: calc(var(--radius) * 2.2) !important;
 }
 
 ${scoped(`${CONTAINER} .customer-form-input`, '::placeholder')} {
@@ -225,7 +458,7 @@ ${scoped(`${CONTAINER} .customer-form-input`, '::placeholder')} {
 ${scoped(`${CONTAINER} .customer-form-input`, ':focus')},
 ${scoped(`${CONTAINER} .customer-form-field select`, ':focus')} {
   border-color: var(--ring) !important;
-  box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--ring) 25%, transparent) !important;
+  box-shadow: 0 0 0 0.1875rem color-mix(in oklab, var(--ring) 30%, transparent) !important;
 }
 
 ${scoped(`${CONTAINER} .submit-btn`)},
@@ -233,13 +466,62 @@ ${scoped(`${CONTAINER} .btn-create-new-session`)},
 ${scoped(`${CONTAINER} .confirm-end-conversation`)} {
   background: var(--primary) !important;
   color: var(--primary-foreground) !important;
-  border-radius: calc(var(--radius) * 0.8) !important;
+  border-radius: calc(var(--radius) * 2.6) !important;
+  box-shadow: 0 0.45rem 1.2rem rgb(var(--chat-shadow-tint) / 10%) !important;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+/* The phone panel is barely half the height of the desktop one, so the header and the
+   composer give some of it back to the thread. */
+@media (max-width: 639px) {
+  ${scoped(`${CONTAINER} .livechat-widget-header`)} {
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  ${scoped(`${CONTAINER} .livechat-widget-messages`)} {
+    padding: 0.625rem 0.75rem 0.75rem !important;
+  }
+
+  ${scoped(`${CONTAINER} .livechat-widget-input`)} {
+    padding: 0.5rem !important;
+  }
+
+  ${scoped(`${CONTAINER} .livechat-widget-input textarea`)} {
+    min-height: 2rem !important;
+  }
+
+  ${scoped(`${CONTAINER} .send-btn`)} {
+    width: 2.125rem !important;
+    height: 2.125rem !important;
+  }
+}
+
+${scoped(`${CONTAINER} .submit-btn`, ':hover')},
+${scoped(`${CONTAINER} .btn-create-new-session`, ':hover')},
+${scoped(`${CONTAINER} .confirm-end-conversation`, ':hover')} {
+  background: color-mix(in oklab, var(--primary) 80%, transparent) !important;
+}
+
+${scoped(`${CONTAINER} .submit-btn`, ':active')},
+${scoped(`${CONTAINER} .btn-create-new-session`, ':active')},
+${scoped(`${CONTAINER} .confirm-end-conversation`, ':active')},
+${scoped(`${CONTAINER} .cancel-end-conversation`, ':active')} {
+  transform: translateY(1px) !important;
 }
 
 ${scoped(`${CONTAINER} .cancel-end-conversation`)} {
   background: var(--secondary) !important;
   color: var(--secondary-foreground) !important;
-  border-radius: calc(var(--radius) * 0.8) !important;
+  border-radius: calc(var(--radius) * 2.6) !important;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+${scoped(`${CONTAINER} .cancel-end-conversation`, ':hover')} {
+  background: color-mix(in oklch, var(--secondary), var(--foreground) 5%) !important;
 }
 `
 
@@ -250,6 +532,8 @@ interface CloudGoInstance {
   isConnected?: boolean
   requiresCustomerInfo?: boolean
   customerInfoSubmitted?: boolean
+  /** Written back when we undo an open the SDK started on its own - see `forceClosePanel`. */
+  isOpen?: boolean
 }
 
 interface CloudGoGlobal {
@@ -388,6 +672,19 @@ function readPanelOpen(panel: HTMLElement) {
   return panel.style.display !== 'none' && panel.style.opacity !== '0'
 }
 
+/**
+ * A first visit with `collection_customer` on ends `init()` in `showCustomerInfoFormInWidget()`,
+ * which opens the panel itself - so any device without a stored session lands on the pre-chat
+ * form nobody asked for. Put the panel back the way the SDK's own `closeWidget()` leaves it,
+ * `isOpen` included, so the next tap on our bubble still opens rather than toggles shut.
+ */
+function forceClosePanel(panel: HTMLElement) {
+  panel.style.opacity = '0'
+  panel.style.pointerEvents = 'none'
+  panel.style.display = 'none'
+  if (instance) instance.isOpen = false
+}
+
 /** Resolves as soon as the SDK has appended its host element to the body. */
 function observeWidgetHost(onHost: (host: HTMLElement) => void) {
   const existing = document.getElementById(HOST_ID)
@@ -402,7 +699,8 @@ function observeWidgetHost(onHost: (host: HTMLElement) => void) {
     observer.disconnect()
     onHost(host)
   })
-  observer.observe(document.body, { childList: true })
+
+  observer.observe(document.body, { childList: true, subtree: true })
 
   return () => observer.disconnect()
 }
@@ -427,6 +725,8 @@ export function useLiveChat(): LiveChat {
 
   const launcherRef = useRef<HTMLElement | null>(null)
   const wantsOpenRef = useRef(false)
+  /** Only an open we asked for is allowed on screen; anything else is the SDK opening itself. */
+  const allowOpenRef = useRef(false)
   const openTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const clearOpenTimer = useCallback(() => {
@@ -450,6 +750,7 @@ export function useLiveChat(): LiveChat {
 
         clearOpenTimer()
         wantsOpenRef.current = false
+        allowOpenRef.current = true
         setIsPending(false)
         launcher.click()
       }
@@ -491,16 +792,23 @@ export function useLiveChat(): LiveChat {
     let disposed = false
     const teardown: Array<() => void> = []
 
-    const attach = (host: HTMLElement) => {
-      if (disposed) return
+    let themedHost: HTMLElement | null = null
 
-      applyThemeTokens(host, readThemeTokens())
+    /** Returns whether the widget was found and bound; a `false` means "try again shortly". */
+    const attach = (host: HTMLElement) => {
+      if (disposed) return true
+
+      if (host !== themedHost) {
+        themedHost = host
+        applyThemeTokens(host, readThemeTokens())
+      }
 
       const root = getWidgetRoot(host)
-      ensureOverrideStyles(root)
-
       const container = root.querySelector(CONTAINER)
-      if (!container) return
+      if (!container) return false
+
+      // Only once the container is here, so the sheet lands in the tree that actually holds it.
+      ensureOverrideStyles(root)
 
       let panelObserver: MutationObserver | null = null
       let launcherObserver: MutationObserver | null = null
@@ -521,10 +829,24 @@ export function useLiveChat(): LiveChat {
         }
 
         if (panel) {
+          const syncOpen = () => {
+            const open = readPanelOpen(panel)
+
+            if (open && !allowOpenRef.current) {
+              forceClosePanel(panel)
+              return
+            }
+
+            // The SDK opens in two steps - `display` first, `opacity` a tick later - so the
+            // panel reads as closed in between. Only a finished close clears the permission.
+            if (panel.style.display === 'none') allowOpenRef.current = false
+            setIsOpen(open)
+          }
+
           panelObserver?.disconnect()
-          panelObserver = new MutationObserver(() => setIsOpen(readPanelOpen(panel)))
+          panelObserver = new MutationObserver(syncOpen)
           panelObserver.observe(panel, { attributes: true, attributeFilter: ['style'] })
-          setIsOpen(readPanelOpen(panel))
+          syncOpen()
         }
 
         if (launcher && wantsOpenRef.current) openWhenUsable(launcher)
@@ -541,9 +863,38 @@ export function useLiveChat(): LiveChat {
         panelObserver?.disconnect()
         launcherObserver?.disconnect()
       })
+
+      return true
     }
 
-    const stopHostObserver = observeWidgetHost(attach)
+    /**
+     * The SDK appends its host element before it has finished building the widget inside it,
+     * and on a slow phone that gap is wide enough for the first `attach` to find no container
+     * at all. Giving up there would leave the panel unguarded - the pre-chat form the SDK
+     * opens by itself at the end of `init()` then just stays on screen - so keep looking.
+     * A shadow root attached after the host lands is invisible to a MutationObserver, hence
+     * a poll rather than another observer.
+     */
+    let retryTimer: ReturnType<typeof setInterval> | null = null
+
+    const stopRetry = () => {
+      if (!retryTimer) return
+      clearInterval(retryTimer)
+      retryTimer = null
+    }
+    teardown.push(stopRetry)
+
+    const startedAt = performance.now()
+
+    const retryAttach = () => {
+      const host = document.getElementById(HOST_ID)
+      if ((host && attach(host)) || performance.now() - startedAt > ATTACH_TIMEOUT_MS) stopRetry()
+    }
+
+    const stopHostObserver = observeWidgetHost((host) => {
+      if (attach(host)) return
+      retryTimer ??= setInterval(retryAttach, ATTACH_POLL_MS)
+    })
     teardown.push(stopHostObserver)
 
     const themeTokens = readThemeTokens()
@@ -570,6 +921,7 @@ export function useLiveChat(): LiveChat {
     if (launcher && (isOpen || isWidgetUsable())) {
       clearOpenTimer()
       wantsOpenRef.current = false
+      allowOpenRef.current = !isOpen
       setIsPending(false)
       launcher.click()
       return
