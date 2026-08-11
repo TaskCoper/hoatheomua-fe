@@ -60,11 +60,13 @@ const AVATAR = '.message-container > div:first-child:not(:only-child)'
 const TYPING_AVATAR = '.typing-indicator > div > div:first-child'
 
 /**
- * Hugeicons' `BotIcon` as an alpha mask - the same glyph the floating bubble that opens this
- * panel is drawn with. It stands in for the emoji the CloudGO dashboard hands out per agent.
+ * Hugeicons' `FlowerIcon` as an alpha mask. It stands in for the emoji the CloudGO dashboard
+ * hands out per agent - one mark for all of them, since the emoji arrives as a bare text node
+ * that no selector can tell apart. A blossom carries the shop rather than the vendor's tooling,
+ * so it reads as "someone from the florist" whether the row came from a bot or a person.
  */
-const BOT_MARK =
-  'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M13%207H11C8.19108%207%206.78661%207%205.77772%207.67412C5.34096%207.96596%204.96596%208.34096%204.67412%208.77772C4%209.78661%204%2011.1911%204%2014C4%2016.8089%204%2018.2134%204.67412%2019.2223C4.96596%2019.659%205.34096%2020.034%205.77772%2020.3259C6.78661%2021%208.19108%2021%2011%2021H13C15.8089%2021%2017.2134%2021%2018.2223%2020.3259C18.659%2020.034%2019.034%2019.659%2019.3259%2019.2223C20%2018.2134%2020%2016.8089%2020%2014C20%2011.1911%2020%209.78661%2019.3259%208.77772C19.034%208.34096%2018.659%207.96596%2018.2223%207.67412C17.2134%207%2015.8089%207%2013%207Z%22%2F%3E%3Cpath%20d%3D%22M4%2014H2%22%2F%3E%3Cpath%20d%3D%22M10%2017H14%22%2F%3E%3Cpath%20d%3D%22M22%2014H20%22%2F%3E%3Cpath%20d%3D%22M15%2011V13%22%2F%3E%3Cpath%20d%3D%22M9%2011V13%22%2F%3E%3Cpath%20d%3D%22M12%207C12%205.11438%2012%204.17157%2011.4142%203.58579C10.8284%203%209.88562%203%208%203%22%2F%3E%3C%2Fsvg%3E'
+const AVATAR_MARK =
+  'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M14.4999%2012.5C14.4999%2013.8807%2013.3807%2015%2011.9999%2015C10.6192%2015%209.49994%2013.8807%209.49994%2012.5C9.49994%2011.1193%2010.6192%2010%2011.9999%2010C13.3807%2010%2014.4999%2011.1193%2014.4999%2012.5Z%22%2F%3E%3Cpath%20d%3D%22M11.9999%203C14.2091%203%2015.998%204.91739%2015.998%207.12653C16.3182%207.04393%2016.6539%207%2016.9999%207C19.2091%207%2020.9999%208.79086%2020.9999%2011C20.9999%2012.5964%2020.0647%2013.9745%2018.7122%2014.616C19.2071%2015.2818%2019.4999%2016.1067%2019.4999%2017C19.4999%2019.2091%2017.7091%2021%2015.4999%2021C13.9939%2021%2012.6823%2020.1677%2011.9999%2018.938C11.3176%2020.1677%2010.006%2021%208.49994%2021C6.2908%2021%204.49994%2019.2091%204.49994%2017C4.49994%2016.1067%204.79277%2015.2818%205.28767%2014.616C3.93518%2013.9745%202.99994%2012.5964%202.99994%2011C2.99994%208.79086%204.7908%207%206.99994%207C7.34595%207%207.68169%207.04393%208.0019%207.12652C8.0019%204.91738%209.7908%203%2011.9999%203Z%22%2F%3E%3C%2Fsvg%3E'
 
 const OVERRIDE_CSS = `
 /* The site draws every surface as \`ring-1 ring-foreground/5\` over a shadow tinted with the
@@ -266,8 +268,8 @@ ${scoped(`${CONTAINER} ${TYPING_AVATAR}`)} {
 
 /* The dashboard hands each agent an emoji, which lands in the circle as a text node and
    reads as clip art next to the rest of the site. Collapse it - \`color\` cannot hide a
-   colour glyph - and paint the launcher's own bot mark in its place. Rows that carry a
-   real logo keep it: the \`img\` is what the \`:has()\` guard is looking for. */
+   colour glyph - and paint the house blossom in its place. Rows that carry a real logo
+   keep it: the \`img\` is what the \`:has()\` guard is looking for. */
 ${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img))')},
 ${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img)) *')},
 ${scoped(`${CONTAINER} ${TYPING_AVATAR}`, ':not(:has(img))')},
@@ -282,8 +284,8 @@ ${scoped(`${CONTAINER} ${TYPING_AVATAR}`, ':not(:has(img))::after')} {
   position: absolute !important;
   inset: 24% !important;
   background-color: var(--primary-foreground) !important;
-  -webkit-mask: url("${BOT_MARK}") center / contain no-repeat !important;
-  mask: url("${BOT_MARK}") center / contain no-repeat !important;
+  -webkit-mask: url("${AVATAR_MARK}") center / contain no-repeat !important;
+  mask: url("${AVATAR_MARK}") center / contain no-repeat !important;
 }
 
 ${scoped(`${CONTAINER} .message-timestamp`)},
