@@ -994,14 +994,14 @@
     },
     "visionMission": {
       "title": "Vision & Mission",
-      "motto": "A flower is most beautiful when it blooms in its season; you are most beautiful when you are happy",
+      "motto": "A flower is most beautiful when it blooms in its season,\nyou are most beautiful when you are happy",
       "vision": {
         "label": "Vision",
         "statement": "A joyful world where beauty is present in every single moment"
       },
       "mission": {
         "label": "Mission",
-        "statement": "To bring emotional experiences to everyone through fresh flowers harvested straight from the garden, wrapped with love and delivered to those who matter"
+        "statement": "To bring emotional experiences to everyone through each fresh flower harvested straight from the garden, wrapped with love."
       }
     },
     "values": {
