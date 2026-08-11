@@ -21,7 +21,13 @@ const CONTAINER = '.livechat-widget-container'
 const LAUNCHER = '.livechat-widget-button'
 const PANEL = '.livechat-widget-window'
 const INFO = '.livechat-widget-info'
+const TEXTAREA = '.livechat-widget-input textarea'
 const UNREAD_CLASS = 'has-message'
+
+const MESSAGE_MAX_LENGTH = 2000
+
+const TEXTAREA_MIN_HEIGHT_PX = 40
+const TEXTAREA_MAX_HEIGHT_PX = 320
 
 const THEME_TOKENS = [
   '--background',
@@ -49,6 +55,9 @@ const scoped = (selector: string, suffix = '') =>
 
 /** An agent row's avatar; a visitor row has no such column - see the bubble rules. */
 const AVATAR = '.message-container > div:first-child:not(:only-child)'
+
+/** The typing indicator's own avatar column - its own subtree, so the AVATAR rules miss it. */
+const TYPING_AVATAR = '.typing-indicator > div > div:first-child'
 
 /**
  * Hugeicons' `BotIcon` as an alpha mask - the same glyph the floating bubble that opens this
@@ -244,8 +253,11 @@ ${scoped(`${CONTAINER} .message-container > div > div:first-child`)} {
 }
 
 /* The avatar is a plain circle behind an emoji or the channel logo; the spacer the SDK
-   renders for stacked messages is \`opacity: 0\`, so the shadow rides along invisibly. */
-${scoped(`${CONTAINER} ${AVATAR}`)} {
+   renders for stacked messages is \`opacity: 0\`, so the shadow rides along invisibly.
+   The typing indicator gets the same treatment - otherwise its own emoji flashes on
+   screen until the first real message with a masked avatar replaces it. */
+${scoped(`${CONTAINER} ${AVATAR}`)},
+${scoped(`${CONTAINER} ${TYPING_AVATAR}`)} {
   position: relative !important;
   background: var(--primary) !important;
   border-radius: 9999px !important;
@@ -257,12 +269,15 @@ ${scoped(`${CONTAINER} ${AVATAR}`)} {
    colour glyph - and paint the launcher's own bot mark in its place. Rows that carry a
    real logo keep it: the \`img\` is what the \`:has()\` guard is looking for. */
 ${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img))')},
-${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img)) *')} {
+${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img)) *')},
+${scoped(`${CONTAINER} ${TYPING_AVATAR}`, ':not(:has(img))')},
+${scoped(`${CONTAINER} ${TYPING_AVATAR}`, ':not(:has(img)) *')} {
   font-size: 0 !important;
   line-height: 0 !important;
 }
 
-${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img))::after')} {
+${scoped(`${CONTAINER} ${AVATAR}`, ':not(:has(img))::after')},
+${scoped(`${CONTAINER} ${TYPING_AVATAR}`, ':not(:has(img))::after')} {
   content: '' !important;
   position: absolute !important;
   inset: 24% !important;
@@ -343,8 +358,9 @@ ${scoped(`${CONTAINER} .livechat-widget-input textarea`)} {
   color: var(--foreground) !important;
   font-size: 0.8125rem !important;
   padding: 0.375rem !important;
-  min-height: 2.5rem !important;
-  max-height: 6.5rem !important;
+  /* The resting size before the resize loop below takes over on the first keystroke. */
+  min-height: ${TEXTAREA_MIN_HEIGHT_PX}px !important;
+  max-height: ${TEXTAREA_MAX_HEIGHT_PX}px !important;
 }
 
 ${scoped(`${CONTAINER} .livechat-widget-input textarea`, '::placeholder')} {
@@ -802,11 +818,14 @@ export function useLiveChat(): LiveChat {
       }
 
       const root = getWidgetRoot(host)
+
+      // Before the container check, so the mask is already in place once the SDK starts
+      // painting bubbles - otherwise a typing indicator that lands before `container` exists
+      // flashes the vendor's raw emoji until the next attach() call adds the sheet.
+      ensureOverrideStyles(root)
+
       const container = root.querySelector(CONTAINER)
       if (!container) return false
-
-      // Only once the container is here, so the sheet lands in the tree that actually holds it.
-      ensureOverrideStyles(root)
 
       let panelObserver: MutationObserver | null = null
       let launcherObserver: MutationObserver | null = null
@@ -818,6 +837,22 @@ export function useLiveChat(): LiveChat {
         // The SDK re-shows its info bubble with an inline `!important`, which CSS can't beat.
         container.querySelectorAll(INFO).forEach((node) => node.remove())
         launcher?.style.setProperty('display', 'none', 'important')
+
+        const textarea = container.querySelector<HTMLTextAreaElement>(TEXTAREA)
+        if (textarea) {
+          textarea.maxLength = MESSAGE_MAX_LENGTH
+
+          if (!textarea.dataset.autoResizeBound) {
+            textarea.dataset.autoResizeBound = 'true'
+            const resize = () => {
+              textarea.style.setProperty('height', 'auto', 'important')
+              const next = Math.min(Math.max(textarea.scrollHeight, TEXTAREA_MIN_HEIGHT_PX), TEXTAREA_MAX_HEIGHT_PX)
+              textarea.style.setProperty('height', `${next}px`, 'important')
+            }
+            textarea.addEventListener('input', resize)
+            resize()
+          }
+        }
 
         if (launcher && launcher !== launcherRef.current) {
           launcherRef.current = launcher
