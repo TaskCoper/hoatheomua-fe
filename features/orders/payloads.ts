@@ -42,7 +42,10 @@ export const buildCheckoutPayload = (
   gateway: PaymentGateway,
   shippingFee: number
 ): CheckoutPayload => {
-  const base = buildEstimatePayload(values, items, productById, contact)
+  const base = {
+    ...buildEstimatePayload(values, items, productById, contact),
+    phoneReceiver: values.phoneReceiver.trim()
+  }
 
   if (!values.isExportInvoice) {
     return {

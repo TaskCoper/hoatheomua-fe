@@ -603,6 +603,7 @@
       "fullName": "Họ và tên",
       "fullNamePlaceholder": "Nhập họ và tên người nhận",
       "phone": "Số điện thoại",
+      "phoneReceiver": "Số điện thoại người nhận",
       "phonePlaceholder": "Nhập số điện thoại",
       "addressLine": "Địa chỉ",
       "addressLinePlaceholder": "Số nhà, tên đường",
