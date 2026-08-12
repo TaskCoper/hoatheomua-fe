@@ -71,7 +71,7 @@ export default function CartPage() {
   const decrementItem = useCartStore((state) => state.decrementItem)
   const clearCart = useCartStore((state) => state.clearCart)
 
-  const [deselectedIds, setDeselectedIds] = useState<Set<string>>(() => new Set())
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
 
   const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
   const isPhoneMissing = !isLoadingPhoneNumber && !hasPhoneNumber
@@ -166,7 +166,7 @@ export default function CartPage() {
     })
   }, [items, productStateById])
 
-  const isLineChecked = (line: MergedCartLine) => line.isSelectable && !deselectedIds.has(line.cartItem.lineId)
+  const isLineChecked = (line: MergedCartLine) => line.isSelectable && selectedIds.has(line.cartItem.lineId)
 
   const selectableLines = mergedLines.filter((line) => line.isSelectable)
   const selectedLines = mergedLines.filter(isLineChecked)
@@ -174,7 +174,7 @@ export default function CartPage() {
   const noneChecked = selectedLines.length === 0
 
   const toggleLine = (lineId: string) => {
-    setDeselectedIds((prev) => {
+    setSelectedIds((prev) => {
       const next = new Set(prev)
       if (next.has(lineId)) next.delete(lineId)
       else next.add(lineId)
@@ -184,9 +184,9 @@ export default function CartPage() {
 
   const toggleAll = () => {
     if (allSelectableChecked) {
-      setDeselectedIds(new Set(selectableLines.map((line) => line.cartItem.lineId)))
+      setSelectedIds(new Set())
     } else {
-      setDeselectedIds(new Set())
+      setSelectedIds(new Set(selectableLines.map((line) => line.cartItem.lineId)))
     }
   }
 

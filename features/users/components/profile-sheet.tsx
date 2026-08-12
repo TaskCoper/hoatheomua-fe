@@ -87,7 +87,7 @@ function AddressContent({ slug }: { slug?: string }) {
       ) : null}
 
       {addresses.map((addr) => (
-        <div key={addr.id} className='rounded-xl border bg-muted/30 p-4'>
+        <div key={addr.id} data-testid='address-card' className='rounded-xl border bg-muted/30 p-4'>
           <div className='mb-2 flex items-start justify-between gap-2'>
             <div className='space-y-1'>
               <div className='flex items-center gap-2'>

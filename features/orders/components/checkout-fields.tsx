@@ -286,6 +286,7 @@ export function CheckoutFields({
                   <FieldLabel htmlFor={field.name}>{t('orders.checkout.addressLine')}</FieldLabel>
                   <AddressAutocomplete
                     id={field.name}
+                    label={t('orders.checkout.addressLine')}
                     value={field.value ?? ''}
                     onValueChange={field.onChange}
                     onResolve={({ latitude, longitude, mapId, ward, city }) => {

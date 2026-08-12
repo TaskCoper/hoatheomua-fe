@@ -15,6 +15,7 @@ import type { GeocodeSuggestion } from '../types'
 
 interface AddressAutocompleteProps {
   id?: string
+  label: string
   value: string
   onValueChange: (value: string) => void
   onResolve: (result: { latitude: number; longitude: number; mapId: string; ward: string; city: string }) => void
@@ -30,6 +31,7 @@ interface AddressAutocompleteProps {
 
 export function AddressAutocomplete({
   id,
+  label,
   value,
   onValueChange,
   onResolve,
@@ -85,7 +87,7 @@ export function AddressAutocomplete({
   }
 
   return (
-    <Command shouldFilter={false} className='overflow-visible bg-transparent p-0'>
+    <Command label={label} shouldFilter={false} className='overflow-visible bg-transparent p-0'>
       <Popover open={open && !disabled} onOpenChange={setOpen} modal>
         <PopoverAnchor asChild>
           <InputGroup className='h-9 bg-input/50'>

@@ -224,6 +224,7 @@ export function AddressFormDialog({
                       <Field data-invalid={fieldState.invalid} className='gap-0.5'>
                         <FieldLabel htmlFor={field.name}>{t('profile.addressCity')}</FieldLabel>
                         <LocationCombobox
+                          id={field.name}
                           value={field.value}
                           onChange={(value) => {
                             methods.setValue('city', value, { shouldDirty: true, shouldValidate: true })
@@ -250,6 +251,7 @@ export function AddressFormDialog({
                       <Field data-invalid={fieldState.invalid} className='gap-0.5'>
                         <FieldLabel htmlFor={field.name}>{t('profile.addressWard')}</FieldLabel>
                         <LocationCombobox
+                          id={field.name}
                           value={field.value}
                           onChange={(value) =>
                             methods.setValue('ward', value, { shouldDirty: true, shouldValidate: true })
@@ -277,6 +279,7 @@ export function AddressFormDialog({
                       <FieldLabel htmlFor={field.name}>{t('profile.addressLine')}</FieldLabel>
                       <AddressAutocomplete
                         id={field.name}
+                        label={t('profile.addressLine')}
                         value={field.value ?? ''}
                         onValueChange={field.onChange}
                         onResolve={({ latitude, longitude, mapId, ward, city }) => {
@@ -391,6 +394,7 @@ export function AddressFormDialog({
 }
 
 interface LocationComboboxProps {
+  id: string
   value: string
   onChange: (value: string) => void
   options: { label: string; value: string }[]
@@ -402,6 +406,7 @@ interface LocationComboboxProps {
 }
 
 function LocationCombobox({
+  id,
   value,
   onChange,
   options,
@@ -418,6 +423,10 @@ function LocationCombobox({
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
+          // Ties the trigger to the field label, which is what gives it an
+          // accessible name - the placeholder alone says nothing about which
+          // field it belongs to.
+          id={id}
           type='button'
           variant='outline'
           role='combobox'
