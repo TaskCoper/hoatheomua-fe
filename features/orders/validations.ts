@@ -1,5 +1,9 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
-import { createOptionalEmailSchema, createOptionalPhoneNumberSchema } from '@/shared/validations'
+import {
+  createOptionalEmailSchema,
+  createOptionalPhoneNumberSchema,
+  createPhoneNumberSchema
+} from '@/shared/validations'
 import z from 'zod'
 import { InvoiceType } from './types'
 
@@ -7,6 +11,7 @@ const createBaseCheckoutSchema = (t: TranslationFunction) => {
   const requiredFor = (field: string) => t('common.validation.required', { field })
 
   return z.object({
+    phoneReceiver: createPhoneNumberSchema(t, t('orders.checkout.phoneReceiver')),
     remarks: z
       .string()
       .max(500, { error: t('common.validation.maxLength', { field: t('orders.checkout.remarks'), max: 500 }) }),

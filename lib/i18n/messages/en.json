@@ -603,6 +603,7 @@
       "fullName": "Full name",
       "fullNamePlaceholder": "Recipient's full name",
       "phone": "Phone number",
+      "phoneReceiver": "Receiver phone number",
       "phonePlaceholder": "Enter phone number",
       "addressLine": "Address",
       "addressLinePlaceholder": "Street, building, …",

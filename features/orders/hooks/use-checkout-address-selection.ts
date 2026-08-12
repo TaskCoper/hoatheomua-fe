@@ -9,6 +9,7 @@ interface UseCheckoutAddressSelectionArgs {
 }
 
 const EMPTY_ADDRESS_FIELDS = {
+  phoneReceiver: '',
   addressLine: '',
   city: '',
   ward: '',
@@ -25,10 +26,9 @@ export const useCheckoutAddressSelection = ({ addresses, methods }: UseCheckoutA
 
   const { setValue } = methods
 
-  // Only the location half of an address is lifted into the form. `receiverName`
-  // and `phoneNumber` stay on the address — the order's contact is the account.
   const applyAddress = useCallback(
     (address: Address) => {
+      setValue('phoneReceiver', address.phoneNumber ?? '', { shouldDirty: true, shouldValidate: true })
       setValue('addressLine', address.addressLine ?? '', { shouldDirty: true, shouldValidate: true })
       setValue('city', address.city ?? '', { shouldDirty: true, shouldValidate: true })
       setValue('ward', address.ward ?? '', { shouldDirty: true, shouldValidate: true })

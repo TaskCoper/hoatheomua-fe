@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
@@ -48,7 +49,13 @@ export function CheckoutFields({
 }: CheckoutFieldsProps) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
-  const { control, setValue, watch } = useFormContext<CheckoutFormValues>()
+  const {
+    control,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useFormContext<CheckoutFormValues>()
+  const phoneReceiverError = errors.phoneReceiver
   const [orderTimeOpen, setOrderTimeOpen] = useState(false)
   // The coordinate the typed address resolved to - map picks are constrained to
   // a radius around it so the pin can be fine-tuned but not moved to a new area.
@@ -156,11 +163,38 @@ export function CheckoutFields({
         }
       >
         {!showManualFields ? (
-          <SavedAddressPicker addresses={addresses} selectedAddress={selectedAddress} onSelect={onSelectAddress} />
+          <>
+            <SavedAddressPicker addresses={addresses} selectedAddress={selectedAddress} onSelect={onSelectAddress} />
+            {phoneReceiverError ? <FieldError className='text-xs' errors={[phoneReceiverError]} /> : null}
+          </>
         ) : null}
 
         {showManualFields ? (
           <>
+            <Controller
+              name='phoneReceiver'
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className='gap-1'>
+                  <FieldLabel htmlFor={field.name}>{t('orders.checkout.phoneReceiver')}</FieldLabel>
+                  <Input
+                    {...field}
+                    value={field.value ?? ''}
+                    id={field.name}
+                    type='tel'
+                    inputMode='tel'
+                    autoComplete='tel'
+                    maxLength={11}
+                    aria-invalid={fieldState.invalid}
+                    placeholder={t('orders.checkout.phonePlaceholder')}
+                  />
+                  <div className='min-h-4'>
+                    {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                  </div>
+                </Field>
+              )}
+            />
+
             <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
               <Controller
                 name='cityCode'
