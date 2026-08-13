@@ -7,6 +7,7 @@ export class OrderPage {
   readonly payNow: Locator
   readonly cancelOrder: Locator
   readonly mapLink: Locator
+  readonly trackAhamove: Locator
 
   constructor(private readonly page: Page) {
     // status badge lives in the breadcrumb nav, not the order card itself
@@ -21,6 +22,8 @@ export class OrderPage {
     // exact: the confirm dialog's "Có, hủy đơn hàng" would match by substring
     this.cancelOrder = page.getByRole('button', { name: 'Hủy đơn hàng', exact: true })
     this.mapLink = page.getByRole('link', { name: 'Xem trên bản đồ' })
+    // only rendered once the backend has booked the ride, i.e. after payment
+    this.trackAhamove = page.getByRole('link', { name: 'Theo dõi Ahamove' })
   }
 
   // summary rows render as <div><dt>label</dt><dd>value</dd></div>

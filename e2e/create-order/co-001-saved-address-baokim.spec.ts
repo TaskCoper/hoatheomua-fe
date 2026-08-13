@@ -1,12 +1,19 @@
 import type { AhamoveResult } from '@/features/orders/ahamove.type'
 import { expect } from '@playwright/test'
-import { getAddressCount, getFreeShipKm, getOrder } from '../api/orders.api'
+import { getAddressCount, getFreeShipKm, getOrder, waitForAhamoveDispatch } from '../api/orders.api'
 import { FREE_SHIP_ADDRESS } from '../fixtures/address'
 import { orderTest } from '../fixtures/order'
 import { CartPage } from '../pages/cart.page'
 import { CheckoutPage } from '../pages/checkout.page'
 import { OrderPage } from '../pages/order.page'
 import { ProductPage } from '../pages/product.page'
+import {
+  announcePaymentWait,
+  DISPATCH_TIMEOUT_MS,
+  PAID_ORDER_TEST_TIMEOUT_MS,
+  PAYMENT_TIMEOUT_MS,
+  WAIT_FOR_PAYMENT
+} from '../utils/payment'
 import { dismissPromoPopup } from '../utils/promo-popup'
 
 /**
@@ -17,8 +24,10 @@ import { dismissPromoPopup } from '../utils/promo-popup'
  * `buildCheckoutPayload`, and the free-ship waiver, which is the only place the
  * frontend unilaterally reduces what the customer is charged.
  *
- * Payment is deliberately not completed - that needs a human or a gateway
- * sandbox. See CO-008/CO-009.
+ * Payment is not completed unless E2E_WAIT_FOR_PAYMENT=1 - that needs a human
+ * or a gateway sandbox. With the flag on, the test parks on the order detail
+ * page until the webhook lands and then checks the paid order, the Ahamove
+ * booking included. See CO-008/CO-009.
  */
 
 const SEARCH_TERM = 'Coral Pink'
@@ -34,6 +43,10 @@ orderTest(
   'CO-001 saved address, immediate delivery, no invoice, free ship, BaoKim',
   async ({ authedPage: page, savedAddress, createdOrders }) => {
     orderTest.slow()
+
+    // the manual payment window and the dispatch wait both have to fit inside
+    // the test timeout
+    if (WAIT_FOR_PAYMENT) orderTest.setTimeout(PAID_ORDER_TEST_TIMEOUT_MS)
 
     const products = new ProductPage(page)
     const cart = new CartPage(page)
@@ -296,5 +309,58 @@ orderTest(
       // checkout never saves the address it was given
       expect(await getAddressCount(page)).toBe(addressCountBefore)
     })
+
+    // Step 12 - hold here, pay the order by hand, then check what the webhook
+    // turned it into. Opt-in, because it blocks on a human, and the fixture
+    // leaves the order uncancelled while the flag is on.
+    if (WAIT_FOR_PAYMENT) {
+      await orderTest.step('wait for the payment, then check the paid order', async () => {
+        announcePaymentWait(order)
+
+        await order.waitForPaid(PAYMENT_TIMEOUT_MS)
+
+        // the transfer card only exists once the webhook has written a transaction
+        const transfer = order.section('Thông tin chuyển khoản')
+        await expect(transfer).toBeVisible()
+        await expect(transfer).toContainText('Ngân hàng')
+        await expect(transfer).toContainText('Nội dung')
+        await expect(transfer).toContainText('Thanh toán lúc')
+
+        // the same transaction unlocks the paid timeline entry, and immediate
+        // delivery still reads as immediate once the order is paid
+        const timeline = order.section('Nhật ký đơn hàng')
+        await expect(timeline).toContainText('Xác nhận thanh toán')
+        await expect(order.field('Ngày giao dự kiến')).toHaveText('Ngay sau khi thanh toán')
+
+        // a paid order can no longer be paid or cancelled
+        await expect(order.payNow).toBeHidden()
+        await expect(order.cancelOrder).toBeHidden()
+        await expect(order.section('Thanh toán đơn hàng')).toHaveCount(0)
+
+        // the payment only counts once the backend says so, and the waiver has
+        // to survive it: the customer pays for the products alone
+        const paid = await waitForAhamoveDispatch(page, order.id, DISPATCH_TIMEOUT_MS)
+
+        expect(paid.status).toBe('Paid')
+        expect(paid.shippingFee).toBe(0)
+        expect(paid.totalFee).toBe(productsSubtotal)
+        expect(paid.transaction).not.toBeNull()
+        expect(paid.transaction?.transferAmount).toBe(paid.totalFee)
+
+        // an immediate-delivery order is dispatched on payment, so both tracking
+        // fields have to be filled in - waitForAhamoveDispatch waited for them
+        expect(paid.ahahaMoveOrderId).toBeTruthy()
+        expect(paid.ahahaMoveTrackingUrl).toMatch(/^https?:\/\//)
+
+        // the detail page stops polling the moment it turns paid, so a booking
+        // that lands after that only reaches the UI on a reload
+        await page.reload()
+
+        const tracking = order.section('Theo dõi đơn hàng')
+        await expect(tracking).toContainText('Mã đơn Ahamove')
+        await expect(tracking).toContainText(paid.ahahaMoveOrderId as string)
+        await expect(order.trackAhamove).toHaveAttribute('href', paid.ahahaMoveTrackingUrl as string)
+      })
+    }
   }
 )

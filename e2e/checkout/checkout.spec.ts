@@ -1,15 +1,16 @@
-import { addressTest, expect } from '../fixtures/address'
+import { expect } from '@playwright/test'
+import { addressTest } from '../fixtures/address'
 import { CartPage } from '../pages/cart.page'
 import { CheckoutPage } from '../pages/checkout.page'
 import { OrderPage } from '../pages/order.page'
 import { ProductPage } from '../pages/product.page'
+import { WAIT_FOR_PAYMENT } from '../utils/payment'
 
 const SEARCH_TERM = 'Coral Pink'
 const PRODUCT_NAME = 'Bó Coral Pink_2026'
 const PRODUCT_ID = 'a10efc5a-ad03-4102-9e1e-5807e3f7a38c'
 const NOTE = 'DEV TEST - Không xử lý đơn hàng này.'
 
-const WAIT_FOR_PAYMENT = process.env.E2E_WAIT_FOR_PAYMENT === '1'
 const PAYMENT_TIMEOUT_MS = Number(process.env.E2E_PAYMENT_TIMEOUT_MS ?? 300_000)
 
 addressTest('user can add an address, add to cart and place an order', async ({ authedPage: page, savedAddress }) => {

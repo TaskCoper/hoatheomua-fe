@@ -1,6 +1,6 @@
 import type { OrderDetail } from '@/features/orders/types'
 import type { AhamoveConfigItem } from '@/types/config.type'
-import { type Page } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
 import { unwrap } from './unwrap'
 
 // the order detail API is keyed by mrc_order_id, the same id the URL carries
@@ -20,6 +20,35 @@ export const getAddressIds = async (page: Page): Promise<string[]> => {
 }
 
 export const getAddressCount = async (page: Page): Promise<number> => (await getAddressIds(page)).length
+
+/**
+ * Waits for the Ahamove booking an immediate-delivery order gets once it is
+ * paid. The webhook writes the transaction first and the ride is booked after
+ * it, so the tracking fields land some time *after* the status flips to Paid -
+ * and the detail page stops polling at that point, which is why this reads the
+ * API rather than the UI.
+ */
+export const waitForAhamoveDispatch = async (page: Page, mrcOrderId: string, timeout: number) => {
+  let detail!: OrderDetail
+
+  await expect
+    .poll(
+      async () => {
+        detail = await getOrder(page, mrcOrderId)
+
+        return Boolean(detail.ahahaMoveOrderId && detail.ahahaMoveTrackingUrl)
+      },
+      {
+        timeout,
+        message:
+          `order ${mrcOrderId} was paid but never got an Ahamove booking - ` +
+          'an immediate-delivery order must be dispatched as soon as it is paid'
+      }
+    )
+    .toBe(true)
+
+  return detail
+}
 
 export const cancelOrderByMrcId = async (page: Page, mrcOrderId: string) => {
   const response = await page.request.patch(`/api/v1/orders/${mrcOrderId}/cancel`)

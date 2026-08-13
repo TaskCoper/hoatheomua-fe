@@ -1,8 +1,6 @@
 import { cancelOrderByMrcId } from '../api/orders.api'
+import { WAIT_FOR_PAYMENT } from '../utils/payment'
 import { addressTest } from './address'
-
-// the same opt-in the checkout suite uses to hold for a hand-made payment
-const WAIT_FOR_PAYMENT = process.env.E2E_WAIT_FOR_PAYMENT === '1'
 
 interface OrderFixtures {
   createdOrders: string[]
