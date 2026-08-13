@@ -243,6 +243,16 @@
     "chat": "Chat với Hoa Theo Mùa",
     "chatClose": "Đóng khung chat"
   },
+  "promoPopup": {
+    "title": "Chương trình khuyến mãi",
+    "close": "Đóng thông báo khuyến mãi",
+    "carousel": "Băng chuyền khuyến mãi",
+    "previous": "Khuyến mãi trước",
+    "next": "Khuyến mãi tiếp theo",
+    "goToSlide": "Xem khuyến mãi {index}",
+    "slideStatus": "Khuyến mãi {index} trên {total}",
+    "imageAlt": "Chương trình khuyến mãi Hoa Theo Mùa"
+  },
   "contact": {
     "eyebrow": "Tiệm hoa theo mùa",
     "header": "Gửi gắm điều bạn muốn nói",
