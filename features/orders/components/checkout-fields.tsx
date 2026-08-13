@@ -203,6 +203,7 @@ export function CheckoutFields({
                   <Field data-invalid={fieldState.invalid} className='gap-1'>
                     <FieldLabel htmlFor={field.name}>{t('orders.checkout.city')}</FieldLabel>
                     <LocationCombobox
+                      id={field.name}
                       value={field.value === -1 ? '' : String(field.value)}
                       onChange={(value) => {
                         if (value === '') {
@@ -247,6 +248,7 @@ export function CheckoutFields({
                   <Field data-invalid={fieldState.invalid} className='gap-1'>
                     <FieldLabel htmlFor={field.name}>{t('orders.checkout.ward')}</FieldLabel>
                     <LocationCombobox
+                      id={field.name}
                       value={field.value === -1 ? '' : String(field.value)}
                       onChange={(value) => {
                         if (value === '') {

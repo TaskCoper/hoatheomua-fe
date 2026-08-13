@@ -1,15 +1,7 @@
 import type { OrderDetail } from '@/features/orders/types'
-import type { BaseResponse } from '@/lib/axios'
 import type { AhamoveConfigItem } from '@/types/config.type'
-import { expect, type Page } from '@playwright/test'
-
-const unwrap = async <T>(page: Page, url: string): Promise<T> => {
-  const response = await page.request.get(url)
-  expect(response.ok(), `GET ${url} -> ${response.status()}`).toBeTruthy()
-
-  const body = (await response.json()) as BaseResponse<T>
-  return body.value
-}
+import { type Page } from '@playwright/test'
+import { unwrap } from './unwrap'
 
 // the order detail API is keyed by mrc_order_id, the same id the URL carries
 export const getOrder = (page: Page, mrcOrderId: string) => unwrap<OrderDetail>(page, `/api/v1/orders/${mrcOrderId}`)
@@ -21,11 +13,13 @@ export const getFreeShipKm = async (page: Page): Promise<number> => {
   return Number(configs.find((config) => config.key === 'ahamove.free_ship')?.value.value)
 }
 
-export const getAddressCount = async (page: Page): Promise<number> => {
-  const addresses = await unwrap<unknown[]>(page, '/api/v1/addresses')
+export const getAddressIds = async (page: Page): Promise<string[]> => {
+  const addresses = await unwrap<{ id: string }[]>(page, '/api/v1/addresses')
 
-  return addresses.length
+  return addresses.map((address) => address.id)
 }
+
+export const getAddressCount = async (page: Page): Promise<number> => (await getAddressIds(page)).length
 
 export const cancelOrderByMrcId = async (page: Page, mrcOrderId: string) => {
   const response = await page.request.patch(`/api/v1/orders/${mrcOrderId}/cancel`)

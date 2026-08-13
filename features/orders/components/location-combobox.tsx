@@ -9,6 +9,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useState } from 'react'
 
 export interface LocationComboboxProps {
+  id: string
   value: string
   onChange: (value: string) => void
   options: { label: string; value: string }[]
@@ -20,6 +21,7 @@ export interface LocationComboboxProps {
 }
 
 export function LocationCombobox({
+  id,
   value,
   onChange,
   options,
@@ -36,6 +38,7 @@ export function LocationCombobox({
     <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
+          id={id}
           type='button'
           variant='outline'
           role='combobox'
