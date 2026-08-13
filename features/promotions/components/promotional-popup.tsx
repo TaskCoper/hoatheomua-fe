@@ -7,16 +7,32 @@ import type { PromotionPopupItem } from '@/types/config.type'
 import { Cancel01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { VisuallyHidden } from 'radix-ui'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 interface PromotionalPopupProps {
   isOpen: boolean
   campaigns: readonly PromotionPopupItem[]
   dismiss: () => void
+  /** Unused while image-error handling is disabled - see the note below. */
   closeSilently: () => void
 }
 
-const EMPTY_FAILED: ReadonlySet<string> = new Set()
+/**
+ * TEMPORARY: image-error handling is switched off.
+ *
+ * This component used to track which campaigns failed to load, render only the
+ * survivors, and `closeSilently()` when none were left - correct behaviour for a
+ * broken artwork URL, but it also means an outage anywhere in the image pipeline
+ * makes the popup flash open and vanish. That is exactly what happened when
+ * Vercel's optimizer started answering 402: both slides errored, the survivor set
+ * emptied, and the popup closed itself about 100ms after opening.
+ *
+ * Until the image pipeline is sorted, the popup shows every active campaign and
+ * stays open regardless of what the images do. To restore: reinstate `failedIds`
+ * / `markFailed` / the `visible` memo, pass `visible` to the carousel, and bring
+ * back the effect that calls `closeSilently()` when `visible` is empty.
+ */
+const ignoreImageError = () => {}
 
 const CONTENT_CLASS = [
   'gap-0 border-0 bg-transparent p-0 shadow-none ring-0 outline-none',
@@ -36,22 +52,9 @@ const FRAME_CLASS = [
   'ring-1 ring-black/5 shadow-[0_24px_60px_-12px_rgb(31_45_45/0.45),0_8px_20px_-8px_rgb(31_45_45/0.3)]'
 ].join(' ')
 
-export default function PromotionalPopup({ isOpen, campaigns, dismiss, closeSilently }: PromotionalPopupProps) {
+export default function PromotionalPopup({ isOpen, campaigns, dismiss }: PromotionalPopupProps) {
   const { t } = useTranslation()
   const closeRef = useRef<HTMLButtonElement>(null)
-  const [failedIds, setFailedIds] = useState<ReadonlySet<string>>(EMPTY_FAILED)
-
-  const visible = useMemo(() => campaigns.filter((campaign) => !failedIds.has(campaign.id)), [campaigns, failedIds])
-
-  const markFailed = useCallback((id: string) => {
-    setFailedIds((previous) => (previous.has(id) ? previous : new Set(previous).add(id)))
-  }, [])
-
-  useEffect(() => {
-    if (isOpen && campaigns.length > 0 && visible.length === 0) {
-      closeSilently()
-    }
-  }, [isOpen, campaigns.length, visible.length, closeSilently])
 
   if (campaigns.length === 0) return null
 
@@ -84,7 +87,7 @@ export default function PromotionalPopup({ isOpen, campaigns, dismiss, closeSile
             </button>
           </DialogClose>
 
-          <PromotionCarousel campaigns={visible} onImageError={markFailed} onNavigate={dismiss} />
+          <PromotionCarousel campaigns={campaigns} onImageError={ignoreImageError} onNavigate={dismiss} />
         </div>
       </DialogContent>
     </Dialog>
