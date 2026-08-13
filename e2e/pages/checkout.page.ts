@@ -17,6 +17,14 @@ export interface BusinessInvoice {
   phoneNumber: string
 }
 
+export interface PersonalInvoice {
+  identityNumber: string
+  fullName: string
+  email: string
+  phoneNumber: string
+  address: string
+}
+
 export class CheckoutPage {
   readonly addressPicker: Locator
   readonly noteInput: Locator
@@ -198,6 +206,21 @@ export class CheckoutPage {
     await expect(this.personalTab).toHaveAttribute('data-state', 'active')
   }
 
+  // the Personal tab is where the switch already lands, so this never clicks it -
+  // an assertion instead, so a changed default surfaces here rather than as a
+  // validation error at submit
+  async fillPersonalInvoice({ identityNumber, fullName, email, phoneNumber, address }: PersonalInvoice) {
+    await expect(this.personalTab).toHaveAttribute('data-state', 'active')
+
+    await this.identityNumber.fill(identityNumber)
+    await this.receiptFullName.fill(fullName)
+    await this.receiptEmail.fill(email)
+    await this.receiptPhoneNumber.fill(phoneNumber)
+    // by id: 'Địa chỉ nhận hoá đơn' and the manual address line both answer to
+    // getByLabel('Địa chỉ')
+    await this.receiptAddress.fill(address)
+  }
+
   async fillBusinessInvoice({ taxCode, email, phoneNumber }: BusinessInvoice) {
     await this.businessTab.click()
     await expect(this.businessTab).toHaveAttribute('data-state', 'active')
@@ -209,6 +232,14 @@ export class CheckoutPage {
 
   gateway(value: PaymentGateway) {
     return this.page.locator(`#gateway-${value}`)
+  }
+
+  // handleGatewayChange rewrites the payment method as a side effect, so the
+  // method list is only settled once the radio reports itself checked
+  async selectGateway(value: PaymentGateway) {
+    await this.gateway(value).click()
+
+    await expect(this.gateway(value)).toBeChecked()
   }
 
   // only the gateway's allowed method is rendered: BaoKim -> 1, Sepay -> 6

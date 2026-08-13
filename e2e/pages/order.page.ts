@@ -10,6 +10,7 @@ export class OrderPage {
   readonly cancelOrder: Locator
   readonly mapLink: Locator
   readonly trackAhamove: Locator
+  readonly sepayQrImage: Locator
 
   constructor(private readonly page: Page) {
     // status badge lives in the breadcrumb nav, not the order card itself
@@ -26,6 +27,9 @@ export class OrderPage {
     this.mapLink = page.getByRole('link', { name: 'Xem trên bản đồ' })
     // only rendered once the backend has booked the ride, i.e. after payment
     this.trackAhamove = page.getByRole('link', { name: 'Theo dõi Ahamove' })
+    // a raw <img> pointed straight at sepayUrl - the QR is drawn by the gateway,
+    // never by us
+    this.sepayQrImage = page.getByAltText('Mã QR thanh toán')
   }
 
   // summary rows render as <div><dt>label</dt><dd>value</dd></div>
@@ -44,7 +48,16 @@ export class OrderPage {
   }
 
   async amount(label: string) {
-    const row = this.row(label)
+    return this.readAmount(this.row(label))
+  }
+
+  // the same read, scoped to a card - 'Số tiền' means one thing in the QR panel
+  // and another in the transfer card
+  async amountIn(section: Locator, label: string) {
+    return this.readAmount(this.rowIn(section, label))
+  }
+
+  private async readAmount(row: Locator) {
     await expect(row).toBeVisible()
 
     return parseVnd(await row.innerText())
