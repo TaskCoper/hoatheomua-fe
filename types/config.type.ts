@@ -394,3 +394,40 @@ export interface BannersCollectionConfigItem {
   kind: BannersConfigKind
   userId: string
 }
+
+// Promotions
+export type PromotionsConfigKey = 'promotions.popup'
+
+export type PromotionsConfigGroup = 'promotions'
+
+// `once-per-session`: once per tab. `every-load`: on every full page load.
+export type PromotionPopupFrequency = 'once-per-session' | 'every-load'
+
+// `pages` patterns are defined in `features/promotions/match-page.ts`.
+export interface PromotionPopupSection {
+  enabled: boolean
+  frequency: PromotionPopupFrequency
+  pages: string[]
+}
+
+// Dates are inclusive `YYYY-MM-DD` (Asia/Ho_Chi_Minh) or `''` for unbounded.
+export interface PromotionPopupItem {
+  id: string
+  image: string
+  href: string
+  openInNewTab: boolean
+  alt: LocalizedText
+  startDate: string
+  endDate: string
+  enabled: boolean
+  /** Per-campaign route scope. `[]` inherits `section.pages`. */
+  pages: string[]
+}
+
+export interface PromotionPopupCollection {
+  section: PromotionPopupSection
+  items: PromotionPopupItem[]
+}
+
+// Stored as a JSON string; parse with `parsePromotionPopup` before use.
+export type PromotionPopupConfigItem = JsonConfigItem<'promotions.popup', 'promotions'>

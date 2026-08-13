@@ -243,6 +243,16 @@
     "chat": "Chat with Hoa Theo Mua",
     "chatClose": "Close the chat"
   },
+  "promoPopup": {
+    "title": "Promotions",
+    "close": "Close promotion popup",
+    "carousel": "Promotions carousel",
+    "previous": "Previous promotion",
+    "next": "Next promotion",
+    "goToSlide": "Go to promotion {index}",
+    "slideStatus": "Promotion {index} of {total}",
+    "imageAlt": "Hoa Theo Mua promotion"
+  },
   "contact": {
     "eyebrow": "Seasonal flower studio",
     "header": "Let Your Feelings Bloom",

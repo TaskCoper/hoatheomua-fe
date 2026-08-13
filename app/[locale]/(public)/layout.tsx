@@ -2,6 +2,7 @@ import { getCompanyBgMusic } from '@/features/company/queries.server'
 import FloatingContactClient from '@/features/layout/components/floating-contact-client'
 import Footer from '@/features/layout/components/footer'
 import PublicHeader from '@/features/layout/components/public-header'
+import PromotionalPopupClient from '@/features/promotions/components/promotional-popup-client'
 import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
 import RoleGuard from '@/guards/role-guard'
 import { ROLES } from '@/guards/utils'
@@ -34,6 +35,8 @@ export default async function PublicLayout({ children }: { children: React.React
           <Footer />
 
           <FloatingContactClient musicSrc={homeMusicSrc} />
+
+          <PromotionalPopupClient />
         </div>
       </HydrationBoundary>
     </RoleGuard>
