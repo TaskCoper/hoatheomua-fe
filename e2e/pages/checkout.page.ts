@@ -11,6 +11,12 @@ export interface ManualAddress {
   ward: string
 }
 
+export interface BusinessInvoice {
+  taxCode: string
+  email: string
+  phoneNumber: string
+}
+
 export class CheckoutPage {
   readonly addressPicker: Locator
   readonly noteInput: Locator
@@ -30,6 +36,15 @@ export class CheckoutPage {
 
   // step 2 - invoice
   readonly invoiceSwitch: Locator
+  readonly personalTab: Locator
+  readonly businessTab: Locator
+  readonly taxCode: Locator
+  readonly taxLookupPanel: Locator
+  readonly identityNumber: Locator
+  readonly receiptFullName: Locator
+  readonly receiptEmail: Locator
+  readonly receiptPhoneNumber: Locator
+  readonly receiptAddress: Locator
 
   readonly sidebar: Locator
   readonly sidebarTotal: Locator
@@ -58,6 +73,21 @@ export class CheckoutPage {
     this.deliverySlot = page.locator('#tagIds')
 
     this.invoiceSwitch = page.getByRole('switch', { name: 'Xuất hoá đơn' })
+
+    this.personalTab = page.getByRole('tab', { name: 'Cá nhân' })
+    this.businessTab = page.getByRole('tab', { name: 'Doanh nghiệp' })
+
+    // every invoice input carries its react-hook-form field name as its id, and
+    // 'Mã số thuế' doubles as a label inside the lookup panel - so match by id
+    this.taxCode = page.locator('#taxCode')
+    // the panel is the input's next sibling inside the Field, and only exists
+    // once a tax code has been typed
+    this.taxLookupPanel = this.taxCode.locator('xpath=following-sibling::div[1]')
+    this.identityNumber = page.locator('#identityNumber')
+    this.receiptFullName = page.locator('#receiptFullName')
+    this.receiptEmail = page.locator('#receiptEmail')
+    this.receiptPhoneNumber = page.locator('#receiptPhoneNumber')
+    this.receiptAddress = page.locator('#receiptAddress')
 
     // the layout has other asides, so pin this one to the price block
     this.sidebar = page.locator('aside').filter({ hasText: 'Chi tiết giá' })
@@ -121,6 +151,60 @@ export class CheckoutPage {
 
   async setNote(note: string) {
     await this.noteInput.fill(note)
+  }
+
+  // The calendar is limited to today...today+7 and collapses "today" to
+  // orderTime 0, so only a future date produces a non-zero orderTime - a slot
+  // picked on its own schedules the order just as much (orderTime 0 + tagIds).
+  // Days are addressed by react-day-picker's own `data-day` on the gridcell,
+  // which is the ISO date - the button's `data-day` comes from
+  // toLocaleDateString() and therefore depends on the browser's locale.
+  async pickDeliveryDate(date: Date) {
+    await this.deliveryDate.click()
+
+    // the popover opens on the current month, and a date up to 7 days out can
+    // fall into the next one
+    if (date.getMonth() !== new Date().getMonth()) {
+      await this.page.getByRole('button', { name: 'Go to the Next Month' }).click()
+    }
+
+    // built from local parts: toISOString() would shift the day in UTC+7
+    const isoDate = [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, '0'),
+      String(date.getDate()).padStart(2, '0')
+    ].join('-')
+
+    await this.page.locator(`td[data-day="${isoDate}"] button`).click()
+
+    // the clear affordance renders only while orderTime > 0
+    await expect(this.deliveryDateClear).toBeVisible()
+  }
+
+  async selectDeliverySlot(label: string) {
+    await expect(this.deliverySlot).toBeEnabled()
+
+    await this.deliverySlot.click()
+    await this.page.getByRole('option', { name: label, exact: true }).click()
+
+    await expect(this.deliverySlot).toHaveText(label)
+  }
+
+  // the switch defaults the form to the Personal tab
+  async enableInvoice() {
+    await this.invoiceSwitch.click()
+
+    await expect(this.invoiceSwitch).toBeChecked()
+    await expect(this.personalTab).toHaveAttribute('data-state', 'active')
+  }
+
+  async fillBusinessInvoice({ taxCode, email, phoneNumber }: BusinessInvoice) {
+    await this.businessTab.click()
+    await expect(this.businessTab).toHaveAttribute('data-state', 'active')
+
+    await this.taxCode.fill(taxCode)
+    await this.receiptEmail.fill(email)
+    await this.receiptPhoneNumber.fill(phoneNumber)
   }
 
   gateway(value: PaymentGateway) {

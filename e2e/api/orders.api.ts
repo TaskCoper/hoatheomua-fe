@@ -1,5 +1,5 @@
 import type { OrderDetail } from '@/features/orders/types'
-import type { AhamoveConfigItem } from '@/types/config.type'
+import type { AhamoveConfigItem, OrderTag } from '@/types/config.type'
 import { expect, type Page } from '@playwright/test'
 import { unwrap } from './unwrap'
 
@@ -12,6 +12,8 @@ export const getFreeShipKm = async (page: Page): Promise<number> => {
 
   return Number(configs.find((config) => config.key === 'ahamove.free_ship')?.value.value)
 }
+
+export const getOrderTags = (page: Page) => unwrap<OrderTag>(page, '/api/v1/configs/order-tags')
 
 export const getAddressIds = async (page: Page): Promise<string[]> => {
   const addresses = await unwrap<{ id: string }[]>(page, '/api/v1/addresses')

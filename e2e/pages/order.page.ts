@@ -1,6 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import { parseVnd } from '../utils/money'
 
+const rowSelector = (label: string) => `div:has(> dt:text-is("${label}")) > dd`
+
 export class OrderPage {
   readonly statusBadge: Locator
   readonly total: Locator
@@ -28,7 +30,13 @@ export class OrderPage {
 
   // summary rows render as <div><dt>label</dt><dd>value</dd></div>
   row(label: string) {
-    return this.page.locator(`div:has(> dt:text-is("${label}")) > dd`)
+    return this.page.locator(rowSelector(label))
+  }
+
+  // the same row shape, scoped to a single card - labels like 'Mã số thuế' are
+  // only unique within their own section
+  rowIn(section: Locator, label: string) {
+    return section.locator(rowSelector(label))
   }
 
   field(label: string) {

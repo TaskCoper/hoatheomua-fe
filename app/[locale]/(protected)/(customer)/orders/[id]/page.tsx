@@ -211,6 +211,9 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
     return labels.length ? labels.join(', ') : null
   }, [orderTags, order.tagsId])
 
+  const isScheduledDelivery = order.orderTime > 0 || Boolean(order.tagsId?.length)
+  const scheduledDeliveryDate = order.orderTime > 0 ? order.orderTime * 1000 : order.createAt
+
   const sepayDetails = useMemo(() => parseSepayDetails(order.sepayUrl), [order.sepayUrl])
   const showSepayQr = isPendingOrder && !order.paymentUrl && Boolean(order.sepayUrl) && Boolean(sepayDetails)
 
@@ -611,9 +614,9 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     tone='primary'
                     label={t('orders.list.detail.timelineDelivery')}
                     value={
-                      order.orderTime > 0 ? (
+                      isScheduledDelivery ? (
                         <span className='inline-flex flex-wrap items-baseline gap-x-1'>
-                          <span>{formatDateTime(order.orderTime * 1000, 'dateMedium')}</span>
+                          <span>{formatDateTime(scheduledDeliveryDate, 'dateMedium')}</span>
                           {deliveryTagLabel ? (
                             <span className='text-xs font-medium text-primary'>({deliveryTagLabel})</span>
                           ) : null}
