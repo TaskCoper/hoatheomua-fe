@@ -1,32 +1,46 @@
 import { ProfilePage, type NewAddress } from '../pages/profile.page'
 import { test as authTest } from './auth'
 
-// This resolves to Hồ Chí Minh / Phường Sài Gòn in the address autocomplete.
-const ADDRESS_QUERY = '72 Lê Thánh Tôn'
+export interface AddressSpec {
+  // typed into the address autocomplete
+  addressQuery: string
+  // the city/ward the first suggestion is expected to resolve to
+  city: string
+  ward: string
+  // a substring of the resolved address line, for containment assertions
+  addressLineText: string
+}
+
+export const FREE_SHIP_ADDRESS: AddressSpec = {
+  addressQuery: '166/41/4 Thích Quảng Đức',
+  city: 'Hồ Chí Minh',
+  ward: 'Phường Đức Nhuận',
+  addressLineText: 'Thích Quảng Đức'
+}
+
+export const PAID_SHIP_ADDRESS: AddressSpec = {
+  addressQuery: '84 D5, KDC An Thiên Lý',
+  city: 'Hồ Chí Minh',
+  ward: 'Phường Phước Long',
+  addressLineText: 'An Thiên Lý'
+}
 
 interface CheckoutFixtures {
-  // An address created before the test and removed after it, pass or fail.
+  // address that for manual
+  addressSpec: AddressSpec
+  // saved address for selection
   savedAddress: NewAddress
 }
 
 export const addressTest = authTest.extend<CheckoutFixtures>({
-  /**
-   * Creating the address here rather than in the test body means the teardown
-   * runs even when the test fails half way, which is what stops abandoned E2E
-   * addresses from piling up on the account.
-   */
-  savedAddress: async ({ authedPage }, run, testInfo) => {
+  addressSpec: [FREE_SHIP_ADDRESS, { option: true }],
+  savedAddress: async ({ authedPage, addressSpec }, run, testInfo) => {
     const profile = new ProfilePage(authedPage)
 
     const address: NewAddress = {
-      // unique per run, so parallel projects never collide on the same address
       receiverName: `E2E ${testInfo.project.name} ${testInfo.testId} ${Date.now()}`,
       phoneNumber: '0909111111',
-      addressQuery: ADDRESS_QUERY,
-      city: 'Hồ Chí Minh',
-      ward: 'Phường Sài Gòn',
-      // left non-default on purpose: the checkout auto-selects the default one,
-      // so a non-default address forces the picker to actually be used
+      ...addressSpec,
       isDefault: false
     }
 
@@ -37,5 +51,3 @@ export const addressTest = authTest.extend<CheckoutFixtures>({
     await profile.deleteAddress(address.receiverName)
   }
 })
-
-export { expect } from '@playwright/test'

@@ -35,6 +35,7 @@ import {
   ArrowLeft02Icon,
   BankIcon,
   CalendarCheckOut01Icon,
+  CallIcon,
   CancelCircleIcon,
   CheckmarkCircle02Icon,
   DeliveryTruck02Icon,
@@ -83,6 +84,15 @@ const parseSepayDetails = (sepayUrl: string | null | undefined): SepayDetails | 
     return null
   }
 }
+
+const buildMapHref = (latitude: number, longitude: number, address: string) => {
+  if (latitude && longitude) {
+    return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
+  }
+  return address ? `https://www.google.com/maps?q=${encodeURIComponent(address)}` : null
+}
+
+const toTelHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, '')}`
 
 const PAYMENT_METHOD_ICONS = {
   [PaymentMethod[1]]: BankIcon,
@@ -206,18 +216,48 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
 
   const items = useMemo(() => order.details ?? [], [order.details])
 
-  const recipientRows = [
+  const mapHref = buildMapHref(order.latitude, order.longitude, order.address)
+
+  const deliveryRows = [
+    order.fullName ? { icon: UserIcon, label: t('orders.checkout.fullName'), value: order.fullName } : null,
+    order.phone
+      ? { icon: SmartPhone01Icon, label: t('orders.checkout.phone'), value: order.phone, href: toTelHref(order.phone) }
+      : null,
+    order.phoneReceiver && order.phoneReceiver !== order.phone
+      ? {
+          icon: CallIcon,
+          label: t('orders.checkout.phoneReceiver'),
+          value: order.phoneReceiver,
+          href: toTelHref(order.phoneReceiver)
+        }
+      : null,
+    order.address ? { icon: MapPinpoint02Icon, label: t('orders.checkout.addressLine'), value: order.address } : null
+  ].filter((row): row is DetailListRow => Boolean(row))
+
+  const invoiceRecipientRows = [
     order.receiptFullName
       ? { icon: UserIcon, label: t('orders.checkout.receiptFullName'), value: order.receiptFullName }
       : null,
     order.receiptPhoneNumber
-      ? { icon: SmartPhone01Icon, label: t('orders.checkout.receiptPhoneNumber'), value: order.receiptPhoneNumber }
+      ? {
+          icon: SmartPhone01Icon,
+          label: t('orders.checkout.receiptPhoneNumber'),
+          value: order.receiptPhoneNumber,
+          href: toTelHref(order.receiptPhoneNumber)
+        }
       : null,
-    order.receiptEmail ? { icon: MailIcon, label: t('orders.checkout.receiptEmail'), value: order.receiptEmail } : null,
+    order.receiptEmail
+      ? {
+          icon: MailIcon,
+          label: t('orders.checkout.receiptEmail'),
+          value: order.receiptEmail,
+          href: `mailto:${order.receiptEmail}`
+        }
+      : null,
     order.receiptAddress
       ? { icon: MapPinpoint02Icon, label: t('orders.checkout.receiptAddress'), value: order.receiptAddress }
       : null
-  ].filter((row): row is { icon: typeof UserIcon; label: string; value: string } => Boolean(row))
+  ].filter((row): row is DetailListRow => Boolean(row))
 
   const invoiceRows: { label: string; value: React.ReactNode }[] = []
 
@@ -281,6 +321,20 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
             </Badge>
           </div>
         </nav>
+
+        {isCancelledOrder ? (
+          <div className='flex items-start gap-3 rounded-3xl border border-destructive/30 bg-destructive/5 p-4'>
+            <span className='grid size-8 shrink-0 place-items-center rounded-full bg-destructive/10 text-destructive'>
+              <HugeiconsIcon icon={CancelCircleIcon} strokeWidth={1.75} className='size-4' />
+            </span>
+            <div className='min-w-0'>
+              <p className='text-sm font-semibold text-destructive'>{t('orders.list.detail.cancelledBannerTitle')}</p>
+              <p className='mt-0.5 text-xs leading-relaxed text-muted-foreground'>
+                {t('orders.list.detail.cancelledBannerDescription')}
+              </p>
+            </div>
+          </div>
+        ) : null}
 
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex flex-col gap-4 lg:col-span-2'>
@@ -481,31 +535,44 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
           </div>
 
           <aside className='flex flex-col gap-4'>
-            {recipientRows.length > 0 ? (
-              <SectionCard icon={UserIcon} title={t('orders.list.detail.recipientHeading')}>
-                <ul className='space-y-3 text-sm'>
-                  {recipientRows.map((row) => (
-                    <li key={row.label} className='flex items-center gap-2.5'>
-                      <span className='mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
-                        <HugeiconsIcon icon={row.icon} strokeWidth={1.75} className='size-3.5' />
-                      </span>
-                      <div className='min-w-0'>
-                        <p className='text-[0.7rem] font-medium text-muted-foreground'>{row.label}</p>
-                        <p className='wrap-break-word font-semibold text-foreground'>{row.value}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+            {deliveryRows.length > 0 ? (
+              <SectionCard icon={MapPinpoint02Icon} title={t('orders.list.detail.recipientHeading')}>
+                <DetailList rows={deliveryRows} />
+                {mapHref ? (
+                  <div className='mt-3 border-t border-border/60 pt-3'>
+                    <a
+                      href={mapHref}
+                      target='_blank'
+                      rel='noreferrer noopener'
+                      className='inline-flex items-center gap-1.5 rounded-full bg-secondary/40 px-3 py-1.5 text-xs font-semibold text-secondary-foreground ring-1 ring-primary/10 hover:bg-secondary/60'
+                    >
+                      <HugeiconsIcon icon={MapPinpoint02Icon} strokeWidth={2} className='size-3.5' />
+                      {t('orders.list.detail.viewOnMap')}
+                    </a>
+                  </div>
+                ) : null}
               </SectionCard>
             ) : null}
 
             <SectionCard icon={InvoiceIcon} title={t('orders.list.detail.invoiceHeading')}>
-              {order.isExportInvoice && invoiceRows.length > 0 ? (
-                <dl className='space-y-2 text-sm'>
-                  {invoiceRows.map((row) => (
-                    <DetailRow key={row.label} label={row.label} value={row.value} />
-                  ))}
-                </dl>
+              {order.isExportInvoice && (invoiceRows.length > 0 || invoiceRecipientRows.length > 0) ? (
+                <>
+                  {invoiceRows.length > 0 ? (
+                    <dl className='space-y-2 text-sm'>
+                      {invoiceRows.map((row) => (
+                        <DetailRow key={row.label} label={row.label} value={row.value} />
+                      ))}
+                    </dl>
+                  ) : null}
+                  {invoiceRecipientRows.length > 0 ? (
+                    <div className={cn(invoiceRows.length > 0 && 'mt-3 border-t border-border/60 pt-3')}>
+                      <p className='mb-2 text-[0.7rem] font-semibold tracking-wide text-muted-foreground uppercase'>
+                        {t('orders.list.detail.invoiceRecipientHeading')}
+                      </p>
+                      <DetailList rows={invoiceRecipientRows} />
+                    </div>
+                  ) : null}
+                </>
               ) : (
                 <p className='text-sm text-muted-foreground'>{t('orders.list.detail.invoiceNotRequested')}</p>
               )}
@@ -518,7 +585,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                   tone='primary'
                   label={t('orders.list.detail.timelineCreated')}
                   value={formatDateTime(order.createAt, 'dateTimeMedium')}
-                  isLast={!order.transaction}
+                  isLast={false}
                 />
                 {order.transaction ? (
                   <TimelineItem
@@ -530,7 +597,15 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     isLast={false}
                   />
                 ) : null}
-                {order.transaction ? (
+                {isCancelledOrder ? (
+                  <TimelineItem
+                    icon={CancelCircleIcon}
+                    tone='destructive'
+                    label={t('orders.list.detail.timelineCancelled')}
+                    value={t('orders.list.detail.timelineCancelledHint')}
+                    isLast
+                  />
+                ) : (
                   <TimelineItem
                     icon={DeliveryTruck02Icon}
                     tone='primary'
@@ -549,7 +624,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     }
                     isLast
                   />
-                ) : null}
+                )}
               </ol>
             </SectionCard>
 
@@ -627,6 +702,37 @@ function SectionCard({ icon, title, aside, children }: SectionCardProps) {
   )
 }
 
+interface DetailListRow {
+  icon: typeof UserIcon
+  label: string
+  value: string
+  href?: string
+}
+
+function DetailList({ rows }: { rows: DetailListRow[] }) {
+  return (
+    <ul className='space-y-3 text-sm'>
+      {rows.map((row) => (
+        <li key={row.label} className='flex items-start gap-2.5'>
+          <span className='mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
+            <HugeiconsIcon icon={row.icon} strokeWidth={1.75} className='size-3.5' />
+          </span>
+          <div className='min-w-0'>
+            <p className='text-[0.7rem] font-medium text-muted-foreground'>{row.label}</p>
+            {row.href ? (
+              <a href={row.href} className='wrap-break-word font-semibold text-primary hover:underline'>
+                {row.value}
+              </a>
+            ) : (
+              <p className='wrap-break-word font-semibold text-foreground'>{row.value}</p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function SummaryRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className='flex items-baseline justify-between gap-3'>
@@ -647,7 +753,7 @@ function DetailRow({ label, value }: { label: string; value: React.ReactNode }) 
 
 interface TimelineItemProps {
   icon: typeof PackageIcon
-  tone: 'primary' | 'leaf'
+  tone: 'primary' | 'leaf' | 'destructive'
   label: string
   value: React.ReactNode
   subtitle?: React.ReactNode
@@ -661,7 +767,11 @@ function TimelineItem({ icon, tone, label, value, subtitle, isLast }: TimelineIt
         <span
           className={cn(
             'grid size-7 shrink-0 place-items-center rounded-full ring-1',
-            tone === 'leaf' ? 'bg-leaf/10 text-leaf ring-leaf/20' : 'bg-primary/10 text-primary ring-primary/20'
+            tone === 'leaf'
+              ? 'bg-leaf/10 text-leaf ring-leaf/20'
+              : tone === 'destructive'
+                ? 'bg-destructive/10 text-destructive ring-destructive/20'
+                : 'bg-primary/10 text-primary ring-primary/20'
           )}
         >
           <HugeiconsIcon icon={icon} strokeWidth={2} className='size-3.5' />

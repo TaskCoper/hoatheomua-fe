@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test'
+import { dismissPromoPopup } from '../utils/promo-popup'
 
 export interface NewAddress {
   receiverName: string
@@ -8,6 +9,9 @@ export interface NewAddress {
   // the city/ward the suggestion is expected to resolve to
   city: string
   ward: string
+  // a substring of the resolved address line - the suggestion that gets saved is
+  // rarely character-for-character what was typed, so assert on this instead
+  addressLineText: string
   // should this address be default
   isDefault?: boolean
 }
@@ -22,6 +26,8 @@ export class ProfilePage {
   // open nav-user
   async open() {
     await this.page.goto('/')
+
+    await dismissPromoPopup(this.page)
 
     const accountBtn = this.page.getByRole('button', { name: 'Tài khoản', exact: true })
     await expect(accountBtn).toBeVisible()

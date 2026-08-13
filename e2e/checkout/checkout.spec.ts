@@ -58,7 +58,7 @@ addressTest('user can add an address, add to cart and place an order', async ({ 
     // the chosen address gets verified
     await expect(checkout.addressPicker).toContainText(savedAddress.receiverName)
     await expect(checkout.addressPicker).toContainText(savedAddress.phoneNumber)
-    await expect(checkout.addressPicker).toContainText(savedAddress.addressQuery)
+    await expect(checkout.addressPicker).toContainText(savedAddress.addressLineText)
 
     await checkout.setNote(NOTE)
   })

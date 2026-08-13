@@ -818,7 +818,13 @@
         "cancelSuccess": "Đã hủy đơn hàng",
         "cancelError": "Không thể hủy đơn hàng",
         "payNow": "Thanh toán ngay",
-        "paymentMethod": "Phương thức thanh toán"
+        "paymentMethod": "Phương thức thanh toán",
+        "viewOnMap": "Xem trên bản đồ",
+        "invoiceRecipientHeading": "Người nhận hoá đơn",
+        "timelineCancelled": "Đã hủy đơn hàng",
+        "timelineCancelledHint": "Đơn hàng này không còn được xử lý.",
+        "cancelledBannerTitle": "Đơn hàng đã được hủy",
+        "cancelledBannerDescription": "Bạn không cần thanh toán và đơn hàng sẽ không được giao."
       }
     }
   },

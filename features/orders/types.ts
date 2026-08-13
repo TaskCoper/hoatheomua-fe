@@ -96,6 +96,16 @@ export interface OrderDetail {
   taxCode: string | null
   orderTime: number
   tagsId: number[]
+  userId: string
+  fullName: string
+  phone: string
+  phoneReceiver: string
+  address: string
+  shortAddress: string
+  latitude: number
+  longitude: number
+  ward: number
+  city: number
   identityNumber: string | null
   invoiceType: InvoiceType | null
   isExportInvoice: boolean

@@ -20,7 +20,7 @@ test('user can visit products page, filter, view detail and then add to cart', a
   await expect(page).toHaveURL('/products/a10efc5a-ad03-4102-9e1e-5807e3f7a38c')
 
   // select the first variant
-  const variantBtn = page.getByTestId(' ').locator('button[aria-pressed]').first()
+  const variantBtn = page.getByTestId('purchase-box').locator('button[aria-pressed]').first()
   const variantLabel = await variantBtn.textContent()
 
   // choose the variant

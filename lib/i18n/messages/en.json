@@ -818,7 +818,13 @@
         "cancelSuccess": "Order cancelled",
         "cancelError": "Could not cancel order",
         "payNow": "Pay now",
-        "paymentMethod": "Payment method"
+        "paymentMethod": "Payment method",
+        "viewOnMap": "View on map",
+        "invoiceRecipientHeading": "Invoice recipient",
+        "timelineCancelled": "Order cancelled",
+        "timelineCancelledHint": "This order is no longer being processed.",
+        "cancelledBannerTitle": "This order was cancelled",
+        "cancelledBannerDescription": "No payment is required and nothing will be delivered."
       }
     }
   },

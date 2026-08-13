@@ -172,9 +172,11 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
           <div className='flex flex-wrap items-center justify-between gap-2'>
             <div className='flex items-center gap-2'>
               <span className='text-[0.625rem] font-semibold uppercase tracking-widest text-muted-foreground'>
-                {t('orders.list.orderId')}
+                {t('orders.list.createdAt')}
               </span>
-              <span className='font-mono text-sm font-bold text-primary'>{order.orderId.slice(0, 8)}</span>
+              <span className='text-sm font-bold text-primary'>
+                {order.createAt ? formatDateTime(order.createAt, 'dateTimeShort') : '-'}
+              </span>
             </div>
 
             <Badge
@@ -195,12 +197,6 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
 
           <dl className='flex flex-wrap items-center gap-x-3 gap-y-1'>
             <div className='flex items-center gap-1 text-xs text-muted-foreground'>
-              <dt className='shrink-0 font-medium'>{t('orders.list.createdAt')}:</dt>
-              <dd className='truncate font-medium text-foreground/90'>
-                {order.createAt ? formatDateTime(order.createAt, 'dateTimeShort') : '-'}
-              </dd>
-            </div>
-            <div className='flex items-center gap-1 text-xs text-muted-foreground'>
               <dt className='shrink-0 font-medium'>{t('orders.checkout.orderTime')}:</dt>
               <dd className='truncate font-medium text-foreground/90'>
                 {order.orderTime > 0
@@ -208,6 +204,12 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
                   : t('orders.checkout.deliverNow')}
               </dd>
             </div>
+            {order.trackNumber ? (
+              <div className='flex items-center gap-1 text-xs text-muted-foreground'>
+                <dt className='shrink-0 font-medium'>{t('orders.list.trackNumber')}:</dt>
+                <dd className='truncate font-mono font-medium text-foreground/90'>{order.trackNumber}</dd>
+              </div>
+            ) : null}
           </dl>
 
           <div className='mt-3 flex flex-wrap items-center gap-2'>
