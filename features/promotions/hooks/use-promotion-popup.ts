@@ -9,7 +9,6 @@ import {
   PROMOTION_POPUP_KEY
 } from '@/features/promotions/constants'
 import { DEFAULT_PROMOTION_POPUP } from '@/features/promotions/default-campaigns'
-import { useFirstInteraction } from '@/features/promotions/hooks/use-first-interaction'
 import { stripLocalePrefix } from '@/features/promotions/href'
 import { parsePromotionPopup } from '@/features/promotions/parse'
 import { businessToday, campaignSignature, selectActiveCampaigns } from '@/features/promotions/select-active-campaigns'
@@ -45,7 +44,6 @@ const clearDismissed = () => {
 
 export function usePromotionPopup() {
   const path = stripLocalePrefix(usePathname())
-  const hasInteracted = useFirstInteraction()
 
   const { configs, isGettingConfigs } = useGetPublicConfigs<PromotionPopupConfigItem, 'promotions.popup'>({
     group: PROMOTIONS_GROUP,
@@ -87,8 +85,8 @@ export function usePromotionPopup() {
     return clearOpenTimer
   }, [path, clearOpenTimer])
 
-  // Judged when the config resolves rather than when the popup is due: the visitor
-  // may not interact for minutes, and that must not read as "the data was slow".
+  // Judged when the config resolves rather than when the popup is due, so the
+  // open delay below never counts against the "data was slow" verdict.
   useEffect(() => {
     if (isGettingConfigs) return
 
@@ -100,10 +98,6 @@ export function usePromotionPopup() {
     if (openTimerRef.current) return // already scheduled - do not restart the delay
     if (isGettingConfigs) return // data has not resolved yet
     if (!signature) return // nothing active, or nothing scoped to this page
-
-    // The popup image is the largest element on most pages, so painting it before
-    // the first input would hand it the LCP. See `useFirstInteraction`.
-    if (!hasInteracted) return
 
     // Data arrived after the visitor started reading; a popup now is hostile.
     if (arrivedLateRef.current) return
@@ -120,7 +114,7 @@ export function usePromotionPopup() {
       setIsOpen(true)
     }, POPUP_DELAY_MS)
     // `path` re-runs this to reschedule the timer the route-change effect above cleared.
-  }, [signature, frequency, isGettingConfigs, hasInteracted, path])
+  }, [signature, frequency, isGettingConfigs, path])
 
   /** The visitor acted: close button, ESC, overlay, or a click-through. */
   const dismiss = useCallback(() => setIsOpen(false), [])

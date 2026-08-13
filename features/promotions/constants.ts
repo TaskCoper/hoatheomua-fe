@@ -4,8 +4,8 @@ export const PROMOTION_POPUP_KEY = 'promotions.popup'
 
 export const BUSINESS_TIMEZONE = 'Asia/Ho_Chi_Minh'
 
-// Measured from the visitor's first interaction, not from page load: a settling
-// beat so the popup doesn't snap open under the finger that just scrolled.
+// Measured from the moment the config resolves: a settling beat so the popup
+// doesn't snap open over a page that is still painting.
 export const POPUP_DELAY_MS = 1200
 
 // Config resolving later than this after eligibility means the visitor is already reading; skip.
