@@ -18,8 +18,19 @@ export const DISMISS_STORAGE_KEY = 'htm:promo-popup:dismissed'
 
 export const DEFAULT_POPUP_FREQUENCY = 'once-per-session'
 
-// Default scope: everywhere except product detail, where an interstitial costs the most.
-export const DEFAULT_POPUP_PAGES: readonly string[] = ['*', '!/products/*']
+export const POLICY_PAGE_PATHS: readonly string[] = ['/delivery', '/ordering', '/privacy', '/returns', '/terms']
+
+export const DEFAULT_POPUP_PAGES: readonly string[] = [
+  '*',
+  '!/products/*',
+  ...POLICY_PAGE_PATHS.map((path) => `!${path}`)
+]
+
+export const ALLOWED_IMAGE_HOSTS: readonly string[] = [
+  'pos.nvncdn.com',
+  'hoatheomua.net',
+  'taskcoper.hcm.ss.bfcplatform.vn'
+]
 
 export const PROMO_IMPRESSION_EVENT = 'promo:impression'
 
