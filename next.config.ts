@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   images: {
+    // Resizing runs through wsrv.nl rather than `/_next/image`: Vercel's optimizer
+    // is metered and returns 402 for every image once the allowance is spent. See
+    // lib/image-loader.ts. Flip these two lines out to go back to the built-in one.
+    loader: 'custom',
+    loaderFile: './lib/image-loader.ts',
+    // Inert while the loader is custom, kept so switching back needs no archaeology.
     remotePatterns: [
       {
         protocol: 'https',
@@ -27,6 +33,7 @@ const nextConfig: NextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
     qualities: [50, 55, 60, 65, 70, 75, 80],
+    // Still honoured with a custom loader: they drive the generated `srcset` widths.
     deviceSizes: [360, 640, 750, 828, 1080, 1200, 1600],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30

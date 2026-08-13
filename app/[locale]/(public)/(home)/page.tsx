@@ -12,6 +12,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
+import { notFound } from 'next/navigation'
 
 // Kept in step with `PRODUCTS_LIST_LIFE.revalidate` in lib/cache-life.ts: the
 // shortest cache a render touches wins, and `getCachedProducts` is a 300s
@@ -29,6 +30,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function HomePage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
+
+  if (!hasLocale(routing.locales, locale)) notFound()
 
   setRequestLocale(locale)
 
