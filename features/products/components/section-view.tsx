@@ -81,11 +81,8 @@ export default function SectionView({
   const showPrice = Boolean(meta.filterByPrice)
   const hasFilters = showName || showPrice || filterableChildren.length > 0
 
-  // `rows × cols` (default 1×4) is the per-page product limit. When a filter panel
-  // sits alongside the grid it eats ~25% of the width, so cap the visible columns
-  // at 3 there to keep cards readable - the page limit itself stays untouched.
   const { cols, pageSize } = useMemo(() => getCategoryGrid(meta), [meta])
-  const gridColumns = useMemo(() => getResponsiveGridColumns(hasFilters ? Math.min(cols, 3) : cols), [cols, hasFilters])
+  const gridColumns = useMemo(() => getResponsiveGridColumns(cols), [cols])
 
   const title = getCategoryName(category, locale)
   const description = getCategoryDescription(category, locale)
