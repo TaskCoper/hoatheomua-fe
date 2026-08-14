@@ -3,11 +3,11 @@
 import type { SortableCategory } from '@/features/categories/types'
 import {
   getCategoryDescription,
-  getCategoryGrid,
   getCategoryName,
   getResponsiveGridColumns,
   isCategoryTimeActive,
-  parseCategoryMetadata
+  parseCategoryMetadata,
+  resolveSectionGrid
 } from '@/features/categories/utils'
 import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
 import ProductGrid from '@/features/products/components/product-grid'
@@ -81,7 +81,10 @@ export default function SectionView({
   const showPrice = Boolean(meta.filterByPrice)
   const hasFilters = showName || showPrice || filterableChildren.length > 0
 
-  const { cols, pageSize } = useMemo(() => getCategoryGrid(meta), [meta])
+  const { cols, pageSize } = useMemo(
+    () => resolveSectionGrid(category, state.checkedCats),
+    [category, state.checkedCats]
+  )
   const gridColumns = useMemo(() => getResponsiveGridColumns(cols), [cols])
 
   const title = getCategoryName(category, locale)
