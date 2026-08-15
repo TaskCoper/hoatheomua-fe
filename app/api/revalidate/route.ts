@@ -49,11 +49,22 @@ import { z } from 'zod'
  *     -H "x-revalidate-secret: $REVALIDATE_SECRET" \
  *     -H "content-type: application/json" \
  *     -d '{"entity":"product","id":"12345"}'
+ *
+ *   # bulk: one call for many products
+ *   curl -X POST $SITE/api/revalidate \
+ *     -H "x-revalidate-secret: $REVALIDATE_SECRET" \
+ *     -H "content-type: application/json" \
+ *     -d '{"entity":"product","id":["12345","67890"]}'
  */
 
-// A single product changed (price/stock/pin/order/POS sync). `id` is the
-// storefront product id used in the /products/{id} URL.
-const ProductBody = z.object({ entity: z.literal('product'), id: z.string().min(1) })
+// One or more products changed (price/stock/pin/order/POS sync). `id` is the
+// storefront product id used in the /products/{id} URL. It accepts either a
+// single id or an array of them, so a bulk admin mutation can purge every
+// affected detail page in one webhook call instead of one request per product.
+const ProductBody = z.object({
+  entity: z.literal('product'),
+  id: z.union([z.string().min(1), z.array(z.string().min(1)).min(1)])
+})
 // Catalog-wide product change (bulk sync, mass price/stock edit) not tied to one
 // detail page.
 const ProductListBody = z.object({ entity: z.literal('productList') })
@@ -147,12 +158,18 @@ const CONFIG_GROUP_ROUTE_PATTERNS: Record<string, string[]> = {
  */
 const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[]; routePatterns?: string[] } => {
   switch (body.entity) {
-    case 'product':
+    case 'product': {
       // Shows up on its own detail page, the /products grid, and the home page.
       // The occasions/featured/mainline detail grids also show products; the
       // `products` tag purge freshens their data on the next render, and their
       // short (5 min) ISR rebuilds the HTML.
-      return { basePaths: [`/products/${body.id}`, '/products', '/'], tags: [PRODUCTS_CACHE_TAG] }
+      const ids = Array.isArray(body.id) ? body.id : [body.id]
+
+      return {
+        basePaths: [...new Set(ids.map((id) => `/products/${id}`)), '/products', '/'],
+        tags: [PRODUCTS_CACHE_TAG]
+      }
+    }
     case 'productList':
       return { basePaths: ['/products', '/'], tags: [PRODUCTS_CACHE_TAG] }
     case 'category':
