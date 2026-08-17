@@ -97,7 +97,7 @@ export function CheckoutClient() {
   // Ahamove returns the delivery distance in km; a trip shorter than the
   // configured free-ship threshold waives the shipping fee entirely.
   const distanceKm = selectedService?.data?.distance ?? 0
-  const isFreeShip = freeShipKm >= 0 && distanceKm >= 0 && distanceKm < freeShipKm
+  const isFreeShip = freeShipKm >= 0 && distanceKm >= 0 && distanceKm <= freeShipKm
   const rawShippingFee = selectedService?.data?.total_fee ?? 0
   const shippingFee = isFreeShip ? 0 : rawShippingFee
   const shippingDiscount = isFreeShip ? rawShippingFee : 0
