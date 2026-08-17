@@ -4,11 +4,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import type { Article } from '@/features/articles/types'
 import { formatDate } from '@/lib/date'
 import { Link } from '@/lib/i18n/navigation'
+import ViewportImage from '@/shared/components/viewport-image'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import Image, { type StaticImageData } from 'next/image'
+import { type StaticImageData } from 'next/image'
 
 const cardItem: Variants = {
   hidden: { opacity: 0, y: 40, scale: 0.92 },
@@ -41,10 +42,9 @@ export function ArticleOverlayCard({
         href={`/news/${item.slug}`}
         className={`news-card-link group relative isolate flex h-full overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] ${className}`}
       >
-        <Image
+        <ViewportImage
           src={item.pictureUrl || image}
           alt={item.title}
-          fill
           className='scale-100 object-cover object-center transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
           sizes='(min-width:1024px) 560px, 100vw'
         />

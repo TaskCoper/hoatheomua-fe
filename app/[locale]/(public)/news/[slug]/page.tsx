@@ -7,12 +7,12 @@ import { formatDate } from '@/lib/date'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
 import heroImage from '@/public/images/bg-news.png'
+import ViewportImage from '@/shared/components/viewport-image'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { JsonLd } from '@/shared/seo'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
 const RELATED_FETCH_SIZE = 4
@@ -101,10 +101,9 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ loc
 
           {/* Featured Image */}
           <div className='relative overflow-hidden rounded-3xl bg-muted h-96 sm:h-[500px]'>
-            <Image
+            <ViewportImage
               src={article.pictureUrl || heroImage}
               alt={article.title}
-              fill
               className='object-cover'
               sizes='(min-width:1024px) 800px, 100vw'
               priority
@@ -146,10 +145,9 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ loc
                     className='news-card-link group overflow-hidden rounded-2xl border border-border/50 bg-card/70 backdrop-blur transition hover:border-primary/50 hover:bg-card hover:shadow-lg'
                   >
                     <div className='aspect-video relative overflow-hidden bg-muted'>
-                      <Image
+                      <ViewportImage
                         src={item.pictureUrl || heroImage}
                         alt={item.title}
-                        fill
                         className='scale-100 object-cover transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
                         sizes='(min-width:1024px) 350px, 100vw'
                       />

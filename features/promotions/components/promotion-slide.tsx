@@ -5,6 +5,8 @@ import { PROMO_CLICK_EVENT } from '@/features/promotions/constants'
 import { resolvePromoHref } from '@/features/promotions/href'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { decodeImageViewport } from '@/lib/image-viewport'
+import ViewportImage from '@/shared/components/viewport-image'
 import type { PromotionPopupItem } from '@/types/config.type'
 import Image from 'next/image'
 import { useMemo } from 'react'
@@ -33,36 +35,58 @@ export default function PromotionSlide({ campaign, index, onImageError, onNaviga
     [campaign.href]
   )
 
+  // A framed campaign has a region the author picked against this very 4:5 box, so it fills the
+  // box - no bars to hide, and the blurred backdrop below would never show.
+  const framing = useMemo(() => decodeImageViewport(campaign.image).viewport, [campaign.image])
+
+  const alt = campaign.alt[locale] || campaign.alt.vi || t('promoPopup.imageAlt')
+
   const image = (
     <div className={FRAME_CLASS}>
-      {/* `object-contain` avoids cropping CMS artwork of arbitrary aspect ratio;
-          the blurred copy fills the resulting bars instead of flat `bg-muted`. */}
-      <Image
-        src={campaign.image}
-        alt=''
-        aria-hidden
-        fill
-        className='scale-110 object-cover blur-2xl brightness-90 saturate-150'
-        sizes={IMAGE_SIZES}
-        loading={index === 0 ? 'eager' : 'lazy'}
-        fetchPriority='low'
-        decoding='async'
-        quality={75}
-      />
+      {framing ? (
+        <ViewportImage
+          src={campaign.image}
+          alt={alt}
+          className='object-cover'
+          sizes={IMAGE_SIZES}
+          // Never `priority`: it would compete with real LCP content.
+          loading={index === 0 ? 'eager' : 'lazy'}
+          fetchPriority='low'
+          decoding='async'
+          quality={75}
+          onError={() => onImageError(campaign.id)}
+        />
+      ) : (
+        <>
+          {/* `object-contain` avoids cropping CMS artwork of arbitrary aspect ratio;
+              the blurred copy fills the resulting bars instead of flat `bg-muted`. */}
+          <Image
+            src={campaign.image}
+            alt=''
+            aria-hidden
+            fill
+            className='scale-110 object-cover blur-2xl brightness-90 saturate-150'
+            sizes={IMAGE_SIZES}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            fetchPriority='low'
+            decoding='async'
+            quality={75}
+          />
 
-      <Image
-        src={campaign.image}
-        alt={campaign.alt[locale] || campaign.alt.vi || t('promoPopup.imageAlt')}
-        fill
-        className='object-contain drop-shadow-[0_2px_24px_rgb(0_0_0/0.28)]'
-        sizes={IMAGE_SIZES}
-        // Never `priority`: it would compete with real LCP content.
-        loading={index === 0 ? 'eager' : 'lazy'}
-        fetchPriority='low'
-        decoding='async'
-        quality={75}
-        onError={() => onImageError(campaign.id)}
-      />
+          <Image
+            src={campaign.image}
+            alt={alt}
+            fill
+            className='object-contain drop-shadow-[0_2px_24px_rgb(0_0_0/0.28)]'
+            sizes={IMAGE_SIZES}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            fetchPriority='low'
+            decoding='async'
+            quality={75}
+            onError={() => onImageError(campaign.id)}
+          />
+        </>
+      )}
     </div>
   )
 

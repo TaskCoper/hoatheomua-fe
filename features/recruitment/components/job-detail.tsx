@@ -1,7 +1,7 @@
 'use client'
 
 import RichTextBody from '@/components/rich-text-body'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -12,6 +12,8 @@ import { useHasMounted } from '@/hooks/use-has-mounted'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname } from '@/lib/i18n/navigation'
 import { sanitizeRichText } from '@/lib/sanitize'
+import ViewportAvatar from '@/shared/components/viewport-avatar'
+import { useImageFrame } from '@/shared/components/viewport-image'
 import { cn } from '@/shared/utils'
 import {
   ArrowDown01Icon,
@@ -105,13 +107,17 @@ export default function JobDetail({ job, detailHref }: JobDetailProps) {
       <CardHeader className='relative gap-0 bg-gradient-to-br from-card via-card to-secondary/15 px-4 pb-6 pt-0 sm:px-7'>
         <div className='flex min-w-0 flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
           <div className='flex min-w-0 items-end gap-3 sm:gap-4'>
-            <Avatar className='-mt-8 size-16 shrink-0 rounded-3xl border-4 border-card bg-primary text-primary-foreground shadow-lg shadow-primary/15 after:rounded-3xl after:border-primary/10 sm:-mt-14 sm:size-28'>
-              {job.avatarUrl ? <AvatarImage src={job.avatarUrl} alt={job.title} className='rounded-3xl' /> : null}
+            <ViewportAvatar
+              src={job.avatarUrl}
+              alt={job.title}
+              className='-mt-8 size-16 shrink-0 rounded-3xl border-4 border-card bg-primary text-primary-foreground shadow-lg shadow-primary/15 after:rounded-3xl after:border-primary/10 sm:-mt-14 sm:size-28'
+              imageClassName='rounded-3xl'
+            >
               <AvatarFallback className='relative rounded-3xl bg-transparent text-current'>
                 <span className='font-title text-2xl sm:text-4xl'>{avatarFallback}</span>
                 <HugeiconsIcon icon={Flower2Icon} strokeWidth={1.5} className='absolute size-7 opacity-30 sm:size-11' />
               </AvatarFallback>
-            </Avatar>
+            </ViewportAvatar>
 
             <div className='min-w-0 pb-1 text-left'>
               <h1 className='text-lg font-semibold leading-tight text-foreground sm:text-3xl'>{job.title}</h1>
@@ -237,16 +243,24 @@ export default function JobDetail({ job, detailHref }: JobDetailProps) {
 
 function JobCoverBanner({ coverImageUrl, title }: { coverImageUrl: string; title: string }) {
   const [failedCoverImageUrl, setFailedCoverImageUrl] = useState<string | null>(null)
+  const { attachBox, attachImage, src, framed, style, onLoad } = useImageFrame(coverImageUrl)
   const shouldRenderImage = Boolean(coverImageUrl) && failedCoverImageUrl !== coverImageUrl
 
   return (
-    <div className='relative h-28 w-full overflow-hidden bg-gradient-to-r from-primary/15 to-primary/5 sm:h-52 lg:h-56'>
+    <div
+      ref={attachBox}
+      className='relative h-28 w-full overflow-hidden bg-gradient-to-r from-primary/15 to-primary/5 sm:h-52 lg:h-56'
+    >
       {shouldRenderImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={coverImageUrl}
+          ref={attachImage}
+          src={src}
           alt={title}
-          className='absolute inset-0 size-full object-cover'
+          // Inline width/height/left/top beat these classes; `inset-auto` just drops the unused edges.
+          className={cn('absolute inset-0 size-full object-cover', framed && 'inset-auto max-w-none')}
+          style={style}
+          onLoad={onLoad}
           onError={() => setFailedCoverImageUrl(coverImageUrl)}
         />
       ) : null}

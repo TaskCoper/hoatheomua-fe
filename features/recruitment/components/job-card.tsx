@@ -1,7 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import ViewportAvatar from '@/shared/components/viewport-avatar'
 import { cn } from '@/shared/utils'
 import { Flower2Icon, Location01Icon, Money02FreeIcons } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -50,18 +51,19 @@ export default function JobCard({ job, isSelected, onClick }: JobCardProps) {
         )}
       >
         <CardContent className='flex items-start gap-3 p-2'>
-          <Avatar
+          <ViewportAvatar
+            src={job.avatarUrl}
+            alt={job.title}
             className={cn(
               'size-10 border text-primary after:border-primary/10',
               isSelected ? 'border-primary/30 bg-primary text-primary-foreground' : 'border-primary/10 bg-secondary/20'
             )}
           >
-            {job.avatarUrl ? <AvatarImage src={job.avatarUrl} alt={job.title} /> : null}
             <AvatarFallback className='relative bg-transparent text-current'>
               <span className='font-title text-xl'>{avatarFallback}</span>
               <HugeiconsIcon icon={Flower2Icon} strokeWidth={1.5} className='absolute size-7 opacity-30' />
             </AvatarFallback>
-          </Avatar>
+          </ViewportAvatar>
 
           <div className='min-w-0 flex-1'>
             <div className='flex items-start justify-between gap-3'>

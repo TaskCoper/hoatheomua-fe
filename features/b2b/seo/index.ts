@@ -1,5 +1,6 @@
 import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import type { Locale } from '@/lib/i18n/routing'
+import { decodeImageViewport } from '@/lib/image-viewport'
 import {
   buildBreadcrumbList,
   buildPageMetadata,
@@ -154,7 +155,7 @@ export const generateB2BServiceMetadata = (
   detail: B2BServiceDetail
 ): Metadata => {
   const copy = serviceCopy(locale, detail)
-  const imageUrl = detail.ogImage || detail.heroImage
+  const imageUrl = decodeImageViewport(detail.ogImage || detail.heroImage).src
   return buildPageMetadata({
     locale,
     copy,

@@ -1,4 +1,5 @@
 import type { Locale } from '@/lib/i18n/routing'
+import { decodeImageViewport } from '@/lib/image-viewport'
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/shared/constants'
 import { buildBreadcrumbList, inLanguage, ORGANIZATION_ID, SITE_URL, WEBSITE_ID } from '@/shared/seo'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
@@ -15,7 +16,7 @@ const newsArticleEntity = (locale: Locale, article: Article) => {
     mainEntityOfPage: url,
     headline: article.title,
     description: getFirstParagraphTextFromHtml(article.description),
-    image: article.pictureUrl || NEWS_OG_IMAGE_URL,
+    image: decodeImageViewport(article.pictureUrl).src || NEWS_OG_IMAGE_URL,
     datePublished: article.createdAt,
     inLanguage: inLanguage(locale),
     author: { '@type': 'Person', name: article.user.userFullName },

@@ -7,6 +7,7 @@ import { prefetchDetailSections } from '@/features/occasions/section-prefetch.se
 import ProductsPromiseSection from '@/features/products/components/products-promise-section'
 import { routing, type Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
+import { decodeImageViewport } from '@/lib/image-viewport'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -52,7 +53,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${seoName} - Hoa Theo Mùa`,
       description,
-      images: card.image ? [{ url: card.image, alt: card.name[locale] }] : undefined
+      images: card.image ? [{ url: decodeImageViewport(card.image).src, alt: card.name[locale] }] : undefined
     }
   }
 }

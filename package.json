@@ -22,7 +22,8 @@
     "i18n:fill": "node scripts/i18n-check.mjs --fill",
     "i18n:dupes": "node scripts/i18n-check.mjs --dupes",
     "i18n:verify": "pnpm run i18n:lint && pnpm run i18n:check",
-    "check": "pnpm run lint && pnpm run i18n:verify && pnpm run typecheck"
+    "verify:image-viewport": "node scripts/verify-image-viewport.mjs",
+    "check": "pnpm run lint && pnpm run i18n:verify && pnpm run typecheck && pnpm run verify:image-viewport"
   },
   "browserslist": [
     "chrome >= 87",

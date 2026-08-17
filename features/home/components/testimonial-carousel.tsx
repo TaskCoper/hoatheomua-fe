@@ -1,13 +1,13 @@
 'use client'
 
 import type { Locale } from '@/lib/i18n/routing'
+import ViewportImage from '@/shared/components/viewport-image'
 import type { FeedbackItem } from '@/types/config.type'
 import { StarIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import { motion, type Variants } from 'motion/react'
-import Image from 'next/image'
 
 const AUTO_INTERVAL = 10_000
 
@@ -47,14 +47,12 @@ export default function TestimonialCarousel({ items, locale }: TestimonialCarous
                     <motion.div
                       whileHover={{ rotate: -12, scale: 1.12 }}
                       transition={{ type: 'spring', stiffness: 380, damping: 12 }}
-                      className='shrink-0 overflow-hidden rounded-full ring-2 ring-primary/20'
+                      className='relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-primary/20'
                     >
-                      <Image
+                      <ViewportImage
                         src={item.image}
                         alt={item.customerName}
-                        width={40}
-                        height={40}
-                        className='size-10 object-cover'
+                        className='object-cover'
                         sizes='40px'
                         quality={70}
                       />

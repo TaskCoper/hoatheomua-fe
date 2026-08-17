@@ -19,6 +19,7 @@ import leftBranch from '@/public/images/left-branch.png'
 import rightBranch from '@/public/images/right-branch.png'
 import FloatingPetals from '@/shared/components/floating-petals'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import ViewportImage from '@/shared/components/viewport-image'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
 import { ArrowRight02Icon, FlowerIcon } from '@hugeicons/core-free-icons'
@@ -252,10 +253,9 @@ export default function NewsView({
               className='news-card-link group grid overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] lg:grid-cols-[1.15fr_0.85fr]'
             >
               <div className='relative min-h-[280px] overflow-hidden bg-secondary/40 sm:min-h-[360px]'>
-                <Image
+                <ViewportImage
                   src={wideStory.pictureUrl || getNewsImage(6)}
                   alt={wideStory.title}
-                  fill
                   className='scale-100 object-cover object-center transform-gpu transition-transform duration-1000 ease-out will-change-transform group-hover:scale-110'
                   sizes='(min-width:1024px) 720px, 100vw'
                 />

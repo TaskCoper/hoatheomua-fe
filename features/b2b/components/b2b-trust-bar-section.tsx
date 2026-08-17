@@ -2,8 +2,8 @@
 
 import { pick, type OverviewTrustBar } from '@/features/b2b/overview-palette'
 import type { Locale } from '@/lib/i18n/routing'
+import ViewportImage from '@/shared/components/viewport-image'
 import { motion, type Variants } from 'motion/react'
-import Image from 'next/image'
 
 // Logo image srcs come from the CMS `image` field; this map is the fallback
 // (keyed by the CMS item `id`) for items authored without one.
@@ -103,10 +103,9 @@ export default function B2BTrustBarSection({ trustBar, locale }: { trustBar: Ove
                         className='flex py-3 pl-3 pr-10 items-center justify-center gap-3 rounded-2xl bg-card'
                       >
                         <div className='relative size-10 shrink-0 overflow-hidden rounded-xl bg-primary/5 sm:h-14 sm:w-14'>
-                          <Image
+                          <ViewportImage
                             src={item.image || LOGO_SRC[item.id]}
                             alt={name}
-                            fill
                             className='object-cover'
                             sizes='56px'
                           />
