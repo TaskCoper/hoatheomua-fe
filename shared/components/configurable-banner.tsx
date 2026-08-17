@@ -1,8 +1,11 @@
 'use client'
 
-import { useBannerSlot } from '@/hooks/use-banner-by-slot'
+import { bannerAspectForSlot, useBannerSlot } from '@/hooks/use-banner-by-slot'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { decodeImageViewport } from '@/lib/image-viewport'
+import ViewportImage from '@/shared/components/viewport-image'
+import { cn } from '@/shared/utils'
 import { type BannerSlot } from '@/types/config.type'
 import Image, { type StaticImageData } from 'next/image'
 import { type ReactNode } from 'react'
@@ -33,7 +36,27 @@ export default function ConfigurableBanner({
 
   const banner = state.status === 'banner' ? state.banner : undefined
 
-  const image: ReactNode = banner ? (
+  // A banner normally renders at its own aspect (`w-full h-auto`). A framed one can't: the author
+  // chose a region against this slot's shape, so the slot has to reserve that shape and crop to it.
+  const framing = banner ? decodeImageViewport(banner.image).viewport : null
+
+  const image: ReactNode = !banner ? (
+    <Image src={fallbackSrc} alt={fallbackAlt} className={className} sizes={sizes} loading='lazy' quality={quality} />
+  ) : framing ? (
+    <span
+      className={cn('relative block w-full overflow-hidden', className)}
+      style={{ aspectRatio: bannerAspectForSlot(slot) }}
+    >
+      <ViewportImage
+        src={banner.image}
+        alt={banner.alt[locale] || fallbackAlt}
+        className='object-cover'
+        sizes={sizes}
+        loading='lazy'
+        quality={quality}
+      />
+    </span>
+  ) : (
     <Image
       src={banner.image}
       alt={banner.alt[locale] || fallbackAlt}
@@ -44,8 +67,6 @@ export default function ConfigurableBanner({
       loading='lazy'
       quality={quality}
     />
-  ) : (
-    <Image src={fallbackSrc} alt={fallbackAlt} className={className} sizes={sizes} loading='lazy' quality={quality} />
   )
 
   const content = !banner?.href ? (

@@ -5,11 +5,11 @@ import { pick, type B2BServiceDetail } from '@/features/b2b/service/palette'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
+import ViewportImage from '@/shared/components/viewport-image'
 import { cn } from '@/shared/utils'
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import Image from 'next/image'
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -23,7 +23,8 @@ const container: Variants = {
 
 const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.ogg', '.mov', '.m4v']
 const isVideoSrc = (src: string): boolean => {
-  const path = src.split('?')[0].toLowerCase()
+  // `#` first: a stored URL may carry an `#iv=` framing token after the extension.
+  const path = src.split('#')[0].split('?')[0].toLowerCase()
   return VIDEO_EXTENSIONS.some((ext) => path.endsWith(ext))
 }
 
@@ -80,10 +81,9 @@ export default function ServiceDetailHero({ detail, locale }: { detail: B2BServi
                   className='absolute inset-0 size-full object-cover'
                 />
               ) : (
-                <Image
+                <ViewportImage
                   src={detail.heroImage}
                   alt={name}
-                  fill
                   priority
                   className='object-cover'
                   sizes='(min-width: 1280px) 80rem, 100vw'

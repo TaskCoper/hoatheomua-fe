@@ -48,6 +48,36 @@ export const getCategoryGrid = (meta: CategoryMetadata): { rows: number; cols: n
   return { rows, cols, pageSize: rows * cols }
 }
 
+/** A category explicitly configures its own grid when either dimension is set. */
+const hasOwnGrid = (meta: CategoryMetadata): boolean => typeof meta.rows === 'number' || typeof meta.cols === 'number'
+
+/** Root-to-node chain of a category within a tree, or `null` if `id` isn't in it. */
+const findCategoryPath = (node: SortableCategory, id: string): SortableCategory[] | null => {
+  if (node.categoryId === id) return [node]
+  for (const child of node.children) {
+    const path = findCategoryPath(child, id)
+    if (path) return [node, ...path]
+  }
+  return null
+}
+
+export const resolveSectionGrid = (
+  root: SortableCategory,
+  selectedIds: string[]
+): { rows: number; cols: number; pageSize: number } => {
+  if (selectedIds.length === 1) {
+    const path = findCategoryPath(root, selectedIds[0])
+    if (path) {
+      for (let i = path.length - 1; i >= 0; i--) {
+        const meta = parseCategoryMetadata(path[i].metaData)
+        if (hasOwnGrid(meta)) return getCategoryGrid(meta)
+      }
+    }
+  }
+
+  return getCategoryGrid(parseCategoryMetadata(root.metaData))
+}
+
 /**
  * Responsive `grid-template-columns` for an arbitrary column count. The target
  * count is fed through CSS variables so Tailwind's JIT never sees a dynamic class

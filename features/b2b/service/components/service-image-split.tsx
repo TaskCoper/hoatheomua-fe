@@ -1,8 +1,8 @@
 'use client'
 
+import ViewportImage from '@/shared/components/viewport-image'
 import { cn } from '@/shared/utils'
 import { motion } from 'motion/react'
-import Image from 'next/image'
 import type { ReactNode } from 'react'
 
 type Props = {
@@ -47,7 +47,7 @@ export default function ServiceImageSplit({ src, alt, reverse = false, children,
             reverse ? 'rounded-tr-[0.5rem]' : 'rounded-tl-[0.5rem]'
           )}
         >
-          <Image src={src} alt={alt} fill className='object-cover' sizes='(min-width: 768px) 24rem, 100vw' />
+          <ViewportImage src={src} alt={alt} className='object-cover' sizes='(min-width: 768px) 24rem, 100vw' />
         </figure>
       </motion.div>
 

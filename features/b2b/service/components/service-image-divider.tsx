@@ -1,8 +1,8 @@
 'use client'
 
+import ViewportImage from '@/shared/components/viewport-image'
 import { cn } from '@/shared/utils'
 import { motion } from 'motion/react'
-import Image from 'next/image'
 
 type Props = {
   src: string | null
@@ -31,7 +31,7 @@ export default function ServiceImageDivider({ src, alt, className, ratio = 'aspe
         className
       )}
     >
-      <Image src={src} alt={alt} fill className='object-cover' sizes='(min-width: 1024px) 48rem, 100vw' />
+      <ViewportImage src={src} alt={alt} className='object-cover' sizes='(min-width: 1024px) 48rem, 100vw' />
       <span
         aria-hidden='true'
         className='pointer-events-none absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent'
