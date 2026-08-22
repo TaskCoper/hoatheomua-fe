@@ -6,7 +6,7 @@ import type { ComponentProps, ReactNode } from 'react'
 
 export interface PartyCardContent {
   icon: IconSvgElement
-  /** Primary line — the person's name. Falls back to `emptyHint` when blank. */
+  /** Primary line - the person's name. Falls back to `emptyHint` when blank. */
   title?: string | null
   /** Secondary lines: phone, address, … Blank entries are dropped. */
   lines?: (string | null | undefined)[]
@@ -14,11 +14,11 @@ export interface PartyCardContent {
   /** Shown in place of the title/lines when there's nothing to name yet. */
   emptyHint?: string
   /**
-   * Marks this card as the one in use. Renders a radio dot — decorative, since
+   * Marks this card as the one in use. Renders a radio dot - decorative, since
    * the card itself is the control that picks it.
    */
   selected?: boolean
-  /** Trailing affordance — e.g. the "change" hint on the pickable card. */
+  /** Trailing affordance - e.g. the "change" hint on the pickable card. */
   action?: ReactNode
 }
 

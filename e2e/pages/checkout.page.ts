@@ -1,6 +1,18 @@
+import type { AhamoveResult } from '@/features/orders/ahamove.type'
 import type { PaymentGateway, PaymentMethod } from '@/features/orders/types'
 import { expect, type Locator, type Page } from '@playwright/test'
 import { parseVnd } from '../utils/money'
+import { ESTIMATE_PATH, isPostTo } from '../utils/requests'
+
+/** What leaving step 1 produced: the quote request, and the services it came back with. */
+export interface ShippingQuote {
+  /** the body sent to `POST /api/v1/ahamove/estimate` - the address and delivery fields it was quoted for */
+  payload: Record<string, unknown>
+  /** every service Ahamove offered */
+  services: AhamoveResult[]
+  /** the one checkout preselects: `sortedAhamove[0]`, cheapest by `total_fee` (checkout-client.tsx) */
+  cheapest: AhamoveResult
+}
 
 export interface ManualAddress {
   phoneNumber: string
@@ -54,6 +66,10 @@ export class CheckoutPage {
   readonly receiptPhoneNumber: Locator
   readonly receiptAddress: Locator
 
+  readonly submitOrder: Locator
+  readonly validationToast: Locator
+  readonly createOrderErrorToast: Locator
+
   readonly sidebar: Locator
   readonly sidebarTotal: Locator
 
@@ -96,6 +112,14 @@ export class CheckoutPage {
     this.receiptEmail = page.locator('#receiptEmail')
     this.receiptPhoneNumber = page.locator('#receiptPhoneNumber')
     this.receiptAddress = page.locator('#receiptAddress')
+
+    this.submitOrder = page.getByRole('button', { name: 'Thanh toán đơn hàng' })
+    // sonner gives its toasts no accessible name, so match the rendered copy
+    this.validationToast = page
+      .locator('[data-sonner-toast]')
+      .filter({ hasText: 'Vui lòng kiểm tra lại các trường thông tin.' })
+    // the catch branch of handleConfirmOrder - a create-order call that did not succeed
+    this.createOrderErrorToast = page.locator('[data-sonner-toast]').filter({ hasText: 'Không thể tạo đơn hàng.' })
 
     // the layout has other asides, so pin this one to the price block
     this.sidebar = page.locator('aside').filter({ hasText: 'Chi tiết giá' })
@@ -270,6 +294,14 @@ export class CheckoutPage {
     return parseVnd(await this.sidebarTotal.innerText())
   }
 
+  // no date was picked and no slot was chosen, so the order is delivered as soon as it is
+  // paid. The clear affordance only renders once the date moves off today, which makes its
+  // absence the cheapest proof that orderTime is still 0.
+  async expectImmediateDelivery() {
+    await expect(this.deliveryDateClear).toHaveCount(0)
+    await expect(this.deliverySlot).toHaveText('Không chọn')
+  }
+
   // step 1 -> step 2
   async goToPayment() {
     // disabled while addresses, shipping locations and the estimate are loading
@@ -278,16 +310,90 @@ export class CheckoutPage {
 
     await nextStepBtn.click()
 
-    // gateway, payment method and the cheapest shipping service are pre-selected
-    await expect(this.page.getByRole('heading', { name: 'Phương thức giao hàng' })).toBeVisible()
+    /*
+     * Step 2 only renders once the Ahamove quote comes back, and that is a live round trip
+     * through our backend to a third party - the button sits in its `Loading` state until it
+     * lands. The 5s default expect timeout was not enough for it and CO-008 failed on this
+     * line in two runs out of two, on alternating variants, with the page still on step 1.
+     *
+     * The assertion is unchanged; only its patience is. `placeOrder` already waits 30s on the
+     * same class of round trip, so a quote that never arrives still fails loudly and quickly
+     * enough to be useful.
+     */
+    await expect(this.page.getByRole('heading', { name: 'Phương thức giao hàng' })).toBeVisible({ timeout: 30_000 })
+  }
+
+  /**
+   * Leave step 1 and capture the Ahamove quote that firing does.
+   *
+   * The quote is the pivot of every pricing assertion in the suite - the fee, the distance
+   * the free-ship waiver is decided from, and the coordinates the order is placed against all
+   * come out of this one exchange. Both the request and the response have to be armed before
+   * the click, which is the part that was hand-rolled identically in ten specs.
+   *
+   * The empty-result check is an intrinsic postcondition rather than a scenario assertion:
+   * with no service, nothing is preselected, the submit button never enables, and every
+   * later failure in the calling spec reads as a timeout on an unrelated control.
+   */
+  async goToPaymentCapturingQuote(): Promise<ShippingQuote> {
+    const [request, response] = await Promise.all([
+      this.page.waitForRequest(isPostTo(ESTIMATE_PATH)),
+      this.page.waitForResponse((res) => isPostTo(ESTIMATE_PATH)(res.request())),
+      this.goToPayment()
+    ])
+
+    const { ahamoveResult } = (await response.json()).value as { ahamoveResult: AhamoveResult[] }
+
+    expect(ahamoveResult.length, 'Ahamove returned no services - the submit button never enables').toBeGreaterThan(0)
+
+    return {
+      payload: request.postDataJSON(),
+      services: ahamoveResult,
+      cheapest: [...ahamoveResult].sort((a, b) => (a.data?.total_fee ?? 0) - (b.data?.total_fee ?? 0))[0]
+    }
+  }
+
+  /**
+   * The state step 2 opens in, before the customer touches anything: BaoKim paying by VA,
+   * the cheapest quoted service, and no invoice.
+   *
+   * A precondition rather than a contract of its own - the gateway/method coupling itself is
+   * CO-013's subject. It is asserted here so that a spec which goes on to check a BaoKim
+   * order really did place one, instead of silently ordering through a gateway it never chose.
+   */
+  async expectDefaultPaymentSelections(serviceId: string) {
+    await expect(this.gateway('BaoKim')).toBeChecked()
+
+    // BaoKim allows VA only, so VNPay QR is not even rendered
+    await expect(this.paymentMethodRadio('1')).toBeChecked()
+    await expect(this.paymentMethodRadio('6')).toHaveCount(0)
+
+    await expect(this.shippingService(serviceId)).toBeChecked()
+    await expect(this.invoiceSwitch).not.toBeChecked()
+  }
+
+  /*
+   * The inline error react-hook-form renders for a field.
+   *
+   * Anchored to the input's enclosing `Field` rather than to sibling position: `FieldError`
+   * is wrapped in a spacer `<div className='min-h-4'>` on some fields and rendered directly
+   * on others, so it is a descendant of the Field but not reliably a sibling of the input.
+   *
+   * A schema issue with a correct `path` still fails the customer if this never mounts,
+   * which is the half UT-003 cannot see.
+   */
+  fieldError(inputId: string) {
+    return this.page
+      .locator(`#${inputId}`)
+      .locator('xpath=ancestor::*[@data-slot="field"][1]')
+      .locator('[data-slot="field-error"]')
   }
 
   async placeOrder() {
     // stays disabled until the shipping estimate resolves a service
-    const createOrderBtn = this.page.getByRole('button', { name: 'Thanh toán đơn hàng' })
-    await expect(createOrderBtn).toBeEnabled()
+    await expect(this.submitOrder).toBeEnabled()
 
-    await createOrderBtn.click()
+    await this.submitOrder.click()
 
     // a created order pushes to /orders/{mrc_order_id}
     await expect(this.page).toHaveURL(/\/orders\/[^/]+$/, { timeout: 30_000 })

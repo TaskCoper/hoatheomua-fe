@@ -20,7 +20,7 @@ import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
 import type { OrderContact } from '../../payloads'
-import { PaymentGateway, PaymentMethod, type TaxBusinessInfo } from '../../types'
+import { InvoiceType, PaymentGateway, PaymentMethod, type TaxBusinessInfo } from '../../types'
 import { CheckoutSidebar } from './checkout-sidebar'
 import { CheckoutStepper } from './checkout-stepper'
 import { StepComplete } from './step-complete'
@@ -42,7 +42,7 @@ export function CheckoutClient() {
 
   // The order's contact is whoever created it: the signed-in account. A saved
   // address carries its own receiverName/phoneNumber, but that only says who
-  // receives at that door — it never becomes the order's fullName/phone.
+  // receives at that door - it never becomes the order's fullName/phone.
   const { me, isGettingMe } = useGetMe()
   const { user, isLoading: isLoadingUser } = useGetUser(me?.slug)
   const isProfileLoading = isGettingMe || isLoadingUser
@@ -109,6 +109,7 @@ export function CheckoutClient() {
   const watchedTagIds = useWatch({ control: methods.control, name: 'tagIds' })
   const watchedTaxCode = useWatch({ control: methods.control, name: 'taxCode' })
   const watchedIsExportInvoice = useWatch({ control: methods.control, name: 'isExportInvoice' })
+  const watchedInvoiceType = useWatch({ control: methods.control, name: 'invoiceType' })
 
   const summaryAddress = [watchedAddressLine, watchedWard, watchedCity].filter(Boolean).join(', ')
   const summaryOrderTime = formatDate(watchedOrderTime > 0 ? new Date(watchedOrderTime * 1000) : new Date(), 'dateLong')
@@ -116,7 +117,7 @@ export function CheckoutClient() {
   const summaryDeliveryTime =
     selectedTagId !== undefined ? orderTags?.options?.find((o) => o.value === selectedTagId)?.label : undefined
 
-  const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
+  const hasTaxCode = !!(watchedIsExportInvoice && watchedInvoiceType === InvoiceType.Business && watchedTaxCode?.trim())
 
   const { summaryLines, totalItems, productsSubtotal, vatAmount, grandTotal } = useCheckoutSummary({
     items,

@@ -25,9 +25,14 @@ export class CartPage {
     await increaseBtn.click()
   }
 
+  // the per-line checkbox, exposed so a spec can assert a line was left unticked
+  selectionOf(itemLabel: string) {
+    return this.line(itemLabel).getByRole('checkbox', { name: 'Chọn sản phẩm này' })
+  }
+
   // tick a single line
   async select(itemLabel: string) {
-    const checkbox = this.line(itemLabel).getByRole('checkbox', { name: 'Chọn sản phẩm này' })
+    const checkbox = this.selectionOf(itemLabel)
     await expect(checkbox).toBeEnabled()
 
     await checkbox.check()
@@ -41,14 +46,23 @@ export class CartPage {
     await checkbox.check()
   }
 
-  // nothing is selected by default, so pick the lines first
-  async goToCheckout() {
-    await this.selectAll()
-
+  /**
+   * Leave the cart with whatever is currently ticked. Split out of `goToCheckout` for
+   * CO-006, which ticks a subset by hand - `goToCheckout` selects everything, so it cannot
+   * express a partial selection.
+   */
+  async submitCheckout() {
     const checkoutBtn = this.page.getByRole('button', { name: 'Thanh toán', exact: true })
     await expect(checkoutBtn).toBeEnabled()
 
     await checkoutBtn.click()
     await expect(this.page).toHaveURL('/checkout')
+  }
+
+  // nothing is selected by default, so pick the lines first
+  async goToCheckout() {
+    await this.selectAll()
+
+    await this.submitCheckout()
   }
 }

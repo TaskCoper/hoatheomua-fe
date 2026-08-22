@@ -19,6 +19,19 @@ interface InvoiceFieldsProps {
   onTaxBusinessLookupStateChange: (state: 'idle' | 'loading' | 'found' | 'not_found' | 'error') => void
 }
 
+type ClearableInvoiceField =
+  | 'taxCode'
+  | 'identityNumber'
+  | 'receiptFullName'
+  | 'receiptAddress'
+  | 'receiptEmail'
+  | 'receiptPhoneNumber'
+
+const BUSINESS_ONLY_FIELDS: readonly ClearableInvoiceField[] = ['taxCode']
+const PERSONAL_ONLY_FIELDS: readonly ClearableInvoiceField[] = ['identityNumber', 'receiptFullName', 'receiptAddress']
+// Required by both types, so a tab switch must keep them - retyping them is not a slip the customer made.
+const SHARED_INVOICE_FIELDS: readonly ClearableInvoiceField[] = ['receiptEmail', 'receiptPhoneNumber']
+
 export function InvoiceFields({
   taxBusinessInfo,
   taxBusinessLookupState,
@@ -26,7 +39,12 @@ export function InvoiceFields({
   onTaxBusinessLookupStateChange
 }: InvoiceFieldsProps) {
   const { t } = useTranslation()
-  const { control, setValue, watch } = useFormContext<CheckoutFormValues>()
+  const { control, setValue, clearErrors, watch } = useFormContext<CheckoutFormValues>()
+
+  const clearInvoiceFields = (fields: readonly ClearableInvoiceField[]) => {
+    fields.forEach((name) => setValue(name, null, { shouldDirty: true }))
+    clearErrors([...fields])
+  }
 
   const taxCodeForm = watch('taxCode')
   const isExportInvoiceForm = watch('isExportInvoice')
@@ -87,12 +105,7 @@ export function InvoiceFields({
                   return
                 }
                 setValue('invoiceType', null, { shouldDirty: true })
-                setValue('taxCode', null, { shouldDirty: true })
-                setValue('identityNumber', null, { shouldDirty: true })
-                setValue('receiptFullName', null, { shouldDirty: true })
-                setValue('receiptPhoneNumber', null, { shouldDirty: true })
-                setValue('receiptAddress', null, { shouldDirty: true })
-                setValue('receiptEmail', null, { shouldDirty: true })
+                clearInvoiceFields([...BUSINESS_ONLY_FIELDS, ...PERSONAL_ONLY_FIELDS, ...SHARED_INVOICE_FIELDS])
               }}
             />
           </Field>
@@ -105,7 +118,13 @@ export function InvoiceFields({
             name='invoiceType'
             control={control}
             render={({ field }) => (
-              <Tabs value={field.value ?? ''} onValueChange={field.onChange}>
+              <Tabs
+                value={field.value ?? ''}
+                onValueChange={(value) => {
+                  field.onChange(value)
+                  clearInvoiceFields(value === InvoiceType.Business ? PERSONAL_ONLY_FIELDS : BUSINESS_ONLY_FIELDS)
+                }}
+              >
                 <TabsList className='w-full'>
                   <TabsTrigger value={InvoiceType.Personal}>{t('orders.checkout.invoiceTypePersonal')}</TabsTrigger>
                   <TabsTrigger value={InvoiceType.Business}>{t('orders.checkout.invoiceTypeBusiness')}</TabsTrigger>

@@ -5,6 +5,7 @@ import type { ProductDetail } from './types'
 class ProductService {
   private readonly baseUrl = 'products'
 
+  // ko filter theo isPin đc như trên swagger vì chỉ xài chung types với GET - v2/products chứ dưới code ko quan tâm
   getProducts = async ({ pageIndex, pageSize, categoryIds, priceFrom, priceTo, search, sortBy }: GetProductsParams) => {
     const { data } = await api.get<BasePaginationResponse<ProductDetail>>(`/v1/${this.baseUrl}`, {
       params: {

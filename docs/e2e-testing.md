@@ -12,7 +12,7 @@ Các lệnh dưới đây đã được thêm vào `package.json` để chạy n
 
 ## `pnpm run test:e2e:ui`
 
-**Là gì:** Mở Playwright UI Mode — một cửa sổ trực quan cho xem danh sách test, chạy từng test riêng lẻ, xem timeline, screenshot, DOM snapshot theo từng bước.
+**Là gì:** Mở Playwright UI Mode - một cửa sổ trực quan cho xem danh sách test, chạy từng test riêng lẻ, xem timeline, screenshot, DOM snapshot theo từng bước.
 
 **Khi nào dùng:** Khi đang viết test mới hoặc debug một test cụ thể, cần xem chính xác bước nào fail và vì sao (thay vì đọc log text).
 
@@ -28,7 +28,7 @@ Các lệnh dưới đây đã được thêm vào `package.json` để chạy n
 
 ## `pnpm run test:e2e:debug`
 
-**Là gì:** Chạy Playwright ở chế độ debug — mở Playwright Inspector, tự động dừng lại ở đầu mỗi test để bước qua (step-through) từng lệnh một, giống debugger của code thường.
+**Là gì:** Chạy Playwright ở chế độ debug - mở Playwright Inspector, tự động dừng lại ở đầu mỗi test để bước qua (step-through) từng lệnh một, giống debugger của code thường.
 
 **Khi nào dùng:** Khi một test fail flaky hoặc không rõ lý do, cần dừng lại đúng điểm để kiểm tra selector, giá trị, trạng thái trang.
 
@@ -36,7 +36,7 @@ Các lệnh dưới đây đã được thêm vào `package.json` để chạy n
 
 ## `pnpm run test:e2e:report`
 
-**Là gì:** Mở lại báo cáo HTML (`playwright-report/`) của lần chạy test gần nhất — bao gồm kết quả pass/fail, trace, screenshot lỗi.
+**Là gì:** Mở lại báo cáo HTML (`playwright-report/`) của lần chạy test gần nhất - bao gồm kết quả pass/fail, trace, screenshot lỗi.
 
 **Khi nào dùng:** Sau khi `test:e2e` chạy xong (đặc biệt khi có test fail) và muốn xem chi tiết mà không cần chạy lại test.
 
@@ -48,4 +48,4 @@ Các lệnh dưới đây đã được thêm vào `package.json` để chạy n
 
 **Khi nào dùng:** Lần đầu setup máy mới, sau khi clone repo, hoặc sau khi nâng cấp version `@playwright/test`.
 
-**Vì sao cần:** Playwright không dùng trình duyệt cài sẵn trên máy — nó cần bộ binary riêng tương thích với version đang dùng. Thiếu bước này thì các lệnh test ở trên sẽ báo lỗi thiếu browser.
+**Vì sao cần:** Playwright không dùng trình duyệt cài sẵn trên máy - nó cần bộ binary riêng tương thích với version đang dùng. Thiếu bước này thì các lệnh test ở trên sẽ báo lỗi thiếu browser.

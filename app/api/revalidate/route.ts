@@ -32,7 +32,7 @@ import { z } from 'zod'
  *   2. Route-segment **ISR** caches the rendered HTML of each page.
  * A real content change must purge BOTH: the tag (so the next render reads fresh
  * data) and the page paths (so the cached HTML is rebuilt). Each admin mutation
- * therefore maps to a set of `tags` + a set of `paths` — see `planForEntity`.
+ * therefore maps to a set of `tags` + a set of `paths` - see `planForEntity`.
  *
  * Authentication: `x-revalidate-secret` header must match `REVALIDATE_SECRET`.
  * The endpoint rejects everything if the env var is unset.
@@ -119,7 +119,7 @@ const configTag = (group: string) => `configs:${group}`
 // non-ISR checkout). Paths are locale-agnostic bases; `expandPaths` adds the
 // per-locale prefix.
 const CONFIG_GROUP_PATHS: Record<string, string[]> = {
-  // products.occasions / .featured / .mainline / .signature — the collection
+  // products.occasions / .featured / .mainline / .signature - the collection
   // cards shown on the home page nav and the /products page.
   products: ['/', '/products'],
   // The banner collection is prefetched in the `(public)` layout and dehydrated
@@ -200,7 +200,7 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[];
       return { basePaths: ['/contact'], tags: ['company-address'] }
     case 'home':
       // Escape hatch: the home page renders products, category sections, and the
-      // config-driven collection cards — refresh all of them.
+      // config-driven collection cards - refresh all of them.
       return { basePaths: ['/'], tags: [PRODUCTS_CACHE_TAG, CATEGORIES_CACHE_TAG, configTag('products')] }
   }
 }
@@ -211,7 +211,7 @@ const expandPaths = (basePaths: string[]): string[] => {
   )
   // Under `localePrefix: 'as-needed'` the default locale is served without a
   // prefix, so its Full Route Cache entry can be keyed by the bare request path
-  // (e.g. `/news/<slug>`). Purge that variant too — a no-op where unmatched.
+  // (e.g. `/news/<slug>`). Purge that variant too - a no-op where unmatched.
   const defaultLocalePaths = basePaths
   return Array.from(new Set([...paths, ...defaultLocalePaths]))
 }

@@ -1,9 +1,15 @@
 name: Playwright Tests
+
+# Manual only. The suite drives a real browser against a shared remote backend and
+# creates real, persistent orders (~11 per browser project per run), so it must never
+# fire automatically on a push or a pull request. See COVERAGE-PLAN-v2.md §7.
+#
+# A nightly `schedule:` trigger is the intended end state, but it is deliberately not
+# added yet: the job still lacks E2E_BASE_URL, the E2E_USER_* secrets and a `webServer`
+# block, so it cannot pass. Add the schedule together with those.
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
+  workflow_dispatch:
+
 jobs:
   test:
     timeout-minutes: 60

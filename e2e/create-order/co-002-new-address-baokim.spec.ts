@@ -1,11 +1,19 @@
-import type { AhamoveResult } from '@/features/orders/ahamove.type'
 import { expect } from '@playwright/test'
-import { getAddressIds, getFreeShipKm, getOrder, waitForAhamoveDispatch } from '../api/orders.api'
+import type { UiTotals } from '../api/orders.api'
+import {
+  expectInsideFreeShipRadius,
+  expectServerTotalsMatchUi,
+  getFreeShipKm,
+  getOrder,
+  waitForAhamoveDispatch
+} from '../api/orders.api'
 import { getProfileContact } from '../api/users.api'
-import { FREE_SHIP_ADDRESS, PAID_SHIP_ADDRESS } from '../fixtures/address'
+import { FREE_SHIP_ADDRESS, PAID_SHIP_ADDRESS, RECEIVER_PHONE } from '../fixtures/address'
+import { NO_INVOICE_FIELDS } from '../fixtures/invoice'
 import { orderTest } from '../fixtures/order'
+import { ORDER_NOTE, PRIMARY_PRODUCT } from '../fixtures/products'
 import { CartPage } from '../pages/cart.page'
-import { CheckoutPage } from '../pages/checkout.page'
+import { CheckoutPage, type ShippingQuote } from '../pages/checkout.page'
 import { OrderPage } from '../pages/order.page'
 import { ProductPage } from '../pages/product.page'
 import {
@@ -15,7 +23,13 @@ import {
   PAYMENT_TIMEOUT_MS,
   WAIT_FOR_PAYMENT
 } from '../utils/payment'
-import { dismissPromoPopup } from '../utils/promo-popup'
+import {
+  countPostsTo,
+  CREATE_ADDRESS_PATH,
+  CREATE_ORDER_PATH,
+  ESTIMATE_PATH,
+  waitForCreateOrderRequest
+} from '../utils/requests'
 
 /**
  * CO-002 - manually typed address, immediate delivery, no invoice, free
@@ -36,17 +50,12 @@ import { dismissPromoPopup } from '../utils/promo-popup'
  * checks the paid order, the Ahamove booking included.
  */
 
-const SEARCH_TERM = 'Coral Pink'
-const PRODUCT_NAME = 'Bó Coral Pink_2026'
-const PRODUCT_ID = 'a10efc5a-ad03-4102-9e1e-5807e3f7a38c'
-const NOTE = 'DEV TEST - Không xử lý đơn hàng này.'
 const QUANTITY = 1
-const RECEIVER_PHONE = '0909111111'
 
 orderTest.use({ addressSpec: PAID_SHIP_ADDRESS })
 
 orderTest(
-  'CO-002 manual address, immediate delivery, no invoice, free ship, BaoKim',
+  'CO-002 - Đặt hàng với địa chỉ nhập thủ công',
   // savedAddress is requested purely to make the fixture run - the address it
   // saves is the one this test must prove the order did *not* use
   async ({ authedPage: page, savedAddress, createdOrders }) => {
@@ -61,25 +70,14 @@ orderTest(
     const checkout = new CheckoutPage(page)
     const order = new OrderPage(page)
 
-    let createOrderCount = 0
-    let estimateCount = 0
+    const createOrders = countPostsTo(page, CREATE_ORDER_PATH)
+    const estimates = countPostsTo(page, ESTIMATE_PATH)
     // the fixture saved its address during setup, so this counter only ever sees
     // what checkout itself does - which must be nothing
-    let createAddressCount = 0
-
-    page.on('request', (request) => {
-      if (request.method() !== 'POST') return
-
-      const { pathname } = new URL(request.url())
-      if (pathname === '/api/v1/orders') createOrderCount++
-      if (pathname === '/api/v1/ahamove/estimate') estimateCount++
-      if (pathname === '/api/v1/addresses') createAddressCount++
-    })
+    const createAddresses = countPostsTo(page, CREATE_ADDRESS_PATH)
 
     const freeShipKm = await getFreeShipKm(page)
     const contact = await getProfileContact(page)
-    // the fixture address is already saved by this point
-    const addressIdsBefore = await getAddressIds(page)
 
     // Step 1 - see addressTest at e2e/fixtures/address.ts
 
@@ -87,16 +85,7 @@ orderTest(
     let variantLabel = ''
 
     await orderTest.step('filter products and add to cart', async () => {
-      await products.search(SEARCH_TERM)
-
-      await dismissPromoPopup(page)
-
-      await products.open(PRODUCT_NAME, PRODUCT_ID)
-
-      // the order lists the variant, not its parent product
-      variantLabel = await products.selectFirstVariant()
-
-      await products.addToCart()
+      variantLabel = await products.addFixtureToCart(PRIMARY_PRODUCT)
     })
 
     // Step 3 - the checkout redirects an empty intent straight back to /cart, so
@@ -146,66 +135,34 @@ orderTest(
       // this address - steps 9 and 11 check the other two
       await expect(checkout.sidebarRow('Địa chỉ giao hàng')).toHaveText(typedAddress)
 
-      // no clear affordance means the date was never moved off today, i.e.
-      // orderTime is still 0
-      await expect(checkout.deliveryDateClear).toHaveCount(0)
-      await expect(checkout.deliverySlot).toHaveText('Không chọn')
+      await checkout.expectImmediateDelivery()
 
-      await checkout.setNote(NOTE)
+      await checkout.setNote(ORDER_NOTE)
     })
 
     // Step 6 - leaving step 1 fires the Ahamove quote the whole case hangs on
-    let cheapestService: AhamoveResult
-    let estimatePayload: Record<string, unknown>
+    let quote: ShippingQuote
 
     await orderTest.step('continue to payment and capture the quote', async () => {
-      const [estimateRequest, estimateResponse] = await Promise.all([
-        page.waitForRequest(
-          (request) => request.method() === 'POST' && new URL(request.url()).pathname === '/api/v1/ahamove/estimate'
-        ),
-        page.waitForResponse(
-          (response) =>
-            response.request().method() === 'POST' && new URL(response.url()).pathname === '/api/v1/ahamove/estimate'
-        ),
-        checkout.goToPayment()
-      ])
-
-      estimatePayload = estimateRequest.postDataJSON()
+      quote = await checkout.goToPaymentCapturingQuote()
 
       // the quote has to be for the typed address, not the saved default
-      expect(estimatePayload.address).toBe(typedAddress)
+      expect(quote.payload.address).toBe(typedAddress)
 
-      const { ahamoveResult } = (await estimateResponse.json()).value as { ahamoveResult: AhamoveResult[] }
-      expect(ahamoveResult.length, 'Ahamove returned no services - the submit button never enables').toBeGreaterThan(0)
-
-      // checkout-client.tsx preselects sortedAhamove[0], cheapest by total_fee
-      cheapestService = [...ahamoveResult].sort((a, b) => (a.data?.total_fee ?? 0) - (b.data?.total_fee ?? 0))[0]
-
-      const distanceKm = cheapestService.data.distance
-      expect(
-        distanceKm,
-        `FREE_SHIP_ADDRESS "${FREE_SHIP_ADDRESS.addressQuery}" was quoted at ${distanceKm}km but ` +
-          `ahamove.free_ship is ${freeShipKm}km - this address is no longer inside the radius`
-      ).toBeLessThan(freeShipKm)
+      expectInsideFreeShipRadius(quote.cheapest.data.distance, freeShipKm, FREE_SHIP_ADDRESS)
     })
 
     // Step 7 - the defaults step 2 lands on
     await orderTest.step('check the payment step defaults', async () => {
-      await expect(checkout.gateway('BaoKim')).toBeChecked()
-
-      // BaoKim allows VA only, so VNPay QR is not even rendered
-      await expect(checkout.paymentMethodRadio('1')).toBeChecked()
-      await expect(checkout.paymentMethodRadio('6')).toHaveCount(0)
-
-      await expect(checkout.shippingService(cheapestService.service_id)).toBeChecked()
-      await expect(checkout.invoiceSwitch).not.toBeChecked()
+      await checkout.expectDefaultPaymentSelections(quote.cheapest.service_id)
     })
 
     // Step 8 - the sidebar shows the raw fee and cancels it out with a discount
     let productsSubtotal = 0
+    let uiTotals: UiTotals
 
     await orderTest.step('check the free-ship discount in the sidebar', async () => {
-      const rawShippingFee = cheapestService.data.total_fee
+      const rawShippingFee = quote.cheapest.data.total_fee
 
       productsSubtotal = await checkout.sidebarAmount('Tạm tính')
 
@@ -215,15 +172,22 @@ orderTest(
       // no invoice means no VAT row, and the waiver means no shipping in the total
       await expect(checkout.sidebarRow('VAT 8%')).toHaveCount(0)
       expect(await checkout.sidebarTotalAmount()).toBe(productsSubtotal)
+
+      // what the customer agreed to pay, checked against the server's own maths
+      // once the order exists
+      uiTotals = {
+        productsSubtotal,
+        shippingFee: 0,
+        vatAmount: 0,
+        grandTotal: await checkout.sidebarTotalAmount()
+      }
     })
 
     // Step 9 - submit. The request body has to be captured before the click.
     let checkoutPayload: Record<string, unknown>
 
     await orderTest.step('place the order', async () => {
-      const createRequest = page.waitForRequest(
-        (request) => request.method() === 'POST' && new URL(request.url()).pathname === '/api/v1/orders'
-      )
+      const createRequest = waitForCreateOrderRequest(page)
 
       await checkout.placeOrder()
 
@@ -236,22 +200,18 @@ orderTest(
     // Step 10 - the payload is the only place the address and the gateway exist
     await orderTest.step('check the create-order request body', async () => {
       expect(checkoutPayload).toMatchObject({
+        ...NO_INVOICE_FIELDS,
         gateway: 'BaoKim',
         // orderService.createOrder coerces the form's '1' to a number
         paymentMethod: 1,
+        // the server's CreateOrderRequest has no fee fields, so this one is sent
+        // and dropped. It is asserted to pin what the client believes, never as
+        // a check on what the customer is charged - see expectServerTotalsMatchUi
         shippingFee: 0,
         orderTime: 0,
         tagIds: [],
-        remarks: NOTE,
-        phoneReceiver: RECEIVER_PHONE,
-        isExportInvoice: false,
-        invoiceType: null,
-        taxCode: null,
-        identityNumber: null,
-        receiptFullName: null,
-        receiptPhoneNumber: null,
-        receiptAddress: null,
-        receiptEmail: null
+        remarks: ORDER_NOTE,
+        phoneReceiver: RECEIVER_PHONE
       })
 
       // the assertion this whole case exists for: the typed address, exactly,
@@ -261,8 +221,8 @@ orderTest(
       expect(checkoutPayload.address).not.toContain(savedAddress.addressLineText)
 
       // the address that was quoted must be the address that was ordered
-      expect(checkoutPayload.latitude).toBe(estimatePayload.latitude)
-      expect(checkoutPayload.longitude).toBe(estimatePayload.longitude)
+      expect(checkoutPayload.latitude).toBe(quote.payload.latitude)
+      expect(checkoutPayload.longitude).toBe(quote.payload.longitude)
       expect(checkoutPayload.latitude).not.toBe(0)
       expect(checkoutPayload.longitude).not.toBe(0)
       // mapId is deliberately absent: it lives in CheckoutFormValues to anchor
@@ -280,7 +240,7 @@ orderTest(
       await expect(order.statusBadge).toHaveText('Chờ xác nhận')
 
       await expect(order.section('Sản phẩm')).toContainText(variantLabel)
-      await expect(order.section('Ghi chú của khách')).toContainText(NOTE)
+      await expect(order.section('Ghi chú của khách')).toContainText(ORDER_NOTE)
 
       // the summary card repeats the sidebar the order was placed from, waiver
       // included: no VAT row, and a total that is the products alone
@@ -295,16 +255,13 @@ orderTest(
       await expect(recipient).toContainText(RECEIVER_PHONE)
       await expect(recipient).toContainText(FREE_SHIP_ADDRESS.addressLineText)
       await expect(order.field('Địa chỉ')).toContainText(FREE_SHIP_ADDRESS.ward)
-      // the pin the suggestion resolved to, not a text search - see buildMapHref
-      await expect(order.mapLink).toHaveAttribute('href', /maps\/search\/\?api=1&query=-?\d/)
+      await order.expectMapPinDropped()
 
       await expect(order.section('Thông tin hoá đơn')).toContainText('Không xuất hoá đơn')
 
-      // nothing has been paid yet, so the timeline stops at "created" and the
-      // delivery entry reads as immediate rather than a chosen date
-      const timeline = order.section('Nhật ký đơn hàng')
-      await expect(order.field('Tạo đơn hàng')).not.toBeEmpty()
-      await expect(timeline).not.toContainText('Xác nhận thanh toán')
+      // nothing has been paid yet, and the delivery entry reads as immediate
+      // rather than as a chosen date
+      await order.expectUnpaidTimeline()
       await expect(order.field('Ngày giao dự kiến')).toHaveText('Ngay sau khi thanh toán')
 
       // BaoKim hands back a redirect URL, so the SePay QR card must not render
@@ -318,19 +275,12 @@ orderTest(
       const detail = await getOrder(page, order.id)
 
       expect(detail).toMatchObject({
+        ...NO_INVOICE_FIELDS,
         status: 'Pending',
         orderTime: 0,
         tagsId: [],
         shippingFee: 0,
         vatFee: 0,
-        isExportInvoice: false,
-        invoiceType: null,
-        taxCode: null,
-        identityNumber: null,
-        receiptFullName: null,
-        receiptPhoneNumber: null,
-        receiptAddress: null,
-        receiptEmail: null,
         transaction: null,
         // the recipient card renders these straight from the detail response
         phoneReceiver: RECEIVER_PHONE
@@ -340,23 +290,24 @@ orderTest(
 
       // no shipping, no VAT
       expect(detail.totalFee).toBe(detail.productFee)
-      // the backend prices the line itself, so this also checks the client preview
-      expect(detail.productFee).toBe(productsSubtotal)
+
+      // the backend prices every line itself and ignores the fees the client
+      // sent, so this is the check that the sidebar the customer confirmed is
+      // the amount they will actually be charged
+      await expectServerTotalsMatchUi(page, order.id, uiTotals)
 
       expect(Number(detail.paymentMethod)).toBe(1)
-      expect(detail.remark).toContain(NOTE)
+      expect(detail.remark).toContain(ORDER_NOTE)
 
       expect(detail.details).toHaveLength(1)
       expect(detail.details[0].number).toBe(QUANTITY)
     })
 
     await orderTest.step('check the typed address stayed unsaved', async () => {
-      expect(createOrderCount, 'a single submit must create a single order').toBe(1)
-      expect(estimateCount, 'leaving step 1 must quote exactly once').toBe(1)
+      expect(createOrders.count, 'a single submit must create a single order').toBe(1)
+      expect(estimates.count, 'leaving step 1 must quote exactly once').toBe(1)
 
-      expect(createAddressCount, 'checkout must never persist the address it was given').toBe(0)
-      // ids, not just the count: same set, same order, nothing swapped
-      expect(await getAddressIds(page)).toEqual(addressIdsBefore)
+      expect(createAddresses.count, 'checkout must never persist the address it was given').toBe(0)
     })
 
     // Step 13 - hold here, pay the order by hand, then check what the webhook
@@ -368,23 +319,14 @@ orderTest(
 
         await order.waitForPaid(PAYMENT_TIMEOUT_MS)
 
-        // the transfer card only exists once the webhook has written a transaction
-        const transfer = order.section('Thông tin chuyển khoản')
-        await expect(transfer).toBeVisible()
-        await expect(transfer).toContainText('Ngân hàng')
-        await expect(transfer).toContainText('Nội dung')
-        await expect(transfer).toContainText('Thanh toán lúc')
+        await order.expectTransferCard()
 
         // the same transaction unlocks the paid timeline entry, and immediate
         // delivery still reads as immediate once the order is paid
-        const timeline = order.section('Nhật ký đơn hàng')
-        await expect(timeline).toContainText('Xác nhận thanh toán')
+        await expect(order.section('Nhật ký đơn hàng')).toContainText('Xác nhận thanh toán')
         await expect(order.field('Ngày giao dự kiến')).toHaveText('Ngay sau khi thanh toán')
 
-        // a paid order can no longer be paid or cancelled
-        await expect(order.payNow).toBeHidden()
-        await expect(order.cancelOrder).toBeHidden()
-        await expect(order.section('Thanh toán đơn hàng')).toHaveCount(0)
+        await order.expectPaymentActionsGone()
 
         // the payment only counts once the backend says so, and the waiver has
         // to survive it: the customer pays for the products alone

@@ -1,7 +1,10 @@
 import type { ProductDetail } from '@/features/products/types'
 import type { CartItem } from '@/stores/cart.store'
 import type { CheckoutPayload, EstimatePayload, PaymentGateway, PaymentMethod } from './types'
+import { InvoiceType } from './types'
 import type { CheckoutFormValues, EstimateFormValues } from './validations'
+
+const emptyToNull = (value: string | null | undefined) => (value?.trim() ? value : null)
 
 export interface OrderContact {
   fullName: string
@@ -64,14 +67,17 @@ export const buildCheckoutPayload = (
     }
   }
 
+  const isBusinessInvoice = values.invoiceType === InvoiceType.Business
+  const isPersonalInvoice = values.invoiceType === InvoiceType.Personal
+
   return {
     ...base,
-    taxCode: values.taxCode?.trim() ? values.taxCode : null,
-    identityNumber: values.identityNumber?.trim() ? values.identityNumber : null,
-    receiptFullName: values.receiptFullName?.trim() ? values.receiptFullName : null,
-    receiptPhoneNumber: values.receiptPhoneNumber?.trim() ? values.receiptPhoneNumber : null,
-    receiptAddress: values.receiptAddress?.trim() ? values.receiptAddress : null,
-    receiptEmail: values.receiptEmail?.trim() ? values.receiptEmail : null,
+    taxCode: isBusinessInvoice ? emptyToNull(values.taxCode) : null,
+    identityNumber: isPersonalInvoice ? emptyToNull(values.identityNumber) : null,
+    receiptFullName: isPersonalInvoice ? emptyToNull(values.receiptFullName) : null,
+    receiptAddress: isPersonalInvoice ? emptyToNull(values.receiptAddress) : null,
+    receiptPhoneNumber: emptyToNull(values.receiptPhoneNumber),
+    receiptEmail: emptyToNull(values.receiptEmail),
     isExportInvoice: true,
     invoiceType: values.invoiceType,
     paymentMethod,

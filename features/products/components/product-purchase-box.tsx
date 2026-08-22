@@ -70,7 +70,17 @@ export default function ProductPurchaseBox() {
   const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
 
   const isPhoneMissing = isQualifiedBuyer && !isLoadingPhoneNumber && !hasPhoneNumber
-  const isBuyNowDisabled = isPurchaseDisabled || isPhoneMissing
+  /*
+   * Buy-now needs a phone number on the account, so it stays unavailable until we know
+   * whether there is one. `isPhoneMissing` is deliberately false while the query is in
+   * flight - it drives the "add your phone number" banner, which must not flash at someone
+   * who has one - so the loading state has to disable the button on its own.
+   *
+   * Without this, the button is clickable during that window and `handleBuyNow` reads
+   * `hasPhoneNumber` as false: the customer gets a spurious "add your phone number" toast
+   * and no navigation. Add-to-cart is unaffected because it never reads the phone number.
+   */
+  const isBuyNowDisabled = isPurchaseDisabled || isPhoneMissing || isLoadingPhoneNumber
 
   const stepperCap = Math.max(remainingStock, 1)
   const effectiveQuantity = Math.min(Math.max(quantity, 1), stepperCap)

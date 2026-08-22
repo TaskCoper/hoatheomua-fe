@@ -11,6 +11,15 @@ export interface AddressSpec {
   addressLineText: string
 }
 
+/**
+ * The phone the flowers are delivered to - saved on every fixture address, and typed into
+ * the form by the manual-entry cases so both paths carry the same recipient.
+ *
+ * Deliberately different from the invoice phone in `e2e/fixtures/invoice.ts`: the delivery
+ * fields and the invoice fields must not cross-wire, and identical values would hide it.
+ */
+export const RECEIVER_PHONE = '0909111111'
+
 export const FREE_SHIP_ADDRESS: AddressSpec = {
   addressQuery: '166/41/4 Thích Quảng Đức',
   city: 'Hồ Chí Minh',
@@ -38,8 +47,9 @@ export const addressTest = authTest.extend<CheckoutFixtures>({
     const profile = new ProfilePage(authedPage)
 
     const address: NewAddress = {
+      // unique per project and per test, so parallel specs never collide on the shared account
       receiverName: `E2E ${testInfo.project.name} ${testInfo.testId} ${Date.now()}`,
-      phoneNumber: '0909111111',
+      phoneNumber: RECEIVER_PHONE,
       ...addressSpec,
       isDefault: false
     }

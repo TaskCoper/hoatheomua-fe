@@ -26,8 +26,20 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: process.env.E2E_BASE_URL,
 
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry'
+    /*
+     * Keep the trace for any failure. `on-first-retry` produced nothing locally, because
+     * `retries` is 0 outside CI - so a five-minute spec failed with a stack trace and no
+     * timeline, DOM snapshot or network log, and the only way to see one was to run it
+     * again. See https://playwright.dev/docs/trace-viewer
+     */
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    /*
+     * Video is the most expensive artifact and the trace already embeds DOM snapshots, a
+     * screenshot timeline, network and console. It earns its keep only on a CI retry, where
+     * it separates a flake from a deterministic failure.
+     */
+    video: process.env.CI ? 'on-first-retry' : 'off'
   },
 
   /* Configure projects for major browsers */

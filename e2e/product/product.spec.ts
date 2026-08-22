@@ -1,23 +1,26 @@
 import { expect } from '@playwright/test'
 import { test } from '../fixtures/auth'
+import { PRIMARY_PRODUCT } from '../fixtures/products'
 
 test('user can visit products page, filter, view detail and then add to cart', async ({ authedPage: page }) => {
   await page.goto('/products')
 
   // take first search input in the page
   const searchInput = page.getByRole('searchbox').first()
-  await searchInput.fill('Coral Pink')
+  await searchInput.fill(PRIMARY_PRODUCT.searchTerm)
 
-  // check the params to make sure it on the URL
-  await expect(page).toHaveURL(/_q=Coral\+Pink/)
+  // check the params to make sure it on the URL - nuqs mirrors the filter into the query
+  // string with spaces as '+', the same encoding ProductPage.search asserts
+  const encodedTerm = encodeURIComponent(PRIMARY_PRODUCT.searchTerm).replace(/%20/g, '\\+')
+  await expect(page).toHaveURL(new RegExp(`_q=${encodedTerm}`))
 
   // go to product page
-  const productLink = page.getByRole('link', { name: 'Bó Coral Pink_2026' })
+  const productLink = page.getByRole('link', { name: PRIMARY_PRODUCT.name })
   await expect(productLink).toBeVisible()
 
   await productLink.click()
 
-  await expect(page).toHaveURL('/products/a10efc5a-ad03-4102-9e1e-5807e3f7a38c')
+  await expect(page).toHaveURL(`/products/${PRIMARY_PRODUCT.id}`)
 
   // select the first variant
   const variantBtn = page.getByTestId('purchase-box').locator('button[aria-pressed]').first()
