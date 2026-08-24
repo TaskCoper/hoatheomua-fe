@@ -8,6 +8,27 @@ export interface OrderContact {
   phone: string
 }
 
+// The form holds the delivery date as an ISO string; the API wants unix seconds
+// and reads 0 as "as soon as possible". Today collapses to 0 - its midnight
+// timestamp is already in the past by the time the order is placed.
+export const toOrderTimestamp = (value: string | null): number => {
+  if (!value) {
+    return 0
+  }
+
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return 0
+  }
+
+  if (date.toDateString() === new Date().toDateString()) {
+    return 0
+  }
+
+  return Math.floor(date.getTime() / 1000)
+}
+
 export const buildEstimatePayload = (
   values: EstimateFormValues,
   items: CartItem[],
@@ -24,7 +45,7 @@ export const buildEstimatePayload = (
     fullName: contact.fullName,
     phone: contact.phone,
     remarks: values.remarks,
-    orderTime: values.orderTime,
+    orderTime: toOrderTimestamp(values.orderTime),
     items: items.map((item) => ({
       itemId: productById.get(item.productId)?.nhanhProductId ?? item.productId,
       number: item.quantity
@@ -44,6 +65,7 @@ export const buildCheckoutPayload = (
 ): CheckoutPayload => {
   const base = {
     ...buildEstimatePayload(values, items, productById, contact),
+    fullNameReceiver: values.fullNameReceiver.trim(),
     phoneReceiver: values.phoneReceiver.trim()
   }
 

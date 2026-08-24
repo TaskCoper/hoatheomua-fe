@@ -55,7 +55,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 interface SepayDetails {
@@ -103,12 +103,22 @@ export default function OrderDetailPage() {
     enabled: !!orderId && isPending
   })
 
+  // The status poll is the only signal that a bank transfer landed - announce it
+  // once, then refetch so the page swaps out of its pending state.
+  const hasAnnouncedPaidRef = useRef(false)
+
   useEffect(() => {
     if (!isLoadingOrderStatus && orderStatus === OrderStatus.Paid) {
+      if (!hasAnnouncedPaidRef.current) {
+        hasAnnouncedPaidRef.current = true
+        toast.success(t('orders.list.detail.paidToast'), {
+          description: t('orders.list.detail.paidToastDescription')
+        })
+      }
       queryClient.invalidateQueries({ queryKey: ['orders'] })
       queryClient.invalidateQueries({ queryKey: ['order', orderId] })
     }
-  }, [orderStatus, isLoadingOrderStatus, queryClient, orderId])
+  }, [orderStatus, isLoadingOrderStatus, queryClient, orderId, t])
 
   if (isLoadingOrder) {
     return (
@@ -539,9 +549,11 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                       order.orderTime > 0 ? (
                         <span className='inline-flex flex-wrap items-baseline gap-x-1'>
                           <span>{formatDateTime(order.orderTime * 1000, 'dateMedium')}</span>
-                          {deliveryTagLabel ? (
-                            <span className='text-xs font-medium text-primary'>({deliveryTagLabel})</span>
-                          ) : null}
+                          {/* No tag means no time slot was requested - say so
+                              instead of leaving the date to stand alone. */}
+                          <span className='text-xs font-medium text-primary'>
+                            ({deliveryTagLabel ?? t('orders.checkout.tagNone')})
+                          </span>
                         </span>
                       ) : (
                         t('orders.list.detail.timelineDeliveryImmediate')

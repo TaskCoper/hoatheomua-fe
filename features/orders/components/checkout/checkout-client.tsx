@@ -14,6 +14,7 @@ import { ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-f
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
+import { toast } from 'sonner'
 import { useCheckoutAddressSelection } from '../../hooks/use-checkout-address-selection'
 import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
@@ -34,17 +35,15 @@ export function CheckoutClient() {
   const { formatDate } = useDateFormat()
   const router = useRouter()
 
-  const { methods, estimateOrder, isEstimatingOrder, estimatedOrder } = useEstimateOrder()
+  const { methods, estimateOrder, isEstimatingOrder, estimatedOrder, resetEstimate } = useEstimateOrder()
   const { createOrder, isCreatingOrder } = useCreateOrder()
 
   const { addresses, isLoading: isLoadingAddresses } = useGetAddresses({ enabled: true })
   const { orderTags } = useGetOrderTags()
 
-  // The order's contact is whoever created it: the signed-in account. A saved
-  // address carries its own receiverName/phoneNumber, but that only says who
-  // receives at that door — it never becomes the order's fullName/phone.
   const { me, isGettingMe } = useGetMe()
   const { user, isLoading: isLoadingUser } = useGetUser(me?.slug)
+
   const isProfileLoading = isGettingMe || isLoadingUser
   const hasPhoneNumber = !!user?.phoneNumber
   const contact: OrderContact = useMemo(
@@ -55,27 +54,39 @@ export function CheckoutClient() {
     [user?.firstName, user?.lastName, user?.phoneNumber]
   )
 
-  // Free-shipping distance threshold (km). Deliveries closer than this ship free.
   const { configs: ahamoveConfigs } = useGetPublicConfigs<AhamoveConfigItem>({ group: 'ahamove' })
   const freeShipKm = Number(ahamoveConfigs.find((config) => config.key === 'ahamove.free_ship')?.value.value)
 
-  const { selectedAddressId, selectedAddress, handleSelectAddress, clearAddress } = useCheckoutAddressSelection({
-    addresses,
-    methods
-  })
-
-  const { step, goBack, items, handleGoToPayment, handleConfirmOrder, handleCancel } = useCheckoutFlow({
-    methods,
-    estimateOrder,
-    createOrder,
-    contact
-  })
+  const { step, goBack, items, handleGoToPayment, handleConfirmOrder, handleCancel, invalidateEstimate } =
+    useCheckoutFlow({
+      methods,
+      estimateOrder,
+      resetEstimate,
+      createOrder,
+      contact
+    })
 
   const [manualAddress, setManualAddress] = useState(false)
   const [isLoadingShippingLocations, setIsLoadingShippingLocations] = useState(false)
   const [gateway, setGateway] = useState<PaymentGateway>(PaymentGateway.BaoKim)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('1')
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
+
+  // The selected address was edited elsewhere (profile sheet) and the form has
+  // just been re-synced to it. Past the address step that also voids the
+  // shipping quote, so the pick is dropped and the user is rewound to confirm
+  // the new address before it gets re-priced.
+  const handleSelectedAddressRevised = () => {
+    setPickedServiceId(null)
+    toast.info(invalidateEstimate() ? t('orders.checkout.addressRevisedReprice') : t('orders.checkout.addressRevised'))
+  }
+
+  const { selectedAddressId, selectedAddress, handleSelectAddress, clearAddress } = useCheckoutAddressSelection({
+    addresses,
+    methods,
+    manualAddress,
+    onSelectedAddressRevised: handleSelectedAddressRevised
+  })
 
   // Sepay only offers VNPayQR (6); BaoKim exposes the full method list.
   const handleGatewayChange = (value: PaymentGateway) => {
@@ -111,10 +122,15 @@ export function CheckoutClient() {
   const watchedIsExportInvoice = useWatch({ control: methods.control, name: 'isExportInvoice' })
 
   const summaryAddress = [watchedAddressLine, watchedWard, watchedCity].filter(Boolean).join(', ')
-  const summaryOrderTime = formatDate(watchedOrderTime > 0 ? new Date(watchedOrderTime * 1000) : new Date(), 'dateLong')
+  const summaryOrderTime = formatDate(watchedOrderTime ?? new Date(), 'dateLong')
   const selectedTagId = watchedTagIds?.[0]
+
+  // No tag means no time slot was requested: the order goes out as soon as the
+  // transfer clears, so the summary says that rather than hiding the row.
   const summaryDeliveryTime =
-    selectedTagId !== undefined ? orderTags?.options?.find((o) => o.value === selectedTagId)?.label : undefined
+    selectedTagId !== undefined
+      ? orderTags?.options?.find((o) => o.value === selectedTagId)?.label
+      : t('orders.checkout.tagNone')
 
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 

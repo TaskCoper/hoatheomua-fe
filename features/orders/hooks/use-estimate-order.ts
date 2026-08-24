@@ -7,6 +7,7 @@ import orderService from '../services'
 import { CheckoutFormValues, createCheckoutSchema } from '../validations'
 
 const defaultValues: CheckoutFormValues = {
+  fullNameReceiver: '',
   phoneReceiver: '',
   remarks: '',
   addressLine: '',
@@ -17,7 +18,7 @@ const defaultValues: CheckoutFormValues = {
   latitude: 0,
   longitude: 0,
   mapId: '',
-  orderTime: 0,
+  orderTime: null,
   tagIds: [],
   taxCode: null,
   identityNumber: null,

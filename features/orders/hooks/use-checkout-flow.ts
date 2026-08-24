@@ -16,11 +16,18 @@ import { useProductsByIds } from './use-products-by-ids'
 interface UseCheckoutFlowArgs {
   methods: UseFormReturn<CheckoutFormValues>
   estimateOrder: ReturnType<typeof useEstimateOrder>['estimateOrder']
+  resetEstimate: ReturnType<typeof useEstimateOrder>['resetEstimate']
   createOrder: ReturnType<typeof useCreateOrder>['createOrder']
   contact: OrderContact
 }
 
-export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }: UseCheckoutFlowArgs) => {
+export const useCheckoutFlow = ({
+  methods,
+  estimateOrder,
+  resetEstimate,
+  createOrder,
+  contact
+}: UseCheckoutFlowArgs) => {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -79,6 +86,19 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }
     }
   }
 
+  // Address changed during payment. Drop the stale shippingFee and rewind
+  // so the new address is shown before estimating again
+  const invalidateEstimate = () => {
+    if (step !== 2) {
+      return false
+    }
+
+    resetEstimate()
+    setStep(1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return true
+  }
+
   const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway, shippingFee: number) =>
     methods.handleSubmit(
       async (values) => {
@@ -117,6 +137,7 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }
     items,
     handleGoToPayment,
     handleConfirmOrder,
-    handleCancel
+    handleCancel,
+    invalidateEstimate
   }
 }

@@ -156,6 +156,7 @@ export interface EstimatePayload {
 }
 
 export interface CheckoutPayload extends EstimatePayload {
+  fullNameReceiver: string
   phoneReceiver: string
   taxCode: string | null
   identityNumber: string | null

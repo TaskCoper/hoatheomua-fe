@@ -613,6 +613,7 @@
       "fullName": "Full name",
       "fullNamePlaceholder": "Recipient's full name",
       "phone": "Phone number",
+      "fullNameReceiver": "Receiver full name",
       "phoneReceiver": "Receiver phone number",
       "phonePlaceholder": "Enter phone number",
       "addressLine": "Address",
@@ -659,7 +660,11 @@
       "orderTimePlaceholder": "Pick a date for later delivery",
       "tag": "Delivery time",
       "tagPlaceholder": "Select a delivery time range",
-      "tagNone": "No preference",
+      "tagNone": "No specific time slot",
+      "tagNoneHint": "No time slot picked - we'll assign a delivery time within this date.",
+      "tagWithinDate": "Delivery within {date}",
+      "tagWithDate": "{date} at {tag}",
+      "deliveryNoteHeading": "Delivery timing",
       "comboboxEmpty": "No results",
       "emptyCart": "Your cart is empty.",
       "reviewTitle": "Review your order",
@@ -690,6 +695,8 @@
       "back": "Back",
       "confirm": "Confirm order",
       "confirmedToast": "Order confirmed",
+      "addressRevised": "Your delivery address was updated.",
+      "addressRevisedReprice": "Your delivery address changed — confirm it again so the shipping fee is recalculated.",
       "estimateError": "Could not estimate the order.",
       "createError": "Could not place the order.",
       "cancelBooking": "Cancel checkout",
@@ -818,7 +825,9 @@
         "cancelSuccess": "Order cancelled",
         "cancelError": "Could not cancel order",
         "payNow": "Pay now",
-        "paymentMethod": "Payment method"
+        "paymentMethod": "Payment method",
+        "paidToast": "Payment confirmed",
+        "paidToastDescription": "We've received your transfer. Your order is being prepared."
       }
     }
   },

@@ -613,6 +613,7 @@
       "fullName": "Họ và tên",
       "fullNamePlaceholder": "Nhập họ và tên người nhận",
       "phone": "Số điện thoại",
+      "fullNameReceiver": "Họ và tên người nhận",
       "phoneReceiver": "Số điện thoại người nhận",
       "phonePlaceholder": "Nhập số điện thoại",
       "addressLine": "Địa chỉ",
@@ -659,7 +660,11 @@
       "orderTimePlaceholder": "Chọn ngày giao sau",
       "tag": "Thời gian giao",
       "tagPlaceholder": "Chọn khung giờ giao hàng",
-      "tagNone": "Không chọn",
+      "tagNone": "Không chọn khung giờ cụ thể",
+      "tagNoneHint": "Chưa chọn khung giờ - chúng tôi sẽ sắp xếp thời gian giao ngẫu nhiên trong ngày này.",
+      "tagWithinDate": "Giao trong ngày {date}",
+      "tagWithDate": "{date} lúc {tag}",
+      "deliveryNoteHeading": "Thời gian giao dự kiến",
       "comboboxEmpty": "Không có kết quả",
       "emptyCart": "Giỏ hàng của bạn đang trống.",
       "reviewTitle": "Xác nhận đơn hàng",
@@ -690,6 +695,8 @@
       "back": "Quay lại",
       "confirm": "Xác nhận đặt hàng",
       "confirmedToast": "Đã xác nhận đơn hàng",
+      "addressRevised": "Địa chỉ giao hàng đã được cập nhật.",
+      "addressRevisedReprice": "Địa chỉ giao hàng đã thay đổi — vui lòng xác nhận lại để tính lại phí giao hàng.",
       "estimateError": "Không thể ước tính đơn hàng.",
       "createError": "Không thể tạo đơn hàng.",
       "cancelBooking": "Huỷ thanh toán",
@@ -818,6 +825,8 @@
         "cancelSuccess": "Đã hủy đơn hàng",
         "cancelError": "Không thể hủy đơn hàng",
         "payNow": "Thanh toán ngay",
+        "paidToast": "Đã xác nhận thanh toán",
+        "paidToastDescription": "Chúng tôi đã nhận được chuyển khoản của bạn. Đơn hàng đang được chuẩn bị.",
         "paymentMethod": "Phương thức thanh toán"
       }
     }

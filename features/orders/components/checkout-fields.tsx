@@ -1,22 +1,21 @@
 'use client'
 
+import { DatePickerField } from '@/components/date-picker-field'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { Address } from '@/features/addresses/types'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { cn } from '@/shared/utils'
-import { Calendar03Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
+import { DeliveryTruck02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
+import { toOrderTimestamp } from '../payloads'
 import { matchShippingLocation } from '../utils/match-shipping-location'
 import type { CheckoutFormValues } from '../validations'
 import { AddressAutocomplete } from './address-autocomplete'
@@ -55,8 +54,8 @@ export function CheckoutFields({
     watch,
     formState: { errors }
   } = useFormContext<CheckoutFormValues>()
+  const fullNameReceiverError = errors.fullNameReceiver
   const phoneReceiverError = errors.phoneReceiver
-  const [orderTimeOpen, setOrderTimeOpen] = useState(false)
   // The coordinate the typed address resolved to - map picks are constrained to
   // a radius around it so the pin can be fine-tuned but not moved to a new area.
   const [mapAnchor, setMapAnchor] = useState<{ latitude: number; longitude: number } | null>(null)
@@ -90,6 +89,22 @@ export function CheckoutFields({
   }
 
   const { orderTags, isGettingOrderTags } = useGetOrderTags()
+
+  const orderTimeForm = watch('orderTime')
+  const selectedTagId = watch('tagIds')?.[0]
+  const hasDeliverySlot = selectedTagId !== undefined
+  const isScheduledDate = toOrderTimestamp(orderTimeForm) !== 0
+  const effectiveOrderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
+
+  const selectedTagLabel = orderTags?.options?.find((option) => option.value === selectedTagId)?.label
+  const deliveryTimingLabel = hasDeliverySlot
+    ? isScheduledDate
+      ? t('orders.checkout.tagWithDate', {
+          date: formatDate(orderTimeForm, 'dateLong'),
+          tag: selectedTagLabel ?? t('orders.checkout.tag')
+        })
+      : (selectedTagLabel ?? t('orders.checkout.tag'))
+    : t('orders.checkout.tagWithinDate', { date: formatDate(effectiveOrderDate, 'dateLong') })
 
   const { shippingLocations: cities, isLoadingShippingLocations: isLoadingCities } = useGetShippingLocations({
     type: 'CITY',
@@ -165,35 +180,60 @@ export function CheckoutFields({
         {!showManualFields ? (
           <>
             <SavedAddressPicker addresses={addresses} selectedAddress={selectedAddress} onSelect={onSelectAddress} />
+            {fullNameReceiverError ? <FieldError className='text-xs' errors={[fullNameReceiverError]} /> : null}
             {phoneReceiverError ? <FieldError className='text-xs' errors={[phoneReceiverError]} /> : null}
           </>
         ) : null}
 
         {showManualFields ? (
           <>
-            <Controller
-              name='phoneReceiver'
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className='gap-1'>
-                  <FieldLabel htmlFor={field.name}>{t('orders.checkout.phoneReceiver')}</FieldLabel>
-                  <Input
-                    {...field}
-                    value={field.value ?? ''}
-                    id={field.name}
-                    type='tel'
-                    inputMode='tel'
-                    autoComplete='tel'
-                    maxLength={11}
-                    aria-invalid={fieldState.invalid}
-                    placeholder={t('orders.checkout.phonePlaceholder')}
-                  />
-                  <div className='min-h-4'>
-                    {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                  </div>
-                </Field>
-              )}
-            />
+            <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
+              <Controller
+                name='fullNameReceiver'
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className='gap-1'>
+                    <FieldLabel htmlFor={field.name}>{t('orders.checkout.fullNameReceiver')}</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value ?? ''}
+                      id={field.name}
+                      autoComplete='name'
+                      maxLength={100}
+                      aria-invalid={fieldState.invalid}
+                      placeholder={t('orders.checkout.fullNamePlaceholder')}
+                    />
+                    <div className='min-h-4'>
+                      {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                    </div>
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name='phoneReceiver'
+                control={control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className='gap-1'>
+                    <FieldLabel htmlFor={field.name}>{t('orders.checkout.phoneReceiver')}</FieldLabel>
+                    <Input
+                      {...field}
+                      value={field.value ?? ''}
+                      id={field.name}
+                      type='tel'
+                      inputMode='tel'
+                      autoComplete='tel'
+                      maxLength={11}
+                      aria-invalid={fieldState.invalid}
+                      placeholder={t('orders.checkout.phonePlaceholder')}
+                    />
+                    <div className='min-h-4'>
+                      {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                    </div>
+                  </Field>
+                )}
+              />
+            </div>
 
             <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
               <Controller
@@ -374,91 +414,16 @@ export function CheckoutFields({
         description={t('orders.checkout.deliveryOptionsDescription')}
       >
         <div className='grid grid-cols-1 gap-2 sm:grid-cols-2'>
-          <Controller
+          <DatePickerField<CheckoutFormValues>
             name='orderTime'
             control={control}
-            render={({ field, fieldState }) => {
-              const selectedDate = field.value > 0 ? new Date(field.value * 1000) : undefined
-              const displayDate = selectedDate ?? new Date()
-
-              return (
-                <Field data-invalid={fieldState.invalid} className='gap-1'>
-                  <FieldLabel htmlFor={field.name} className='gap-0.5'>
-                    {t('orders.checkout.orderTime')}
-                    <span className='text-xs text-muted-foreground'>({t('common.ui.optional')})</span>
-                  </FieldLabel>
-
-                  <Popover open={orderTimeOpen} onOpenChange={setOrderTimeOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id={field.name}
-                        variant='outline'
-                        role='combobox'
-                        aria-expanded={orderTimeOpen}
-                        aria-invalid={fieldState.invalid}
-                        className={cn(
-                          'w-full justify-between px-3 text-left font-normal',
-                          fieldState.invalid && 'border-destructive focus-visible:ring-destructive'
-                        )}
-                      >
-                        <span className='flex items-center gap-2 truncate'>
-                          <HugeiconsIcon icon={Calendar03Icon} strokeWidth={2} className='size-4 opacity-50' />
-                          {formatDate(displayDate, 'dateLong')}
-                        </span>
-
-                        {field.value > 0 && (
-                          <div
-                            role='button'
-                            tabIndex={0}
-                            className='cursor-pointer rounded-sm hover:bg-accent hover:text-accent-foreground'
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              field.onChange(0)
-                            }}
-                          >
-                            <HugeiconsIcon
-                              icon={CancelCircleIcon}
-                              strokeWidth={2}
-                              className='size-4 opacity-50 hover:opacity-100'
-                            />
-                            <span className='sr-only'>{t('common.button.clear')}</span>
-                          </div>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      sideOffset={8}
-                      className='max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-auto overflow-y-auto p-0'
-                      align='start'
-                    >
-                      <Calendar
-                        mode='single'
-                        selected={selectedDate}
-                        onSelect={(date) => {
-                          if (!date) {
-                            field.onChange(0)
-                            setOrderTimeOpen(false)
-                            return
-                          }
-                          const isToday = date.toDateString() === new Date().toDateString()
-                          field.onChange(isToday ? 0 : Math.floor(date.getTime() / 1000))
-                          setOrderTimeOpen(false)
-                        }}
-                        disabled={[{ before: minOrderDate }, { after: maxOrderDate }]}
-                        startMonth={minOrderDate}
-                        endMonth={maxOrderDate}
-                        captionLayout='dropdown'
-                        defaultMonth={displayDate}
-                      />
-                    </PopoverContent>
-                  </Popover>
-
-                  <div className='min-h-4'>
-                    {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                  </div>
-                </Field>
-              )
-            }}
+            label='orders.checkout.orderTime'
+            placeholder='orders.checkout.orderTimePlaceholder'
+            minDate={minOrderDate}
+            maxDate={maxOrderDate}
+            showOptionalHint={false}
+            displayError={false}
+            emptyValueDate={minOrderDate}
           />
 
           <Controller
@@ -488,14 +453,13 @@ export function CheckoutFields({
                       ))}
                     </SelectContent>
                   </Select>
-                  <div className='min-h-4'>
-                    {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                  </div>
                 </Field>
               )
             }}
           />
         </div>
+
+        <DeliveryTimingNote label={deliveryTimingLabel} />
 
         <Controller
           name='remarks'
@@ -518,6 +482,22 @@ export function CheckoutFields({
           )}
         />
       </CheckoutSection>
+    </div>
+  )
+}
+
+function DeliveryTimingNote({ label }: { label: string }) {
+  const { t } = useTranslation()
+
+  return (
+    <div className='flex items-start gap-3 rounded-2xl border border-border bg-secondary/20 px-3 py-2.5'>
+      <span className='grid size-8 shrink-0 place-items-center rounded-full bg-secondary/60 text-primary'>
+        <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={1.75} className='size-4' />
+      </span>
+      <div className='min-w-0 flex-1'>
+        <p className='text-xs font-medium text-muted-foreground'>{t('orders.checkout.deliveryNoteHeading')}</p>
+        <p className='text-sm font-semibold text-foreground'>{label}</p>
+      </div>
     </div>
   )
 }

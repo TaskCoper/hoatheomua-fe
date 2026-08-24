@@ -11,6 +11,13 @@ const createBaseCheckoutSchema = (t: TranslationFunction) => {
   const requiredFor = (field: string) => t('common.validation.required', { field })
 
   return z.object({
+    fullNameReceiver: z
+      .string()
+      .trim()
+      .min(1, { error: requiredFor(t('orders.checkout.fullNameReceiver')) })
+      .max(100, {
+        error: t('common.validation.maxLength', { field: t('orders.checkout.fullNameReceiver'), max: 100 })
+      }),
     phoneReceiver: createPhoneNumberSchema(t, t('orders.checkout.phoneReceiver')),
     remarks: z
       .string()
@@ -27,7 +34,9 @@ const createBaseCheckoutSchema = (t: TranslationFunction) => {
     latitude: z.number(),
     longitude: z.number(),
     mapId: z.string(),
-    orderTime: z.number(),
+    // ISO string from the date picker; the payload builder turns it into the
+    // unix seconds the API expects.
+    orderTime: z.string().nullable(),
     tagIds: z
       .array(z.number())
       .max(1, { error: t('common.validation.arrayMax', { field: t('orders.checkout.tag'), max: 1 }) })
