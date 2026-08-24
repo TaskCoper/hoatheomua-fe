@@ -1,6 +1,6 @@
 'use client'
 
-import { bannerAspectForSlot, useBannerSlot } from '@/hooks/use-banner-by-slot'
+import { bannerAspectForSlot, resolveBannerImage, useBannerSlot } from '@/hooks/use-banner-by-slot'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { decodeImageViewport } from '@/lib/image-viewport'
@@ -35,31 +35,26 @@ export default function ConfigurableBanner({
   if (state.status === 'hidden') return null
 
   const banner = state.status === 'banner' ? state.banner : undefined
+  const alt = banner?.alt[locale] || fallbackAlt
+
+  const stored = resolveBannerImage(banner?.image, locale)
+  const { src, viewport } = decodeImageViewport(stored)
 
   // A banner normally renders at its own aspect (`w-full h-auto`). A framed one can't: the author
   // chose a region against this slot's shape, so the slot has to reserve that shape and crop to it.
-  const framing = banner ? decodeImageViewport(banner.image).viewport : null
-
-  const image: ReactNode = !banner ? (
-    <Image src={fallbackSrc} alt={fallbackAlt} className={className} sizes={sizes} loading='lazy' quality={quality} />
-  ) : framing ? (
+  const image: ReactNode = !src ? (
+    <Image src={fallbackSrc} alt={alt} className={className} sizes={sizes} loading='lazy' quality={quality} />
+  ) : viewport ? (
     <span
       className={cn('relative block w-full overflow-hidden', className)}
       style={{ aspectRatio: bannerAspectForSlot(slot) }}
     >
-      <ViewportImage
-        src={banner.image}
-        alt={banner.alt[locale] || fallbackAlt}
-        className='object-cover'
-        sizes={sizes}
-        loading='lazy'
-        quality={quality}
-      />
+      <ViewportImage src={stored} alt={alt} className='object-cover' sizes={sizes} loading='lazy' quality={quality} />
     </span>
   ) : (
     <Image
-      src={banner.image}
-      alt={banner.alt[locale] || fallbackAlt}
+      src={src}
+      alt={alt}
       width={fallbackSrc.width}
       height={fallbackSrc.height}
       className={className}
