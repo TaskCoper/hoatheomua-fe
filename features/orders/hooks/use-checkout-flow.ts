@@ -80,10 +80,7 @@ export const useCheckoutFlow = ({
       await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById, contact) })
       setStep(2)
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t('orders.checkout.estimateError')
-      toast.error(t('orders.checkout.estimateError'), { description: message })
-    }
+    } catch {}
   }
 
   // Address changed during payment. Drop the stale shippingFee and rewind

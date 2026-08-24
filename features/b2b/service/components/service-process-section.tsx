@@ -32,33 +32,38 @@ export default function ServiceProcessSection({
       <Reveal className='space-y-6'>
         <SectionHeading title={heading} />
 
-        {/* Growing stem: each step is a node on the stalk, joined by a leaf-to-stem line. */}
-        <motion.ol variants={stagger} className='mt-2'>
-          {steps.map((step, index) => {
-            const isLast = index === steps.length - 1
-            return (
-              <motion.li key={index} variants={cardItem} className='relative flex gap-5 pb-8 last:pb-0'>
-                {!isLast ? (
-                  <span
-                    aria-hidden='true'
-                    className='absolute left-[1.375rem] top-12 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-leaf/50 to-primary/15'
-                  />
-                ) : null}
-                <span className='relative z-10 grid size-11 shrink-0 place-items-center rounded-full rounded-tl-[0.4375rem] bg-primary font-title text-base font-bold text-primary-foreground shadow-md shadow-primary/15 ring-4 ring-background'>
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <p className='pt-2.5 text-sm leading-relaxed text-foreground sm:text-base'>{step}</p>
-              </motion.li>
-            )
-          })}
-        </motion.ol>
-      </Reveal>
+        <div className='flex flex-col gap-6 lg:flex-row lg:items-center'>
+          {/* Growing stem: each step is a node on the stalk, joined by a leaf-to-stem line. */}
+          <motion.ol variants={stagger} className='mt-2 flex-1'>
+            {steps.map((step, index) => {
+              const isLast = index === steps.length - 1
 
-      {dividerImage ? (
-        <div className='mt-8'>
-          <ServiceImageDivider src={dividerImage} alt={serviceName} />
+              return (
+                <motion.li key={index} variants={cardItem} className='relative flex gap-5 pb-4 last:pb-0'>
+                  {!isLast ? (
+                    <span
+                      aria-hidden='true'
+                      className='absolute left-[1.375rem] top-12 h-[calc(100%-3rem)] w-px bg-gradient-to-b from-leaf/50 to-primary/15'
+                    />
+                  ) : null}
+
+                  <span className='relative z-10 grid size-11 shrink-0 place-items-center rounded-full rounded-tl-[0.4375rem] bg-primary font-title text-base font-bold text-primary-foreground shadow-md shadow-primary/15 ring-4 ring-background'>
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+
+                  <p className='pt-2.5 text-sm leading-relaxed text-foreground sm:text-base'>{step}</p>
+                </motion.li>
+              )
+            })}
+          </motion.ol>
+
+          {dividerImage ? (
+            <div className='lg:w-80 lg:shrink-0'>
+              <ServiceImageDivider src={dividerImage} alt={serviceName} ratio='aspect-[4/5]' className='lg:h-full' />
+            </div>
+          ) : null}
         </div>
-      ) : null}
+      </Reveal>
     </SectionShell>
   )
 }

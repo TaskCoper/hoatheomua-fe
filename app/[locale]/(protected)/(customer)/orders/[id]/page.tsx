@@ -23,8 +23,10 @@ import {
   OrderStatusLabel,
   PaymentMethod,
   PaymentMethodLabel,
-  type OrderDetail
+  type OrderDetail,
+  type OrderItem
 } from '@/features/orders/types'
+import { buildProductVariantHref } from '@/features/products/components/product-variant-context'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
@@ -40,7 +42,6 @@ import {
   DeliveryTruck02Icon,
   FlowerIcon,
   InvoiceIcon,
-  MailIcon,
   MapPinpoint02Icon,
   NoteEditIcon,
   PackageIcon,
@@ -103,22 +104,30 @@ export default function OrderDetailPage() {
     enabled: !!orderId && isPending
   })
 
-  // The status poll is the only signal that a bank transfer landed - announce it
-  // once, then refetch so the page swaps out of its pending state.
-  const hasAnnouncedPaidRef = useRef(false)
+  // The status poll is the only signal that a bank transfer landed. Announce the
+  // pending -> paid *transition* we observe live: a plain `status === Paid` check
+  // also matches the cached value the disabled query keeps serving after payment,
+  // so revisiting an already-paid order would re-toast on every mount.
+  const previousOrderStatusRef = useRef<OrderStatus | undefined>(undefined)
 
   useEffect(() => {
-    if (!isLoadingOrderStatus && orderStatus === OrderStatus.Paid) {
-      if (!hasAnnouncedPaidRef.current) {
-        hasAnnouncedPaidRef.current = true
-        toast.success(t('orders.list.detail.paidToast'), {
-          description: t('orders.list.detail.paidToastDescription')
-        })
-      }
-      queryClient.invalidateQueries({ queryKey: ['orders'] })
-      queryClient.invalidateQueries({ queryKey: ['order', orderId] })
-    }
-  }, [orderStatus, isLoadingOrderStatus, queryClient, orderId, t])
+    if (!isPending || isLoadingOrderStatus) return
+
+    const previousOrderStatus = previousOrderStatusRef.current
+    previousOrderStatusRef.current = orderStatus
+
+    // No previous sample means this is the first status we see - it came from the
+    // cache or the order was already paid before we opened the page, not from a
+    // payment that just landed.
+    if (orderStatus !== OrderStatus.Paid || previousOrderStatus === undefined) return
+    if (previousOrderStatus === OrderStatus.Paid) return
+
+    toast.success(t('orders.list.detail.paidToast'), {
+      description: t('orders.list.detail.paidToastDescription')
+    })
+    queryClient.invalidateQueries({ queryKey: ['orders'] })
+    queryClient.invalidateQueries({ queryKey: ['order', orderId] })
+  }, [orderStatus, isLoadingOrderStatus, isPending, queryClient, orderId, t])
 
   if (isLoadingOrder) {
     return (
@@ -216,18 +225,24 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
 
   const items = useMemo(() => order.details ?? [], [order.details])
 
-  const recipientRows = [
-    order.receiptFullName
-      ? { icon: UserIcon, label: t('orders.checkout.receiptFullName'), value: order.receiptFullName }
+  const deliveryAddress = order.address ?? order.shortAddress
+
+  const customerRows = buildIconRows([
+    order.fullName ? { icon: UserIcon, label: t('orders.checkout.fullName'), value: order.fullName } : null,
+    order.phone ? { icon: SmartPhone01Icon, label: t('orders.checkout.phone'), value: order.phone } : null
+  ])
+
+  const recipientRows = buildIconRows([
+    order.fullNameReceiver
+      ? { icon: UserIcon, label: t('orders.checkout.fullNameReceiver'), value: order.fullNameReceiver }
       : null,
-    order.receiptPhoneNumber
-      ? { icon: SmartPhone01Icon, label: t('orders.checkout.receiptPhoneNumber'), value: order.receiptPhoneNumber }
+    order.phoneReceiver
+      ? { icon: SmartPhone01Icon, label: t('orders.checkout.phoneReceiver'), value: order.phoneReceiver }
       : null,
-    order.receiptEmail ? { icon: MailIcon, label: t('orders.checkout.receiptEmail'), value: order.receiptEmail } : null,
-    order.receiptAddress
-      ? { icon: MapPinpoint02Icon, label: t('orders.checkout.receiptAddress'), value: order.receiptAddress }
+    deliveryAddress
+      ? { icon: MapPinpoint02Icon, label: t('orders.checkout.deliveryHeading'), value: deliveryAddress }
       : null
-  ].filter((row): row is { icon: typeof UserIcon; label: string; value: string } => Boolean(row))
+  ])
 
   const invoiceRows: { label: string; value: React.ReactNode }[] = []
 
@@ -249,6 +264,20 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
         label: t('orders.list.detail.identityNumber'),
         value: <span className='font-mono'>{order.identityNumber}</span>
       })
+    }
+
+    // The receipt block travels with the invoice, not with the delivery address.
+    if (order.receiptFullName) {
+      invoiceRows.push({ label: t('orders.checkout.receiptFullName'), value: order.receiptFullName })
+    }
+    if (order.receiptPhoneNumber) {
+      invoiceRows.push({ label: t('orders.checkout.receiptPhoneNumber'), value: order.receiptPhoneNumber })
+    }
+    if (order.receiptEmail) {
+      invoiceRows.push({ label: t('orders.checkout.receiptEmail'), value: order.receiptEmail })
+    }
+    if (order.receiptAddress) {
+      invoiceRows.push({ label: t('orders.checkout.receiptAddress'), value: order.receiptAddress })
     }
   }
 
@@ -346,61 +375,25 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 aside={t('orders.checkout.lineCount', { count: items.length })}
               >
                 <ul className='divide-y divide-border/60'>
-                  {items.map((item) => {
-                    const avatar = item.coverImage
-                    const displayName = item.name
-                    return (
-                      <li key={item.orderDetailsId} className='flex items-center gap-3 py-3 first:pt-0 last:pb-0'>
-                        {item.productId ? (
-                          <Link
-                            href={`/products/${item.productId}`}
-                            className='relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-primary/10 sm:size-20'
-                          >
-                            {avatar ? (
-                              <Image
-                                src={avatar}
-                                alt={displayName}
-                                fill
-                                sizes='80px'
-                                quality={65}
-                                className='object-cover'
-                              />
-                            ) : (
-                              <HugeiconsIcon icon={FlowerIcon} className='size-7 text-primary/40' />
-                            )}
-                          </Link>
-                        ) : (
-                          <div className='flex size-16 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 ring-1 ring-foreground/5 sm:size-20'>
-                            <HugeiconsIcon icon={FlowerIcon} className='size-7 text-muted-foreground/50' />
-                          </div>
-                        )}
-                        <div className='min-w-0 flex-1'>
-                          {item.productId ? (
-                            <Link
-                              href={`/products/${item.productId}`}
-                              className='font-title line-clamp-2 text-sm font-bold leading-tight text-primary hover:text-primary/80'
-                            >
-                              {displayName}
-                            </Link>
-                          ) : (
-                            <p className='line-clamp-2 text-sm font-medium'>{displayName}</p>
-                          )}
-                          <p className='mt-1 text-xs text-muted-foreground'>
-                            {t('orders.checkout.lineQty', { qty: item.number, price: formatVnd(item.price) })}
-                          </p>
-                        </div>
-                        <span className='shrink-0 text-sm font-semibold text-primary'>
-                          {formatVnd(item.price * item.number)}
-                        </span>
-                      </li>
-                    )
-                  })}
+                  {items.map((item) => (
+                    <OrderItemRow key={item.orderDetailsId} item={item} t={t} />
+                  ))}
                 </ul>
               </SectionCard>
             ) : null}
 
             <SectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm'>
+                {/* <SummaryRow
+                  label={t('orders.list.orderId')}
+                  value={<span className='font-mono text-xs break-all'>{order.orderId}</span>}
+                /> */}
+
+                <SummaryRow
+                  label={t('orders.list.createdAt')}
+                  value={formatDateTime(order.createAt, 'dateTimeMedium')}
+                />
+
                 {order.paymentMethod ? (
                   <SummaryRow
                     label={t('orders.list.detail.paymentMethod')}
@@ -431,12 +424,12 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                   {order.transaction.gateway ? (
                     <DetailRow label={t('orders.list.qr.bank')} value={order.transaction.gateway} />
                   ) : null}
-                  {order.transaction.code ? (
+                  {/* {order.transaction.code ? (
                     <DetailRow
                       label={t('orders.list.qr.content')}
                       value={<span className='font-mono text-xs'>{order.transaction.code}</span>}
                     />
-                  ) : null}
+                  ) : null} */}
                   <DetailRow
                     label={t('orders.list.transactionDate')}
                     value={formatDateTime(order.transaction.transactionDate, 'dateTimeMedium')}
@@ -491,21 +484,15 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
           </div>
 
           <aside className='flex flex-col gap-4'>
+            {customerRows.length > 0 ? (
+              <SectionCard icon={UserIcon} title={t('orders.list.detail.customerHeading')}>
+                <IconRowList rows={customerRows} />
+              </SectionCard>
+            ) : null}
+
             {recipientRows.length > 0 ? (
-              <SectionCard icon={UserIcon} title={t('orders.list.detail.recipientHeading')}>
-                <ul className='space-y-3 text-sm'>
-                  {recipientRows.map((row) => (
-                    <li key={row.label} className='flex items-center gap-2.5'>
-                      <span className='mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
-                        <HugeiconsIcon icon={row.icon} strokeWidth={1.75} className='size-3.5' />
-                      </span>
-                      <div className='min-w-0'>
-                        <p className='text-[0.7rem] font-medium text-muted-foreground'>{row.label}</p>
-                        <p className='wrap-break-word font-semibold text-foreground'>{row.value}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+              <SectionCard icon={MapPinpoint02Icon} title={t('orders.list.detail.recipientHeading')}>
+                <IconRowList rows={recipientRows} />
               </SectionCard>
             ) : null}
 
@@ -636,6 +623,102 @@ function SectionCard({ icon, title, aside, children }: SectionCardProps) {
       </header>
       {children}
     </section>
+  )
+}
+
+interface IconRow {
+  icon: typeof UserIcon
+  label: string
+  value: string
+}
+
+const buildIconRows = (rows: (IconRow | null)[]) => rows.filter((row): row is IconRow => Boolean(row))
+
+function IconRowList({ rows }: { rows: IconRow[] }) {
+  return (
+    <ul className='space-y-3 text-sm'>
+      {rows.map((row) => (
+        <li key={row.label} className='flex items-center gap-2.5'>
+          <span className='mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
+            <HugeiconsIcon icon={row.icon} strokeWidth={1.75} className='size-3.5' />
+          </span>
+          <div className='min-w-0'>
+            <p className='text-[0.7rem] font-medium text-muted-foreground'>{row.label}</p>
+            <p className='wrap-break-word font-semibold text-foreground'>{row.value}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+interface OrderItemRowProps {
+  item: OrderItem
+  t: ReturnType<typeof useTranslation>['t']
+}
+
+function OrderItemRow({ item, t }: OrderItemRowProps) {
+  const parentName = item.parentProductName?.trim()
+  // A variant line points at its parent page with the variant preselected, so the
+  // customer lands on the same picker they bought from.
+  const href = item.parentProductId
+    ? buildProductVariantHref(item.parentProductId, item.productId)
+    : item.productId
+      ? `/products/${item.productId}`
+      : null
+
+  const headline = parentName || item.name
+  const variantName = parentName && item.name !== parentName ? item.name : null
+
+  return (
+    <li className='flex items-center gap-3 py-3 first:pt-0 last:pb-0'>
+      {href ? (
+        <Link
+          href={href}
+          className='relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-primary/10 sm:size-20'
+        >
+          {item.coverImage ? (
+            <Image src={item.coverImage} alt={item.name} fill sizes='80px' quality={65} className='object-cover' />
+          ) : (
+            <HugeiconsIcon icon={FlowerIcon} className='size-7 text-primary/40' />
+          )}
+        </Link>
+      ) : (
+        <div className='flex size-16 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 ring-1 ring-foreground/5 sm:size-20'>
+          <HugeiconsIcon icon={FlowerIcon} className='size-7 text-muted-foreground/50' />
+        </div>
+      )}
+
+      <div className='min-w-0 flex-1'>
+        {href ? (
+          <Link
+            href={href}
+            className='font-title line-clamp-2 text-sm font-bold leading-tight text-primary hover:text-primary/80'
+          >
+            {headline}
+          </Link>
+        ) : (
+          <p className='line-clamp-2 text-sm font-medium'>{headline}</p>
+        )}
+
+        {variantName ? (
+          <p className='mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5'>
+            <span className='text-[0.7rem] font-medium text-muted-foreground'>
+              {t('orders.list.detail.variantLabel')}
+            </span>
+            <span className='inline-flex rounded-full bg-secondary/40 px-2 py-0.5 text-[0.7rem] font-semibold text-secondary-foreground ring-1 ring-primary/10'>
+              {variantName}
+            </span>
+          </p>
+        ) : null}
+
+        <p className='mt-1 text-xs text-muted-foreground'>
+          {t('orders.checkout.lineQty', { qty: item.number, price: formatVnd(item.price) })}
+        </p>
+      </div>
+
+      <span className='shrink-0 text-sm font-semibold text-primary'>{formatVnd(item.price * item.number)}</span>
+    </li>
   )
 }
 

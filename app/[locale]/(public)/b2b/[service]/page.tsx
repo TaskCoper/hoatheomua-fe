@@ -64,8 +64,7 @@ export default async function B2BServicePage({ params }: { params: Promise<{ loc
   return (
     <ScopedIntlProvider namespaces={['b2b']}>
       <JsonLd data={buildB2BServiceJsonLd(locale, service, detail)} />
-      {/* overflow-clip (not -hidden): clips the floating petals without creating a
-          scroll container, so the sidebar's position:sticky works against the viewport. */}
+
       <div className='relative overflow-clip pb-4'>
         <ServiceBreadcrumb detail={detail} locale={locale} />
         <ServiceDetailHero detail={detail} locale={locale} />

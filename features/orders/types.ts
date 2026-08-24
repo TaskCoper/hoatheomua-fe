@@ -87,6 +87,7 @@ export interface OrderTransaction {
 
 export interface OrderDetail {
   orderId: string
+  userId: string
   status: OrderStatus
   createAt: string
   trackNumber: string
@@ -103,6 +104,18 @@ export interface OrderDetail {
   receiptEmail: string | null
   receiptFullName: string | null
   receiptPhoneNumber: string | null
+  // Buyer (account holder) as captured at checkout.
+  fullName: string | null
+  phone: string | null
+  // Whoever actually receives the bouquet - often not the buyer.
+  fullNameReceiver: string | null
+  phoneReceiver: string | null
+  address: string | null
+  shortAddress: string | null
+  latitude: number
+  longitude: number
+  ward: number
+  city: number
   shippingFee: number
   productFee: number
   totalFee: number
@@ -126,6 +139,8 @@ export interface OrderItem {
   height: number
   productId: string
   coverImage: string | null
+  parentProductId: string | null
+  parentProductName: string | null
 }
 
 export const InvoiceType = {

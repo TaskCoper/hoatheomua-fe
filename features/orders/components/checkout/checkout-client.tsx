@@ -125,12 +125,8 @@ export function CheckoutClient() {
   const summaryOrderTime = formatDate(watchedOrderTime ?? new Date(), 'dateLong')
   const selectedTagId = watchedTagIds?.[0]
 
-  // No tag means no time slot was requested: the order goes out as soon as the
-  // transfer clears, so the summary says that rather than hiding the row.
   const summaryDeliveryTime =
-    selectedTagId !== undefined
-      ? orderTags?.options?.find((o) => o.value === selectedTagId)?.label
-      : t('orders.checkout.tagNone')
+    selectedTagId !== undefined ? orderTags?.options?.find((o) => o.value === selectedTagId)?.label : undefined
 
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 

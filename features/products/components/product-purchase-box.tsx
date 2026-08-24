@@ -15,7 +15,6 @@ import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { FlashIcon, MinusSignIcon, PlusSignIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
-import { useSearchParams } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -31,7 +30,6 @@ export default function ProductPurchaseBox() {
   const { t } = useTranslation()
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const { isAuthenticated, isGettingMe, me } = useGetMe()
 
   const addItem = useCartStore((state) => state.addItem)
@@ -82,8 +80,8 @@ export default function ProductPurchaseBox() {
     if (isGettingMe) return false
 
     if (!isAuthenticated) {
-      const queryString = searchParams.toString()
-      const from = `${pathname}${queryString ? `?${queryString}` : ''}`
+      const queryString = typeof window === 'undefined' ? '' : window.location.search
+      const from = `${pathname}${queryString}`
       router.push(`/sign-in?from=${encodeURIComponent(from)}`)
       return false
     }

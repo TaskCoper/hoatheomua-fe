@@ -1,7 +1,13 @@
 'use client'
 
 import type { ProductDetail } from '@/features/products/types'
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { createContext, Suspense, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+
+export const VARIANT_QUERY_KEY = 'variant'
+
+export const buildProductVariantHref = (parentId: string, variantId?: string | null) =>
+  variantId ? `/products/${parentId}?${VARIANT_QUERY_KEY}=${encodeURIComponent(variantId)}` : `/products/${parentId}`
 
 interface ProductVariantContextValue {
   /** The parent/grouping product row. */
@@ -30,6 +36,13 @@ export function ProductVariantProvider({ product, children }: { product: Product
     return (variants.find((child) => availableOf(child) > 0) ?? variants[0]).id
   })
 
+  const selectFromQuery = useCallback(
+    (id: string) => {
+      setSelectedId((current) => (variants.some((child) => child.id === id) ? id : current))
+    },
+    [variants]
+  )
+
   const selected = useMemo(
     () => variants.find((child) => child.id === selectedId) ?? product,
     [variants, selectedId, product]
@@ -40,7 +53,25 @@ export function ProductVariantProvider({ product, children }: { product: Product
     [product, variants, selectedId, selected]
   )
 
-  return <ProductVariantContext.Provider value={value}>{children}</ProductVariantContext.Provider>
+  return (
+    <ProductVariantContext.Provider value={value}>
+      <Suspense fallback={null}>
+        <VariantQuerySync onSelect={selectFromQuery} />
+      </Suspense>
+      {children}
+    </ProductVariantContext.Provider>
+  )
+}
+
+function VariantQuerySync({ onSelect }: { onSelect: (id: string) => void }) {
+  const searchParams = useSearchParams()
+  const requestedId = searchParams.get(VARIANT_QUERY_KEY)
+
+  useEffect(() => {
+    if (requestedId) onSelect(requestedId)
+  }, [requestedId, onSelect])
+
+  return null
 }
 
 export function useProductVariant() {
