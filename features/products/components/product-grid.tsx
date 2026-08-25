@@ -9,6 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious
 } from '@/components/ui/pagination'
+import CustomizableProductCard from '@/features/products/components/customizable-product-card'
 import ProductCard from '@/features/products/components/product-card'
 import ProductGridEmpty from '@/features/products/components/product-grid-empty'
 import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
@@ -56,6 +57,7 @@ export default function ProductGrid({
   onPageChange,
   pageHref,
   pageSize = PRODUCTS_PAGE_SIZE,
+  isCustomizable = false,
   className,
   columnsClassName = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
   columnsStyle
@@ -72,6 +74,12 @@ export default function ProductGrid({
    */
   pageHref?: (page: number) => string
   pageSize?: number
+  /**
+   * Renders every card in this grid with `CustomizableProductCard` instead: a
+   * made-to-order bouquet is sold by the stems that go into it, so its card shows
+   * that ingredient list rather than one finished-arrangement photo.
+   */
+  isCustomizable?: boolean
   className?: string
   columnsClassName?: string
   columnsStyle?: CSSProperties
@@ -102,6 +110,7 @@ export default function ProductGrid({
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
   const pageNumbers = getPageNumbers(page, totalPages)
   const hrefFor = (target: number) => (pageHref ? pageHref(target) || '#' : '#')
+  const CardComponent = isCustomizable ? CustomizableProductCard : ProductCard
 
   const goToPage = (event: React.MouseEvent<HTMLAnchorElement>, target: number) => {
     if (isModifiedClick(event)) return
@@ -152,7 +161,7 @@ export default function ProductGrid({
         className={cn('grid w-full gap-3 sm:gap-4 lg:gap-5', columnsClassName)}
       >
         {items.map((product, index) => (
-          <ProductCard
+          <CardComponent
             key={product.id}
             product={product}
             eager={page === DEFAULT_PAGE_INDEX && index < 4}

@@ -32,11 +32,16 @@ export default function ConfigurableBanner({
   if (state.status === 'hidden') return null
 
   const banner = state.status === 'banner' ? state.banner : undefined
+  // CMS records can be enabled before an image has been uploaded. Treat blank
+  // sources as absent so Next/Image receives the local fallback instead.
+  const bannerImage = typeof banner?.image === 'string' ? banner.image.trim() : undefined
+  const bannerHref = typeof banner?.href === 'string' ? banner.href.trim() : undefined
+  const openInNewTab = banner?.openInNewTab === true
 
-  const image: ReactNode = banner ? (
+  const image: ReactNode = bannerImage ? (
     <Image
-      src={banner.image}
-      alt={banner.alt[locale] || fallbackAlt}
+      src={bannerImage}
+      alt={banner?.alt[locale] || fallbackAlt}
       width={fallbackSrc.width}
       height={fallbackSrc.height}
       className={className}
@@ -48,22 +53,22 @@ export default function ConfigurableBanner({
     <Image src={fallbackSrc} alt={fallbackAlt} className={className} sizes={sizes} loading='lazy' quality={quality} />
   )
 
-  const content = !banner?.href ? (
+  const content = !bannerHref ? (
     image
-  ) : banner.href.startsWith('/') ? (
+  ) : bannerHref.startsWith('/') ? (
     <Link
-      href={banner.href}
-      target={banner.openInNewTab ? '_blank' : undefined}
-      rel={banner.openInNewTab ? 'noopener noreferrer' : undefined}
+      href={bannerHref}
+      target={openInNewTab ? '_blank' : undefined}
+      rel={openInNewTab ? 'noopener noreferrer' : undefined}
       className='block'
     >
       {image}
     </Link>
   ) : (
     <a
-      href={banner.href}
-      target={banner.openInNewTab ? '_blank' : undefined}
-      rel={banner.openInNewTab ? 'noopener noreferrer' : undefined}
+      href={bannerHref}
+      target={openInNewTab ? '_blank' : undefined}
+      rel={openInNewTab ? 'noopener noreferrer' : undefined}
       className='block'
     >
       {image}

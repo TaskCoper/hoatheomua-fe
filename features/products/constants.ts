@@ -1,6 +1,8 @@
 export const VASE_CATEGORY_IDS = [19958, 58929, 58905, 58841, 58840]
 export const DAILY_FLOWER_CATEGORY_IDS = [58869]
 
+export const CUSTOMIZABLE_CATEGORY_ID = '9d3ca2e4-b3bb-47f1-8e65-b0cf71499235'
+
 /** Product grid page size for the category-driven listing sections. */
 export const PRODUCTS_PAGE_SIZE = 16
 

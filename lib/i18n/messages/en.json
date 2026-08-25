@@ -1337,7 +1337,10 @@
       "addToFavorites": "Add {name} to favorites",
       "addToCart": "Add {name} to cart",
       "priceFrom": "From",
-      "outOfStock": "Out of stock"
+      "outOfStock": "Out of stock",
+      "madeToOrder": "Custom bouquet",
+      "ingredientCount": "{count} ingredients",
+      "aiPreview": "AI preview"
     },
     "summary": {
       "trustBadges": {

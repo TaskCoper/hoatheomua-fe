@@ -1337,7 +1337,10 @@
       "addToFavorites": "Thêm {name} vào yêu thích",
       "addToCart": "Thêm {name} vào giỏ",
       "priceFrom": "Giá từ",
-      "outOfStock": "Hết hàng"
+      "outOfStock": "Hết hàng",
+      "madeToOrder": "Bó theo yêu cầu",
+      "ingredientCount": "{count} loại hoa",
+      "aiPreview": "Xem trước AI"
     },
     "summary": {
       "trustBadges": {
