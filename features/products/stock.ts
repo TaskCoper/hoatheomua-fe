@@ -11,7 +11,9 @@ export const toSellableQuantity = (value: number | null | undefined): number =>
 export const buildSellableQuantityMap = (rows: ProductSellableQuantity[] | undefined): Map<string, number> => {
   const map = new Map<string, number>()
   rows?.forEach((row) => {
-    if (row?.id) map.set(row.id, toSellableQuantity(row.sellableQuantity))
+    // An inactive product is not purchasable regardless of leftover stock, so it
+    // reads as sold out everywhere this map feeds - display, add to cart, checkout.
+    if (row?.id) map.set(row.id, row.isActive ? toSellableQuantity(row.sellableQuantity) : 0)
   })
   return map
 }

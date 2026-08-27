@@ -259,6 +259,7 @@ type ProductRawFieldKey =
 export interface ProductSellableQuantity {
   id: string
   productName: string | null
+  isActive: boolean
   sellableQuantity: number
 }
 

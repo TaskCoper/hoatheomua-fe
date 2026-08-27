@@ -2,18 +2,6 @@ import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import { GetProductsParams } from './hooks/use-get-products'
 import type { ProductDetail, ProductSellableQuantity, ProductSummary } from './types'
 
-// The bulk stock endpoint is the one place the API shape is not pinned down: it
-// may answer with a bare array, a paginated envelope, or a single row when one
-// id is asked for. Normalizing here keeps every caller on `ProductSellableQuantity[]`.
-type SellableQuantityValue = ProductSellableQuantity[] | { items: ProductSellableQuantity[] } | ProductSellableQuantity
-
-const normalizeSellableQuantities = (value: SellableQuantityValue | null | undefined): ProductSellableQuantity[] => {
-  if (!value) return []
-  if (Array.isArray(value)) return value
-  if ('items' in value) return Array.isArray(value.items) ? value.items : []
-  return value.id ? [value] : []
-}
-
 class ProductService {
   private readonly baseUrl = 'products'
 
@@ -34,9 +22,11 @@ class ProductService {
   }
 
   getProductsSellableQuantity = async ({ productIds }: { productIds: string[] }) => {
-    const { data } = await api.post<BaseResponse<SellableQuantityValue>>(`/v1/${this.baseUrl}/filter`, { productIds })
+    const { data } = await api.post<BaseResponse<ProductSellableQuantity[]>>(`/v1/${this.baseUrl}/filter`, {
+      productIds
+    })
 
-    return normalizeSellableQuantities(data.value)
+    return data.value
   }
 
   getProduct = async ({ id }: { id: string }) => {
