@@ -1,7 +1,7 @@
+import { useGetProductSummary } from '@/features/products/hooks/use-get-product-summary'
 import type { CartItem } from '@/stores/cart.store'
 import { useMemo } from 'react'
 import type { CheckoutSummaryLine } from '../components/checkout/checkout-sidebar'
-import { useProductsByIds } from './use-products-by-ids'
 
 interface UseCheckoutSummaryArgs {
   items: CartItem[]
@@ -10,24 +10,26 @@ interface UseCheckoutSummaryArgs {
 }
 
 export const useCheckoutSummary = ({ items, hasTaxCode, shippingFee }: UseCheckoutSummaryArgs) => {
-  const productById = useProductsByIds(items)
+  const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.productId))), [items])
+  const { productSummaryById } = useGetProductSummary({ productIds })
 
   const summaryLines: CheckoutSummaryLine[] = useMemo(
     () =>
       items.map((item) => {
-        const product = productById.get(item.productId)
+        const product = productSummaryById.get(item.productId)?.product ?? null
         const unitPrice = product?.price ?? 0
 
         return {
           lineId: item.lineId,
-          name: product?.productName ?? `#${item.productId}`,
+          name: product?.parent?.productName ?? product?.productName ?? `#${item.productId}`,
+          variantName: product?.parent ? product.productName : null,
           image: product?.coverImage ?? null,
           quantity: item.quantity,
           unitPrice,
           subtotal: unitPrice * item.quantity
         }
       }),
-    [items, productById]
+    [items, productSummaryById]
   )
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)

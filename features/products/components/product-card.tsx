@@ -39,7 +39,7 @@ export default function ProductCard({
   const hasDiscount = oldPrice > retail
   const discountPercent = hasDiscount ? Math.round(((oldPrice - retail) / oldPrice) * 100) : 0
   const avatar = product.coverImage
-  const isOutOfStock = (product.availableForSale ?? 0) <= 0
+  const isOutOfStock = (product.sellableQuantity ?? 0) <= 0
 
   return (
     <motion.article

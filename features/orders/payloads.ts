@@ -1,4 +1,4 @@
-import type { ProductDetail } from '@/features/products/types'
+import type { ProductSummary } from '@/features/products/types'
 import type { CartItem } from '@/stores/cart.store'
 import type { CheckoutPayload, EstimatePayload, PaymentGateway, PaymentMethod } from './types'
 import type { CheckoutFormValues, EstimateFormValues } from './validations'
@@ -32,7 +32,7 @@ export const toOrderTimestamp = (value: string | null): number => {
 export const buildEstimatePayload = (
   values: EstimateFormValues,
   items: CartItem[],
-  productById: Map<string, ProductDetail>,
+  productById: Map<string, ProductSummary>,
   contact: OrderContact
 ): EstimatePayload => {
   const fullAddress = `${values.addressLine}, ${values.ward}, ${values.city}`
@@ -48,6 +48,7 @@ export const buildEstimatePayload = (
     orderTime: toOrderTimestamp(values.orderTime),
     items: items.map((item) => ({
       itemId: productById.get(item.productId)?.nhanhProductId ?? item.productId,
+      productId: item.productId,
       number: item.quantity
     })),
     tagIds: values.tagIds
@@ -57,7 +58,7 @@ export const buildEstimatePayload = (
 export const buildCheckoutPayload = (
   values: CheckoutFormValues,
   items: CartItem[],
-  productById: Map<string, ProductDetail>,
+  productById: Map<string, ProductSummary>,
   contact: OrderContact,
   paymentMethod: PaymentMethod,
   gateway: PaymentGateway,

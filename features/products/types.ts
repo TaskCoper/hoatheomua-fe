@@ -9,6 +9,7 @@ export interface Product {
   id: string
   isPinned: boolean
   categories: ProductCategory[]
+  sellableQuantity: number
 
   otherImages: string[] | null
 
@@ -253,6 +254,28 @@ type ProductRawFieldKey =
   | 'nhanhCreatedAtRaw'
   | 'branchPriceDuplicateRaw'
   | 'wholesaleBranchPriceDuplicateRaw'
+
+/** Live stock row from `POST /v1/products/filter` - the single source of truth for stock. */
+export interface ProductSellableQuantity {
+  id: string
+  productName: string | null
+  sellableQuantity: number
+}
+
+/** Slim product shape from `GET /v2/products/{id}/detail` - just enough to render a cart/order line. */
+export interface ProductSummary {
+  id: string
+  productName: string | null
+  coverImage: string | null
+  price: number | null
+  oldPrice: number | null
+  sellableQuantity: number
+  nhanhProductId: string
+  parent: {
+    id: string
+    productName: string | null
+  } | null
+}
 
 export interface ProductDetail extends Omit<Product, ProductRawFieldKey> {
   warrantyMonths: number | null

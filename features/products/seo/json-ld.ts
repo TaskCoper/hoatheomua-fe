@@ -26,7 +26,7 @@ export const buildProductsCollectionJsonLd = (locale: Locale, items: ProductDeta
           numberOfItems: items.length,
           itemListElement: items.map((product, index) => {
             const productUrl = getProductUrl(locale, product.id)
-            const available = (product.availableForSale ?? 0) > 0
+            const available = (product.sellableQuantity ?? 0) > 0
             const price = product.price ?? 0
             return {
               '@type': 'ListItem' as const,
@@ -83,7 +83,7 @@ export const buildProductDetailJsonLd = (locale: Locale, product: ProductDetail)
   const productUrl = getProductUrl(locale, product.id)
 
   const bestAvatar = product.coverImage ?? PRODUCT_DEFAULT_FALLBACK_IMAGE
-  const inStock = (product.availableForSale ?? 0) > 0
+  const inStock = (product.sellableQuantity ?? 0) > 0
   const description = `${productName} - Hoa Theo Mùa`
 
   const listCopy = PRODUCTS_LIST_COPY[locale]

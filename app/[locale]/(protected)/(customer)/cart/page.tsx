@@ -3,8 +3,12 @@
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
-import { productDetailQuery } from '@/features/products/queries'
-import type { ProductDetail } from '@/features/products/types'
+import { buildProductVariantHref } from '@/features/products/components/product-variant-context'
+import { useGetProductSummary } from '@/features/products/hooks/use-get-product-summary'
+import { useGetProductsSellableQuantity } from '@/features/products/hooks/use-get-products-sellable-quantity'
+import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
+import { toSellableQuantity } from '@/features/products/stock'
+import type { ProductSummary } from '@/features/products/types'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
 import { formatVnd } from '@/lib/currency'
@@ -14,6 +18,7 @@ import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { type CartItem, useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import {
+  Alert02Icon,
   Delete02Icon,
   FlowerIcon,
   MinusSignIcon,
@@ -22,7 +27,6 @@ import {
   ShoppingBasket02Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useQueries } from '@tanstack/react-query'
 import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
@@ -31,7 +35,7 @@ type UnavailableReason = 'missing' | 'out-of-stock'
 
 interface MergedCartLine {
   cartItem: CartItem
-  product: ProductDetail | null
+  product: ProductSummary | null
   isResolving: boolean
   isUnavailable: boolean
   unavailableReason: UnavailableReason | null
@@ -81,31 +85,23 @@ export default function CartPage() {
     [items, hasHydrated]
   )
 
-  const productQueries = useQueries({
-    queries: productIds.map((id) => productDetailQuery(id))
-  })
+  const { productSummaryById } = useGetProductSummary({ productIds })
 
-  const productStateById = useMemo(() => {
-    const map = new Map<string, { product: ProductDetail | null; isResolving: boolean }>()
-    productIds.forEach((id, index) => {
-      const query = productQueries[index]
-      map.set(id, {
-        product: query?.data ?? null,
-        isResolving: !query || query.isLoading
-      })
-    })
-    return map
-  }, [productIds, productQueries])
+  // Product details can be served from cache; stock cannot. This is the number
+  // every line below is judged against.
+  const { sellableQuantityById } = useGetProductsSellableQuantity({ productIds })
+  const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
 
   const mergedLines = useMemo<MergedCartLine[]>(() => {
     return items.map<MergedCartLine>((cartItem) => {
-      const state = productStateById.get(cartItem.productId)
+      const state = productSummaryById.get(cartItem.productId)
       const product = state?.product ?? null
       const isResolving = state?.isResolving ?? true
 
-      const rawStock = product?.availableForSale
-      const isStockKnown = typeof rawStock === 'number' && Number.isFinite(rawStock) && rawStock >= 0
-      const stock = isStockKnown ? rawStock : null
+      const liveStock = sellableQuantityById.get(cartItem.productId)
+      const rawStock = liveStock ?? product?.sellableQuantity
+      const isStockKnown = typeof rawStock === 'number' && Number.isFinite(rawStock)
+      const stock = isStockKnown ? toSellableQuantity(rawStock) : null
       const unitPrice = product?.price ?? 0
       const lineSubtotal = unitPrice * cartItem.quantity
 
@@ -164,7 +160,7 @@ export default function CartPage() {
         isSelectable: !isOverStock
       }
     })
-  }, [items, productStateById])
+  }, [items, productSummaryById, sellableQuantityById])
 
   const isLineChecked = (line: MergedCartLine) => line.isSelectable && !deselectedIds.has(line.cartItem.lineId)
 
@@ -192,6 +188,23 @@ export default function CartPage() {
 
   const subtotal = selectedLines.reduce((sum, line) => sum + line.lineSubtotal, 0)
   const selectedCartItems = selectedLines.map((line) => line.cartItem)
+
+  // Stock can move between the moment a line was added and the moment checkout is
+  // pressed. On a shortage the fresh numbers land in the query cache, which re-marks
+  // the offending lines as over-stock or sold out and drops them out of the selection.
+  const handleCheckout = async () => {
+    const { ok } = await verifySellableQuantity(
+      selectedLines.map((line) => ({
+        productId: line.cartItem.productId,
+        productName: line.product?.productName ?? null,
+        quantity: line.cartItem.quantity
+      }))
+    )
+    if (!ok) return
+
+    setCheckoutIntent(selectedCartItems, 'cart')
+    router.push('/checkout')
+  }
 
   if (!hasHydrated) {
     return (
@@ -327,16 +340,13 @@ export default function CartPage() {
                 </Button>
               ) : (
                 <Button
-                  disabled={noneChecked}
+                  disabled={noneChecked || isVerifyingSellableQuantity}
                   className='w-full'
                   size='lg'
-                  onClick={() => {
-                    setCheckoutIntent(selectedCartItems, 'cart')
-                    router.push('/checkout')
-                  }}
+                  onClick={handleCheckout}
                 >
                   <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                  {t('cart.actions.checkout')}
+                  {isVerifyingSellableQuantity ? t('products.stock.checking') : t('cart.actions.checkout')}
                 </Button>
               )}
             </motion.div>
@@ -405,31 +415,33 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
   const retailPrice = product?.price ?? 0
   const oldPrice = product?.oldPrice ?? 0
   const hasDiscount = product ? oldPrice > retailPrice : false
-  const canUseMax = isOverStock && typeof stock === 'number' && stock > 0
+  const productHref = product
+    ? buildProductVariantHref(product.parent?.id ?? product.id, product.parent?.id ? product.id : null)
+    : null
 
   return (
     <motion.li
       data-testid='cart-line'
       variants={cardItem}
-      whileHover={!isUnavailable ? { y: -4, scale: 1.005 } : undefined}
-      transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-      className={`group relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-card p-4 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 sm:flex-row sm:items-start sm:p-5 ${
-        isUnavailable ? 'opacity-70' : ''
+      whileHover={!isUnavailable ? { y: -3 } : undefined}
+      transition={{ type: 'spring', stiffness: 240, damping: 20 }}
+      className={`group relative flex flex-col gap-5 overflow-hidden rounded-3xl bg-card p-5 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow duration-300 hover:shadow-[0_1rem_2.4rem_rgb(81_108_108/14%)] sm:flex-row sm:items-stretch ${
+        isUnavailable ? 'opacity-60' : ''
       }`}
     >
-      <div className='flex items-start gap-3 sm:flex-1'>
+      <div className='flex items-start gap-4 sm:flex-1'>
         <Checkbox
           checked={checked}
           disabled={!isSelectable}
           onCheckedChange={onToggle}
           aria-label={t('cart.actions.selectLine')}
-          className='mt-1.5'
+          className='mt-2'
         />
 
-        {product?.id ? (
+        {product?.id && productHref ? (
           <Link
-            href={`/products/${product.id}`}
-            className='relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/40 ring-1 ring-foreground/5 sm:size-28'
+            href={productHref}
+            className='relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-foreground/8 sm:size-28'
           >
             {avatar ? (
               <Image
@@ -447,19 +459,24 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
         ) : isResolving ? (
           <Skeleton className='size-24 shrink-0 sm:size-28' />
         ) : (
-          <div className='flex size-24 shrink-0 items-center justify-center rounded-2xl bg-secondary/40 ring-1 ring-foreground/5 sm:size-28'>
+          <div className='flex size-24 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 ring-1 ring-foreground/8 sm:size-28'>
             <HugeiconsIcon icon={FlowerIcon} className='size-9 text-muted-foreground/50' />
           </div>
         )}
 
-        <div className='min-w-0 flex-1 space-y-1.5'>
-          {product?.id ? (
-            <Link
-              href={`/products/${product.id}`}
-              className='font-title line-clamp-2 text-sm font-bold leading-tight text-primary hover:text-primary/80 sm:text-base'
-            >
-              {product.productName}
-            </Link>
+        <div className='min-w-0 flex-1 space-y-1 py-0.5'>
+          {product?.id && productHref ? (
+            <>
+              <Link
+                href={productHref}
+                className='font-title line-clamp-2 text-base font-bold leading-snug text-primary hover:text-primary/80 sm:text-lg'
+              >
+                {product.parent?.productName ?? product.productName}
+              </Link>
+              {product.parent && (
+                <p className='line-clamp-1 text-xs font-medium text-muted-foreground'>{product.productName}</p>
+              )}
+            </>
           ) : isResolving ? (
             <Skeleton className='h-4 w-32' />
           ) : (
@@ -467,7 +484,8 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           )}
 
           {unitName && (
-            <p className='inline-flex items-center rounded-full bg-secondary/30 px-2 py-0.5 text-[0.625rem] font-semibold text-primary ring-1 ring-foreground/5'>
+            <p className='inline-flex items-center gap-1 text-xs font-medium text-muted-foreground'>
+              <span className='inline-block size-1 rounded-full bg-muted-foreground/50' aria-hidden='true' />
               {t('cart.unitLabel', { unit: unitName })}
             </p>
           )}
@@ -475,39 +493,45 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           {isResolving && <Skeleton className='h-4 w-20' />}
 
           {product && !isResolving && (
-            <div className='flex items-baseline gap-2'>
-              <span className='font-title text-base font-bold text-primary'>{formatVnd(retailPrice)}</span>
+            <div className='flex items-baseline gap-2 pt-0.5'>
+              <span className='font-title text-lg font-bold text-primary'>{formatVnd(retailPrice)}</span>
               {hasDiscount && <span className='text-xs text-muted-foreground line-through'>{formatVnd(oldPrice)}</span>}
             </div>
           )}
 
           {isUnavailable && (
-            <p className='inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[0.625rem] font-semibold text-destructive ring-1 ring-destructive/15'>
+            <p className='text-xs font-medium text-destructive'>
               {unavailableReason === 'missing' ? t('cart.unavailable.missing') : t('cart.unavailable.outOfStock')}
             </p>
           )}
 
-          {!isUnavailable && isOverStock && typeof stock === 'number' && (
-            <p className='inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[0.625rem] font-semibold text-destructive ring-1 ring-destructive/15'>
-              {t('cart.overStock', { stock })}
+          {!isUnavailable && !isOverStock && typeof stock === 'number' && stock > 0 && stock <= 5 && (
+            <p className='inline-flex items-center gap-1 text-xs font-medium text-warning'>
+              <span className='inline-block size-1 rounded-full bg-warning' aria-hidden='true' />
+              {t('cart.inStock', { stock })}
             </p>
           )}
 
-          {!isUnavailable && !isOverStock && typeof stock === 'number' && stock > 0 && stock <= 5 && (
-            <p className='inline-flex items-center rounded-full bg-warning/10 px-2 py-0.5 text-[0.625rem] font-semibold text-warning ring-1 ring-warning/15'>
-              {t('cart.inStock', { stock })}
-            </p>
+          {!isUnavailable && isOverStock && typeof stock === 'number' && (
+            <button
+              type='button'
+              onClick={() => onUseMax(stock)}
+              className='cursor-pointer flex items-center gap-1.5 rounded-xl bg-destructive/8 px-2.5 py-1.5 text-left text-xs font-medium text-destructive ring-1 ring-destructive/10 transition-colors hover:bg-destructive/12'
+            >
+              <HugeiconsIcon icon={Alert02Icon} className='size-3.5 shrink-0' />
+              {t('cart.overStockAction', { stock })}
+            </button>
           )}
         </div>
       </div>
 
-      <div className='flex items-center justify-between gap-3 border-t border-border/60 pt-3 sm:flex-col sm:items-end sm:justify-start sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0'>
-        <div className='inline-flex items-center gap-1 rounded-full bg-secondary/20 p-1 ring-1 ring-foreground/10'>
+      <div className='flex items-center justify-between gap-4 border-t border-border/60 pt-4 sm:w-32 sm:flex-none sm:flex-col sm:items-end sm:justify-between sm:border-t-0 sm:border-l sm:border-border/60 sm:pt-0 sm:pl-6'>
+        <div className='inline-flex items-center divide-x divide-border/70 rounded-full border border-border/70'>
           <Button
             type='button'
-            size='icon-sm'
+            size='icon-xs'
             variant='ghost'
-            className='rounded-full'
+            className='rounded-l-full rounded-r-none'
             onClick={onDecrement}
             disabled={isUnavailable || cartItem.quantity <= 1}
             aria-label={t('cart.actions.decrease')}
@@ -522,9 +546,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           </span>
           <Button
             type='button'
-            size='icon-sm'
+            size='icon-xs'
             variant='ghost'
-            className='rounded-full'
+            className='rounded-l-none rounded-r-full'
             onClick={onIncrement}
             disabled={isUnavailable || (typeof stock === 'number' && cartItem.quantity >= stock)}
             aria-label={t('cart.actions.increase')}
@@ -535,31 +559,22 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
 
         {!isUnavailable && product && (
           <div className='text-right'>
-            <p className='text-[0.625rem] font-medium uppercase tracking-wider text-muted-foreground'>
-              {t('cart.lineSubtotal')}
-            </p>
-            <p data-testid='cart-line-subtotal' className='font-title text-base font-bold text-primary'>
+            <p className='text-[0.625rem] font-medium text-muted-foreground'>{t('cart.lineSubtotal')}</p>
+            <p data-testid='cart-line-subtotal' className='font-title text-lg font-bold text-primary'>
               {formatVnd(line.lineSubtotal)}
             </p>
           </div>
         )}
 
-        <div className='flex items-center gap-2'>
-          {canUseMax && (
-            <Button variant='secondary' size='sm' className='rounded-full' onClick={() => onUseMax(stock)}>
-              {t('cart.actions.useMax', { stock })}
-            </Button>
-          )}
-          <Button
-            variant='ghost'
-            size='icon-sm'
-            onClick={onRemove}
-            aria-label={t('cart.actions.remove')}
-            className='rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-          >
-            <HugeiconsIcon icon={Delete02Icon} className='size-4' />
-          </Button>
-        </div>
+        <Button
+          variant='ghost'
+          size='icon-sm'
+          onClick={onRemove}
+          aria-label={t('cart.actions.remove')}
+          className='rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
+        >
+          <HugeiconsIcon icon={Delete02Icon} className='size-4' />
+        </Button>
       </div>
     </motion.li>
   )

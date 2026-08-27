@@ -583,6 +583,7 @@
       "outOfStock": "This product is out of stock."
     },
     "overStock": "Only {stock} left in stock. Please reduce the quantity.",
+    "overStockAction": "Only {stock} left in stock — tap to reduce the quantity.",
     "inStock": "{stock} in stock",
     "lineSubtotal": "Subtotal",
     "unitLabel": "Variant: {unit}",
@@ -1443,6 +1444,13 @@
           }
         }
       }
+    },
+    "stock": {
+      "changed": "Stock has changed",
+      "soldOutLine": "{name} is sold out",
+      "remainingLine": "{name}: only {available} left",
+      "unnamed": "This product",
+      "checking": "Checking stock…"
     }
   },
   "b2b": {

@@ -15,6 +15,7 @@ import { useState } from 'react'
 export interface CheckoutSummaryLine {
   lineId: string
   name: string
+  variantName?: string | null
   image: string | null
   quantity: number
   unitPrice: number
@@ -91,6 +92,9 @@ export function CheckoutSidebar({
                 </div>
                 <div className='min-w-0 flex-1'>
                   <p className='truncate text-sm font-medium'>{line.name}</p>
+                  {line.variantName ? (
+                    <p className='truncate text-xs text-muted-foreground'>{line.variantName}</p>
+                  ) : null}
                   <p className='text-xs text-muted-foreground'>
                     {t('orders.checkout.lineQty', { qty: line.quantity, price: formatVnd(line.unitPrice) })}
                   </p>

@@ -1,5 +1,7 @@
 'use client'
 
+import { useGetProductsSellableQuantity } from '@/features/products/hooks/use-get-products-sellable-quantity'
+import { toSellableQuantity, withLiveStock } from '@/features/products/stock'
 import type { ProductDetail } from '@/features/products/types'
 import { useSearchParams } from 'next/navigation'
 import { createContext, Suspense, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
@@ -23,13 +25,35 @@ interface ProductVariantContextValue {
 
 const ProductVariantContext = createContext<ProductVariantContextValue | null>(null)
 
-export const availableOf = (product: ProductDetail) => Math.floor(product.availableForSale ?? 0)
+export const availableOf = (product: ProductDetail) => toSellableQuantity(product.sellableQuantity)
 
-export function ProductVariantProvider({ product, children }: { product: ProductDetail; children: ReactNode }) {
-  const variants = useMemo(
-    () => (product.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id)),
-    [product.children]
+const sellableChildren = (product: ProductDetail) =>
+  (product.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id))
+
+export function ProductVariantProvider({
+  product: staticProduct,
+  children
+}: {
+  product: ProductDetail
+  children: ReactNode
+}) {
+  // The page ships as statically generated HTML with an hourly revalidate window,
+  // so the stock baked into `staticProduct` can be badly out of date by the time
+  // someone reads it. Re-fetch it for this product and every variant on mount and
+  // overlay the result, which rebuilds the purchase box in place.
+  const productIds = useMemo(
+    () => [staticProduct.id, ...sellableChildren(staticProduct).map((child) => child.id)],
+    [staticProduct]
   )
+
+  const { sellableQuantityById } = useGetProductsSellableQuantity({ productIds })
+
+  const product = useMemo(
+    () => withLiveStock(staticProduct, sellableQuantityById),
+    [staticProduct, sellableQuantityById]
+  )
+
+  const variants = useMemo(() => sellableChildren(product), [product])
 
   const [selectedId, setSelectedId] = useState<string>(() => {
     if (!variants.length) return product.id

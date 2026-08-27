@@ -166,7 +166,9 @@ export interface EstimatePayload {
   phone: string
   remarks: string
   orderTime: number
-  items: { itemId: string; number: number }[]
+  // `itemId` is the Nhanh warehouse id the fulfilment side keys on; `productId` is
+  // our own catalogue id, which is what stock is checked against.
+  items: { itemId: string; productId: string; number: number }[]
   tagIds: number[]
 }
 

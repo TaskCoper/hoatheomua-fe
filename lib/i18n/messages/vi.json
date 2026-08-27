@@ -583,6 +583,7 @@
       "outOfStock": "Sản phẩm này đã hết hàng."
     },
     "overStock": "Chỉ còn {stock} trong kho. Vui lòng giảm số lượng.",
+    "overStockAction": "Chỉ còn {stock} trong kho, nhấn để giảm số lượng.",
     "inStock": "Còn {stock} trong kho",
     "lineSubtotal": "Tạm tính",
     "unitLabel": "Phân loại: {unit}",
@@ -1443,6 +1444,13 @@
           }
         }
       }
+    },
+    "stock": {
+      "changed": "Tồn kho đã thay đổi",
+      "soldOutLine": "{name} đã hết hàng",
+      "remainingLine": "{name}: chỉ còn {available}",
+      "unnamed": "Sản phẩm này",
+      "checking": "Đang kiểm tra tồn kho…"
     }
   },
   "b2b": {
