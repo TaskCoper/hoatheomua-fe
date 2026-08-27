@@ -10,7 +10,7 @@ import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
 import type { AhamoveConfigItem } from '@/types/config.type'
-import { ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
+import { Alert02Icon, ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
@@ -57,14 +57,23 @@ export function CheckoutClient() {
   const { configs: ahamoveConfigs } = useGetPublicConfigs<AhamoveConfigItem>({ group: 'ahamove' })
   const freeShipKm = Number(ahamoveConfigs.find((config) => config.key === 'ahamove.free_ship')?.value.value)
 
-  const { step, goBack, items, handleGoToPayment, handleConfirmOrder, handleCancel, invalidateEstimate } =
-    useCheckoutFlow({
-      methods,
-      estimateOrder,
-      resetEstimate,
-      createOrder,
-      contact
-    })
+  const {
+    step,
+    goBack,
+    items,
+    source,
+    isVerifyingSellableQuantity,
+    handleGoToPayment,
+    handleConfirmOrder,
+    handleCancel,
+    invalidateEstimate
+  } = useCheckoutFlow({
+    methods,
+    estimateOrder,
+    resetEstimate,
+    createOrder,
+    contact
+  })
 
   const [manualAddress, setManualAddress] = useState(false)
   const [isLoadingShippingLocations, setIsLoadingShippingLocations] = useState(false)
@@ -130,28 +139,39 @@ export function CheckoutClient() {
 
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 
-  const { summaryLines, totalItems, productsSubtotal, vatAmount, grandTotal } = useCheckoutSummary({
-    items,
-    hasTaxCode,
-    shippingFee
-  })
+  const { summaryLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } = useCheckoutSummary(
+    {
+      items,
+      hasTaxCode,
+      shippingFee
+    }
+  )
 
-  const isLoading = isEstimatingOrder || isCreatingOrder || isLoadingAddresses || isLoadingShippingLocations
+  const isLoading =
+    isEstimatingOrder ||
+    isCreatingOrder ||
+    isLoadingAddresses ||
+    isLoadingShippingLocations ||
+    isVerifyingSellableQuantity
+
+  const isBlockedByStock = hasUnavailableLines && step < 3
 
   const sidebarAction =
     step === 1
       ? {
-          label: t('orders.checkout.sidebar.goToPayment'),
+          label: isVerifyingSellableQuantity ? t('products.stock.checking') : t('orders.checkout.sidebar.goToPayment'),
           onClick: () => handleGoToPayment(),
-          disabled: items.length === 0 || isLoading,
-          loading: isEstimatingOrder
+          disabled: items.length === 0 || isLoading || isBlockedByStock,
+          loading: isEstimatingOrder || isVerifyingSellableQuantity
         }
       : step === 2
         ? {
-            label: t('orders.checkout.sidebar.payForBooking'),
+            label: isVerifyingSellableQuantity
+              ? t('products.stock.checking')
+              : t('orders.checkout.sidebar.payForBooking'),
             onClick: () => handleConfirmOrder(paymentMethod, gateway, shippingFee),
-            disabled: !selectedServiceId || isLoading,
-            loading: isCreatingOrder
+            disabled: !selectedServiceId || isLoading || isBlockedByStock,
+            loading: isCreatingOrder || isVerifyingSellableQuantity
           }
         : {
             label: t('orders.checkout.sidebar.viewOrders'),
@@ -194,58 +214,83 @@ export function CheckoutClient() {
             </Button>
           </div>
         ) : (
-          <div className='grid grid-cols-1 gap-2 lg:grid-cols-5'>
-            <div className='space-y-2 lg:col-span-3'>
-              {step === 1 ? (
-                <StepPersonal
-                  addresses={addresses}
-                  isLoadingAddresses={isLoadingAddresses}
-                  selectedAddressId={selectedAddressId}
-                  selectedAddress={selectedAddress}
-                  onSelectAddress={handleSelectAddress}
-                  onClearAddress={clearAddress}
-                  manualAddress={manualAddress}
-                  onManualAddressChange={setManualAddress}
-                  onLoadingShippingLocationsChange={setIsLoadingShippingLocations}
-                />
-              ) : step === 2 ? (
-                <StepPayment
-                  gateway={gateway}
-                  onGatewayChange={handleGatewayChange}
-                  paymentMethod={paymentMethod}
-                  onPaymentMethodChange={setPaymentMethod}
-                  shippingOptions={sortedAhamove}
-                  selectedServiceId={selectedServiceId}
-                  onSelectShipping={setPickedServiceId}
-                  taxBusinessInfo={taxBusinessInfo}
-                  taxBusinessLookupState={taxBusinessLookupState}
-                  onTaxBusinessInfoChange={setTaxBusinessInfo}
-                  onTaxBusinessLookupStateChange={setTaxBusinessLookupState}
-                />
-              ) : (
-                <StepComplete />
-              )}
-            </div>
+          <>
+            {isBlockedByStock ? (
+              <div className='mb-4 flex flex-col gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 sm:flex-row sm:items-center sm:justify-between'>
+                <div className='flex items-start gap-3'>
+                  <HugeiconsIcon
+                    icon={Alert02Icon}
+                    strokeWidth={2}
+                    className='mt-0.5 size-5 shrink-0 text-destructive'
+                  />
+                  <div className='space-y-0.5'>
+                    <p className='text-sm font-semibold text-destructive'>{t('orders.checkout.stock.blockedTitle')}</p>
+                    <p className='text-xs text-muted-foreground'>{t('orders.checkout.stock.blockedBody')}</p>
+                  </div>
+                </div>
+                <Button asChild type='button' variant='outline' className='shrink-0'>
+                  <Link href={source === 'buy-now' ? '/products' : '/cart'}>
+                    {source === 'buy-now'
+                      ? t('orders.checkout.stock.backToProducts')
+                      : t('orders.checkout.stock.backToCart')}
+                  </Link>
+                </Button>
+              </div>
+            ) : null}
 
-            <div className='lg:col-span-2 lg:sticky lg:top-23 lg:self-start'>
-              <CheckoutSidebar
-                lines={summaryLines}
-                totalItems={totalItems}
-                address={summaryAddress || undefined}
-                orderTimeLabel={summaryOrderTime}
-                deliveryTimeLabel={summaryDeliveryTime}
-                productsSubtotal={productsSubtotal}
-                vatAmount={vatAmount}
-                hasTaxCode={hasTaxCode}
-                shippingFee={rawShippingFee}
-                shippingDiscount={shippingDiscount}
-                showShipping={step >= 2}
-                grandTotal={grandTotal}
-                action={sidebarAction}
-                showTerms={step < 3}
-              />
+            <div className='grid grid-cols-1 gap-2 lg:grid-cols-5'>
+              <div className='space-y-2 lg:col-span-3'>
+                {step === 1 ? (
+                  <StepPersonal
+                    addresses={addresses}
+                    isLoadingAddresses={isLoadingAddresses}
+                    selectedAddressId={selectedAddressId}
+                    selectedAddress={selectedAddress}
+                    onSelectAddress={handleSelectAddress}
+                    onClearAddress={clearAddress}
+                    manualAddress={manualAddress}
+                    onManualAddressChange={setManualAddress}
+                    onLoadingShippingLocationsChange={setIsLoadingShippingLocations}
+                  />
+                ) : step === 2 ? (
+                  <StepPayment
+                    gateway={gateway}
+                    onGatewayChange={handleGatewayChange}
+                    paymentMethod={paymentMethod}
+                    onPaymentMethodChange={setPaymentMethod}
+                    shippingOptions={sortedAhamove}
+                    selectedServiceId={selectedServiceId}
+                    onSelectShipping={setPickedServiceId}
+                    taxBusinessInfo={taxBusinessInfo}
+                    taxBusinessLookupState={taxBusinessLookupState}
+                    onTaxBusinessInfoChange={setTaxBusinessInfo}
+                    onTaxBusinessLookupStateChange={setTaxBusinessLookupState}
+                  />
+                ) : (
+                  <StepComplete />
+                )}
+              </div>
+
+              <div className='lg:col-span-2 lg:sticky lg:top-23 lg:self-start'>
+                <CheckoutSidebar
+                  lines={summaryLines}
+                  totalItems={totalItems}
+                  address={summaryAddress || undefined}
+                  orderTimeLabel={summaryOrderTime}
+                  deliveryTimeLabel={summaryDeliveryTime}
+                  productsSubtotal={productsSubtotal}
+                  vatAmount={vatAmount}
+                  hasTaxCode={hasTaxCode}
+                  shippingFee={rawShippingFee}
+                  shippingDiscount={shippingDiscount}
+                  showShipping={step >= 2}
+                  grandTotal={grandTotal}
+                  action={sidebarAction}
+                  showTerms={step < 3}
+                />
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </FormProvider>

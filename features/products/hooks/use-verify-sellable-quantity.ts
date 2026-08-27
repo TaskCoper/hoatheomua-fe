@@ -43,11 +43,14 @@ export const useVerifySellableQuantity = () => {
   // Fresh numbers are pushed back into every cache that renders stock, so a product
   // page or cart open in this tab re-renders against the truth we just fetched.
   const syncCaches = useCallback(
-    (quantityById: Map<string, number>) => {
+    (quantityById: Map<string, number>, rowById: Map<string, ProductSellableQuantity>) => {
       if (quantityById.size === 0) return
 
+      // Whole rows, not just the number: a list keyed by a different id set still
+      // holds the old `isActive`, and a reader that can only see a 0 says "sold out"
+      // for a product that was actually switched off.
       queryClient.setQueriesData<ProductSellableQuantity[]>({ queryKey: SELLABLE_QUANTITY_QUERY_PREFIX }, (rows) =>
-        rows?.map((row) => (quantityById.has(row.id) ? { ...row, sellableQuantity: quantityById.get(row.id)! } : row))
+        rows?.map((row) => rowById.get(row.id) ?? row)
       )
 
       // `['product']` and `['product-summary']` are separate caches, and the cart,
@@ -89,8 +92,8 @@ export const useVerifySellableQuantity = () => {
       try {
         const rows = await queryClient.fetchQuery({ ...sellableQuantityQuery(productIds), staleTime: 0 })
         const sellableQuantityById = buildSellableQuantityMap(rows)
-        const nameById = new Map(rows.map((row) => [row.id, row.productName ?? null]))
-        syncCaches(sellableQuantityById)
+        const rowById = new Map(rows.map((row) => [row.id, row]))
+        syncCaches(sellableQuantityById, rowById)
 
         const shortages: SellableQuantityShortage[] = []
         wanted.forEach((request, productId) => {
@@ -100,7 +103,7 @@ export const useVerifySellableQuantity = () => {
           if (available === undefined || request.quantity <= available) return
           shortages.push({
             productId,
-            productName: request.productName ?? nameById.get(productId) ?? null,
+            productName: request.productName ?? rowById.get(productId)?.productName ?? null,
             requested: request.quantity,
             available
           })

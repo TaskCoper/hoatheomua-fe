@@ -676,6 +676,7 @@
       "productsHeading": "Sản phẩm",
       "lineCount": "{count} sản phẩm",
       "lineQty": "x{qty} · {price}",
+      "lineQtyOnly": "x{qty}",
       "shippingHeading": "Phương thức giao hàng",
       "shippingEmpty": "Hiện chưa có dịch vụ giao hàng phù hợp.",
       "shippingMeta": "{km} km · {min} phút",
@@ -752,6 +753,16 @@
           "label": "Sepay",
           "description": "Thanh toán nhanh bằng VNPay QR."
         }
+      },
+      "stock": {
+        "blockedTitle": "Một số sản phẩm không còn khả dụng",
+        "blockedBody": "Vui lòng cập nhật đơn hàng trước khi tiếp tục - những sản phẩm được đánh dấu hiện không thể mua.",
+        "backToCart": "Quay lại giỏ hàng",
+        "backToProducts": "Xem sản phẩm",
+        "missing": "Không còn tồn tại",
+        "inactive": "Ngừng bán",
+        "soldOut": "Hết hàng",
+        "onlyLeft": "Chỉ còn {available}"
       }
     },
     "list": {

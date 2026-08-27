@@ -676,6 +676,7 @@
       "productsHeading": "Products",
       "lineCount": "{count} items",
       "lineQty": "x{qty} · {price}",
+      "lineQtyOnly": "x{qty}",
       "shippingHeading": "Shipping option",
       "shippingEmpty": "No shipping services available for this address.",
       "shippingMeta": "{km} km · {min} min",
@@ -752,6 +753,16 @@
           "label": "Sepay",
           "description": "Fast payment with VNPay QR."
         }
+      },
+      "stock": {
+        "blockedTitle": "Some items are no longer available",
+        "blockedBody": "Update your order before continuing - the highlighted items cannot be purchased right now.",
+        "backToCart": "Back to cart",
+        "backToProducts": "Browse products",
+        "missing": "No longer available",
+        "inactive": "No longer on sale",
+        "soldOut": "Sold out",
+        "onlyLeft": "Only {available} left"
       }
     },
     "list": {

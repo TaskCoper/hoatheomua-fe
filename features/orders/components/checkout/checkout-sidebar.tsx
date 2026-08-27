@@ -7,10 +7,13 @@ import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
-import { Tag01Icon } from '@hugeicons/core-free-icons'
+import { Alert02Icon, Tag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
+
+/** Why a line cannot be bought right now, checked against live stock at render time. */
+export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stock'
 
 export interface CheckoutSummaryLine {
   lineId: string
@@ -20,6 +23,9 @@ export interface CheckoutSummaryLine {
   quantity: number
   unitPrice: number
   subtotal: number
+  issue?: CheckoutLineIssue | null
+  /** Live sellable quantity, or null when the stock endpoint said nothing about it. */
+  available?: number | null
 }
 
 interface SummaryLine {
@@ -84,23 +90,7 @@ export function CheckoutSidebar({
         {lines.length > 0 ? (
           <ul className='mb-4 divide-y divide-border/60 rounded-2xl border border-border/60 bg-background/50'>
             {lines.map((line) => (
-              <li key={line.lineId} className='flex items-center gap-3 px-3 py-2.5'>
-                <div className='relative size-11 shrink-0 overflow-hidden rounded-2xl bg-secondary/40 border border-border'>
-                  {line.image ? (
-                    <Image src={line.image} alt={line.name} fill className='object-cover' sizes='44px' />
-                  ) : null}
-                </div>
-                <div className='min-w-0 flex-1'>
-                  <p className='truncate text-sm font-medium'>{line.name}</p>
-                  {line.variantName ? (
-                    <p className='truncate text-xs text-muted-foreground'>{line.variantName}</p>
-                  ) : null}
-                  <p className='text-xs text-muted-foreground'>
-                    {t('orders.checkout.lineQty', { qty: line.quantity, price: formatVnd(line.unitPrice) })}
-                  </p>
-                </div>
-                <span className='text-sm font-semibold text-primary'>{formatVnd(line.subtotal)}</span>
-              </li>
+              <CheckoutLineItem key={line.lineId} line={line} />
             ))}
           </ul>
         ) : null}
@@ -166,6 +156,55 @@ export function CheckoutSidebar({
         </Button>
       </section>
     </aside>
+  )
+}
+
+function CheckoutLineItem({ line }: { line: CheckoutSummaryLine }) {
+  const { t } = useTranslation()
+  const issueLabel = line.issue
+    ? {
+        missing: t('orders.checkout.stock.missing'),
+        inactive: t('orders.checkout.stock.inactive'),
+        'sold-out': t('orders.checkout.stock.soldOut'),
+        'over-stock': t('orders.checkout.stock.onlyLeft', { available: line.available ?? 0 })
+      }[line.issue]
+    : null
+
+  // Unit price only earns a line of its own when it differs from the subtotal shown on the right.
+  const meta = [
+    line.variantName,
+    line.quantity > 1
+      ? t('orders.checkout.lineQty', { qty: line.quantity, price: formatVnd(line.unitPrice) })
+      : t('orders.checkout.lineQtyOnly', { qty: line.quantity })
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
+  return (
+    <li className={cn('flex items-start gap-3 px-3.5 py-3', line.issue ? 'bg-destructive/5' : '')}>
+      <div
+        className={cn(
+          'relative size-12 shrink-0 overflow-hidden rounded-xl border border-border bg-secondary/40',
+          line.issue ? 'opacity-50' : ''
+        )}
+      >
+        {line.image ? <Image src={line.image} alt={line.name} fill className='object-cover' sizes='48px' /> : null}
+      </div>
+
+      <div className='min-w-0 flex-1'>
+        <div className='flex items-start justify-between gap-3'>
+          <p className='min-w-0 truncate text-sm font-medium leading-5'>{line.name}</p>
+          <span className='shrink-0 text-sm font-semibold text-primary'>{formatVnd(line.subtotal)}</span>
+        </div>
+        <p className='truncate text-xs text-muted-foreground'>{meta}</p>
+        {issueLabel ? (
+          <span className='mt-1.5 inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive'>
+            <HugeiconsIcon icon={Alert02Icon} strokeWidth={2} className='size-3 shrink-0' />
+            {issueLabel}
+          </span>
+        ) : null}
+      </div>
+    </li>
   )
 }
 

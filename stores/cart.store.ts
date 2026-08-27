@@ -1,3 +1,4 @@
+import { invalidateSellableQuantity } from '@/features/products/invalidate-stock'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
@@ -171,8 +172,14 @@ export const useCartStore = create<CartState>()(
         return created
       },
 
+      // `addItem` is deliberately not invalidating: every caller runs
+      // `verifySellableQuantity` first, which already fetches fresh numbers and
+      // pushes them into every stock cache. A second pass here would refetch what
+      // just landed.
+
       removeItem: (lineId) => {
         set({ items: get().items.filter((item) => item.lineId !== lineId) })
+        invalidateSellableQuantity()
       },
 
       updateQuantity: (lineId, quantity) => {
@@ -183,6 +190,7 @@ export const useCartStore = create<CartState>()(
             item.lineId === lineId ? { ...item, quantity: nextQuantity, updatedAt: timestamp } : item
           )
         })
+        invalidateSellableQuantity()
       },
 
       incrementItem: (lineId) => {
@@ -194,6 +202,7 @@ export const useCartStore = create<CartState>()(
               : item
           )
         })
+        invalidateSellableQuantity()
       },
 
       decrementItem: (lineId) => {
@@ -204,6 +213,7 @@ export const useCartStore = create<CartState>()(
         const nextQuantity = current.quantity - 1
         if (nextQuantity <= 0) {
           set({ items: get().items.filter((item) => item.lineId !== lineId) })
+          invalidateSellableQuantity()
           return
         }
 
@@ -212,10 +222,12 @@ export const useCartStore = create<CartState>()(
             item.lineId === lineId ? { ...item, quantity: sanitizeQuantity(nextQuantity), updatedAt: timestamp } : item
           )
         })
+        invalidateSellableQuantity()
       },
 
       clearCart: () => {
         set({ items: [] })
+        invalidateSellableQuantity()
       },
 
       getTotalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),

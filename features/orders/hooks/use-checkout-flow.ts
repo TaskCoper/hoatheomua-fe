@@ -1,3 +1,4 @@
+import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
 import { useCartStore } from '@/stores/cart.store'
@@ -36,6 +37,7 @@ export const useCheckoutFlow = ({
   const clearIntent = useCheckoutIntentStore((state) => state.clear)
   const removeCartItem = useCartStore((state) => state.removeItem)
   const productById = useProductsByIds(items)
+  const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
 
   const [step, setStep] = useState<CheckoutStep>(1)
   const hasSubmittedRef = useRef(false)
@@ -54,6 +56,17 @@ export const useCheckoutFlow = ({
     if (contact.fullName.trim() && contact.phone.trim()) return true
     toast.error(t('orders.checkout.contactMissing'))
     return false
+  }
+
+  const hasSellableQuantity = async () => {
+    const { ok } = await verifySellableQuantity(
+      items.map((item) => ({
+        productId: item.productId,
+        productName: productById.get(item.productId)?.productName ?? null,
+        quantity: item.quantity
+      }))
+    )
+    return ok
   }
 
   const handleGoToPayment = async () => {
@@ -75,6 +88,8 @@ export const useCheckoutFlow = ({
       toast.error(t('common.validation.fixErrors'))
       return
     }
+
+    if (!(await hasSellableQuantity())) return
 
     try {
       await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById, contact) })
@@ -100,6 +115,7 @@ export const useCheckoutFlow = ({
     methods.handleSubmit(
       async (values) => {
         if (!hasContact()) return
+        if (!(await hasSellableQuantity())) return
 
         try {
           const { mrc_order_id } = await createOrder({
@@ -132,6 +148,8 @@ export const useCheckoutFlow = ({
     setStep,
     goBack,
     items,
+    source,
+    isVerifyingSellableQuantity,
     handleGoToPayment,
     handleConfirmOrder,
     handleCancel,

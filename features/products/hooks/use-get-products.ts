@@ -30,7 +30,7 @@ export const useGetProducts = ({
   categoryIds,
   priceFrom,
   priceTo,
-  sortBy
+  sortBy = ['-sellablequantity']
 }: GetProductsParams) => {
   const {
     data: products,
