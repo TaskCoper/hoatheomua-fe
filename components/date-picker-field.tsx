@@ -30,6 +30,8 @@ interface DatePickerFieldProps<T extends FieldValues> extends DateConstraints {
   isDisabled?: boolean
   className?: string
   displayError?: boolean
+  showOptionalHint?: boolean
+  emptyValueDate?: Date
 }
 
 export function DatePickerField<T extends FieldValues>({
@@ -42,6 +44,8 @@ export function DatePickerField<T extends FieldValues>({
   isDisabled = false,
   className,
   displayError = true,
+  showOptionalHint = true,
+  emptyValueDate,
   minDate = new Date('1900-01-01'),
   maxDate = new Date(new Date().getFullYear() + 10, 11, 31),
   disabled
@@ -67,88 +71,92 @@ export function DatePickerField<T extends FieldValues>({
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid} className={cn('gap-1', className)}>
-          <FieldLabel htmlFor={field.name} className='gap-0.5'>
-            {t(label)}
-            {isRequired ? (
-              <span className='font-semibold text-destructive'>*</span>
-            ) : (
-              <span className='text-xs text-muted-foreground'>({t('common.ui.optional')})</span>
-            )}
-          </FieldLabel>
+      render={({ field, fieldState }) => {
+        const displayDate = field.value ? new Date(field.value) : emptyValueDate
 
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                id={field.name}
-                variant='outline'
-                role='combobox'
-                aria-expanded={open}
-                aria-invalid={fieldState.invalid}
-                disabled={isDisabled}
-                className={cn(
-                  'w-full justify-between px-3 text-left font-normal',
-                  !field.value && 'text-muted-foreground',
-                  fieldState.invalid && 'border-destructive focus-visible:ring-destructive'
-                )}
+        return (
+          <Field data-invalid={fieldState.invalid} className={cn('gap-1', className)}>
+            <FieldLabel htmlFor={field.name} className='gap-0.5'>
+              {t(label)}
+              {isRequired ? (
+                <span className='font-semibold text-destructive'>*</span>
+              ) : showOptionalHint ? (
+                <span className='text-xs text-muted-foreground'>({t('common.ui.optional')})</span>
+              ) : null}
+            </FieldLabel>
+
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  id={field.name}
+                  variant='outline'
+                  role='combobox'
+                  aria-expanded={open}
+                  aria-invalid={fieldState.invalid}
+                  disabled={isDisabled}
+                  className={cn(
+                    'w-full justify-between px-3 text-left font-normal',
+                    !displayDate && 'text-muted-foreground',
+                    fieldState.invalid && 'border-destructive focus-visible:ring-destructive'
+                  )}
+                >
+                  <span className='flex items-center gap-2 truncate'>
+                    <HugeiconsIcon icon={Calendar03Icon} strokeWidth={2} className='size-4 opacity-50' />
+                    {displayDate ? formatDate(displayDate, 'dateLong') : <span>{t(placeholder)}</span>}
+                  </span>
+
+                  {field.value && !isDisabled && (
+                    <div
+                      role='button'
+                      tabIndex={0}
+                      className='cursor-pointer rounded-sm hover:bg-accent hover:text-accent-foreground'
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        field.onChange(null)
+                        onValueChange?.(null)
+                      }}
+                    >
+                      <HugeiconsIcon
+                        icon={CancelCircleIcon}
+                        strokeWidth={2}
+                        className='size-4 opacity-50 hover:opacity-100'
+                      />
+                      <span className='sr-only'>{t('common.button.clear')}</span>
+                    </div>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                sideOffset={8}
+                className='max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-auto overflow-y-auto p-0'
+                align='start'
               >
-                <span className='flex items-center gap-2 truncate'>
-                  <HugeiconsIcon icon={Calendar03Icon} strokeWidth={2} className='size-4 opacity-50' />
-                  {field.value ? formatDate(field.value, 'dateLong') : <span>{t(placeholder)}</span>}
-                </span>
+                <Calendar
+                  mode='single'
+                  selected={displayDate}
+                  onSelect={(date) => {
+                    const newValue = date?.toISOString() ?? null
+                    field.onChange(newValue)
+                    onValueChange?.(newValue)
+                    setOpen(false)
+                  }}
+                  disabled={disabledDays}
+                  startMonth={minDate}
+                  endMonth={maxDate}
+                  captionLayout='dropdown'
+                  defaultMonth={displayDate ?? new Date()}
+                />
+              </PopoverContent>
+            </Popover>
 
-                {field.value && !isDisabled && (
-                  <div
-                    role='button'
-                    tabIndex={0}
-                    className='cursor-pointer rounded-sm hover:bg-accent hover:text-accent-foreground'
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      field.onChange(null)
-                      onValueChange?.(null)
-                    }}
-                  >
-                    <HugeiconsIcon
-                      icon={CancelCircleIcon}
-                      strokeWidth={2}
-                      className='size-4 opacity-50 hover:opacity-100'
-                    />
-                    <span className='sr-only'>{t('common.button.clear')}</span>
-                  </div>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              sideOffset={8}
-              className='max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-auto overflow-y-auto p-0'
-              align='start'
-            >
-              <Calendar
-                mode='single'
-                selected={field.value ? new Date(field.value) : undefined}
-                onSelect={(date) => {
-                  const newValue = date?.toISOString() ?? null
-                  field.onChange(newValue)
-                  onValueChange?.(newValue)
-                  setOpen(false)
-                }}
-                disabled={disabledDays}
-                startMonth={minDate}
-                endMonth={maxDate}
-                captionLayout='dropdown'
-                defaultMonth={field.value ? new Date(field.value) : new Date()}
-              />
-            </PopoverContent>
-          </Popover>
-
-          {displayError && (
-            <div className='min-h-4'>
-              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-            </div>
-          )}
-        </Field>
-      )}
+            {displayError && (
+              <div className='min-h-4'>
+                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              </div>
+            )}
+          </Field>
+        )
+      }}
     />
   )
 }

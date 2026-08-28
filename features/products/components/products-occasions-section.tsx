@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import rightBranch from '@/public/images/right-branch.png'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import ViewportImage from '@/shared/components/viewport-image'
 import { OccasionsCollection, OccasionsCollectionConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -115,10 +116,9 @@ export default function ProductsOccasionsSection() {
                 <Link href={`/occasions/${card.id}`}>
                   <div className='relative z-10 flex h-44 overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] sm:h-48 lg:h-52'>
                     <div className='relative isolate flex h-full w-2/5 shrink-0 items-center justify-center overflow-hidden bg-secondary/40'>
-                      <Image
+                      <ViewportImage
                         src={card.image}
                         alt={name}
-                        fill
                         sizes='(min-width: 1024px) 16rem, (min-width: 640px) 14rem, 12rem'
                         className='object-cover transition-transform duration-700 ease-out group-hover:scale-110'
                       />

@@ -1,6 +1,14 @@
 'use client'
 
-import { BannerItem, BannerSlot, BannersCollection, BannersCollectionConfigItem } from '@/types/config.type'
+import type { Locale } from '@/lib/i18n/routing'
+import {
+  BANNER_SLOTS,
+  BannerItem,
+  BannerSlot,
+  BannersCollection,
+  BannersCollectionConfigItem,
+  LocalizedImage
+} from '@/types/config.type'
 import { useMemo } from 'react'
 import { useGetPublicConfigs } from './use-get-public-configs'
 
@@ -14,6 +22,43 @@ const normalizeSlot = (slot: BannerSlot) =>
     .trim()
     .toLowerCase()
     .replace(/[-_.\s]/g, '')
+
+/**
+ * Aspect each slot is framed against in the admin - mirrors `BANNER_SLOT_SHAPE` in taskcoper-fe,
+ * including its 3:1 default for unknown slots. Only used when a banner carries an `#iv=` framing:
+ * that is the one case where the slot has to reserve a box instead of following the asset's own
+ * aspect, and the box has to be the one the author cropped against.
+ */
+const BANNER_SLOT_ASPECT: Record<string, number> = {
+  [BANNER_SLOTS.homeCollection]: 16 / 5,
+  [BANNER_SLOTS.homeSale]: 5,
+  [BANNER_SLOTS.products]: 5,
+  [BANNER_SLOTS.product]: 5
+}
+
+const DEFAULT_BANNER_ASPECT = 3
+
+const ASPECT_BY_NORMALIZED_SLOT = new Map(
+  Object.entries(BANNER_SLOT_ASPECT).map(([slot, aspect]) => [normalizeSlot(slot), aspect])
+)
+
+export const bannerAspectForSlot = (slot: BannerSlot): number =>
+  ASPECT_BY_NORMALIZED_SLOT.get(normalizeSlot(slot)) ?? DEFAULT_BANNER_ASPECT
+
+/**
+ * Picks the asset to render for `locale`, tolerating both the current per-language shape and the
+ * plain string older records still carry.
+ *
+ * Falls back to `vi` before `en`: `vi` is the admin's required language, so it is the one language
+ * every banner saved since the split is guaranteed to have. Returns `''` when nothing is set at all -
+ * callers render their own fallback rather than an empty `src`.
+ */
+export const resolveBannerImage = (image: LocalizedImage | null | undefined, locale: Locale): string => {
+  if (!image) return ''
+  if (typeof image === 'string') return image
+
+  return image[locale] || image.vi || image.en || ''
+}
 
 interface BannersState {
   /** True once a parseable config row exists - i.e. the config decides, not the fallbacks. */

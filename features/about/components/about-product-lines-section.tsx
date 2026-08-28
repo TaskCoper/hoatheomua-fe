@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import rightBranch from '@/public/images/right-branch.png'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import ViewportImage from '@/shared/components/viewport-image'
 import { MainlineCollection, MainlineCollectionConfigItem } from '@/types/config.type'
 import { ArrowRight02Icon, FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -119,10 +120,9 @@ export default function ProductLinesSection() {
             >
               <Link href={`/mainline/${card.id}`} className='flex flex-1 flex-col'>
                 <div className='relative isolate h-110 w-full overflow-hidden'>
-                  <Image
+                  <ViewportImage
                     src={card.image}
                     alt={name}
-                    fill
                     sizes='(min-width: 1024px) 28rem, (min-width: 640px) 33vw, 100vw'
                     className='object-cover transition-transform duration-700 ease-out group-hover:scale-110'
                   />

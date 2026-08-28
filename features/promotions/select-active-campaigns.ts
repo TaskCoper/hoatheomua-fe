@@ -1,4 +1,4 @@
-import { BUSINESS_TIMEZONE, MAX_VISIBLE_CAMPAIGNS } from '@/features/promotions/constants'
+import { ALLOWED_IMAGE_HOSTS, BUSINESS_TIMEZONE, MAX_VISIBLE_CAMPAIGNS } from '@/features/promotions/constants'
 import { matchesPages } from '@/features/promotions/match-page'
 import type { PromotionPopupCollection, PromotionPopupItem } from '@/types/config.type'
 
@@ -32,6 +32,16 @@ export const businessToday = (now: Date = new Date()): string => {
   return new Date(now.getTime() + 7 * 60 * 60 * 1000).toISOString().slice(0, 10)
 }
 
+const isRenderableImage = (image: unknown): boolean => {
+  if (typeof image !== 'string' || !image.startsWith('https://')) return false
+
+  try {
+    return ALLOWED_IMAGE_HOSTS.includes(new URL(image).hostname.toLowerCase())
+  } catch {
+    return false
+  }
+}
+
 /**
  * Pure selector: given the parsed collection, business date, and locale-less
  * path, returns the campaigns to show, capped at `max`. `endDate` is inclusive.
@@ -50,8 +60,7 @@ export const selectActiveCampaigns = (
   const active = collection.items.filter((item) => {
     if (!item || item.enabled !== true) return false
 
-    // Requiring https also blocks tracking-pixel injection and mixed-content warnings.
-    if (typeof item.image !== 'string' || !item.image.startsWith('https://')) return false
+    if (!isRenderableImage(item.image)) return false
 
     const start = typeof item.startDate === 'string' ? item.startDate.trim() : ''
     const end = typeof item.endDate === 'string' ? item.endDate.trim() : ''

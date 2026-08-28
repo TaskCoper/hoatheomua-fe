@@ -2041,3 +2041,7 @@
     transform: translate3d(0, var(--bob-distance, -3px), 0);
   }
 }
+
+[data-sonner-toaster] [data-sonner-toast].cn-toast [data-description] {
+  color: var(--muted-foreground);
+}

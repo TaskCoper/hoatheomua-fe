@@ -1,6 +1,6 @@
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import { GetProductsParams } from './hooks/use-get-products'
-import type { ProductDetail } from './types'
+import type { ProductDetail, ProductSellableQuantity, ProductSummary } from './types'
 
 class ProductService {
   private readonly baseUrl = 'products'
@@ -21,8 +21,22 @@ class ProductService {
     return data
   }
 
+  getProductsSellableQuantity = async ({ productIds }: { productIds: string[] }) => {
+    const { data } = await api.post<BaseResponse<ProductSellableQuantity[]>>(`/v1/${this.baseUrl}/filter`, {
+      productIds
+    })
+
+    return data.value
+  }
+
   getProduct = async ({ id }: { id: string }) => {
     const { data } = await api.get<BaseResponse<ProductDetail>>(`/v1/${this.baseUrl}/${id}`)
+
+    return data.value
+  }
+
+  getProductSummary = async ({ id }: { id: string }) => {
+    const { data } = await api.get<BaseResponse<ProductSummary>>(`/v2/${this.baseUrl}/${id}/detail`)
 
     return data.value
   }

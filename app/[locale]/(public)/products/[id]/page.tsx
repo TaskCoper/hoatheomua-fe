@@ -11,7 +11,6 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
 
 const STATIC_PRODUCT_LIMIT = 20
 
@@ -70,9 +69,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
       <JsonLd data={buildProductDetailJsonLd(locale, product)} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Suspense fallback={null}>
-          <ProductDetailContent product={product} landingUrl={landingUrl} />
-        </Suspense>
+        <ProductDetailContent product={product} landingUrl={landingUrl} />
       </HydrationBoundary>
     </>
   )

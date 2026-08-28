@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { availableOf, useProductVariant } from '@/features/products/components/product-variant-context'
+import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import type { ProductDetail } from '@/features/products/types'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
@@ -15,7 +16,6 @@ import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { FlashIcon, MinusSignIcon, PlusSignIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
-import { useSearchParams } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -31,7 +31,6 @@ export default function ProductPurchaseBox() {
   const { t } = useTranslation()
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const { isAuthenticated, isGettingMe, me } = useGetMe()
 
   const addItem = useCartStore((state) => state.addItem)
@@ -68,9 +67,11 @@ export default function ProductPurchaseBox() {
   const isPurchaseDisabled = !mounted || isGettingMe || !inStock || (isQualifiedBuyer && !hasRoomInCart)
 
   const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
+  const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
 
   const isPhoneMissing = isQualifiedBuyer && !isLoadingPhoneNumber && !hasPhoneNumber
-  const isBuyNowDisabled = isPurchaseDisabled || isPhoneMissing
+  const isAddToCartDisabled = isPurchaseDisabled || isVerifyingSellableQuantity
+  const isBuyNowDisabled = isAddToCartDisabled || isPhoneMissing
 
   const stepperCap = Math.max(remainingStock, 1)
   const effectiveQuantity = Math.min(Math.max(quantity, 1), stepperCap)
@@ -82,8 +83,8 @@ export default function ProductPurchaseBox() {
     if (isGettingMe) return false
 
     if (!isAuthenticated) {
-      const queryString = searchParams.toString()
-      const from = `${pathname}${queryString ? `?${queryString}` : ''}`
+      const queryString = typeof window === 'undefined' ? '' : window.location.search
+      const from = `${pathname}${queryString}`
       router.push(`/sign-in?from=${encodeURIComponent(from)}`)
       return false
     }
@@ -97,8 +98,15 @@ export default function ProductPurchaseBox() {
     return inStock && hasRoomInCart
   }
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!guardPurchase()) return
+
+    // What already sits in the cart counts against stock too - `addItem` merges
+    // this line into it rather than replacing it.
+    const { ok } = await verifySellableQuantity([
+      { productId, productName, quantity: inCartQuantity + effectiveQuantity }
+    ])
+    if (!ok) return
 
     addItem({
       productId,
@@ -123,12 +131,17 @@ export default function ProductPurchaseBox() {
     }
   }, [targetLineId, productId, effectiveQuantity, selectedOptions])
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!guardPurchase()) return
     if (!hasPhoneNumber) {
       toast.error(t('orders.checkout.contactMissing'))
       return
     }
+
+    // Buy now checks out on its own, so only this line's amount is at stake.
+    const { ok } = await verifySellableQuantity([{ productId, productName, quantity: effectiveQuantity }])
+    if (!ok) return
+
     setCheckoutIntent([buyNowItem], 'buy-now')
     router.push('/checkout')
   }
@@ -236,12 +249,12 @@ export default function ProductPurchaseBox() {
 
       <div className='flex flex-wrap items-center gap-3'>
         <motion.div
-          whileHover={isPurchaseDisabled ? undefined : { y: -3, scale: 1.03 }}
-          whileTap={isPurchaseDisabled ? undefined : { scale: 0.97 }}
+          whileHover={isAddToCartDisabled ? undefined : { y: -3, scale: 1.03 }}
+          whileTap={isAddToCartDisabled ? undefined : { scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 320, damping: 14 }}
           className='min-w-40 flex-1'
         >
-          <Button type='button' size='lg' disabled={isPurchaseDisabled} className='w-full' onClick={handleAddToCart}>
+          <Button type='button' size='lg' disabled={isAddToCartDisabled} className='w-full' onClick={handleAddToCart}>
             <HugeiconsIcon icon={ShoppingBasket02Icon} />
             {t('products.detail.purchase.addToCart')}
           </Button>

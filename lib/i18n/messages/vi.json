@@ -583,6 +583,7 @@
       "outOfStock": "Sản phẩm này đã hết hàng."
     },
     "overStock": "Chỉ còn {stock} trong kho. Vui lòng giảm số lượng.",
+    "overStockAction": "Chỉ còn {stock} trong kho, nhấn để giảm số lượng.",
     "inStock": "Còn {stock} trong kho",
     "lineSubtotal": "Tạm tính",
     "unitLabel": "Phân loại: {unit}",
@@ -613,6 +614,7 @@
       "fullName": "Họ và tên",
       "fullNamePlaceholder": "Nhập họ và tên người nhận",
       "phone": "Số điện thoại",
+      "fullNameReceiver": "Họ và tên người nhận",
       "phoneReceiver": "Số điện thoại người nhận",
       "phonePlaceholder": "Nhập số điện thoại",
       "addressLine": "Địa chỉ",
@@ -659,7 +661,11 @@
       "orderTimePlaceholder": "Chọn ngày giao sau",
       "tag": "Thời gian giao",
       "tagPlaceholder": "Chọn khung giờ giao hàng",
-      "tagNone": "Không chọn",
+      "tagNone": "Không chọn khung giờ cụ thể",
+      "tagNoneHint": "Chưa chọn khung giờ - chúng tôi sẽ sắp xếp thời gian giao ngẫu nhiên trong ngày này.",
+      "tagWithinDate": "Giao trong ngày {date}",
+      "tagWithDate": "{date} lúc {tag}",
+      "deliveryNoteHeading": "Thời gian giao dự kiến",
       "comboboxEmpty": "Không có kết quả",
       "emptyCart": "Giỏ hàng của bạn đang trống.",
       "reviewTitle": "Xác nhận đơn hàng",
@@ -670,6 +676,7 @@
       "productsHeading": "Sản phẩm",
       "lineCount": "{count} sản phẩm",
       "lineQty": "x{qty} · {price}",
+      "lineQtyOnly": "x{qty}",
       "shippingHeading": "Phương thức giao hàng",
       "shippingEmpty": "Hiện chưa có dịch vụ giao hàng phù hợp.",
       "shippingMeta": "{km} km · {min} phút",
@@ -690,6 +697,8 @@
       "back": "Quay lại",
       "confirm": "Xác nhận đặt hàng",
       "confirmedToast": "Đã xác nhận đơn hàng",
+      "addressRevised": "Địa chỉ giao hàng đã được cập nhật.",
+      "addressRevisedReprice": "Địa chỉ giao hàng đã thay đổi - vui lòng xác nhận lại để tính lại phí giao hàng.",
       "estimateError": "Không thể ước tính đơn hàng.",
       "createError": "Không thể tạo đơn hàng.",
       "cancelBooking": "Huỷ thanh toán",
@@ -744,6 +753,16 @@
           "label": "Sepay",
           "description": "Thanh toán nhanh bằng VNPay QR."
         }
+      },
+      "stock": {
+        "blockedTitle": "Một số sản phẩm không còn khả dụng",
+        "blockedBody": "Vui lòng cập nhật đơn hàng trước khi tiếp tục - những sản phẩm được đánh dấu hiện không thể mua.",
+        "backToCart": "Quay lại giỏ hàng",
+        "backToProducts": "Xem sản phẩm",
+        "missing": "Không còn tồn tại",
+        "inactive": "Ngừng bán",
+        "soldOut": "Hết hàng",
+        "onlyLeft": "Chỉ còn {available}"
       }
     },
     "list": {
@@ -802,6 +821,7 @@
         "invoiceHeading": "Thông tin hoá đơn",
         "invoiceNotRequested": "Không xuất hoá đơn",
         "identityNumber": "CCCD/CMND",
+        "variantLabel": "Phân loại",
         "timelineHeading": "Nhật ký đơn hàng",
         "timelineCreated": "Tạo đơn hàng",
         "timelinePaid": "Xác nhận thanh toán",
@@ -818,6 +838,8 @@
         "cancelSuccess": "Đã hủy đơn hàng",
         "cancelError": "Không thể hủy đơn hàng",
         "payNow": "Thanh toán ngay",
+        "paidToast": "Đã xác nhận thanh toán",
+        "paidToastDescription": "Chúng tôi đã nhận được chuyển khoản của bạn. Đơn hàng đang được chuẩn bị.",
         "paymentMethod": "Phương thức thanh toán"
       }
     }
@@ -1436,6 +1458,13 @@
           }
         }
       }
+    },
+    "stock": {
+      "changed": "Tồn kho đã thay đổi",
+      "soldOutLine": "{name} đã hết hàng",
+      "remainingLine": "{name}: chỉ còn {available}",
+      "unnamed": "Sản phẩm này",
+      "checking": "Đang kiểm tra tồn kho…"
     }
   },
   "b2b": {

@@ -3,10 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import orderService from '../services'
 import { CheckoutFormValues, createCheckoutSchema } from '../validations'
 
 const defaultValues: CheckoutFormValues = {
+  fullNameReceiver: '',
   phoneReceiver: '',
   remarks: '',
   addressLine: '',
@@ -17,7 +19,7 @@ const defaultValues: CheckoutFormValues = {
   latitude: 0,
   longitude: 0,
   mapId: '',
-  orderTime: 0,
+  orderTime: null,
   tagIds: [],
   taxCode: null,
   identityNumber: null,
@@ -44,7 +46,12 @@ export const useEstimateOrder = () => {
     data: estimatedOrder,
     reset: resetEstimate
   } = useMutation({
-    mutationFn: orderService.estimateOrder
+    mutationFn: orderService.estimateOrder,
+    onError: (error) => {
+      toast.error(t('orders.checkout.estimateError'), {
+        description: error.response?.data?.detail
+      })
+    }
   })
 
   return { methods, estimateOrder, isEstimatingOrder, estimatedOrder, resetEstimate }

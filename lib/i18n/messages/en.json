@@ -583,6 +583,7 @@
       "outOfStock": "This product is out of stock."
     },
     "overStock": "Only {stock} left in stock. Please reduce the quantity.",
+    "overStockAction": "Only {stock} left in stock — tap to reduce the quantity.",
     "inStock": "{stock} in stock",
     "lineSubtotal": "Subtotal",
     "unitLabel": "Variant: {unit}",
@@ -613,6 +614,7 @@
       "fullName": "Full name",
       "fullNamePlaceholder": "Recipient's full name",
       "phone": "Phone number",
+      "fullNameReceiver": "Receiver full name",
       "phoneReceiver": "Receiver phone number",
       "phonePlaceholder": "Enter phone number",
       "addressLine": "Address",
@@ -659,7 +661,11 @@
       "orderTimePlaceholder": "Pick a date for later delivery",
       "tag": "Delivery time",
       "tagPlaceholder": "Select a delivery time range",
-      "tagNone": "No preference",
+      "tagNone": "No specific time slot",
+      "tagNoneHint": "No time slot picked - we'll assign a delivery time within this date.",
+      "tagWithinDate": "Delivery within {date}",
+      "tagWithDate": "{date} at {tag}",
+      "deliveryNoteHeading": "Delivery timing",
       "comboboxEmpty": "No results",
       "emptyCart": "Your cart is empty.",
       "reviewTitle": "Review your order",
@@ -670,6 +676,7 @@
       "productsHeading": "Products",
       "lineCount": "{count} items",
       "lineQty": "x{qty} · {price}",
+      "lineQtyOnly": "x{qty}",
       "shippingHeading": "Shipping option",
       "shippingEmpty": "No shipping services available for this address.",
       "shippingMeta": "{km} km · {min} min",
@@ -690,6 +697,8 @@
       "back": "Back",
       "confirm": "Confirm order",
       "confirmedToast": "Order confirmed",
+      "addressRevised": "Your delivery address was updated.",
+      "addressRevisedReprice": "Your delivery address changed - confirm it again so the shipping fee is recalculated.",
       "estimateError": "Could not estimate the order.",
       "createError": "Could not place the order.",
       "cancelBooking": "Cancel checkout",
@@ -744,6 +753,16 @@
           "label": "Sepay",
           "description": "Fast payment with VNPay QR."
         }
+      },
+      "stock": {
+        "blockedTitle": "Some items are no longer available",
+        "blockedBody": "Update your order before continuing - the highlighted items cannot be purchased right now.",
+        "backToCart": "Back to cart",
+        "backToProducts": "Browse products",
+        "missing": "No longer available",
+        "inactive": "No longer on sale",
+        "soldOut": "Sold out",
+        "onlyLeft": "Only {available} left"
       }
     },
     "list": {
@@ -802,6 +821,7 @@
         "invoiceHeading": "Invoice info",
         "invoiceNotRequested": "No invoice requested",
         "identityNumber": "Identity number",
+        "variantLabel": "Option",
         "timelineHeading": "Timeline",
         "timelineCreated": "Order created",
         "timelinePaid": "Payment confirmed",
@@ -818,7 +838,9 @@
         "cancelSuccess": "Order cancelled",
         "cancelError": "Could not cancel order",
         "payNow": "Pay now",
-        "paymentMethod": "Payment method"
+        "paymentMethod": "Payment method",
+        "paidToast": "Payment confirmed",
+        "paidToastDescription": "We've received your transfer. Your order is being prepared."
       }
     }
   },
@@ -1436,6 +1458,13 @@
           }
         }
       }
+    },
+    "stock": {
+      "changed": "Stock has changed",
+      "soldOutLine": "{name} is sold out",
+      "remainingLine": "{name}: only {available} left",
+      "unnamed": "This product",
+      "checking": "Checking stock…"
     }
   },
   "b2b": {

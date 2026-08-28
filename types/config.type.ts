@@ -354,10 +354,17 @@ export interface BannersCollectionSection {
   enabled: boolean
 }
 
+/**
+ * A per-language asset. Records saved before the admin's banner editor went bilingual still hold a
+ * plain string, and keep it until that banner is re-saved there - so both shapes are live at once.
+ * Resolve with `resolveBannerImage` rather than reading a language off it directly.
+ */
+export type LocalizedImage = string | LocalizedText
+
 export interface BannerItem {
   id: string
   slot: BannerSlot
-  image: string
+  image: LocalizedImage
   href: string
   openInNewTab: boolean
   alt: LocalizedText

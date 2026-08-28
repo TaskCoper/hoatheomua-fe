@@ -1,0 +1,47 @@
+name: Quality Check
+
+on:
+  pull_request:
+    branches: [demo]
+  workflow_dispatch:
+
+jobs:
+  quality:
+    name: Check And Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        env:
+          HUSKY: 0
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Next.js types
+        run: pnpm exec next typegen
+
+      - name: Run checks
+        env:
+          HUSKY: 0
+        run: pnpm check
+
+      # Full prerendering reads demo API data and is performed by build-image.yaml
+      # with the protected GitHub Environment values. PRs still compile every
+      # route and bundle here without needing deployment credentials.
+      - name: Compile application
+        env:
+          HUSKY: 0
+        run: pnpm exec next build --experimental-build-mode compile

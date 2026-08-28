@@ -1,4 +1,4 @@
-import type { ProductDetail } from '@/features/products/types'
+import type { ProductSummary } from '@/features/products/types'
 import type { CartItem } from '@/stores/cart.store'
 import type { CheckoutPayload, EstimatePayload, PaymentGateway, PaymentMethod } from './types'
 import type { CheckoutFormValues, EstimateFormValues } from './validations'
@@ -8,10 +8,31 @@ export interface OrderContact {
   phone: string
 }
 
+// The form holds the delivery date as an ISO string; the API wants unix seconds
+// and reads 0 as "as soon as possible". Today collapses to 0 - its midnight
+// timestamp is already in the past by the time the order is placed.
+export const toOrderTimestamp = (value: string | null): number => {
+  if (!value) {
+    return 0
+  }
+
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return 0
+  }
+
+  if (date.toDateString() === new Date().toDateString()) {
+    return 0
+  }
+
+  return Math.floor(date.getTime() / 1000)
+}
+
 export const buildEstimatePayload = (
   values: EstimateFormValues,
   items: CartItem[],
-  productById: Map<string, ProductDetail>,
+  productById: Map<string, ProductSummary>,
   contact: OrderContact
 ): EstimatePayload => {
   const fullAddress = `${values.addressLine}, ${values.ward}, ${values.city}`
@@ -24,9 +45,10 @@ export const buildEstimatePayload = (
     fullName: contact.fullName,
     phone: contact.phone,
     remarks: values.remarks,
-    orderTime: values.orderTime,
+    orderTime: toOrderTimestamp(values.orderTime),
     items: items.map((item) => ({
       itemId: productById.get(item.productId)?.nhanhProductId ?? item.productId,
+      productId: item.productId,
       number: item.quantity
     })),
     tagIds: values.tagIds
@@ -36,7 +58,7 @@ export const buildEstimatePayload = (
 export const buildCheckoutPayload = (
   values: CheckoutFormValues,
   items: CartItem[],
-  productById: Map<string, ProductDetail>,
+  productById: Map<string, ProductSummary>,
   contact: OrderContact,
   paymentMethod: PaymentMethod,
   gateway: PaymentGateway,
@@ -44,6 +66,7 @@ export const buildCheckoutPayload = (
 ): CheckoutPayload => {
   const base = {
     ...buildEstimatePayload(values, items, productById, contact),
+    fullNameReceiver: values.fullNameReceiver.trim(),
     phoneReceiver: values.phoneReceiver.trim()
   }
 

@@ -68,7 +68,7 @@ export const generateProductDetailMetadata = ({ locale, product }: GenerateProdu
   )
 
   const bestPrice = product.price ?? 0
-  const anyInStock = (product.availableForSale ?? 0) > 0
+  const anyInStock = (product.sellableQuantity ?? 0) > 0
 
   const productOgTags: Record<string, string> = {}
   if (bestPrice > 0) {

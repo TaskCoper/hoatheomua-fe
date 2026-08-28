@@ -2,6 +2,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { routing } from '@/lib/i18n/routing'
 import ReactQueryProvider from '@/lib/react-query'
 import RouteScrollReset from '@/shared/components/route-scroll-reset'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import type { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
@@ -105,6 +106,7 @@ export default async function RootLayout({
     <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
         <RouteScrollReset />
+
         <NuqsAdapter>
           <NextIntlClientProvider messages={clientMessages}>
             <ReactQueryProvider>
@@ -114,6 +116,8 @@ export default async function RootLayout({
             </ReactQueryProvider>
           </NextIntlClientProvider>
         </NuqsAdapter>
+
+        <GoogleAnalytics gaId='G-Y325BZPY95' />
       </body>
     </html>
   )

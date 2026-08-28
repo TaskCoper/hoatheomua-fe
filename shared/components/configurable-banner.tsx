@@ -1,8 +1,11 @@
 'use client'
 
-import { useBannerSlot } from '@/hooks/use-banner-by-slot'
+import { bannerAspectForSlot, resolveBannerImage, useBannerSlot } from '@/hooks/use-banner-by-slot'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { decodeImageViewport } from '@/lib/image-viewport'
+import ViewportImage from '@/shared/components/viewport-image'
+import { cn } from '@/shared/utils'
 import { type BannerSlot } from '@/types/config.type'
 import Image, { type StaticImageData } from 'next/image'
 import { type ReactNode } from 'react'
@@ -32,16 +35,30 @@ export default function ConfigurableBanner({
   if (state.status === 'hidden') return null
 
   const banner = state.status === 'banner' ? state.banner : undefined
-  // CMS records can be enabled before an image has been uploaded. Treat blank
-  // sources as absent so Next/Image receives the local fallback instead.
-  const bannerImage = typeof banner?.image === 'string' ? banner.image.trim() : undefined
+
   const bannerHref = typeof banner?.href === 'string' ? banner.href.trim() : undefined
   const openInNewTab = banner?.openInNewTab === true
 
-  const image: ReactNode = bannerImage ? (
+  const alt = banner?.alt[locale] || fallbackAlt
+
+  const stored = resolveBannerImage(banner?.image, locale)
+  const { src, viewport } = decodeImageViewport(stored)
+
+  // A banner normally renders at its own aspect (`w-full h-auto`). A framed one can't: the author
+  // chose a region against this slot's shape, so the slot has to reserve that shape and crop to it.
+  const image: ReactNode = !src ? (
+    <Image src={fallbackSrc} alt={alt} className={className} sizes={sizes} loading='lazy' quality={quality} />
+  ) : viewport ? (
+    <span
+      className={cn('relative block w-full overflow-hidden', className)}
+      style={{ aspectRatio: bannerAspectForSlot(slot) }}
+    >
+      <ViewportImage src={stored} alt={alt} className='object-cover' sizes={sizes} loading='lazy' quality={quality} />
+    </span>
+  ) : (
     <Image
-      src={bannerImage}
-      alt={banner?.alt[locale] || fallbackAlt}
+      src={src}
+      alt={alt}
       width={fallbackSrc.width}
       height={fallbackSrc.height}
       className={className}
@@ -49,8 +66,6 @@ export default function ConfigurableBanner({
       loading='lazy'
       quality={quality}
     />
-  ) : (
-    <Image src={fallbackSrc} alt={fallbackAlt} className={className} sizes={sizes} loading='lazy' quality={quality} />
   )
 
   const content = !bannerHref ? (

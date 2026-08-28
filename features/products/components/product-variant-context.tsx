@@ -1,7 +1,15 @@
 'use client'
 
+import { useGetProductsSellableQuantity } from '@/features/products/hooks/use-get-products-sellable-quantity'
+import { toSellableQuantity, withLiveStock } from '@/features/products/stock'
 import type { ProductDetail } from '@/features/products/types'
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { createContext, Suspense, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+
+export const VARIANT_QUERY_KEY = 'variant'
+
+export const buildProductVariantHref = (parentId: string, variantId?: string | null) =>
+  variantId ? `/products/${parentId}?${VARIANT_QUERY_KEY}=${encodeURIComponent(variantId)}` : `/products/${parentId}`
 
 interface ProductVariantContextValue {
   /** The parent/grouping product row. */
@@ -17,18 +25,47 @@ interface ProductVariantContextValue {
 
 const ProductVariantContext = createContext<ProductVariantContextValue | null>(null)
 
-export const availableOf = (product: ProductDetail) => Math.floor(product.availableForSale ?? 0)
+export const availableOf = (product: ProductDetail) => toSellableQuantity(product.sellableQuantity)
 
-export function ProductVariantProvider({ product, children }: { product: ProductDetail; children: ReactNode }) {
-  const variants = useMemo(
-    () => (product.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id)),
-    [product.children]
+const sellableChildren = (product: ProductDetail) =>
+  (product.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id))
+
+export function ProductVariantProvider({
+  product: staticProduct,
+  children
+}: {
+  product: ProductDetail
+  children: ReactNode
+}) {
+  // The page ships as statically generated HTML with an hourly revalidate window,
+  // so the stock baked into `staticProduct` can be badly out of date by the time
+  // someone reads it. Re-fetch it for this product and every variant on mount and
+  // overlay the result, which rebuilds the purchase box in place.
+  const productIds = useMemo(
+    () => [staticProduct.id, ...sellableChildren(staticProduct).map((child) => child.id)],
+    [staticProduct]
   )
+
+  const { sellableQuantityById } = useGetProductsSellableQuantity({ productIds })
+
+  const product = useMemo(
+    () => withLiveStock(staticProduct, sellableQuantityById),
+    [staticProduct, sellableQuantityById]
+  )
+
+  const variants = useMemo(() => sellableChildren(product), [product])
 
   const [selectedId, setSelectedId] = useState<string>(() => {
     if (!variants.length) return product.id
     return (variants.find((child) => availableOf(child) > 0) ?? variants[0]).id
   })
+
+  const selectFromQuery = useCallback(
+    (id: string) => {
+      setSelectedId((current) => (variants.some((child) => child.id === id) ? id : current))
+    },
+    [variants]
+  )
 
   const selected = useMemo(
     () => variants.find((child) => child.id === selectedId) ?? product,
@@ -40,7 +77,25 @@ export function ProductVariantProvider({ product, children }: { product: Product
     [product, variants, selectedId, selected]
   )
 
-  return <ProductVariantContext.Provider value={value}>{children}</ProductVariantContext.Provider>
+  return (
+    <ProductVariantContext.Provider value={value}>
+      <Suspense fallback={null}>
+        <VariantQuerySync onSelect={selectFromQuery} />
+      </Suspense>
+      {children}
+    </ProductVariantContext.Provider>
+  )
+}
+
+function VariantQuerySync({ onSelect }: { onSelect: (id: string) => void }) {
+  const searchParams = useSearchParams()
+  const requestedId = searchParams.get(VARIANT_QUERY_KEY)
+
+  useEffect(() => {
+    if (requestedId) onSelect(requestedId)
+  }, [requestedId, onSelect])
+
+  return null
 }
 
 export function useProductVariant() {

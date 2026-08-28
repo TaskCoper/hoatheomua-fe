@@ -1,4 +1,5 @@
 import type { Locale } from '@/lib/i18n/routing'
+import { decodeImageViewport } from '@/lib/image-viewport'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { buildPageMetadata, DEFAULT_OG_IMAGE_DIMENSIONS, localePath } from '@/shared/seo'
 import { getFirstParagraphTextFromHtml } from '@/shared/utils'
@@ -57,7 +58,7 @@ export const generateNewsDetailMetadata = ({
   }
 
   const ogImage = article.pictureUrl
-    ? { url: article.pictureUrl, alt: article.title }
+    ? { url: decodeImageViewport(article.pictureUrl).src, alt: article.title }
     : {
         url: NEWS_OG_IMAGE_PATH,
         width: DEFAULT_OG_IMAGE_DIMENSIONS.width,

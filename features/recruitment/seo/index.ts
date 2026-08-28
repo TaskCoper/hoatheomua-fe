@@ -1,5 +1,6 @@
 import type { Job } from '@/features/recruitment/types'
 import type { Locale } from '@/lib/i18n/routing'
+import { decodeImageViewport } from '@/lib/image-viewport'
 import {
   buildBreadcrumbList,
   buildPageMetadata,
@@ -105,7 +106,9 @@ export const generateJobDetailMetadata = ({
     locale,
     copy,
     basePath: jobDetailBasePath(job),
-    ...(job.coverImageUrl ? { ogImage: { url: job.coverImageUrl, width: 1200, height: 630, alt: job.title } } : {})
+    ...(job.coverImageUrl
+      ? { ogImage: { url: decodeImageViewport(job.coverImageUrl).src, width: 1200, height: 630, alt: job.title } }
+      : {})
   })
 }
 

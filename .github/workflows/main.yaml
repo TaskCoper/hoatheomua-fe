@@ -1,0 +1,36 @@
+name: Deploy Application
+
+on:
+  push:
+    branches: [demo]
+  workflow_dispatch:
+
+jobs:
+  build-demo:
+    name: Build / hoatheomua-fe / Demo
+    if: ${{ github.ref == 'refs/heads/demo' }}
+    uses: ./.github/workflows/build-image.yaml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+    with:
+      actor: ${{ github.actor }}
+      repository: ${{ github.repository }}
+      environment: demo
+
+  deploy-demo:
+    name: Deploy / Demo / hoatheomua-fe
+    needs: build-demo
+    if: ${{ github.ref == 'refs/heads/demo' }}
+    uses: ./.github/workflows/deploy-application.yaml
+    permissions:
+      contents: read
+      packages: read
+    secrets: inherit
+    with:
+      actor: ${{ github.actor }}
+      repository: ${{ github.repository }}
+      profile: demo
+      tag: demo-latest
+      run-on: hoatheomua

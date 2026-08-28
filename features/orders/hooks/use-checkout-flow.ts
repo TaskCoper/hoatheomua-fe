@@ -1,3 +1,4 @@
+import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
 import { useCartStore } from '@/stores/cart.store'
@@ -16,11 +17,18 @@ import { useProductsByIds } from './use-products-by-ids'
 interface UseCheckoutFlowArgs {
   methods: UseFormReturn<CheckoutFormValues>
   estimateOrder: ReturnType<typeof useEstimateOrder>['estimateOrder']
+  resetEstimate: ReturnType<typeof useEstimateOrder>['resetEstimate']
   createOrder: ReturnType<typeof useCreateOrder>['createOrder']
   contact: OrderContact
 }
 
-export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }: UseCheckoutFlowArgs) => {
+export const useCheckoutFlow = ({
+  methods,
+  estimateOrder,
+  resetEstimate,
+  createOrder,
+  contact
+}: UseCheckoutFlowArgs) => {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -29,6 +37,7 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }
   const clearIntent = useCheckoutIntentStore((state) => state.clear)
   const removeCartItem = useCartStore((state) => state.removeItem)
   const productById = useProductsByIds(items)
+  const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
 
   const [step, setStep] = useState<CheckoutStep>(1)
   const hasSubmittedRef = useRef(false)
@@ -47,6 +56,17 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }
     if (contact.fullName.trim() && contact.phone.trim()) return true
     toast.error(t('orders.checkout.contactMissing'))
     return false
+  }
+
+  const hasSellableQuantity = async () => {
+    const { ok } = await verifySellableQuantity(
+      items.map((item) => ({
+        productId: item.productId,
+        productName: productById.get(item.productId)?.productName ?? null,
+        quantity: item.quantity
+      }))
+    )
+    return ok
   }
 
   const handleGoToPayment = async () => {
@@ -69,20 +89,33 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }
       return
     }
 
+    if (!(await hasSellableQuantity())) return
+
     try {
       await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById, contact) })
       setStep(2)
       window.scrollTo({ top: 0, behavior: 'smooth' })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t('orders.checkout.estimateError')
-      toast.error(t('orders.checkout.estimateError'), { description: message })
+    } catch {}
+  }
+
+  // Address changed during payment. Drop the stale shippingFee and rewind
+  // so the new address is shown before estimating again
+  const invalidateEstimate = () => {
+    if (step !== 2) {
+      return false
     }
+
+    resetEstimate()
+    setStep(1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return true
   }
 
   const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway, shippingFee: number) =>
     methods.handleSubmit(
       async (values) => {
         if (!hasContact()) return
+        if (!(await hasSellableQuantity())) return
 
         try {
           const { mrc_order_id } = await createOrder({
@@ -115,8 +148,11 @@ export const useCheckoutFlow = ({ methods, estimateOrder, createOrder, contact }
     setStep,
     goBack,
     items,
+    source,
+    isVerifyingSellableQuantity,
     handleGoToPayment,
     handleConfirmOrder,
-    handleCancel
+    handleCancel,
+    invalidateEstimate
   }
 }

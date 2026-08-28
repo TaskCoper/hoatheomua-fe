@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button'
 import { pick, type OverviewHero } from '@/features/b2b/overview-palette'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
+import { decodeImageViewport } from '@/lib/image-viewport'
+import ViewportImage from '@/shared/components/viewport-image'
 import { ArrowRight02Icon, Leaf01Icon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import Image from 'next/image'
 import { useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
@@ -59,10 +60,9 @@ export default function B2BHeroSection({ hero, locale }: { hero: OverviewHero; l
         aria-label={imageAlt}
         className='hidden lg:block absolute inset-0 -z-10 cursor-zoom-in focus-visible:outline-none'
       >
-        <Image
+        <ViewportImage
           src={heroImageSrc}
           alt={imageAlt}
-          fill
           className='object-cover object-center'
           priority
           fetchPriority='high'
@@ -180,10 +180,9 @@ export default function B2BHeroSection({ hero, locale }: { hero: OverviewHero; l
           aria-label={imageAlt}
           className='relative aspect-4/3 w-full overflow-hidden rounded-[2rem] bg-card shadow-[0_1.5rem_3rem_rgb(81_108_108/22%)] ring-1 ring-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:hidden'
         >
-          <Image
+          <ViewportImage
             src={heroImageSrc}
             alt={imageAlt}
-            fill
             className='object-cover'
             priority
             fetchPriority='high'
@@ -198,10 +197,11 @@ export default function B2BHeroSection({ hero, locale }: { hero: OverviewHero; l
         </motion.button>
       </div>
 
+      {/* The lightbox shows the whole asset, so it only needs the framing stripped off the URL. */}
       <Lightbox
         open={isLightboxOpen}
         close={() => setIsLightboxOpen(false)}
-        slides={[{ src: heroImageSrc, alt: imageAlt }]}
+        slides={[{ src: decodeImageViewport(heroImageSrc).src, alt: imageAlt }]}
         plugins={[Fullscreen, Zoom]}
         carousel={{ finite: true }}
         zoom={{ maxZoomPixelRatio: 3, scrollToZoom: true }}

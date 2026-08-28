@@ -4,11 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import ViewportImage from '@/shared/components/viewport-image'
 import type { BaseCard, LocalizedText } from '@/types/config.type'
 import { CherryIcon, DeliveryTruck01Icon, Flower2Icon, GiftIcon, ShoppingBag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import Image from 'next/image'
 
 const HIGHLIGHTS = [
   { icon: Flower2Icon, labelKey: 'products.hero.highlights.seasons' },
@@ -198,10 +198,9 @@ export default function OccasionHeroSection({ card, badge: resolvedBadge }: Occa
             />
 
             {card.image ? (
-              <Image
+              <ViewportImage
                 src={card.image}
                 alt={name}
-                fill
                 sizes='(min-width: 1024px) 20rem, (min-width: 640px) 17rem, 14rem'
                 className='object-cover'
                 priority
