@@ -2,6 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useGetOrders } from '@/features/orders/hooks/use-get-orders'
 import { OrderStatus, OrderStatusLabel, type Order } from '@/features/orders/types'
 import { useDateFormat } from '@/lib/date'
@@ -51,9 +52,9 @@ export default function OrdersPage() {
         <OrdersHeading title={t('orders.list.title')} subtitle={t('orders.list.loading')} />
         <div className='mx-auto mt-8 grid w-full max-w-4xl gap-3'>
           {Array.from({ length: 3 }).map((_, index) => (
-            <div
+            <Skeleton
               key={index}
-              className='h-24 animate-pulse rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5'
+              className='h-24 rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5'
             />
           ))}
         </div>

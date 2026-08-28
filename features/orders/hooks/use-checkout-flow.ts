@@ -1,3 +1,4 @@
+import { useCheckCoreProducts } from '@/features/products/hooks/use-check-core-products'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
@@ -38,8 +39,10 @@ export const useCheckoutFlow = ({
   const removeCartItem = useCartStore((state) => state.removeItem)
   const productById = useProductsByIds(items)
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
+  const { checkCoreProducts, isCheckingCoreProducts } = useCheckCoreProducts()
 
   const [step, setStep] = useState<CheckoutStep>(1)
+  const [materialBlockedProductIds, setMaterialBlockedProductIds] = useState<ReadonlySet<string>>(() => new Set())
   const hasSubmittedRef = useRef(false)
 
   useEffect(() => {
@@ -58,15 +61,21 @@ export const useCheckoutFlow = ({
     return false
   }
 
-  const hasSellableQuantity = async () => {
-    const { ok } = await verifySellableQuantity(
-      items.map((item) => ({
-        productId: item.productId,
-        productName: productById.get(item.productId)?.productName ?? null,
-        quantity: item.quantity
-      }))
-    )
-    return ok
+  // Stock and materials are separate limits, and either can have moved since the cart.
+  const isFulfillable = async () => {
+    const wanted = items.map((item) => ({
+      productId: item.productId,
+      productName: productById.get(item.productId)?.productName ?? null,
+      quantity: item.quantity
+    }))
+
+    const [stock, core] = await Promise.all([verifySellableQuantity(wanted), checkCoreProducts(wanted)])
+
+    // The toast is gone in a few seconds; the summary keeps the offending lines
+    // marked until a later check clears them.
+    setMaterialBlockedProductIds(core.blockedProductIds)
+
+    return stock.ok && core.ok
   }
 
   const handleGoToPayment = async () => {
@@ -89,7 +98,7 @@ export const useCheckoutFlow = ({
       return
     }
 
-    if (!(await hasSellableQuantity())) return
+    if (!(await isFulfillable())) return
 
     try {
       await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById, contact) })
@@ -115,7 +124,7 @@ export const useCheckoutFlow = ({
     methods.handleSubmit(
       async (values) => {
         if (!hasContact()) return
-        if (!(await hasSellableQuantity())) return
+        if (!(await isFulfillable())) return
 
         try {
           const { mrc_order_id } = await createOrder({
@@ -149,7 +158,8 @@ export const useCheckoutFlow = ({
     goBack,
     items,
     source,
-    isVerifyingSellableQuantity,
+    isVerifyingAvailability: isVerifyingSellableQuantity || isCheckingCoreProducts,
+    materialBlockedProductIds,
     handleGoToPayment,
     handleConfirmOrder,
     handleCancel,

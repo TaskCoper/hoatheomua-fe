@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -12,8 +13,8 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
 
-/** Why a line cannot be bought right now, checked against live stock at render time. */
-export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stock'
+/** Why a line cannot be bought right now. Stock issues are read at render time; `materials` comes from the last check-core verdict. */
+export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stock' | 'materials'
 
 export interface CheckoutSummaryLine {
   lineId: string
@@ -23,6 +24,8 @@ export interface CheckoutSummaryLine {
   quantity: number
   unitPrice: number
   subtotal: number
+  /** Product data still in flight - name, image and price are not known yet. */
+  isResolving?: boolean
   issue?: CheckoutLineIssue | null
   /** Live sellable quantity, or null when the stock endpoint said nothing about it. */
   available?: number | null
@@ -76,6 +79,8 @@ export function CheckoutSidebar({
   const { t } = useTranslation()
   const [termsAccepted, setTermsAccepted] = useState(true)
   const isActionDisabled = action.disabled || action.loading || (showTerms && !termsAccepted)
+  // Totals would read as 0 until the last line lands, so show placeholders instead.
+  const isPricingLoading = lines.some((line) => line.isResolving)
 
   return (
     <aside className='sticky top-6 space-y-2'>
@@ -107,8 +112,14 @@ export function CheckoutSidebar({
         <div className='mt-5 border-t border-border/70 pt-4'>
           <h3 className='mb-3 font-title text-base font-semibold'>{t('orders.checkout.sidebar.priceTitle')}</h3>
           <dl className='space-y-2 text-sm'>
-            <SidebarRow label={t('orders.checkout.subtotal')} value={formatVnd(productsSubtotal)} />
-            {hasTaxCode ? <SidebarRow label={t('orders.checkout.vat')} value={formatVnd(vatAmount)} /> : null}
+            <SidebarRow
+              label={t('orders.checkout.subtotal')}
+              value={formatVnd(productsSubtotal)}
+              loading={isPricingLoading}
+            />
+            {hasTaxCode ? (
+              <SidebarRow label={t('orders.checkout.vat')} value={formatVnd(vatAmount)} loading={isPricingLoading} />
+            ) : null}
             {showShipping ? (
               <>
                 <SidebarRow label={t('orders.checkout.shippingFee')} value={formatVnd(shippingFee)} />
@@ -120,10 +131,14 @@ export function CheckoutSidebar({
           </dl>
           <div className='mt-3 flex items-center justify-between border-t border-border/70 pt-3'>
             <span className='text-sm font-semibold'>{t('orders.checkout.total')}</span>
-            <span className='flex items-center gap-2 font-title text-lg font-bold text-primary'>
-              <HugeiconsIcon icon={Tag01Icon} strokeWidth={2} className='size-4' />
-              {formatVnd(grandTotal)}
-            </span>
+            {isPricingLoading ? (
+              <Skeleton className='h-6 w-28 rounded-md' />
+            ) : (
+              <span className='flex items-center gap-2 font-title text-lg font-bold text-primary'>
+                <HugeiconsIcon icon={Tag01Icon} strokeWidth={2} className='size-4' />
+                {formatVnd(grandTotal)}
+              </span>
+            )}
           </div>
         </div>
       </section>
@@ -161,12 +176,16 @@ export function CheckoutSidebar({
 
 function CheckoutLineItem({ line }: { line: CheckoutSummaryLine }) {
   const { t } = useTranslation()
+
+  if (line.isResolving) return <CheckoutLineItemSkeleton />
+
   const issueLabel = line.issue
     ? {
         missing: t('orders.checkout.stock.missing'),
         inactive: t('orders.checkout.stock.inactive'),
         'sold-out': t('orders.checkout.stock.soldOut'),
-        'over-stock': t('orders.checkout.stock.onlyLeft', { available: line.available ?? 0 })
+        'over-stock': t('orders.checkout.stock.onlyLeft', { available: line.available ?? 0 }),
+        materials: t('orders.checkout.stock.materials')
       }[line.issue]
     : null
 
@@ -193,7 +212,9 @@ function CheckoutLineItem({ line }: { line: CheckoutSummaryLine }) {
 
       <div className='min-w-0 flex-1'>
         <div className='flex items-start justify-between gap-3'>
-          <p className='min-w-0 truncate text-sm font-medium leading-5'>{line.name}</p>
+          <p className='min-w-0 truncate text-sm font-medium leading-5'>
+            {line.name || t('orders.checkout.sidebar.unknownProduct')}
+          </p>
           <span className='shrink-0 text-sm font-semibold text-primary'>{formatVnd(line.subtotal)}</span>
         </div>
         <p className='truncate text-xs text-muted-foreground'>{meta}</p>
@@ -208,11 +229,38 @@ function CheckoutLineItem({ line }: { line: CheckoutSummaryLine }) {
   )
 }
 
-function SidebarRow({ label, value, multiline }: { label: string; value: string; multiline?: boolean }) {
+function CheckoutLineItemSkeleton() {
+  return (
+    <li className='flex items-start gap-3 px-3.5 py-3'>
+      <Skeleton className='size-12 shrink-0 rounded-xl' />
+      <div className='min-w-0 flex-1 space-y-2'>
+        <div className='flex items-start justify-between gap-3'>
+          <Skeleton className='h-4 w-32 rounded-md' />
+          <Skeleton className='h-4 w-16 shrink-0 rounded-md' />
+        </div>
+        <Skeleton className='h-3 w-20 rounded-md' />
+      </div>
+    </li>
+  )
+}
+
+function SidebarRow({
+  label,
+  value,
+  multiline,
+  loading
+}: {
+  label: string
+  value: string
+  multiline?: boolean
+  loading?: boolean
+}) {
   return (
     <div className={cn('flex items-start justify-between gap-3', multiline ? 'flex-col sm:flex-row' : '')}>
       <dt className='text-muted-foreground'>{label}</dt>
-      <dd className={cn('font-medium text-right', multiline && 'sm:text-right sm:max-w-[60%]')}>{value}</dd>
+      <dd className={cn('font-medium text-right', multiline && 'sm:text-right sm:max-w-[60%]')}>
+        {loading ? <Skeleton className='h-4 w-20 rounded-md' /> : value}
+      </dd>
     </div>
   )
 }

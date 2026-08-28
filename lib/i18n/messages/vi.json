@@ -560,7 +560,6 @@
   },
   "cart": {
     "title": "Giỏ hàng",
-    "loading": "Đang tải giỏ hàng…",
     "empty": {
       "title": "Giỏ hàng của bạn đang trống",
       "description": "Hãy duyệt sản phẩm và thêm vào giỏ để bắt đầu.",
@@ -580,7 +579,9 @@
     "unavailable": {
       "missing": "Sản phẩm này không còn tồn tại.",
       "inactive": "Sản phẩm này hiện không hoạt động.",
-      "outOfStock": "Sản phẩm này đã hết hàng."
+      "outOfStock": "Sản phẩm này đã hết hàng.",
+      "materials": "Tạm thời không thể chuẩn bị",
+      "materialsNote": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng bỏ chọn hoặc xoá để tiếp tục."
     },
     "overStock": "Chỉ còn {stock} trong kho. Vui lòng giảm số lượng.",
     "overStockAction": "Chỉ còn {stock} trong kho, nhấn để giảm số lượng.",
@@ -722,6 +723,7 @@
       "completeContinueShopping": "Tiếp tục mua sắm",
       "sidebar": {
         "summaryTitle": "Tóm tắt",
+        "unknownProduct": "Sản phẩm không xác định",
         "priceTitle": "Chi tiết giá",
         "totalItems": "Tổng số món",
         "itemsCount": "{count} món",
@@ -762,7 +764,10 @@
         "missing": "Không còn tồn tại",
         "inactive": "Ngừng bán",
         "soldOut": "Hết hàng",
-        "onlyLeft": "Chỉ còn {available}"
+        "onlyLeft": "Chỉ còn {available}",
+        "materials": "Tạm thời không thể chuẩn bị",
+        "materialsBlockedTitle": "Một số sản phẩm chưa thể chuẩn bị",
+        "materialsBlockedBody": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng xoá hoặc quay lại giỏ hàng để tiếp tục."
       }
     },
     "list": {
@@ -1462,6 +1467,13 @@
       "remainingLine": "{name}: chỉ còn {available}",
       "unnamed": "Sản phẩm này",
       "checking": "Đang kiểm tra tồn kho…"
+    },
+    "core": {
+      "unavailable": "Một số sản phẩm tạm thời không thể chuẩn bị",
+      "materialLine": "{material}: còn {available}, cần {required}",
+      "affectedLine": "Ảnh hưởng: {products}",
+      "unnamedMaterial": "Một nguyên liệu",
+      "checking": "Đang kiểm tra…"
     }
   },
   "b2b": {

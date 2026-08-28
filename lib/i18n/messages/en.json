@@ -560,7 +560,6 @@
   },
   "cart": {
     "title": "Shopping cart",
-    "loading": "Loading cart…",
     "empty": {
       "title": "Your cart is empty",
       "description": "Browse products and add them to your cart to get started.",
@@ -580,7 +579,9 @@
     "unavailable": {
       "missing": "This product is no longer available.",
       "inactive": "This product is currently inactive.",
-      "outOfStock": "This product is out of stock."
+      "outOfStock": "This product is out of stock.",
+      "materials": "Temporarily unavailable",
+      "materialsNote": "We're short on materials for the highlighted items. Deselect or remove them to continue."
     },
     "overStock": "Only {stock} left in stock. Please reduce the quantity.",
     "overStockAction": "Only {stock} left in stock — tap to reduce the quantity.",
@@ -722,6 +723,7 @@
       "completeContinueShopping": "Continue shopping",
       "sidebar": {
         "summaryTitle": "Summary",
+        "unknownProduct": "Unknown product",
         "priceTitle": "Price details",
         "totalItems": "Total items",
         "itemsCount": "{count} item(s)",
@@ -762,7 +764,10 @@
         "missing": "No longer available",
         "inactive": "No longer on sale",
         "soldOut": "Sold out",
-        "onlyLeft": "Only {available} left"
+        "onlyLeft": "Only {available} left",
+        "materials": "Temporarily unavailable",
+        "materialsBlockedTitle": "Some items cannot be prepared right now",
+        "materialsBlockedBody": "We're short on materials for the highlighted items. Remove them or go back to the cart to continue."
       }
     },
     "list": {
@@ -1462,6 +1467,13 @@
       "remainingLine": "{name}: only {available} left",
       "unnamed": "This product",
       "checking": "Checking stock…"
+    },
+    "core": {
+      "unavailable": "Some products are temporarily unavailable",
+      "materialLine": "{material}: {available} left, {required} needed",
+      "affectedLine": "Affects: {products}",
+      "unnamedMaterial": "A material",
+      "checking": "Checking availability…"
     }
   },
   "b2b": {

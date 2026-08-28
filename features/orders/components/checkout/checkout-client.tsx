@@ -62,7 +62,8 @@ export function CheckoutClient() {
     goBack,
     items,
     source,
-    isVerifyingSellableQuantity,
+    isVerifyingAvailability,
+    materialBlockedProductIds,
     handleGoToPayment,
     handleConfirmOrder,
     handleCancel,
@@ -139,39 +140,37 @@ export function CheckoutClient() {
 
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 
-  const { summaryLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } = useCheckoutSummary(
-    {
+  const { summaryLines, unavailableLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } =
+    useCheckoutSummary({
       items,
       hasTaxCode,
-      shippingFee
-    }
-  )
+      shippingFee,
+      materialBlockedProductIds
+    })
 
   const isLoading =
-    isEstimatingOrder ||
-    isCreatingOrder ||
-    isLoadingAddresses ||
-    isLoadingShippingLocations ||
-    isVerifyingSellableQuantity
+    isEstimatingOrder || isCreatingOrder || isLoadingAddresses || isLoadingShippingLocations || isVerifyingAvailability
 
   const isBlockedByStock = hasUnavailableLines && step < 3
+
+  // A material shortage is not something the buyer can fix by editing quantities, so
+  // it gets its own copy - but only when nothing worse is also wrong with the order.
+  const isBlockedByMaterialsOnly = unavailableLines.every((line) => line.issue === 'materials')
 
   const sidebarAction =
     step === 1
       ? {
-          label: isVerifyingSellableQuantity ? t('products.stock.checking') : t('orders.checkout.sidebar.goToPayment'),
+          label: isVerifyingAvailability ? t('products.stock.checking') : t('orders.checkout.sidebar.goToPayment'),
           onClick: () => handleGoToPayment(),
           disabled: items.length === 0 || isLoading || isBlockedByStock,
-          loading: isEstimatingOrder || isVerifyingSellableQuantity
+          loading: isEstimatingOrder || isVerifyingAvailability
         }
       : step === 2
         ? {
-            label: isVerifyingSellableQuantity
-              ? t('products.stock.checking')
-              : t('orders.checkout.sidebar.payForBooking'),
+            label: isVerifyingAvailability ? t('products.stock.checking') : t('orders.checkout.sidebar.payForBooking'),
             onClick: () => handleConfirmOrder(paymentMethod, gateway, shippingFee),
             disabled: !selectedServiceId || isLoading || isBlockedByStock,
-            loading: isCreatingOrder || isVerifyingSellableQuantity
+            loading: isCreatingOrder || isVerifyingAvailability
           }
         : {
             label: t('orders.checkout.sidebar.viewOrders'),
@@ -224,8 +223,16 @@ export function CheckoutClient() {
                     className='mt-0.5 size-5 shrink-0 text-destructive'
                   />
                   <div className='space-y-0.5'>
-                    <p className='text-sm font-semibold text-destructive'>{t('orders.checkout.stock.blockedTitle')}</p>
-                    <p className='text-xs text-muted-foreground'>{t('orders.checkout.stock.blockedBody')}</p>
+                    <p className='text-sm font-semibold text-destructive'>
+                      {isBlockedByMaterialsOnly
+                        ? t('orders.checkout.stock.materialsBlockedTitle')
+                        : t('orders.checkout.stock.blockedTitle')}
+                    </p>
+                    <p className='text-xs text-muted-foreground'>
+                      {isBlockedByMaterialsOnly
+                        ? t('orders.checkout.stock.materialsBlockedBody')
+                        : t('orders.checkout.stock.blockedBody')}
+                    </p>
                   </div>
                 </div>
                 <Button asChild type='button' variant='outline' className='shrink-0'>

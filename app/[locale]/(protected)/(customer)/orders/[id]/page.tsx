@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useGetOrder } from '@/features/orders/hooks/use-get-order'
@@ -133,17 +134,17 @@ export default function OrderDetailPage() {
     return (
       <section className='relative px-4 pt-4 pb-12 sm:pt-6 md:pt-8 lg:pt-10'>
         <div className='mx-auto flex w-full max-w-6xl flex-col gap-4'>
-          <div className='h-10 w-40 animate-pulse rounded-full bg-card ring-1 ring-foreground/5' />
-          <div className='h-24 animate-pulse rounded-3xl bg-card ring-1 ring-foreground/5' />
+          <Skeleton className='h-10 w-40 rounded-full bg-card ring-1 ring-foreground/5' />
+          <Skeleton className='h-24 rounded-3xl bg-card ring-1 ring-foreground/5' />
           <div className='grid gap-4 lg:grid-cols-3'>
             <div className='flex flex-col gap-4 lg:col-span-2'>
-              <div className='h-64 animate-pulse rounded-3xl bg-card ring-1 ring-foreground/5' />
-              <div className='h-48 animate-pulse rounded-3xl bg-card ring-1 ring-foreground/5' />
+              <Skeleton className='h-64 rounded-3xl bg-card ring-1 ring-foreground/5' />
+              <Skeleton className='h-48 rounded-3xl bg-card ring-1 ring-foreground/5' />
             </div>
             <div className='flex flex-col gap-4'>
-              <div className='h-40 animate-pulse rounded-3xl bg-card ring-1 ring-foreground/5' />
-              <div className='h-40 animate-pulse rounded-3xl bg-card ring-1 ring-foreground/5' />
-              <div className='h-32 animate-pulse rounded-3xl bg-card ring-1 ring-foreground/5' />
+              <Skeleton className='h-40 rounded-3xl bg-card ring-1 ring-foreground/5' />
+              <Skeleton className='h-40 rounded-3xl bg-card ring-1 ring-foreground/5' />
+              <Skeleton className='h-32 rounded-3xl bg-card ring-1 ring-foreground/5' />
             </div>
           </div>
         </div>
