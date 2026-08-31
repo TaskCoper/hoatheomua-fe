@@ -1,0 +1,2340 @@
+{
+  "auth": {
+    "signIn": {
+      "label": "Sign in",
+      "title": "Sign in",
+      "description": "Enter your account details to continue.",
+      "email": "Email",
+      "emailPlaceholder": "example@gmail.com",
+      "password": "Password",
+      "validation": {
+        "password": {
+          "minLength": "Password must be at least 8 characters."
+        }
+      },
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "signUpPrompt": "Don't have an account? Sign up",
+      "customerOnly": "Customer accounts only. Please use the admin portal to sign in."
+    },
+    "signUp": {
+      "label": "Sign up",
+      "title": "Sign up",
+      "description": "Create your account to get started.",
+      "firstName": "First name",
+      "firstNamePlaceholder": "Enter first name",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Enter last name",
+      "email": "Email",
+      "emailPlaceholder": "example@gmail.com",
+      "password": "Password",
+      "validation": {
+        "password": {
+          "minLength": "Password must be at least 8 characters.",
+          "strong": "Password must include lowercase, uppercase, a number, and a special character."
+        }
+      },
+      "passwordPlaceholder": "Enter your password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Re-enter your password",
+      "submit": "Sign up",
+      "success": "Successfully register",
+      "signUpPrompt": "Already have an account? Sign in",
+      "emailDescription": "Please check your email for verification."
+    },
+    "signOut": {
+      "submit": "Sign out"
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "description": "Enter the 6-digit code we sent to",
+      "sentTo": "Sent to",
+      "submit": "Verify code",
+      "resend": "Resend code",
+      "changeEmail": "Change email",
+      "success": "Successfully verified",
+      "codeLength": "Code must be 6 digits."
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "description": "Enter your email to receive a verification code.",
+      "submit": "Send code"
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Create a new password for your account.",
+      "submit": "Reset password"
+    },
+    "verifyEmailPending": {
+      "changedMind": "Changed your mind?",
+      "goBack": "Go back",
+      "title": "Check your email",
+      "verifyTitle": "Verifying your account",
+      "sentTo": "We are currently verifying your account. Please wait a moment.",
+      "fallbackEmail": "your email address",
+      "instruction": "Please open your inbox and select the link to verify your account.",
+      "resend": "Resend verification link",
+      "spamHint": "Didn't see the email? ",
+      "changeEmail": "Use a different email",
+      "quoteLabel": "HOA THEO MÙA",
+      "quote": "Where seasonal flowers\nspeak love softly",
+      "footer": "© 2026 Hoa Theo Mùa",
+      "success": "Successfully verified",
+      "verifying": "Verifying",
+      "preInstruct": "We have sent email to ",
+      "postInstruct": "to confirm the validity of our email address. After receiving the email follow the link provided to complete you registration",
+      "tokenNoteFound": "Token not found"
+    }
+  },
+  "account": {
+    "account": "Account",
+    "language": "Language",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "language": {
+    "english": "English",
+    "vietnamese": "Vietnamese"
+  },
+  "error": {
+    "somethingWentWrong": "Something went wrong"
+  },
+  "admin": {
+    "sidebar": {
+      "system": "System"
+    },
+    "news": {
+      "title": "News management",
+      "description": "Manage news articles in the system",
+      "nav": {
+        "title": "News",
+        "list": "News list"
+      },
+      "status": {
+        "draft": "Draft",
+        "published": "Published"
+      },
+      "columns": {
+        "title": "Title",
+        "titlePlaceholder": "Enter a title to search...",
+        "selectAll": "Select all news",
+        "selectRow": "Select news row"
+      }
+    }
+  },
+  "common": {
+    "ui": {
+      "more": "More",
+      "uploading": "Uploading...",
+      "pleaseWait": "Please wait",
+      "uploadSuccess": "Upload successful",
+      "optional": "optional",
+      "selectDate": "Select a date"
+    },
+    "button": {
+      "clearAll": "Clear all",
+      "clear": "Clear",
+      "cancel": "Cancel",
+      "save": "Save",
+      "upload": "Upload",
+      "remove": "Remove"
+    },
+    "error": {
+      "uploadNoUrlReturned": "Upload failed: no URL returned",
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again.",
+      "tryAgain": "Try again"
+    },
+    "validation": {
+      "code": "Please enter a valid code.",
+      "email": "Please enter a valid email address.",
+      "required": "{field} is required.",
+      "minLength": "{field} must be at least {min} characters.",
+      "maxLength": "{field} must be no more than {max} characters.",
+      "arrayMin": "{field} must have at least {min} items.",
+      "arrayMax": "{field} must have no more than {max} items.",
+      "phoneNumber": "Invalid Vietnamese phone number (e.g., 0983 024 353).",
+      "passwordStrength": "Use at least 1 uppercase letter, 1 number, and 1 special character.",
+      "passwordMismatch": "Confirm password does not match.",
+      "fixErrors": "Please review the highlighted fields."
+    },
+    "sortable": {
+      "dragStart": "Picked up {item}, item {position} of {total}.",
+      "dragOver": "{item} moved {direction} to position {position} of {total}.",
+      "dragEnd": "{item} dropped at position {position} of {total}.",
+      "dragEndNoChanges": "{item} dropped with no position change.",
+      "dragCancel": "Cancelled dragging {item}, item {position} of {total}.",
+      "dragMove": "{item} moving {direction} to position {position} of {total}.",
+      "notOverDropzone": "Item is not over a drop zone.",
+      "direction": {
+        "up": "up",
+        "down": "down",
+        "upAndDown": "up and down",
+        "leftAndRight": "left and right",
+        "arrow": "with the arrow keys"
+      },
+      "instructions": {
+        "draggable": "Press space to pick up the item, then move it {direction}. Press space again to drop it, or escape to cancel."
+      }
+    },
+    "loading": "Loading..."
+  },
+  "richTextEditor": {
+    "placeholder": "Write something...",
+    "attachFile": "Attach file",
+    "strikethrough": "Strikethrough",
+    "inlineCode": "Inline code",
+    "heading": {
+      "label": "Heading",
+      "ariaLabel": "Format as heading",
+      "heading1": "Heading 1",
+      "heading2": "Heading 2",
+      "heading3": "Heading 3",
+      "heading4": "Heading 4",
+      "heading5": "Heading 5",
+      "heading6": "Heading 6"
+    },
+    "mark": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code"
+    },
+    "list": {
+      "label": "List",
+      "ariaLabel": "Format as list",
+      "bulletList": "Bullet list",
+      "orderedList": "Ordered list",
+      "taskList": "Task list"
+    },
+    "link": {
+      "label": "Link",
+      "ariaLabel": "Add or edit link",
+      "placeholder": "Paste a link...",
+      "applyLink": "Apply link",
+      "openInNewWindow": "Open in new window",
+      "removeLink": "Remove link"
+    },
+    "image": {
+      "label": "Image"
+    },
+    "imageUpload": {
+      "clickToUpload": "Click to upload",
+      "orDragAndDrop": "or drag and drop",
+      "maximumFiles": "Maximum {count} file(s), {sizeMb}MB each.",
+      "uploadingFiles": "Uploading {count} file(s)",
+      "errors": {
+        "noFileSelected": "No file selected"
+      }
+    },
+    "blockquote": {
+      "label": "Blockquote"
+    },
+    "codeBlock": {
+      "label": "Code block"
+    }
+  },
+  "floatingContact": {
+    "zalo": "Chat on Zalo",
+    "messenger": "Chat on Messenger",
+    "musicOn": "Mute background music",
+    "musicOff": "Play background music",
+    "chat": "Chat with Hoa Theo Mua",
+    "chatClose": "Close the chat"
+  },
+  "promoPopup": {
+    "title": "Promotions",
+    "close": "Close promotion popup",
+    "carousel": "Promotions carousel",
+    "previous": "Previous promotion",
+    "next": "Next promotion",
+    "goToSlide": "Go to promotion {index}",
+    "slideStatus": "Promotion {index} of {total}",
+    "imageAlt": "Hoa Theo Mua promotion"
+  },
+  "contact": {
+    "eyebrow": "Seasonal flower studio",
+    "header": "Let Your Feelings Bloom",
+    "subHeader": "Let us help you transform emotions, wishes, and special moments into an elegant floral creation.",
+    "title": "Let every bouquet carry its own story",
+    "description": "Every feeling has its own bloom. Let us help you find the one that says it beautifully.",
+    "links": {
+      "instagram": "Instagram",
+      "instagramValue": "@hoatheomua",
+      "email": "Email",
+      "emailValue": "hello@hoatheomua.vn",
+      "phone": "Phone",
+      "phoneValue": "+84 90 123 4567",
+      "address": "Studio",
+      "addressValue": "Ho Chi Minh City",
+      "communityValue": "Hoa Theo Mua community"
+    },
+    "form": {
+      "eyebrow": "Contact form",
+      "title": "Send us a message",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Nguyen Van A",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "phoneNumber": "Phone number",
+      "phoneNumberPlaceholder": "0983 024 353",
+      "topic": "Topic",
+      "topicPlaceholder": "Choose a topic",
+      "topics": {
+        "general": "General inquiry",
+        "customBouquet": "Custom bouquet",
+        "eventFlowers": "Event flowers",
+        "deliverySupport": "Delivery support"
+      },
+      "message": "Message",
+      "messagePlaceholder": "Tell us what you are looking for, the occasion, timing, and any flower preferences.",
+      "agreement": "I agree to be contacted regarding this inquiry.",
+      "agreementRequired": "Please agree to be contacted before sending your message.",
+      "submit": "Send message",
+      "submitting": "Sending...",
+      "submitted": "Message draft submitted."
+    }
+  },
+  "careers": {
+    "eyebrow": "Careers",
+    "title": "Grow with Hoa Theo Mua",
+    "description": "Share your profile and tell us how you would like to contribute to our seasonal flower team.",
+    "form": {
+      "name": "Full name",
+      "namePlaceholder": "Nguyen Van A",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "role": "Preferred role",
+      "rolePlaceholder": "Florist, sales consultant, operations...",
+      "coverLetter": "Cover letter",
+      "coverLetterPlaceholder": "Tell us about your experience, preferred role, and why you would like to join Hoa Theo Mua.",
+      "submit": "Submit application",
+      "submitted": "Application draft submitted"
+    },
+    "preview": {
+      "title": "Application preview",
+      "empty": "Your cover letter preview will appear here."
+    }
+  },
+  "recruitment": {
+    "hero": {
+      "title": "Grow your career with us",
+      "description": "Join a team that treats every bloom - and every teammate - with care."
+    },
+    "filter": {
+      "positionPlaceholder": "Search by position",
+      "search": "Search jobs",
+      "reset": "Reset filters",
+      "branch": {
+        "placeholder": "All branches",
+        "options": {
+          "hoChiMinh": "Ho Chi Minh",
+          "haNoi": "Hanoi",
+          "daNang": "Da Nang"
+        }
+      },
+      "employmentType": {
+        "placeholder": "All work types",
+        "options": {
+          "fullTime": "Full-time",
+          "partTime": "Part-time",
+          "freelance": "Freelance"
+        }
+      },
+      "salary": {
+        "placeholder": "All salary ranges",
+        "min": "Min",
+        "max": "Max",
+        "options": {
+          "below8": "Under 8 million",
+          "range8To12": "8 - 12 million",
+          "range12To18": "12 - 18 million",
+          "above18": "Above 18 million"
+        }
+      }
+    },
+    "sidebar": {
+      "newsletter": {
+        "title": "Get recruitment updates",
+        "description": "Do not miss the right opportunity for you.",
+        "emailPlaceholder": "Enter your email",
+        "submit": "Subscribe"
+      },
+      "groups": {
+        "jobType": {
+          "title": "Job type",
+          "fullTime": "Full-time",
+          "partTime": "Part-time",
+          "internship": "Internship",
+          "freelance": "Freelance"
+        },
+        "level": {
+          "title": "Level",
+          "intern": "Intern",
+          "staff": "Staff",
+          "specialist": "Specialist",
+          "manager": "Manager"
+        },
+        "location": {
+          "title": "Location",
+          "hoChiMinhCity": "Ho Chi Minh City",
+          "haNoi": "Hanoi",
+          "daNang": "Da Nang"
+        }
+      },
+      "quote": "“Every bloom tells a story. Every person is a piece of something beautiful.”"
+    },
+    "pagination": {
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {page}"
+    },
+    "jobCard": {
+      "viewDetails": "View details for {title}",
+      "save": "Save {title}",
+      "new": "New"
+    },
+    "jobDetail": {
+      "quickInfo": {
+        "experience": "Experience",
+        "level": "Level",
+        "employmentType": "Work type",
+        "openings": "Openings",
+        "openingsValue": "{count} openings",
+        "location": "Location",
+        "salary": "Salary"
+      },
+      "actions": {
+        "save": "Save job",
+        "share": "Share job",
+        "apply": "Apply now",
+        "viewMore": "View more",
+        "viewLess": "View less",
+        "backToList": "Back to careers",
+        "viewFullPage": "View full page"
+      },
+      "notFoundTitle": "Job not found",
+      "posted": "Posted {time}",
+      "sections": {
+        "overview": "Overview",
+        "responsibilities": "Job description",
+        "requirements": "Requirements",
+        "benefits": "Benefits"
+      }
+    },
+    "applyDialog": {
+      "title": "Apply for this role",
+      "description": "{title}",
+      "cancel": "Cancel",
+      "submit": "Submit application",
+      "addAttachment": "Add",
+      "attachmentPlaceholder": "Upload CV or portfolio",
+      "uploadAttachment": "Upload attachment",
+      "uploadedAttachment": "Attachment uploaded",
+      "removeAttachment": "Remove attachment",
+      "fields": {
+        "roleTitle": "Role title",
+        "coverLetter": "Cover letter",
+        "attachments": "Attachments"
+      }
+    },
+    "negotiable": "Negotiable"
+  },
+  "dataTable": {
+    "table": {
+      "noResults": "No results."
+    },
+    "column": {
+      "asc": "Asc",
+      "desc": "Desc",
+      "reset": "Reset",
+      "hide": "Hide"
+    },
+    "operator": {
+      "contains": "contains",
+      "notContains": "does not contain",
+      "is": "is",
+      "isNot": "is not",
+      "isLessThan": "is less than",
+      "isLessThanOrEqualTo": "is less than or equal to",
+      "isGreaterThan": "is greater than",
+      "isGreaterThanOrEqualTo": "is greater than or equal to",
+      "isBetween": "is between",
+      "isBefore": "is before",
+      "isAfter": "is after",
+      "isOnOrBefore": "is on or before",
+      "isOnOrAfter": "is on or after",
+      "isRelativeToToday": "is relative to today",
+      "isEmpty": "is empty",
+      "isNotEmpty": "is not empty",
+      "hasAnyOf": "has any of",
+      "hasNoneOf": "has none of"
+    },
+    "pagination": {
+      "rowsSelected": "{selected} of {total} row(s) selected.",
+      "rowsPerPage": "Rows per page",
+      "pageXofY": "Page {current} of {total}",
+      "goToFirstPage": "Go to first page",
+      "goToPreviousPage": "Go to previous page",
+      "goToNextPage": "Go to next page",
+      "goToLastPage": "Go to last page"
+    },
+    "viewOptions": {
+      "toggleColumns": "Toggle columns",
+      "view": "View",
+      "searchColumns": "Search columns...",
+      "noColumnsFound": "No columns found."
+    },
+    "toolbar": {
+      "reset": "Reset"
+    },
+    "sort": {
+      "sort": "Sort",
+      "sortBy": "Sort by",
+      "noSortingApplied": "No sorting applied",
+      "modifySortingDescription": "Modify sorting rules for this table.",
+      "addSortingDescription": "Add sorting rules for this table.",
+      "addSort": "Add sort",
+      "resetSorting": "Reset sorting",
+      "searchFields": "Search fields...",
+      "noFieldsFound": "No fields found."
+    },
+    "filter": {
+      "filter": "Filter",
+      "filters": "Filters",
+      "where": "Where",
+      "from": "From",
+      "to": "To",
+      "clear": "Clear",
+      "selected": "selected",
+      "selectedCount": "{count} selected",
+      "true": "True",
+      "false": "False",
+      "resetFilters": "Reset filters",
+      "resetAllFilters": "Reset all filters",
+      "openFilterCommandMenu": "Open filter command menu",
+      "noFiltersApplied": "No filters applied",
+      "modifyFiltersDescription": "Modify filters for this table.",
+      "addFiltersDescription": "Add filters to narrow table results.",
+      "addFilter": "Add filter",
+      "searchFields": "Search fields...",
+      "searchOptions": "Search options...",
+      "noFieldsFound": "No fields found.",
+      "noOptionsFound": "No options found.",
+      "noResultsFound": "No results found.",
+      "typeToAddFilter": "Type to add a filter",
+      "filterByValue": "Filter by \"{value}\"",
+      "selectField": "Select field",
+      "selectOption": "Select option",
+      "selectOptions": "Select options",
+      "selectDate": "Select date",
+      "selectDateRange": "Select date range",
+      "pickDate": "Pick a date",
+      "enterValue": "Enter a value",
+      "clearFilter": "Clear filter",
+      "clearFilters": "Clear filters",
+      "clearSpecificFilter": "Clear {title} filter",
+      "joinOperator": {
+        "and": "and",
+        "or": "or"
+      },
+      "selectJoinOperator": "Select join operator",
+      "aria": {
+        "filterState": "{field} filter is {state}",
+        "empty": "empty",
+        "notEmpty": "not empty",
+        "filterValue": "Filter value for {field}",
+        "minimumValue": "Minimum value for {field}",
+        "maximumValue": "Maximum value for {field}",
+        "booleanFilter": "Boolean filter for {field}",
+        "selectFilter": "Select filter for {field}{suffix}",
+        "multipleSuffix": ", multiple selection",
+        "searchOptions": "Search options for {field}",
+        "dateFilter": "Date filter for {field}",
+        "selectDateRange": "Select date range for {field}",
+        "selectDate": "Select date for {field}",
+        "slider": "{title} range"
+      }
+    }
+  },
+  "cart": {
+    "title": "Shopping cart",
+    "empty": {
+      "title": "Your cart is empty",
+      "description": "Browse products and add them to your cart to get started.",
+      "continueShopping": "Continue shopping"
+    },
+    "actions": {
+      "clear": "Clear cart",
+      "remove": "Remove",
+      "checkout": "Checkout",
+      "useMax": "Use max ({stock})",
+      "increase": "Increase quantity",
+      "decrease": "Decrease quantity",
+      "selectAll": "Select all",
+      "selectLine": "Select this item"
+    },
+    "price": "Price: {price}",
+    "unavailable": {
+      "missing": "This product is no longer available.",
+      "inactive": "This product is currently inactive.",
+      "outOfStock": "This product is out of stock.",
+      "materials": "Temporarily unavailable",
+      "materialsAction": "We can't prepare this many right now — please reduce the quantity.",
+      "materialsNote": "We're short on materials for the highlighted items. Reduce the quantity, deselect or remove them to continue."
+    },
+    "overStock": "Only {stock} left in stock. Please reduce the quantity.",
+    "overStockAction": "Only {stock} left in stock — tap to reduce the quantity.",
+    "inStock": "{stock} in stock",
+    "lineSubtotal": "Subtotal",
+    "unitLabel": "Variant: {unit}",
+    "summary": {
+      "title": "Order summary",
+      "selected": "{count} selected of {total}",
+      "subtotal": "Subtotal",
+      "shippingNote": "Shipping fees are calculated at checkout.",
+      "empty": "Select items to checkout."
+    }
+  },
+  "orders": {
+    "invoiceType": {
+      "Personal": "Individual or Household Business",
+      "Business": "Company"
+    },
+    "checkout": {
+      "title": "Checkout",
+      "description": "Fill in your delivery details to complete the order.",
+      "submit": "View cost",
+      "cancel": "Cancel",
+      "contactMissing": "Add your name and phone number in your profile.",
+      "deliveryHeading": "Delivery address",
+      "deliveryDescription": "Pick a saved address or enter a new delivery address.",
+      "deliveryOptionsHeading": "Delivery options",
+      "deliveryOptionsDescription": "Choose the delivery date, time slot, and any note for the seller.",
+      "addressReceiver": "Receiver",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Recipient's full name",
+      "phone": "Phone number",
+      "fullNameReceiver": "Receiver full name",
+      "phoneReceiver": "Receiver phone number",
+      "phonePlaceholder": "Enter phone number",
+      "addressLine": "Address",
+      "addressLinePlaceholder": "Street, building, …",
+      "addressLineDisabledPlaceholder": "Select province / city and ward first",
+      "addressLineSearching": "Searching addresses…",
+      "addressLineEmpty": "No matching address",
+      "city": "Province / City",
+      "cityPlaceholder": "Select province / city",
+      "citySearchPlaceholder": "Search province / city",
+      "ward": "Ward",
+      "wardPlaceholder": "Select ward",
+      "wardSearchPlaceholder": "Search ward",
+      "taxCode": "Tax code (optional)",
+      "taxCodeLabel": "Tax code",
+      "taxCodePlaceholder": "Enter tax code if any",
+      "identityNumber": "Identity number",
+      "receiptFullName": "Receipt full name",
+      "receiptPhoneNumber": "Receipt phone number",
+      "receiptAddress": "Receipt address",
+      "receiptEmail": "Receipt email",
+      "isExportInvoice": "Export invoice",
+      "invoiceType": "Invoice type",
+      "invoiceTypePersonal": "Personal",
+      "invoiceTypeBusiness": "Business",
+      "invoiceTitle": "Invoice",
+      "invoiceDescription": "Request a VAT invoice for this order (optional).",
+      "savedAddress": "Saved address",
+      "savedAddressPlaceholder": "Select a saved address",
+      "savedAddressSearchPlaceholder": "Search saved addresses",
+      "addressDefault": "Default",
+      "changeAddress": "Change",
+      "manualAddress": "Enter a new address",
+      "useSavedAddress": "Use a saved address",
+      "manualAddressHint": "Turn on to type a delivery address instead of picking a saved one.",
+      "mapHint": "Drag the pin or tap the map to set the exact delivery point.",
+      "mapUseLocation": "My location",
+      "mapResolving": "Finding address…",
+      "mapLocationError": "Couldn't get your location. Please pick the point on the map.",
+      "mapTooFar": "That point is too far from your address. Move the pin closer.",
+      "remarks": "Notes",
+      "remarksPlaceholder": "Notes for the seller (optional)",
+      "orderTime": "Delivery date",
+      "orderTimePlaceholder": "Pick a date for later delivery",
+      "tag": "Delivery time",
+      "tagPlaceholder": "Select a delivery time range",
+      "tagNone": "No specific time slot",
+      "tagNoneHint": "No time slot picked - we'll assign a delivery time within this date.",
+      "tagWithinDate": "Delivery within {date}",
+      "tagWithDate": "{date} at {tag}",
+      "deliveryNoteHeading": "Delivery timing",
+      "comboboxEmpty": "No results",
+      "emptyCart": "Your cart is empty.",
+      "shippingMissing": "Please choose a delivery service.",
+      "reviewTitle": "Review your order",
+      "reviewDescription": "Check your items and pick a delivery option before placing the order.",
+      "recipientHeading": "Delivery details",
+      "deliverNow": "Deliver as soon as possible",
+      "noRemarks": "No notes",
+      "productsHeading": "Products",
+      "lineCount": "{count} items",
+      "lineQty": "x{qty} · {price}",
+      "lineQtyOnly": "x{qty}",
+      "shippingHeading": "Shipping option",
+      "shippingEmpty": "No shipping services available for this address.",
+      "shippingMeta": "{km} km · {min} min",
+      "shippingFree": "Free",
+      "shippingChosenTitle": "Your delivery method",
+      "shippingChosenDescription": "Go back to switch carriers.",
+      "shippingGateway": {
+        "ahamove": {
+          "label": "Ahamove"
+        },
+        "xanhSm": {
+          "label": "Xanh SM"
+        }
+      },
+      "bestPrice": "Best price",
+      "taxBusinessHeading": "Tax code information",
+      "taxBusinessId": "Tax code",
+      "taxBusinessName": "Business name",
+      "taxBusinessAddress": "Address",
+      "taxBusinessLoading": "Looking up tax code information...",
+      "taxBusinessHint": "Enter a tax code if available to look it up automatically.",
+      "taxBusinessNotFound": "No business information found for this tax code.",
+      "taxBusinessLookupError": "Unable to look up tax code information.",
+      "subtotal": "Subtotal",
+      "vat": "VAT 8%",
+      "shippingFee": "Shipping fee",
+      "shippingFeeDiscount": "Discount (free-ship radius)",
+      "total": "Total",
+      "back": "Back",
+      "confirm": "Confirm order",
+      "confirmedToast": "Order confirmed",
+      "addressRevised": "Your delivery address was updated.",
+      "addressRevisedReprice": "Your delivery address changed - confirm it again so the shipping fee is recalculated.",
+      "estimateError": "Could not estimate the order.",
+      "createError": "Could not place the order.",
+      "cancelBooking": "Cancel checkout",
+      "stepPersonal": "Personal Details",
+      "stepPayment": "Payment",
+      "stepComplete": "Complete",
+      "stepPersonalDescription": "Fill in the recipient and delivery details for this order.",
+      "gatewayTitle": "Payment gateway",
+      "gatewayDescription": "Choose the payment gateway you want to use to continue.",
+      "paymentTitle": "Payment method",
+      "paymentDescription": "We currently support bank transfer only.",
+      "paymentEmpty": "No payment methods are currently available.",
+      "bankTransferTitle": "Bank transfer",
+      "bankTransferHint": "You'll receive our bank details and a QR code to complete payment after placing the order.",
+      "shippingDescription": "Choose a carrier. The shipping fee is quoted for your address in the next step.",
+      "paymentNote": "Your order will be held until payment is received. Please transfer within 24 hours.",
+      "cancellationTitle": "Cancellation policy",
+      "cancellationBody": "We understand plans can change. You may cancel or modify your order up to 12 hours before the scheduled delivery time. After that, cancellation fees may apply.",
+      "completeTitle": "Order placed successfully",
+      "completeBody": "Thank you for your order. We've sent you a confirmation and will notify you when the delivery is on the way.",
+      "completeViewOrders": "View my orders",
+      "completeContinueShopping": "Continue shopping",
+      "sidebar": {
+        "summaryTitle": "Summary",
+        "unknownProduct": "Unknown product",
+        "priceTitle": "Price details",
+        "totalItems": "Total items",
+        "itemsCount": "{count} item(s)",
+        "address": "Delivery address",
+        "goToPayment": "Continue to payment",
+        "payForBooking": "Pay for my order",
+        "viewOrders": "View my orders",
+        "termsPrefix": "By clicking this, I agree to Hoa Theo Mùa",
+        "termsLink": "Terms & Conditions",
+        "termsAnd": "and",
+        "privacyLink": "Privacy Policy"
+      },
+      "paymentMethod": {
+        "va": {
+          "label": "VA",
+          "description": "You'll receive account details and a QR code after order confirmation."
+        },
+        "vnPayQr": {
+          "label": "VNPay QR",
+          "description": "Scan the VNPay QR code with any banking app to complete payment instantly."
+        }
+      },
+      "paymentGateway": {
+        "baoKim": {
+          "label": "BaoKim",
+          "description": "Pay via VA - account details and a QR code sent after confirmation."
+        },
+        "sePay": {
+          "label": "Sepay",
+          "description": "Fast payment with VNPay QR."
+        }
+      },
+      "stock": {
+        "blockedTitle": "Some items are no longer available",
+        "blockedBody": "Update your order before continuing - the highlighted items cannot be purchased right now.",
+        "backToCart": "Back to cart",
+        "backToProducts": "Browse products",
+        "missing": "No longer available",
+        "inactive": "No longer on sale",
+        "soldOut": "Sold out",
+        "onlyLeft": "Only {available} left",
+        "materials": "Temporarily unavailable",
+        "materialsBlockedTitle": "Some items cannot be prepared right now",
+        "materialsBlockedBody": "We're short on materials for the highlighted items. Go back to the cart to reduce the quantity, or remove them to continue."
+      }
+    },
+    "list": {
+      "title": "My orders",
+      "loading": "Loading orders…",
+      "empty": {
+        "title": "You have no orders yet",
+        "description": "Once you place an order, it will appear here."
+      },
+      "count": "{count} orders",
+      "orderId": "Order ID",
+      "trackNumber": "Tracking number",
+      "createdAt": "Placed at",
+      "nhanhOrderId": "Nhanh order ID",
+      "ahamoveOrderId": "Ahamove order ID",
+      "transactionDate": "Paid at",
+      "trackNhanh": "Track on Nhanh",
+      "trackAhamove": "Track on Ahamove",
+      "status": {
+        "Pending": "Pending",
+        "Paid": "Paid",
+        "Cancelled": "Cancelled"
+      },
+      "paymentMethod": {
+        "va": "VA",
+        "vnPayQr": "VNPay QR"
+      },
+      "qr": {
+        "title": "Pay this order",
+        "description": "Scan the QR code below to complete the payment.",
+        "loading": "Loading QR code…",
+        "empty": "This order doesn't have a payment QR yet.",
+        "imageAlt": "Payment QR code",
+        "openHint": "Tap to view the payment QR code",
+        "detailsTitle": "Payment details",
+        "bank": "Bank",
+        "account": "Account",
+        "holder": "Account holder",
+        "amount": "Amount",
+        "content": "Content",
+        "waiting": "Waiting for payment confirmation…"
+      },
+      "detail": {
+        "title": "Order details",
+        "description": "Review the information for this paid order.",
+        "openHint": "Tap to view order details",
+        "backToOrders": "Back to orders",
+        "breadcrumbList": "My orders",
+        "breadcrumbCurrent": "Details",
+        "notFoundTitle": "Order not found",
+        "notFoundDescription": "We couldn't find this order, or you don't have permission to view it.",
+        "backToOrdersCta": "Go back to my orders",
+        "summaryHeading": "Order summary",
+        "customerHeading": "Customer info",
+        "recipientHeading": "Delivery details",
+        "invoiceHeading": "Invoice info",
+        "invoiceNotRequested": "No invoice requested",
+        "identityNumber": "Identity number",
+        "variantLabel": "Option",
+        "timelineHeading": "Timeline",
+        "timelineCreated": "Order created",
+        "timelinePaid": "Payment confirmed",
+        "timelineDelivery": "Scheduled delivery",
+        "timelineDeliveryImmediate": "Immediately after payment",
+        "remarksHeading": "Customer notes",
+        "trackingHeading": "Tracking",
+        "noValue": "-",
+        "cancelCta": "Cancel order",
+        "cancelConfirmTitle": "Cancel this order?",
+        "cancelConfirmDescription": "This will cancel your order and cannot be undone.",
+        "cancelConfirmCta": "Yes, cancel order",
+        "cancelKeep": "Keep order",
+        "cancelSuccess": "Order cancelled",
+        "cancelError": "Could not cancel order",
+        "payNow": "Pay now",
+        "paymentMethod": "Payment method",
+        "paidToast": "Payment confirmed",
+        "paidToastDescription": "We've received your transfer. Your order is being prepared."
+      }
+    }
+  },
+  "news": {
+    "notFoundTitle": "No news found",
+    "metaTitle": "News - Hoa Theo Mua",
+    "metaDescription": "News about fresh flowers, floral arrangement and trends for you.",
+    "heroEyebrow": "Welcome",
+    "heroTitlePart1": "Flower stories that",
+    "heroTitleEmphasis": "inspire",
+    "heroTitlePart2": ", knowledge and solutions",
+    "heroDescription": "Read carefully curated articles on fresh flowers, floral care, arrangement styles, and the latest trends from Hoa Theo Mua.",
+    "exploreCta": "Explore the news",
+    "contactCta": "Contact our team",
+    "heroImageAlt": "News Hero",
+    "latestHeading": "Latest news",
+    "seeAll": "See all",
+    "featuredHeading": "Featured articles",
+    "featuredDescription": "Pick from the most discussed topics - full content is displayed right on each cover.",
+    "weekHighlightHeading": "This week's spotlight",
+    "otherArticlesHeading": "Other articles",
+    "backToNews": "← Back to news",
+    "titleSuffix": " - Hoa Theo Mua",
+    "relatedHeading": "Related articles",
+    "popularTopicsHeading": "Popular topics",
+    "topics": {
+      "fresh": "Fresh flowers",
+      "care": "Care",
+      "creative": "Creative",
+      "decor": "Decoration",
+      "autumn": "Autumn",
+      "wedding": "Wedding",
+      "love": "Love",
+      "nature": "Nature"
+    }
+  },
+  "header": {
+    "brand": "Hoa Theo Mua",
+    "logoAlt": "Logo",
+    "vineAlt": "Vine branch",
+    "nav": {
+      "home": "Home",
+      "products": "Products",
+      "b2b": "For Business",
+      "about": "About",
+      "news": "News",
+      "recruitment": "Careers",
+      "contact": "Contact",
+      "cart": "Cart",
+      "orders": "Orders"
+    },
+    "aria": {
+      "mainNav": "Main navigation",
+      "mobileNav": "Mobile navigation",
+      "openCart": "Open cart",
+      "openOrders": "Open orders",
+      "search": "Search",
+      "openMenu": "Open menu"
+    }
+  },
+  "footer": {
+    "logoAlt": "Logo",
+    "company": "HOA THEO MUA COMPANY LIMITED",
+    "brand": "Hoa Theo Mua",
+    "description": "Hoa Theo Mua is an online fresh-flower system in Ho Chi Minh City offering premium flowers and 2-hour express delivery.",
+    "addressLabel": "Address:",
+    "address": "No. 13A Dao Duy Anh, Ward 9, Phu Nhuan District, Ho Chi Minh City",
+    "hotlineLabel": "Hotline:",
+    "hotline": "0983024353 – 0931734353",
+    "directorLabel": "Director:",
+    "websiteLabel": "Website:",
+    "website": "hoatheomua.com",
+    "businessIdLabel": "Business license:",
+    "businessId": "0316581199, issued 12/11/2020",
+    "policiesHeading": "POLICIES",
+    "featuredHeading": "FEATURED PRODUCTS",
+    "mapHeading": "MAP",
+    "mapTitle": "Hoa Theo Mua location",
+    "policies": {
+      "terms": "Terms of use",
+      "returns": "Return policy",
+      "ordering": "Ordering & payment",
+      "privacy": "Privacy policy",
+      "delivery": "Delivery & inspection policy"
+    },
+    "featured": {
+      "birthday": "Birthday flowers",
+      "opening": "Grand opening flowers",
+      "march8": "March 8 flowers",
+      "oct20": "October 20 flowers",
+      "nov20": "November 20 flowers",
+      "noel": "Christmas flowers",
+      "feb27": "February 27 flowers",
+      "business": "Entrepreneur congratulation flowers",
+      "orchid": "Beautiful Phalaenopsis orchids"
+    },
+    "copyright": "Copyright © all images belong to HOA THEO MUA ® - any use of images without permission is an infringement of intellectual property rights."
+  },
+  "home": {
+    "hero": {
+      "imageAlt": "Hoa Theo Mua - Flowers From The Heart",
+      "title": "Flowers From The Heart",
+      "tagline1": "Fresh flowers crafted to carry every emotion.",
+      "tagline2": "From love and joy to celebrations and surprises.",
+      "tagline3": "Elegantly arranged and delivered with care.",
+      "reviews": "325 Reviews",
+      "price": "250,000đ/Flower"
+    },
+    "criteria": {
+      "branchAlt": "Decorative branch",
+      "affordable": {
+        "title": "Reasonable Price",
+        "description": "Diverse tiers to fit every budget"
+      },
+      "gardenFresh": {
+        "title": "Garden-fresh Flowers",
+        "description": "Hand-picked from gardens and delivered same day"
+      },
+      "fastDelivery": {
+        "title": "2-Hour Delivery",
+        "description": "Self-schedule on-time express delivery on the web within HCMC"
+      },
+      "dedicatedSupport": {
+        "title": "Dedicated Care",
+        "description": "Attentive consultation that truly understands your needs"
+      },
+      "ecoPack": {
+        "title": "Eco-friendly Packaging",
+        "description": "Honoring green values, close to nature"
+      }
+    },
+    "whyChooseUs": {
+      "title": "Our Promise From Hoa Theo Mua",
+      "description": "We believe flowers should reach you as fresh and vibrant as the moment they were picked. Every bouquet is backed by our wholehearted dedication.",
+      "bannerAlt": "Fresh bouquet by Hoa Theo Mua",
+      "features": {
+        "fresh": {
+          "title": "100% Fresh",
+          "description": "Flowers harvested directly from gardens within the day - always fresh."
+        },
+        "payment": {
+          "title": "Worry-free Payment",
+          "description": "Secure online payment on our site with credit card support and full transparency on every order."
+        },
+        "warranty": {
+          "title": "Warranty & Exchange",
+          "description": "If flowers don't match the described quality, you get an instant exchange or return."
+        },
+        "refund": {
+          "title": "Refund For Force Majeure",
+          "description": "For circumstances beyond our control, you always receive a transparent refund."
+        }
+      }
+    },
+    "testimonial": {
+      "title": "What Customers Say",
+      "quote": "I rarely write reviews, but this experience truly deserves one. I ordered a bouquet for my mother's birthday and wanted everything to be perfect. From the moment I placed the order, I was continuously updated on its delivery status, which gave me great peace of mind. When the flowers arrived, they were even more beautiful than I imagined - fresh, vibrant, and arranged with great elegance. My mother was deeply moved when she received them. Thank you for turning a simple gift into an unforgettable moment for my family.",
+      "authorName": "Nguyen Thi Mai",
+      "authorRole": "Event Manager"
+    },
+    "dailyFlowers": {
+      "title": "Everyday Flowers",
+      "description": "You don't need a special occasion to keep flowers at home. Every bouquet is carefully selected and elegantly arranged to bring natural beauty into the simplest moments of your day."
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Our Story",
+      "intro": "The story of Hoa Theo Mua is the story of",
+      "ceoName": "CEO Le Thi Hoa Dao",
+      "introAfter": "- about the emotions of flowers, of memories, and of empathy from the soul of a woman who wished to bring peaceful values and nurture positivity through every heartfelt tale.",
+      "imageAlt": "Hoa Theo Mua bouquet",
+      "twelveLabel": "Seasons of Flowers",
+      "naturalLabel": "Natural",
+      "founded": "Founded 12/11/2020",
+      "subtitle": "Hanoi - 12 Flower Seasons",
+      "story1": "For anyone who has lingered in Hanoi, memories of the flower seasons are among the most profound.",
+      "story2": "The wistful emotion of pausing by flower-laden bicycles drifting through the alleys… every change of season stirs the soul in its own surprising way.",
+      "story3": "And it was with that very emotion, while humming along to the song \"Hanoi's 12 Flower Seasons\", that something natural awakened within me.",
+      "founderAvatarAlt": "Portrait of CEO Le Thi Hoa Dao",
+      "founderName": "Le Thi Hoa Dao",
+      "founderRole": "Founder & CEO - Hoa Theo Mua",
+      "closing": "From the desire to bring those peaceful emotions, Hoa Theo Mua has distilled its own brand values - the good things meant to be entrusted in every product."
+    },
+    "visionMission": {
+      "title": "Vision & Mission",
+      "motto": "A flower is most beautiful when it blooms in its season,\nyou are most beautiful when you are happy",
+      "vision": {
+        "label": "Vision",
+        "statement": "A joyful world where beauty is present in every single moment"
+      },
+      "mission": {
+        "label": "Mission",
+        "statement": "To bring emotional experiences to everyone through each fresh flower harvested straight from the garden, wrapped with love."
+      }
+    },
+    "values": {
+      "title": "Values We Pursue",
+      "description": "Every Hoa Theo Mua bouquet carries the things we believe in and hold dear.",
+      "coreLabel": "Core Value",
+      "branchAlt": "Decorative branch",
+      "items": {
+        "emotion": {
+          "title": "Touching Emotions",
+          "description": "Hoa Theo Mua doesn't only craft beautiful bouquets - we tuck a quiet kindness into every petal. Each arrangement speaks the feelings that are hard to say, so the recipient feels the sender's sincere care."
+        },
+        "enjoy": {
+          "title": "Enjoy Life",
+          "description": "We believe a fresh vase of flowers each day can awaken a positive energy for living. Hoa Theo Mua shares the spirit of savoring life - noticing and loving the small things around you."
+        },
+        "simple": {
+          "title": "Simple",
+          "description": "Inspired by pure, natural beauty - no flourish, no fuss - Hoa Theo Mua chooses the most honest form of each bloom. That simplicity makes it easy for anyone to feel and connect with."
+        },
+        "elegant": {
+          "title": "Refined",
+          "description": "Hoa Theo Mua understands and celebrates the beauty of flowers for women. Every small detail - from color palette to arrangement - is tended with care, bringing a sense of harmony and love."
+        },
+        "eco": {
+          "title": "Protect the Environment",
+          "description": "We prioritize sustainable materials, reduce waste, and say \"yes\" to products that are both beautiful and kind to nature - because a greener planet is worth caring for, together."
+        },
+        "vietnamese": {
+          "title": "Honoring Vietnamese Values",
+          "description": "Hoa Theo Mua cherishes and honors Vietnamese values - from raw materials and flowers to the way our artisans place the soul of Vietnamese florals into every piece."
+        }
+      }
+    },
+    "productLines": {
+      "title": "Main Product Lines",
+      "description": "Fresh bouquets designed with care in a natural style - capturing the beauty and vitality of each season, made to gift the people you cherish on every special occasion.",
+      "branchAlt": "Decorative branch",
+      "explore": "Explore the collection",
+      "items": {
+        "womensDay": {
+          "occasion": "International Women's Day",
+          "name": "March 8 Flowers",
+          "description": "Refined bouquets carrying love to the ladies on International Women's Day."
+        },
+        "vietnameseWomensDay": {
+          "occasion": "Vietnamese Women's Day",
+          "name": "October 20 Flowers",
+          "description": "Honoring Vietnamese women with vivid, traditional flowers."
+        },
+        "teachersDay": {
+          "occasion": "Vietnamese Teachers' Day",
+          "name": "November 20 Flowers",
+          "description": "Express gratitude to your teachers with elegant bouquets full of meaning."
+        },
+        "seasonalBouquet": {
+          "occasion": "Seasonal Flowers",
+          "name": "Seasonal Fresh Bouquet",
+          "description": "In-season blooms naturally arranged - fresh and full of emotion."
+        },
+        "tetOrchid": {
+          "occasion": "Lunar New Year",
+          "name": "Tet Phalaenopsis Orchid",
+          "description": "Elegant, long-lasting orchid pots - perfect for decorating the home and gifting during Tet."
+        },
+        "birthdayGift": {
+          "occasion": "Birthday",
+          "name": "Birthday Gift",
+          "description": "Bouquets and gifts prepared with care to convey wishes that feel truly personal."
+        }
+      }
+    },
+    "advantages": {
+      "title": "What Makes Hoa Theo Mua",
+      "description": "Four reasons that make Hoa Theo Mua the trusted destination for flower lovers across Saigon - and even further afield.",
+      "imageAlt": "The work table of a Hoa Theo Mua florist",
+      "items": {
+        "price": {
+          "title": "Fair Pricing, Diverse Tiers",
+          "description": "From quick gift bouquets to premium event arrangements, you'll always find a price that fits your budget and your purpose."
+        },
+        "freshness": {
+          "title": "Garden-Fresh, Long-Lasting",
+          "description": "Hoa Theo Mua harvests directly from growers - no stale inventory flowers - so every bloom reaches you at its freshest and longest-lasting."
+        },
+        "delivery": {
+          "title": "Fast, On-Time Delivery",
+          "description": "Flowers arrive exactly when you need them - so you never miss a meaningful moment."
+        },
+        "service": {
+          "title": "Devoted Companionship",
+          "description": "Our consultants are always ready to help you choose the right flowers for the right occasion - like a thoughtful friend who understands your hopes and wishes."
+        }
+      }
+    },
+    "testimonials": {
+      "title": "What Customers Say",
+      "description": "Hoa Theo Mua's greatest joy is the sincere words shared by our customers - they are the very flame that fuels our journey to spread Vietnamese beauty.",
+      "featuredLabel": "Featured Review",
+      "items": {
+        "myDuyen": {
+          "name": "Ms. My Duyen",
+          "role": "Loyal customer",
+          "initials": "MD",
+          "quote": "I'm very satisfied with Hoa Theo Mua's service. The designs are diverse and fit many occasions. The consultants are warm and ready to help me choose the perfect bouquet. The flowers are beautiful and refined - I'll keep supporting Hoa Theo Mua many more times!"
+        },
+        "vanViet": {
+          "name": "Mr. Van Viet",
+          "role": "Bouquet recipient",
+          "initials": "VV",
+          "quote": "A friend once bought my graduation bouquet at Hoa Theo Mua and I truly loved it! Fresh flowers, lovely designs - they made my graduation even more meaningful. Thank you for the quality and the emotion."
+        },
+        "thanhMai": {
+          "name": "Ms. Thanh Mai",
+          "role": "Corporate customer",
+          "initials": "TM",
+          "quote": "Hoa Theo Mua is our company's choice for partner gifts and important events. The flowers are always fresh, the designs refined, and the team is exceptionally professional in consultation and on-time delivery."
+        }
+      }
+    },
+    "press": {
+      "title": "Featured In The Press",
+      "description": "Hoa Theo Mua's journey has been recognised and accompanied by reputable press outlets across the country - a source of pride that pushes us to keep spreading Vietnamese beauty.",
+      "footer": {
+        "thankYou": "Thank you for walking this path with Hoa Theo Mua",
+        "message": "Every bouquet is a story; every story is an emotion. We believe Vietnamese beauty will travel even further with your love.",
+        "productsCta": "Products"
+      },
+      "items": {
+        "dongkhoi": {
+          "name": "Báo Đồng Khởi",
+          "headline": "Hoa Theo Mua - the leading flower-ordering shop in Ho Chi Minh City"
+        },
+        "tuyenquang": {
+          "name": "Báo Tuyên Quang",
+          "headline": "A beautiful flower is one that blooms in its season"
+        },
+        "thanhhoa": {
+          "name": "Báo Thanh Hoá",
+          "headline": "A trusted fresh-flower shop in HCMC"
+        },
+        "cantho": {
+          "name": "Báo Cần Thơ",
+          "headline": "A trusted shop for March 8 flowers in HCMC"
+        },
+        "depviet": {
+          "name": "Đẹp Việt",
+          "headline": "Launching the Phalaenopsis Orchid collection for Tet Giap Thin 2024"
+        },
+        "diendandoanhnghiep": {
+          "name": "Diễn Đàn Doanh Nghiệp",
+          "headline": "A successful start-up built on the fresh-flower business"
+        },
+        "vietbao": {
+          "name": "Việt Báo",
+          "headline": "A trusted online fresh-flower system in HCMC"
+        },
+        "quangninh": {
+          "name": "Báo Quảng Ninh",
+          "headline": "Exclusive orchid designs at Hoa Theo Mua"
+        },
+        "tayninh": {
+          "name": "Báo Tây Ninh",
+          "headline": "Order gift flowers quickly and affordably"
+        }
+      }
+    }
+  },
+  "products": {
+    "hero": {
+      "title": "Fresh Flower Collection",
+      "description": "Every bouquet is seasonally curated, hand-arranged with care and elegance, and delivered to you within 2 hours in Ho Chi Minh City.",
+      "headline": "Every bouquet, every occasion tells a story - choose the right one for your moment",
+      "body": "Over 50 seasonal designs - from birthdays, grand openings, and graduations to premium phalaenopsis orchids. Same-day-imported flowers, elegantly packaged, delivered on time for every special moment.",
+      "shopByType": "Shop by category",
+      "shopByOccasion": "Shop by occasion",
+      "imageAlt": "Hoa Theo Mua fresh bouquet",
+      "highlights": {
+        "seasons": "12 flower seasons",
+        "fastDelivery": "2-hour delivery",
+        "fresh": "100% fresh flowers"
+      },
+      "designsLabel": "Designs",
+      "fastDeliveryLabel": "Fast delivery"
+    },
+    "occasions": {
+      "title": "Flowers For Every Occasion",
+      "description": "Every meaningful moment deserves the right bouquet. Pick by occasion and let us suggest the most loved collections.",
+      "branchAlt": "Decorative branch",
+      "explore": "Explore the collection",
+      "items": {
+        "birthday": {
+          "occasion": "Birthday",
+          "name": "Birthday Bouquet",
+          "description": "A radiant, fresh bouquet that carries a deeply personal wish for your loved ones on their special day."
+        },
+        "love": {
+          "occasion": "Love",
+          "name": "Valentine Roses",
+          "description": "Velvet roses and premium pastel roses - pure symbols of fierce and tender love."
+        },
+        "opening": {
+          "occasion": "Grand Opening",
+          "name": "Grand Opening Basket",
+          "description": "Vivid colors arranged for prosperity - ready to celebrate a brand-new milestone."
+        },
+        "wedding": {
+          "occasion": "Wedding",
+          "name": "Bridal Bouquet",
+          "description": "An elegantly designed bridal bouquet made of imported flowers - perfectly harmonious for your big day."
+        },
+        "orchid": {
+          "occasion": "Phalaenopsis Orchid",
+          "name": "Premium Orchid Pot",
+          "description": "A long-lasting, elegant orchid pot - a meaningful gift for partners and family."
+        },
+        "congrats": {
+          "occasion": "Graduation",
+          "name": "Congratulations Bouquet",
+          "description": "A fresh wish for a new journey - a natural bouquet brimming with positive energy."
+        }
+      },
+      "detail": {
+        "breadcrumb": {
+          "ariaLabel": "Breadcrumb",
+          "home": "Home",
+          "occasions": "Occasions",
+          "back": "Back to occasions"
+        },
+        "headline": "{name} - picks curated for the moment",
+        "campaign": {
+          "label": "Now featuring",
+          "dates": "{start} – {end}"
+        },
+        "cta": {
+          "viewCollection": "View collection",
+          "otherOccasions": "Other occasions"
+        },
+        "products": {
+          "title": "Flowers for {name}",
+          "description": "Hand-picked arrangements tailored to this occasion - fresh, locally arranged, and ready to be delivered with care.",
+          "empty": {
+            "title": "Collection coming soon",
+            "description": "This collection is being prepared by our artisans. Please come back soon to discover our freshest bouquets for this occasion."
+          }
+        }
+      }
+    },
+    "catalog": {
+      "title": "Flower Accessories",
+      "description": "Vases and flower-care accessories hand-picked by artisans - the finishing touch that completes every arrangement.",
+      "vaseFlowers": {
+        "title": "Vase Flowers",
+        "description": "Seasonal stems for you to arrange in your favorite vase - fresh, easy to mix, and keeping a quiet rhythm of calm in your space.",
+        "prompt": "Found your favorite flowers? Don't forget to add a matching vase 🌿"
+      }
+    },
+    "filter": {
+      "all": "All",
+      "title": "Filters",
+      "search": "Search",
+      "searchPlaceholder": "Search by name…",
+      "categoriesHeading": "Categories",
+      "priceHeading": "Price range",
+      "priceValue": "{min} – {max}",
+      "priceAll": "All prices",
+      "priceFrom": "From",
+      "priceTo": "To",
+      "reset": "Reset filters",
+      "categoriesPlaceholder": "All categories",
+      "categoriesSearchPlaceholder": "Search categories…",
+      "categoriesEmpty": "No categories found",
+      "more": "+{count}",
+      "categories": {
+        "eventFlowers": "Event Flowers",
+        "daily": "Daily Flowers",
+        "signature": "Signature",
+        "flowerVases": "Flower Vases",
+        "saleOffVases": "Sale-off Vases",
+        "bauTrucVases": "Bau Truc Ceramics",
+        "glassVases": "Glass Vases",
+        "batTrangVases": "Bat Trang Ceramics",
+        "basketFlowers": "Basket Flowers",
+        "bouquets": "Bouquets",
+        "orchids": "Phalaenopsis Orchids"
+      },
+      "priceRanges": {
+        "r0to200": "Under 200K",
+        "r200to500": "200K – 500K",
+        "r500to1000": "500K – 1M",
+        "r1000to2000": "1M – 2M",
+        "r2000to5000": "2M – 5M"
+      },
+      "categoriesSelected": "{count} selected"
+    },
+    "promise": {
+      "bannerAlt": "Hoa Theo Mua fresh flower promotion",
+      "items": {
+        "fresh": {
+          "title": "100% Fresh Flowers",
+          "description": "Same-day-imported flowers, hand-picked straight from the garden - never from storage."
+        },
+        "delivery": {
+          "title": "2-Hour Hand Delivery",
+          "description": "Order and receive your flowers within 2 hours - available in Ho Chi Minh City."
+        },
+        "support": {
+          "title": "Heartfelt Consultation",
+          "description": "Not sure which flowers to pick? Message HTM for advice tailored to your occasion and the story you want to share."
+        }
+      }
+    },
+    "grid": {
+      "previous": "Previous",
+      "next": "Next",
+      "empty": {
+        "title": "No products yet",
+        "description": "The collection is being prepared by our artisans. Check back soon to discover our freshest bouquets."
+      }
+    },
+    "card": {
+      "addToFavorites": "Add {name} to favorites",
+      "addToCart": "Add {name} to cart",
+      "priceFrom": "From",
+      "outOfStock": "Out of stock"
+    },
+    "summary": {
+      "trustBadges": {
+        "fresh": "Imported same day",
+        "handmade": "Hand-arranged",
+        "delivery": "2-hour delivery"
+      },
+      "specs": {
+        "brand": "Brand",
+        "type": "Type",
+        "status": "Status",
+        "inStock": "In stock · {count} left",
+        "outOfStock": "Out of stock"
+      }
+    },
+    "breadcrumb": {
+      "ariaLabel": "breadcrumb",
+      "home": "Home",
+      "products": "Products",
+      "back": "Back"
+    },
+    "promiseCard": {
+      "title": "Hoa Theo Mua promise",
+      "items": {
+        "fresh": "100% fresh, imported same day",
+        "handmade": "Hand-arranged by artisans",
+        "exchange": "Free exchange within 24 hours",
+        "payment": "Flexible payment on delivery"
+      }
+    },
+    "detail": {
+      "gallery": {
+        "viewImage": "View image {index}",
+        "thumbAlt": "{name} - image {index}",
+        "openLightbox": "Open image gallery",
+        "emptyState": "No product image"
+      },
+      "variants": {
+        "label": "Variants"
+      },
+      "purchase": {
+        "packaging": "Packaging",
+        "variant": "Variant",
+        "quantity": "Quantity",
+        "decreaseQuantity": "Decrease quantity",
+        "increaseQuantity": "Increase quantity",
+        "inCartInfo": "{inCart} in cart · {remaining} left",
+        "stockLimit": "Cart already at stock limit",
+        "outOfStock": "Out of stock",
+        "priceLabel": "Price",
+        "savings": "Save {percent}%",
+        "addToCart": "Add to cart",
+        "buyNow": "Buy now",
+        "addedToCart": "Added to cart"
+      },
+      "tabs": {
+        "ariaLabel": "Product information",
+        "description": "Description",
+        "specs": "Specifications",
+        "care": "Care",
+        "noDescription": "This product has no detailed description yet. Contact Hoa Theo Mua for personal advice.",
+        "noSpecs": "Detailed specifications are being updated for this product.",
+        "viewMore": "View more",
+        "viewLess": "View less",
+        "landing": "Explore",
+        "landingTitle": "Landing page preview",
+        "visitLanding": "Open landing page",
+        "specRows": {
+          "code": "Product code",
+          "brand": "Brand",
+          "category": "Category",
+          "type": "Type",
+          "country": "Origin",
+          "dimensions": "Dimensions",
+          "weight": "Weight"
+        },
+        "careTips": {
+          "cut": {
+            "title": "Trim stems fresh",
+            "description": "Cut stems diagonally every 1–2 days to help flowers absorb water and stay fresh longer."
+          },
+          "water": {
+            "title": "Clean water daily",
+            "description": "Refresh water and rinse the vase daily; remove leaves submerged in water to prevent bacteria."
+          },
+          "shade": {
+            "title": "Avoid direct sunlight",
+            "description": "Place the bouquet in a cool spot, away from harsh sun, strong wind, and ripening fruit."
+          },
+          "temperature": {
+            "title": "Comfortable room temperature",
+            "description": "Ideal at 18–22°C - a lightly air-conditioned room helps the flowers keep their shape."
+          }
+        }
+      }
+    },
+    "stock": {
+      "changed": "Stock has changed",
+      "soldOutLine": "{name} is sold out",
+      "remainingLine": "{name}: only {available} left",
+      "unnamed": "This product",
+      "checking": "Checking stock…"
+    },
+    "core": {
+      "unavailable": "Some products are temporarily unavailable",
+      "unavailableHint": "Please reduce the quantity, pick another product, or contact us for help.",
+      "checking": "Checking availability…"
+    }
+  },
+  "b2b": {
+    "hero": {
+      "eyebrow": "Hoa Theo Mùa for Business",
+      "title": "A Refined Floral Partner For Businesses & Organizations",
+      "subtitle": "From boardrooms to grand lobbies - we craft floral experiences for hotels, offices and brands that value craft and consistency.",
+      "audienceLine": "For 4–5 star hotels, offices and brands looking for a long-term floral partner.",
+      "primaryCta": "Request a quote",
+      "secondaryCta": "Talk to our team",
+      "imageAlt": "Premium corporate floral arrangement"
+    },
+    "trustBar": {
+      "eyebrow": "Trusted by leading brands",
+      "stats": {
+        "clients": {
+          "value": "50+",
+          "label": "Corporate clients"
+        },
+        "hotels": {
+          "value": "5+",
+          "label": "International 4–5 star hotels"
+        },
+        "events": {
+          "value": "200+",
+          "label": "Events delivered"
+        }
+      },
+      "logos": {
+        "ariaLabel": "Featured clients and partners",
+        "groups": {
+          "hospitality": {
+            "label": "Hospitality",
+            "items": {
+              "indigo": {
+                "name": "Indigo Saigon Hotel"
+              },
+              "fusion": {
+                "name": "Fusion Saigon Hotel"
+              },
+              "eastin": {
+                "name": "Eastin Saigon Hotel"
+              }
+            }
+          },
+          "finance": {
+            "label": "Finance & Banking",
+            "items": {
+              "shinhan": {
+                "name": "Shinhan Bank"
+              },
+              "mbbank": {
+                "name": "MB Bank"
+              },
+              "woori": {
+                "name": "Woori Bank"
+              }
+            }
+          },
+          "enterprise": {
+            "label": "Enterprise - Retail - Construction",
+            "items": {
+              "sevenEleven": {
+                "name": "Seven-Eleven"
+              },
+              "datxanh": {
+                "name": "Đất Xanh"
+              },
+              "gsenc": {
+                "name": "GS E&C"
+              },
+              "tancang": {
+                "name": "Tân Cảng Sài Gòn"
+              },
+              "gelex": {
+                "name": "Gelex Group"
+              },
+              "masan": {
+                "name": "Masan Consumer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "services": {
+      "title": "Services Built For Business",
+      "description": "Whether you need a single boardroom centerpiece or a year-long hospitality program, every service is tailored to your brand and venue.",
+      "explore": "Discuss this service",
+      "viewPackages": "See reception packages",
+      "items": {
+        "outsourced": {
+          "tag": "Hospitality",
+          "name": "Outsourced Florist Department",
+          "description": "End-to-end floral operations for 4–5 star hotels - lobby, F&B, VIP rooms - run as your in-house flower team, without you keeping one."
+        },
+        "eventsMice": {
+          "tag": "Events & MICE",
+          "name": "Openings, Events & MICE",
+          "description": "Conferences, galas, product launches and showroom openings - full floral direction from stage and ballroom to ribbon-cutting podium."
+        },
+        "officeSubscription": {
+          "tag": "Subscription",
+          "name": "Recurring Office Flowers",
+          "description": "Weekly or bi-weekly fresh-flower rotation on a long-term contract - keeps reception, lobbies and meeting rooms always alive."
+        },
+        "corporateGifts": {
+          "tag": "Gifting",
+          "name": "Corporate Gifts",
+          "description": "Fresh-flower gifting for clients and employees - designed to fit each company's specific occasion and budget."
+        },
+        "brandExperience": {
+          "tag": "Brand experience",
+          "name": "Brand Experiences With Flowers",
+          "description": "Floral workshops, mindful flower mini-events, VIP customer and partner care - flowers as an emotional touchpoint, not just decor."
+        }
+      }
+    },
+    "caseStudies": {
+      "title": "Proven With Premium Partners",
+      "description": "A closer look at one of our long-running hospitality engagements.",
+      "categories": {
+        "weekly": "Weekly flowers",
+        "event": "Event flowers",
+        "room": "Guest area flowers"
+      },
+      "indigo": {
+        "logoAlt": "Indigo Saigon Hotel",
+        "badge": "5-star international hotel - IHG Group",
+        "summary": "For over a year, Hoa Theo Mùa has run the full floral programme at Indigo Saigon Hotel - across the lobby, meeting and event spaces, and F&B - with weekly rotations. Instead of keeping an in-house florist team, the hotel hands the whole flow to a single partner: seasonal design, sourcing, daily care and replacement - so every space a guest walks through stays on brand and on standard.",
+        "quote": "The Hoa Theo Mùa team brings ideas to life across every space in the hotel - guests and our leadership both notice.",
+        "quoteAuthor": "Nicole Đoàn",
+        "quoteRole": "Marketing Manager, Indigo Saigon Hotel",
+        "images": {
+          "gifts": "Hoa Theo Mùa holiday installation at the Indigo Saigon Hotel entrance",
+          "winterTable": "Winter side-table arrangement in the F&B area",
+          "orchidVase": "Yellow cymbidium orchid arrangement for the guest corridor",
+          "lotusSinger": "Lotus arrangement on a vintage display table",
+          "banquetCenterpiece": "Banquet centerpiece with lotus and gold accents for a gala event",
+          "banquetDetail": "Close-up detail of the banquet table styling"
+        }
+      },
+      "partners": {
+        "title": "Trusted enterprise partners",
+        "description": "Brands that have grown alongside Hoa Theo Mùa on the journey of building world-class floral experiences.",
+        "fusion": {
+          "name": "Fusion",
+          "role": "Hotel & resort group",
+          "summary": "Fusion chose Hoa Theo Mùa as their partner for recurring floral services across the lobby, F&B and payment areas - with concepts that rotate by season and fit each space, adding aesthetic accents and refined touchpoints for every guest.",
+          "logoAlt": "Fusion Hotel Group logo"
+        },
+        "masan": {
+          "name": "Masan Group",
+          "role": "Consumer enterprise",
+          "summary": "Masan trusts Hoa Theo Mùa to deliver recurring fresh flowers at the lobby and reception - building a professional workspace and shaping a positive first impression for clients and partners from the very first touchpoint.",
+          "logoAlt": "Masan Group logo"
+        },
+        "tanCang": {
+          "name": "Tân Cảng Sài Gòn",
+          "role": "Nationwide corporate gifting",
+          "summary": "Tân Cảng partners with Hoa Theo Mùa to roll out corporate flowers and partner-birthday floral gifts nationwide - from bespoke design and quality control to on-time, on-address delivery across the country.",
+          "logoAlt": "Tân Cảng Sài Gòn logo"
+        },
+        "eastin": {
+          "name": "Eastin",
+          "role": "4-star international hotel",
+          "summary": "Eastin chose Hoa Theo Mùa for conference and event flowers, wedding banquets, plus greenery trimming and recurring flower replacement in the F&B area - keeping the hotel space polished and full of life.",
+          "logoAlt": "Eastin Hotel logo"
+        }
+      }
+    },
+    "packages": {
+      "title": "Reception Orchid Packages",
+      "description": "Three options for reception and office spaces - efficient, convenient, premium. Every package includes full care and replacement.",
+      "popular": "Most chosen",
+      "fromLabel": "From",
+      "cta": "Choose this package",
+      "quarterlySuffix": "/quarter",
+      "items": {
+        "nhuY": {
+          "name": "Như Ý",
+          "target": "Small reception desks and starter offices",
+          "price": "2,595,000đ",
+          "features": {
+            "pots": "4 fresh orchid pots",
+            "area": "Under 20m², desk 1.2–1.6m",
+            "potSize": "30W x 50H",
+            "locations": "1 location",
+            "care": "Full 3-month care & replacement"
+          }
+        },
+        "locPhat": {
+          "name": "Lộc Phát",
+          "target": "Mid-size offices that want a striking signature touch",
+          "price": "3,995,000đ",
+          "features": {
+            "pots": "4 fresh orchid pots",
+            "area": "25–40m², desk 1.8–2.4m",
+            "potSize": "45W x 60H",
+            "locations": "1 location",
+            "care": "Full 3-month care & replacement"
+          }
+        },
+        "thinhVuong": {
+          "name": "Thịnh Vượng",
+          "target": "Larger receptions and statement-making concierge counters",
+          "price": "6,995,000đ",
+          "features": {
+            "pots": "4 fresh orchid pots",
+            "area": "45–60m², counter 2.6–3.6m",
+            "potSize": "60W x 80H",
+            "locations": "1 location",
+            "care": "Full 3-month care & replacement"
+          }
+        }
+      }
+    },
+    "advantages": {
+      "eyebrow": "Hoa Theo Mùa for Business",
+      "title": "Why Partners Choose Hoa Theo Mùa",
+      "description": "The craft of a boutique florist paired with the operational reliability your business needs.",
+      "items": {
+        "onTime": {
+          "title": "On Time, On Quality",
+          "description": "One delivery or a hundred, flowers arrive on schedule and at full freshness - so every event stays flawless."
+        },
+        "singlePoc": {
+          "title": "One Single Point Of Contact",
+          "description": "A dedicated florist stays with you end-to-end - knows your brand, your calendar, and your specific requirements."
+        },
+        "brandAligned": {
+          "title": "Designs Aligned With Your Brand",
+          "description": "Every arrangement is created to reflect the exact spirit your brand wants to express."
+        },
+        "transparent": {
+          "title": "Transparent Operations, Lasting Trust",
+          "description": "Clear contracts, clean invoicing and a transparent payment flow - built for long-term partnerships."
+        }
+      }
+    },
+    "process": {
+      "eyebrow": "How We Work",
+      "title": "Our Partnership Process",
+      "description": "Four simple steps that guarantee the three rights: right brand spirit - right schedule - right budget.",
+      "steps": {
+        "listen": {
+          "label": "STEP 01",
+          "title": "Listen To Your Needs",
+          "description": "We meet you to understand the venue, audience and feeling you want guests to leave with."
+        },
+        "propose": {
+          "label": "STEP 02",
+          "title": "Propose Ideas",
+          "description": "Mood boards, a flower palette and a transparent quote - usually within 48 hours."
+        },
+        "sample": {
+          "label": "STEP 03",
+          "title": "Build A Sample",
+          "description": "We produce a sample piece so you can see, feel and confirm before full production."
+        },
+        "produce": {
+          "label": "STEP 04",
+          "title": "Run Production",
+          "description": "We source, condition and arrange every piece - then deliver, install and walk through on the day."
+        }
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "description": "Quick answers to what corporate buyers usually ask before getting in touch.",
+      "items": {
+        "pricing": {
+          "question": "How is B2B floral service pricing calculated?",
+          "answer": "Pricing depends on three factors: delivery frequency (daily/weekly), the flower selection, and the number of locations. HTM offers packages from essentials to premium - matched to office, hotel or bank budgets. Send your specific requirements via <zalo>Zalo</zalo> and our team will quote within 30 minutes."
+        },
+        "quality": {
+          "question": "How does HTM handle deliveries that don't meet quality standards?",
+          "answer": "Flowers that arrive wilted, off-brief or delivered late are replaced free of charge the same day. This is built into every corporate contract - partner satisfaction is our benchmark."
+        },
+        "moq": {
+          "question": "What's the minimum order quantity (MOQ) for corporate contracts?",
+          "answer": "MOQ depends on the service tier your business selects. Send your specific requirements via <zalo>Zalo</zalo> and our team will support you within 30 minutes."
+        },
+        "contractTerm": {
+          "question": "What's the minimum contract length?",
+          "answer": "3 months lets your business experience the quality before committing longer - no lock-in if it doesn't feel right."
+        },
+        "customization": {
+          "question": "Can HTM customise flowers to match our brand colours or identity?",
+          "answer": "Yes. We arrange flowers around your brand palette, seasonal reception theme or event concept. Share your logo or colour swatches and our design team will mock up samples before contract signing."
+        },
+        "coverage": {
+          "question": "Which cities do you currently deliver to?",
+          "answer": "We currently serve Ho Chi Minh City only. For areas outside HCMC, message us on <zalo>Zalo</zalo> and we'll check bespoke delivery options."
+        },
+        "flexibility": {
+          "question": "Can we reschedule or pause a recurring delivery?",
+          "answer": "Yes. Just give us 72 hours' notice via Zalo or email, and HTM will adjust the schedule at no extra cost."
+        }
+      }
+    },
+    "cta": {
+      "eyebrow": "B2B",
+      "subEyebrow": "Hoa Theo Mùa for Business",
+      "title": "Let's create something blooming together",
+      "description": "Tell us about your project - we'll get back within 4 working hours with first ideas and a clear next step.",
+      "callLabel": "Hotline",
+      "emailLabel": "Partnerships",
+      "primary": "Send a brief",
+      "secondary": "Browse our products"
+    },
+    "serviceDetails": {
+      "common": {
+        "backToOverview": "For business",
+        "tag": "DEDICATED SERVICES FOR BUSINESSES",
+        "introTitle": "About this service",
+        "inclusionsTitle": "What's included",
+        "scheduleTitle": "Flexible flower schedule",
+        "benefitsTitle": "Benefits of the service",
+        "processTitle": "Implementation process",
+        "audienceTitle": "Ideal for",
+        "closingTitle": "Standing beside your brand",
+        "relatedTitle": "Related services",
+        "relatedDescription": "Explore more floral solutions designed for enterprises.",
+        "relatedViewAll": "See all services",
+        "primaryCta": "Contact us",
+        "secondaryCta": "See service packages",
+        "statsTitle": "By the numbers",
+        "faqTitle": "Frequently asked questions",
+        "faqDescription": "Answers to the questions enterprises ask us most.",
+        "heroMetaLabels": {
+          "industry": "Industry",
+          "category": "Service",
+          "timeline": "Engagement"
+        },
+        "tocTitle": "On this page",
+        "sidebarRelatedTitle": "Related services",
+        "sidebarContactTitle": "Talk to our team",
+        "sidebarIndustriesTitle": "Industries we serve",
+        "toc": {
+          "intro": "Overview",
+          "stats": "By the numbers",
+          "inclusions": "What's included",
+          "mice": "MICE flowers",
+          "schedule": "Schedule",
+          "personalization": "Personalization",
+          "benefits": "Benefits",
+          "process": "Process",
+          "audience": "Ideal for",
+          "faq": "FAQ",
+          "closing": "In closing"
+        },
+        "placeholderBadge": "Sample content"
+      },
+      "outsourced": {
+        "metaTitle": "Outsourced Florist Department for 4–5 Star Hotels",
+        "metaDescription": "End-to-end outsourced floral operations for 4–5 star hotels, resorts and premium buildings. Hoa Theo Mùa's florists run as your in-house flower team at international standards.",
+        "breadcrumb": "Outsourced florist department",
+        "heading": "Outsourced Florist Department",
+        "lede": "A solution that outsources the entire floral operation of an international 4–5 star hotel - from the lobby and restaurant to VIP suites - running as if it were your in-house florist department, without your team having to keep any florists on payroll.",
+        "intro": {
+          "01": "Instead of building an in-house florist department with the cost of recruiting, training and managing florists, businesses can choose an outsourced florist service as a professional, flexible and budget-optimised operating model.",
+          "02": "We provide an end-to-end outsourced floral operation for 4–5 star hotels, resorts, retreats and premium buildings, taking care of everything from concept, design and fresh flower sourcing to installation, upkeep and scheduled refresh. Our experienced florists run as an in-house flower team, helping your hotel maintain a luxurious image without needing dedicated staff on payroll."
+        },
+        "inclusions": {
+          "heading": "The service is deployed consistently across many hotel areas, such as:",
+          "items": {
+            "01": "Reception lobby flowers",
+            "02": "Restaurant and bar flowers",
+            "03": "VIP room and Presidential Suite flowers",
+            "04": "Conference room, ballroom and event area flowers",
+            "05": "Spa, lounge and public space flowers",
+            "06": "Welcome flowers for VIP guests and international delegations"
+          },
+          "closing": "Every design is built on the architectural style, brand identity and service standards of each hotel, ensuring consistency, aesthetics and seasonal appropriateness throughout the year."
+        },
+        "benefits": {
+          "heading": "Benefits of an outsourced florist department:",
+          "items": {
+            "01": "Save on the cost of recruiting and managing an in-house florist team.",
+            "02": "No spending on training, material storage or floral wastage.",
+            "03": "Served by professional florists at international hotel standards.",
+            "04": "Floral designs change flexibly by season, occasion and holidays.",
+            "05": "Guaranteed flower quality, care process and scheduled refresh.",
+            "06": "Scale up quickly whenever the hotel hosts conferences, events or peak seasons."
+          }
+        },
+        "closing": {
+          "paragraphs": {
+            "01": "Hoa Theo Mùa doesn't only supply fresh flowers - we accompany the hotel in building guest experience through the art of flower arrangement, elevating brand image, leaving a mark on your guests and raising the value of your service spaces."
+          }
+        }
+      },
+      "eventsMice": {
+        "metaTitle": "End-to-End Flowers for Openings, Events & MICE",
+        "metaDescription": "Full-service floral design and installation for corporate events: grand openings, conferences, gala dinners, product launches and large-scale MICE programmes.",
+        "breadcrumb": "Openings, events & MICE flowers",
+        "heading": "Openings, Events & MICE Flowers",
+        "lede": "End-to-end floral design and installation for corporate events",
+        "intro": {
+          "01": "Every event is a milestone in a company's journey. From grand openings, customer conferences, seminars, signing ceremonies and product launches to large-scale MICE programmes, fresh flowers do more than decorate - they carry the brand image, punctuate the space and elevate the guest experience.",
+          "02": "We provide end-to-end event floral design and installation, walking with each business through the entire process: concept consulting, design, production, transport, installation and post-event teardown. Every design is personalised to the brand identity, the palette and the message of the programme, keeping every touchpoint of the event consistent."
+        },
+        "inclusions": {
+          "heading": "Flower service for openings and events",
+          "subIntro": "Our florists and designers deliver a broad range of flower categories for corporate programmes, including:",
+          "items": {
+            "10": "Flowers for MICE programmes, international conferences and large-scale corporate events.",
+            "11": "Floral solutions for MICE programmes",
+            "01": "Stage flowers and event backdrops.",
+            "02": "Flowers for podiums, signing tables and VIP tables.",
+            "03": "Reception desk, check-in counter and welcome-area flowers.",
+            "04": "Ballroom, conference hall and function room flowers.",
+            "05": "Ribbon-cutting ceremony flowers for grand openings.",
+            "06": "Flowers for new showrooms, stores and offices.",
+            "07": "Flowers for product launches, press conferences and exhibitions.",
+            "08": "Flowers for gala dinners, anniversaries and client appreciation events.",
+            "09": "Flowers for photo booths."
+          }
+        },
+        "mice": {
+          "heading": "Floral solutions for MICE programmes",
+          "intro": "For MICE programmes (Meetings, Incentives, Conferences & Exhibitions), we provide professional floral solutions that meet the demands of timeline, scale and consistency.",
+          "body": "From customer conferences, specialist seminars and trade exhibitions to award ceremonies and international events, our team coordinates with the organising committee to shape a floral concept aligned with the theme, optimising the space and creating a memorable experience for guests."
+        },
+        "benefits": {
+          "heading": "Why enterprises choose our event flower service",
+          "items": {
+            "01": {
+              "title": "Designed to your brand identity",
+              "description": "Every floral element is built on the brand palette, event style and message - reinforcing professionalism and brand recognition."
+            },
+            "02": {
+              "title": "Delivered on schedule",
+              "description": "Our installation team has experience across many major events, hitting deadlines and coordinating smoothly with organisers and other vendors."
+            },
+            "03": {
+              "title": "Flexible scale",
+              "description": "From new-showroom openings to conferences with thousands of guests, we have a solution to fit the budget and requirements of each programme."
+            },
+            "04": {
+              "title": "High-quality fresh flowers",
+              "description": "Flowers are carefully selected to ensure freshness, consistent colour and lasting beauty throughout the event."
+            },
+            "05": {
+              "title": "Turnkey installation",
+              "description": "Clients only need to share their goals - we handle the entire workflow from consulting, design, transport and installation to post-event teardown."
+            }
+          }
+        },
+        "closing": {
+          "heading": "By your side for every important milestone",
+          "paragraphs": {
+            "01": "An event space thoughtfully dressed with professional fresh flowers helps create that all-important first impression, elevates the value of the brand image and leaves attendees with a memorable experience.",
+            "02": "With experience across grand openings, conferences, exhibitions, gala dinners, corporate events and MICE programmes, we commit to polished designs delivered on time and matched to each scale - helping every event run successfully and leave a professional impression with partners, customers and guests."
+          }
+        }
+      },
+      "officeSubscription": {
+        "metaTitle": "Recurring Office Flower Service",
+        "metaDescription": "Recurring fresh flowers for offices, corporations, banks and showrooms - designed on-brand, refreshed on schedule and saving your team the management overhead.",
+        "breadcrumb": "Recurring office flowers",
+        "heading": "Recurring Office Flowers",
+        "lede": "A recurring fresh flower service that helps businesses maintain a professional workplace",
+        "intro": {
+          "01": "The office isn't only a place to work - it is the face of the business welcoming customers, partners and candidates. Fresh arrangements cared for at reception, meeting rooms or lounge areas create a positive atmosphere, elevate the brand image and deliver a professional experience from the very first impression.",
+          "02": "With a recurring office flower service, businesses no longer spend time choosing flowers, changing water, tending or replacing them when they wilt. We handle the whole workflow - consulting, design, sourcing, arrangement, transport, upkeep and scheduled refresh - so the office always looks fresh every day."
+        },
+        "inclusions": {
+          "heading": "What does the recurring office flower service include?",
+          "subIntro": "We provide end-to-end floral solutions for enterprises, offices, buildings and corporate headquarters, across many categories:",
+          "items": {
+            "01": "Flowers for reception desks and guest welcome areas.",
+            "02": "Flowers for meeting rooms, conference rooms and guest lounges.",
+            "03": "Flowers for executive and leadership desks.",
+            "04": "Flowers for pantries, lounges and shared social spaces.",
+            "05": "Flowers for office lobbies and lift areas.",
+            "06": "Flowers for showrooms, experience centres and stores.",
+            "07": "Seasonal, holiday or internal-event flowers for the company."
+          },
+          "closing": "Every design is built on the architectural style, brand palette and corporate culture, creating a workplace that is harmonious, modern and full of inspiration."
+        },
+        "schedule": {
+          "heading": "Flexible flower schedule to fit your business",
+          "subIntro": "Businesses can choose the refresh cadence that fits their needs:",
+          "items": {
+            "01": "Weekly refresh.",
+            "02": "Bi-weekly refresh.",
+            "03": "Monthly refresh.",
+            "04": "Refresh tied to events or marketing campaigns.",
+            "05": "Bespoke designs for occasions such as Tết, International Women's Day, Christmas, company anniversaries and corporate events."
+          },
+          "closing": "Every refresh is a new concept using seasonal flowers, ensuring variety, budget fit and a fresh feel for the office space."
+        },
+        "benefits": {
+          "heading": "Benefits of the recurring office flower service",
+          "items": {
+            "01": {
+              "title": "Elevate the company image",
+              "description": "An office dressed with fresh flowers signals professionalism and polish, leaving customers, partners and employees with a positive feeling."
+            },
+            "02": {
+              "title": "Save time and cost",
+              "description": "No need to assign staff to buy flowers, arrange them or care for them on a schedule. Businesses simply pick a service package - our team handles the rest."
+            },
+            "03": {
+              "title": "Designed in step with your brand",
+              "description": "Each arrangement is colour-matched and material-selected to align with the interior design and the corporate brand identity."
+            },
+            "04": {
+              "title": "Always fresh",
+              "description": "Flowers are hand-picked daily and refreshed on a fixed schedule, safeguarding quality, longevity and aesthetics for the full display window."
+            },
+            "05": {
+              "title": "Flexible for every budget",
+              "description": "We offer many service packages that fit small and medium businesses, corporations, banks, showrooms, representative offices and commercial buildings."
+            }
+          }
+        },
+        "process": {
+          "heading": "Service implementation process",
+          "items": {
+            "01": "Survey the space and business needs.",
+            "02": "Advise on the design style that fits the brand.",
+            "03": "Recommend the service package and recurring refresh schedule.",
+            "04": "Design, transport and arrange flowers at the office.",
+            "05": "Refresh, care for and maintain on the agreed schedule.",
+            "06": "Adjust the floral concept by season or special events as needed."
+          }
+        },
+        "audience": {
+          "heading": "Ideal for many business types",
+          "subIntro": "The recurring office flower service is chosen by many customers such as:",
+          "items": {
+            "01": "Corporate offices.",
+            "02": "Groups and holding companies.",
+            "03": "Banks and financial institutions.",
+            "04": "Law firms and consulting firms.",
+            "05": "Premium hospitals and clinics.",
+            "06": "Automotive and real-estate showrooms.",
+            "07": "Shopping centres.",
+            "08": "Hotels and office buildings."
+          }
+        },
+        "closing": {
+          "heading": "Bringing nature into the workplace",
+          "paragraphs": {
+            "01": "Fresh flowers not only make the office more beautiful - they create a sense of ease, spark inspiration at work and help build a positive workplace. With a recurring office flower service, businesses consistently keep a professional image, save management time and offer a better experience to customers, partners and their entire team."
+          }
+        }
+      },
+      "corporateGifts": {
+        "metaTitle": "Corporate Gifts with Fresh Flowers",
+        "metaDescription": "Corporate flower gifting for customers, partners and staff - designed to your brand identity, delivered on time and flexible for any budget or scale.",
+        "breadcrumb": "Corporate gifts",
+        "heading": "Corporate Gifts",
+        "lede": "A fresh-flower gifting solution that helps businesses build lasting relationships",
+        "intro": {
+          "01": "Every corporate gift is more than a wish or a thank you - it is an expression of professionalism, taste and brand value. A well-chosen floral design helps a business leave a positive impression on customers, partners and staff, while nurturing long-term relationships.",
+          "02": "We provide corporate flower gifting solutions tailored to each purpose, budget and brand identity. From elegant bouquets and premium baskets to luxury flower boxes, phalaenopsis orchids or combined gift sets, every product is crafted around aesthetics, message and the recipient's experience."
+        },
+        "inclusions": {
+          "heading": "What does the corporate gift service include?",
+          "subIntro": "We accompany businesses across many different gift programmes, from small batches to large-scale campaigns.",
+          "items": {
+            "01": {
+              "title": "Customer gifts",
+              "description": "Floral designs for loyal and VIP customers and for customer-care programmes on birthdays, Tết, partnership anniversaries or other special events."
+            },
+            "02": {
+              "title": "Partner gifts",
+              "description": "Elegant arrangements that let businesses send congratulations, appreciation or mark important partnership milestones - reinforcing a professional and lasting image in the partnership."
+            },
+            "03": {
+              "title": "Employee gifts",
+              "description": "Fresh flowers for employee birthdays, recognition ceremonies, internal programmes, promotion congratulations, International Women's Day (8 March), Vietnamese Women's Day (20 October), Vietnamese Teachers' Day and many other meaningful occasions."
+            },
+            "04": {
+              "title": "Opening and congratulatory gifts",
+              "description": "Flower stands, wreaths and congratulatory baskets designed for partners, customers or new branches of the business."
+            },
+            "05": {
+              "title": "Seasonal and holiday gifts",
+              "description": "Bespoke gift collections for occasions such as Tết, Christmas, Mid-Autumn, Valentine's Day, International Women's Day, Mother's Day and year-end appreciation campaigns."
+            }
+          }
+        },
+        "personalization": {
+          "heading": "Designed to your corporate brand identity",
+          "intro": "Every business has its own style and message. So we don't just design beautiful flowers - we also focus on consistency with the brand image.",
+          "subIntro": "Products can be personalised with:",
+          "items": {
+            "01": "Colours from the brand identity palette.",
+            "02": "Greeting cards carrying a bespoke message.",
+            "03": "The company logo on the card or packaging.",
+            "04": "Custom packaging, gift boxes and ribbons.",
+            "05": "Fresh flowers combined with premium gifts such as fruit, cakes, tea, coffee or the company's signature products."
+          }
+        },
+        "benefits": {
+          "heading": "Benefits of choosing our corporate gift service",
+          "items": {
+            "01": {
+              "title": "Faster to launch",
+              "description": "No need to source many suppliers. We support consulting, design, production and delivery to the exact time and place you require."
+            },
+            "02": {
+              "title": "Flexible for any budget",
+              "description": "From small appreciation programmes to gift campaigns for hundreds or thousands of customers, we have a solution that fits the budget and the goal."
+            },
+            "03": {
+              "title": "Polished and consistent design",
+              "description": "Every gift is finished to the same quality, imagery and experience standard, helping the business stay professional across every gifting programme."
+            },
+            "04": {
+              "title": "On-time delivery",
+              "description": "Our operations system and delivery team ensure flowers arrive on time, at the right place and still fresh in the recipient's hands."
+            }
+          }
+        },
+        "audience": {
+          "heading": "Ideal for many business types",
+          "subIntro": "Our corporate gift service is designed for:",
+          "items": {
+            "01": "Medium and large enterprises.",
+            "02": "Groups and holding companies.",
+            "03": "Banks and financial institutions.",
+            "04": "Hotels, resorts and conference centres.",
+            "05": "Real-estate, automotive and insurance companies.",
+            "06": "Retail chains and store networks.",
+            "07": "Manufacturing and export businesses.",
+            "08": "Associations, organisations and event organisers."
+          }
+        },
+        "closing": {
+          "heading": "By your side for every important occasion",
+          "paragraphs": {
+            "01": "A carefully prepared gift not only brings joy to the recipient - it also spreads the brand image and builds lasting relationships. With our corporate flower gifting service, we bring a flexible, professional solution matched to each communications, customer-care and culture-building goal.",
+            "02": "From appreciation bouquets and congratulatory baskets to bespoke gift sets, we're ready to walk with businesses in sending gratitude through every gift and creating memorable experiences for customers, partners and staff."
+          }
+        }
+      },
+      "brandExperience": {
+        "metaTitle": "Brand Experience with Flowers",
+        "metaDescription": "Flower workshops, 'Meditate with Flowers' mini events, VIP client experiences and internal engagement activities - turning flowers into an emotional bridge between your brand and customers.",
+        "breadcrumb": "Brand experience with flowers",
+        "heading": "Brand Experience with Flowers",
+        "lede": "A solution that elevates brand experience through the art of fresh flowers",
+        "intro": {
+          "01": "As businesses focus more on Customer Experience and Employee Engagement, fresh flowers are no longer just a decorative element - they have become a tool for carrying emotion, telling brand stories and showing care for every attendee.",
+          "02": "We bring a flower-led brand experience that combines the art of flower arrangement with interactive activities, workshops and corporate events. Every programme is designed around the communications goal, corporate culture and audience - creating memorable moments and strengthening the connection between the brand and its customers, partners and staff."
+        },
+        "inclusions": {
+          "heading": "What does the brand experience with flowers service include?",
+          "subIntro": "We accompany businesses in building creative experiential activities that fit many scales and goals.",
+          "items": {
+            "01": {
+              "title": "Corporate flower workshops",
+              "description": "Hosting flower arrangement workshops for employees, customers or partners with content designed around a bespoke theme. The programme blends knowledge about flowers, creative practice and inspiring stories - offering a relaxing and connecting experience."
+            },
+            "02": {
+              "title": "\"Meditate with Flowers\" mini event",
+              "description": "A space where participants can slow down, feel the beauty of nature and rediscover balance through flower arrangement. Many businesses choose this activity for well-being programmes, indoor team building or corporate culture weeks."
+            },
+            "03": {
+              "title": "Experiences for VIP customers and partners",
+              "description": "Personalised activities such as private workshops, arranging flowers with an artisan, interactive flower tables or flower gifts prepared on-site. These touchpoints help guests feel the appreciation and hospitality of the business."
+            },
+            "04": {
+              "title": "Employee engagement activities",
+              "description": "Fresh flower workshops are a great fit for International Women's Day (8 March), Vietnamese Women's Day (20 October), Vietnamese Family Day, company anniversaries, employee appreciation programmes or internal activities that build team spirit and corporate culture."
+            },
+            "05": {
+              "title": "Brand experience at events",
+              "description": "We design flower-based experience areas such as flower bars, flower stations, photo corners, interactive flower-arrangement tables or check-in spaces on the event's concept - giving guests another activity to engage with and generating natural social content."
+            }
+          }
+        },
+        "benefits": {
+          "heading": "The value your business gains",
+          "items": {
+            "01": {
+              "title": "Elevated customer experience",
+              "description": "A well-crafted interactive activity helps customers remember the brand for longer, creates positive emotion and raises the value of each encounter."
+            },
+            "02": {
+              "title": "Stronger corporate culture",
+              "description": "Flower workshops give employees a chance to relax, create and connect with colleagues - building a positive workplace and raising engagement across the organisation."
+            },
+            "03": {
+              "title": "Higher brand value",
+              "description": "Programmes are personalised to the brand's colours, message and identity - helping the business convey a professional image and leave a distinctive mark at every event."
+            },
+            "04": {
+              "title": "Naturally shareable moments",
+              "description": "A beautifully designed space combined with interactive experiences produces plenty of user-generated content, spreading the brand image naturally and effectively on social media."
+            }
+          }
+        },
+        "process": {
+          "heading": "Implementation process",
+          "items": {
+            "01": "Survey the goals and the participating audience.",
+            "02": "Build the theme and experience concept aligned with the brand.",
+            "03": "Design the space, prepare fresh flowers and materials.",
+            "04": "Run the programme with our team of florists and coordinators.",
+            "05": "Support communications, photography and capturing the event's highlights.",
+            "06": "Review and optimise for the next programmes if the business runs them on a recurring basis."
+          }
+        },
+        "audience": {
+          "heading": "Ideal for many business types",
+          "subIntro": "The Brand Experience with Flowers service is suitable for:",
+          "items": {
+            "01": "Enterprises and groups.",
+            "02": "Hotels and resorts.",
+            "03": "Banks and financial institutions.",
+            "04": "Shopping centres.",
+            "05": "Automotive and real-estate showrooms.",
+            "06": "Fashion, cosmetics and retail brands.",
+            "07": "Event agencies.",
+            "08": "Businesses running conferences, exhibitions and MICE programmes.",
+            "09": "Turn every flower into a brand touchpoint"
+          }
+        },
+        "closing": {
+          "paragraphs": {
+            "01": "A memorable experience always begins with the finer details. Instead of using flowers only to decorate, businesses can turn them into an emotional bridge between the brand and its customers, partners and staff through richly interactive and creative activities.",
+            "02": "With experience designing corporate flower workshops, mini experience events, VIP customer care activities and internal engagement programmes, we deliver solutions personalised to each brand - helping every event look beautiful and leave a deep imprint on every attendee."
+          }
+        }
+      }
+    }
+  },
+  "policies": {
+    "common": {
+      "home": "Home",
+      "eyebrow": "Hoa Theo Mua policies",
+      "contact": {
+        "title": "Still have questions? We are here to help.",
+        "description": "Our florist concierge is available from 7:00 AM to 6:00 PM every day, weekends included.",
+        "hotlineLabel": "Hotline",
+        "emailLabel": "Email"
+      }
+    },
+    "terms": {
+      "breadcrumb": "Terms of use",
+      "title": "Terms of use",
+      "subtitle": "The terms and conditions that apply when you visit hoatheomua.com and use the services provided by Hoa Theo Mua."
+    },
+    "privacy": {
+      "breadcrumb": "Privacy policy",
+      "title": "Privacy policy",
+      "subtitle": "Hoa Theo Mua respects and safeguards every piece of personal information you share during your shopping journey with us."
+    },
+    "returns": {
+      "breadcrumb": "Return policy",
+      "title": "Return policy",
+      "subtitle": "Customer satisfaction comes first - our return policy is transparent, swift, and aligned with every promise we make."
+    },
+    "delivery": {
+      "breadcrumb": "Delivery & inspection policy",
+      "title": "Delivery & inspection policy",
+      "subtitle": "Our delivery and inspection process keeps every bouquet pristine from the studio to your loved one's hands.",
+      "effectiveDate": "Effective from January 1, 2022"
+    },
+    "ordering": {
+      "breadcrumb": "Ordering & payment guide",
+      "title": "Ordering & payment guide",
+      "subtitle": "Three flexible ways to order and two secure payment options - Hoa Theo Mua helps you send love within minutes."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "viewProfile": "View profile",
+    "fullName": "Full name",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone number",
+    "address": "Address",
+    "phoneNumber": "Phone number",
+    "avatar": "Avatar",
+    "coverImageUrl": "Cover image",
+    "city": "City",
+    "state": "State",
+    "timeZone": "Time zone",
+    "notProvided": "Not provided",
+    "joinedOn": "Joined",
+    "tabInfo": "Personal",
+    "tabAddress": "Address",
+    "tabPassword": "Password",
+    "defaultAddress": "Default",
+    "noAddress": "No addresses yet",
+    "addressPermissionDenied": "You can only view the current account's addresses.",
+    "passwordComingSoon": "Password change feature coming soon",
+    "personalInfoTitle": "Personal information",
+    "personalInfoDescription": "Update your account details.",
+    "personalInfoUpdated": "Personal information updated",
+    "editPersonalInfo": "Edit personal info",
+    "addressListTitle": "Your addresses",
+    "addressListDescription": "Manage saved delivery addresses.",
+    "addAddress": "Add address",
+    "editAddress": "Edit address",
+    "editAddressDescription": "Update the selected address details.",
+    "addAddressDescription": "Create a new saved address.",
+    "createAddress": "Create address",
+    "updateAddress": "Update address",
+    "addressCreated": "Address created",
+    "addressUpdated": "Address updated",
+    "addressDeleted": "Address deleted",
+    "addressDefaultSet": "Default address updated",
+    "setDefaultAddress": "Set as default",
+    "deleteAddress": "Delete address",
+    "confirmDeleteAddress": "Delete this address?",
+    "confirmDeleteAddressDescription": "Confirm remove the address for {receiverName}.",
+    "addressReceiverName": "Receiver name",
+    "addressPhoneNumber": "Phone number",
+    "addressLine": "Address line",
+    "addressLinePlaceholder": "Street, building, …",
+    "addressLineDisabledPlaceholder": "Select province / city and ward first",
+    "addressLineSearching": "Searching addresses…",
+    "addressLineEmpty": "No matching address",
+    "addressWard": "Ward",
+    "addressCity": "City",
+    "addressCountry": "Country",
+    "addressMapId": "Map ID",
+    "addressLatitude": "Latitude",
+    "addressLongitude": "Longitude",
+    "addressMapHint": "Drag the pin or tap the map to set the exact location.",
+    "addressMapUseLocation": "My location",
+    "addressMapResolving": "Finding address…",
+    "addressMapLocationError": "Couldn't get your location. Please pick the point on the map.",
+    "addressMapTooFar": "That point is too far from your address. Move the pin closer.",
+    "addressIsDefault": "Set as default",
+    "changePasswordTitle": "Change password",
+    "changePasswordDescription": "Set a new password for your account.",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "changePassword": "Change password",
+    "passwordUpdated": "Password updated"
+  },
+  "notFound": {
+    "metaTitle": "Page not found",
+    "code": "404",
+    "title": "We can't find that page",
+    "description": "The page you're looking for may have been moved, removed, or is temporarily unavailable. Let's get you back to fresh blooms.",
+    "goHome": "Back to home",
+    "browseProducts": "Browse flowers"
+  }
+}

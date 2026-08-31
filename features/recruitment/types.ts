@@ -1,0 +1,47 @@
+export interface Job {
+  id: string
+  slug: string
+  title: string
+  avatarUrl: string
+  coverImageUrl: string
+  description?: string | null
+  location: string
+  employmentType: string
+  salaryMin: number
+  salaryMax: number
+  salaryNegotiable: boolean
+  openings: number
+  status: string
+}
+
+export interface JobDetail extends Job {
+  minExperienceYears: number
+  maxExperienceYears: number
+  createdAt: string
+  updatedAt: string | null
+}
+
+export type SendRecruitmentRequestForm = {
+  jobDescriptionId: string
+  title: string
+  coverLetter: string
+  attachments: string[]
+}
+
+export type JobDescriptionParam = {
+  pageIndex: number
+  pageSize: number
+  title?: string
+  location?: string
+  employmentType?: string
+  salaryMin?: number
+  salaryMax?: number
+}
+
+export type RecruitmentFilters = {
+  title: string
+  location?: string
+  employmentType?: string
+  salaryMin?: number
+  salaryMax?: number
+}

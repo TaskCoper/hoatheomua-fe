@@ -1,0 +1,96 @@
+import { AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import ViewportAvatar from '@/shared/components/viewport-avatar'
+import { cn } from '@/shared/utils'
+import { Flower2Icon, Location01Icon, Money02FreeIcons } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import type { KeyboardEvent } from 'react'
+
+import { formatJobSalary, getJobAvatarFallback, getJobEmploymentTypeLabel } from '../helpers'
+import type { Job } from '../types'
+
+type JobCardProps = {
+  job: Job
+  isSelected: boolean
+  onClick: () => void
+}
+
+export default function JobCard({ job, isSelected, onClick }: JobCardProps) {
+  const { t } = useTranslation()
+  const salary = formatJobSalary(job)
+  const avatarFallback = getJobAvatarFallback(job.title)
+  const employmentTypeLabel = getJobEmploymentTypeLabel(job.employmentType, t)
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget) return
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onClick()
+    }
+  }
+
+  return (
+    <article
+      role='button'
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      className='w-full cursor-pointer focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/25'
+      aria-pressed={isSelected}
+      aria-label={t('recruitment.jobCard.viewDetails', { title: job.title })}
+    >
+      <Card
+        className={cn(
+          'group w-full rounded-3xl transform-gpu gap-0 border py-0 text-left shadow-md shadow-primary/10 ring-1 ring-primary/10 transition-all delay-100 duration-500 ease-out hover:-translate-y-0.5 hover:border-primary/35 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/15 active:translate-y-0 active:scale-[0.99]',
+          isSelected
+            ? 'border-primary/45 bg-linear-to-br from-primary/10 via-card to-secondary/35 ring-primary/25 shadow-primary/20'
+            : 'border-primary/15 bg-linear-to-br from-card via-card to-secondary/20'
+        )}
+      >
+        <CardContent className='flex items-start gap-3 p-2'>
+          <ViewportAvatar
+            src={job.avatarUrl}
+            alt={job.title}
+            className={cn(
+              'size-10 border text-primary after:border-primary/10',
+              isSelected ? 'border-primary/30 bg-primary text-primary-foreground' : 'border-primary/10 bg-secondary/20'
+            )}
+          >
+            <AvatarFallback className='relative bg-transparent text-current'>
+              <span className='font-title text-xl'>{avatarFallback}</span>
+              <HugeiconsIcon icon={Flower2Icon} strokeWidth={1.5} className='absolute size-7 opacity-30' />
+            </AvatarFallback>
+          </ViewportAvatar>
+
+          <div className='min-w-0 flex-1'>
+            <div className='flex items-start justify-between gap-3'>
+              <div className='min-w-0'>
+                <h3 className='truncate text-base font-semibold text-foreground'>{job.title}</h3>
+                <div className='mt-1 flex items-center gap-1.5 text-sm text-muted-foreground overflow-auto'>
+                  <Badge variant='secondary' className='px-1.5 bg-primary/10 text-primary text-[0.65rem]'>
+                    <HugeiconsIcon icon={Location01Icon} strokeWidth={1.8} className='size-4' />
+                    {job.location}
+                  </Badge>
+                  <Badge variant='secondary' className='text-[0.65rem] bg-primary/10 px-1.5 text-primary'>
+                    {employmentTypeLabel}
+                  </Badge>
+                  {job.salaryNegotiable ? (
+                    <Badge className='text-[0.65rem] px-1.5'>
+                      <HugeiconsIcon icon={Money02FreeIcons} />
+                      {t('recruitment.negotiable')}
+                    </Badge>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+
+            {salary ? <p className='text-[0.65rem] mt-2'>{salary}</p> : null}
+          </div>
+        </CardContent>
+      </Card>
+    </article>
+  )
+}

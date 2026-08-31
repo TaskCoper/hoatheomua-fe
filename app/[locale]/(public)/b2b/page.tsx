@@ -1,0 +1,55 @@
+import ScopedIntlProvider from '@/components/scoped-intl-provider'
+import B2BAdvantagesSection from '@/features/b2b/components/b2b-advantages-section'
+import B2BCaseStudySection from '@/features/b2b/components/b2b-case-study-section'
+import B2BCtaSection from '@/features/b2b/components/b2b-cta-section'
+import B2BFaqSection from '@/features/b2b/components/b2b-faq-section'
+import B2BHeroSection from '@/features/b2b/components/b2b-hero-section'
+import B2BPackagesSection from '@/features/b2b/components/b2b-packages-section'
+import B2BProcessSection from '@/features/b2b/components/b2b-process-section'
+import B2BServicesSection from '@/features/b2b/components/b2b-services-section'
+import B2BTrustBarSection from '@/features/b2b/components/b2b-trust-bar-section'
+import { getB2BOverview } from '@/features/b2b/data.server'
+import { buildB2BJsonLd, generateB2BMetadata } from '@/features/b2b/seo'
+import { getB2BServiceDetails } from '@/features/b2b/service/data.server'
+import type { Locale } from '@/lib/i18n/routing'
+import FloatingPetalsClient from '@/shared/components/floating-petals-client'
+import { JsonLd } from '@/shared/seo'
+import type { Metadata } from 'next'
+
+// The b2b content comes from the `b2bServices` config group, which the admin
+// webhook already purges (`configTag('b2bServices')` + `/b2b`) the moment it
+// changes. A 30s window just rebuilt this page 120x/hour for data that hadn't
+// moved; 1h is the safety net for a webhook that never arrives.
+export const revalidate = 3600
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params
+  return generateB2BMetadata(locale)
+}
+
+export default async function B2BPage({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params
+
+  // Both loaders share one per-request-cached `b2bServices` group fetch.
+  const [overview, details] = await Promise.all([getB2BOverview(), getB2BServiceDetails()])
+  // Services grid cards are the single-source-of-truth per-service `card` docs.
+  const cards = Object.fromEntries([...details].map(([slug, detail]) => [slug, detail.card]))
+
+  return (
+    <ScopedIntlProvider namespaces={['b2b']}>
+      <JsonLd data={buildB2BJsonLd(locale)} />
+      <div className='relative overflow-hidden'>
+        <FloatingPetalsClient />
+        <B2BHeroSection hero={overview.hero} locale={locale} />
+        <B2BTrustBarSection trustBar={overview.trustBar} locale={locale} />
+        <B2BServicesSection services={overview.services} cards={cards} locale={locale} />
+        <B2BCaseStudySection caseStudies={overview.caseStudies} locale={locale} />
+        <B2BPackagesSection packages={overview.packages} locale={locale} />
+        <B2BAdvantagesSection advantages={overview.advantages} locale={locale} />
+        <B2BProcessSection process={overview.process} locale={locale} />
+        <B2BFaqSection faq={overview.faq} locale={locale} />
+        <B2BCtaSection cta={overview.cta} locale={locale} />
+      </div>
+    </ScopedIntlProvider>
+  )
+}

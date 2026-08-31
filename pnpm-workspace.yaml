@@ -1,6 +1,12 @@
 allowBuilds:
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
-ignoredBuiltDependencies:
+  '@parcel/watcher': true
+  '@swc/core': true
+  msw: true
+  sharp: true
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@tanstack/query-devtools@5.101.1'
+  - '@tanstack/react-query-devtools@5.101.1'
+onlyBuiltDependencies:
   - sharp
   - unrs-resolver

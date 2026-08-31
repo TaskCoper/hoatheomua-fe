@@ -1,0 +1,69 @@
+name: Deploy Application
+
+on:
+  push:
+    branches: [demo, main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-demo:
+    name: Build / hoatheomua-fe / Demo
+    if: ${{ github.ref == 'refs/heads/demo' }}
+    uses: ./.github/workflows/build-image.yaml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+    with:
+      actor: ${{ github.actor }}
+      repository: ${{ github.repository }}
+      environment: demo
+
+  build-prod:
+    name: Build / hoatheomua-fe / Prod
+    if: ${{ github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/build-image.yaml
+    permissions:
+      contents: read
+      packages: write
+    secrets: inherit
+    with:
+      actor: ${{ github.actor }}
+      repository: ${{ github.repository }}
+      environment: prod
+
+  deploy-demo:
+    name: Deploy / Demo / hoatheomua-fe
+    needs: build-demo
+    if: ${{ github.ref == 'refs/heads/demo' }}
+    uses: ./.github/workflows/deploy-application.yaml
+    permissions:
+      contents: read
+      packages: read
+    secrets: inherit
+    with:
+      actor: ${{ github.actor }}
+      repository: ${{ github.repository }}
+      profile: demo
+      tag: demo-latest
+      run-on: hoatheomua
+
+  deploy-prod:
+    name: Deploy / Prod / hoatheomua-fe
+    needs: build-prod
+    if: ${{ github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/deploy-application.yaml
+    permissions:
+      contents: read
+      packages: read
+    secrets: inherit
+    with:
+      actor: ${{ github.actor }}
+      repository: ${{ github.repository }}
+      profile: prod
+      tag: prod-latest
+      run-on: hoatheomua

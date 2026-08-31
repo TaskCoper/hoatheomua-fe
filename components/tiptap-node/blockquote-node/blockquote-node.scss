@@ -1,0 +1,31 @@
+.tiptap.ProseMirror {
+  blockquote {
+    position: relative;
+    padding: 0.75rem 1rem 0.75rem 1.25rem;
+    margin: 1.25rem 0;
+    border-radius: 0.5rem;
+    background-color: color-mix(in oklab, var(--secondary) 30%, transparent);
+    color: var(--foreground);
+    font-style: italic;
+
+    p {
+      font-size: inherit;
+      margin: 0;
+    }
+
+    p + p {
+      margin-top: 0.5rem;
+    }
+
+    &::before {
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      bottom: 0.5rem;
+      width: 3px;
+      border-radius: 9999px;
+      background-color: var(--primary);
+      content: '';
+    }
+  }
+}

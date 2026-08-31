@@ -1,0 +1,65 @@
+.tiptap.ProseMirror {
+  img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5rem auto;
+    border-radius: 1rem;
+    outline: 2px solid transparent;
+  }
+
+  figure {
+    width: 100%;
+    margin: 1.5rem 0;
+
+    img {
+      margin: 0;
+    }
+  }
+
+  // Image wrapped in a bare <p> - tighten gap to the caption below
+  p:has(> img:only-child) {
+    margin: 1.5rem 0 0.25rem;
+
+    img {
+      margin: 0 auto;
+    }
+  }
+
+  // A <p> right after an image-only <p> is treated as a caption
+  p:has(> img:only-child) + p,
+  figcaption {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-style: italic;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  [data-type='emoji'] img {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    display: inline-block;
+  }
+
+  img.ProseMirror-selectednode {
+    outline-color: var(--primary);
+  }
+
+  .tiptap-thread:has(> img) {
+    margin: 1.5rem 0;
+
+    img {
+      border-radius: 1rem;
+      outline: 2px solid transparent;
+    }
+  }
+
+  .tiptap-thread img {
+    margin: 0;
+  }
+}
