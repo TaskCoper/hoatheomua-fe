@@ -10,7 +10,10 @@ class ConfigService {
       params: { groupName: group, key }
     })
 
-    return data.value
+    // The public-config endpoint can return `value: null` when a group or key
+    // has not been configured yet. Keep the service contract stable so callers
+    // can safely treat a missing config collection as an empty one.
+    return Array.isArray(data.value) ? data.value : []
   }
 
   getOrderTags = async () => {
