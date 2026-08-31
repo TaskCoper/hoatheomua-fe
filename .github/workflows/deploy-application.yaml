@@ -27,12 +27,16 @@ jobs:
     runs-on: ${{ inputs['run-on'] }}
     timeout-minutes: 15
     environment: ${{ inputs.profile }}
+    concurrency:
+      group: deploy-hoatheomua-fe-${{ inputs.profile }}
+      cancel-in-progress: false
     permissions:
       contents: read
       packages: read
     env:
       REGISTRY: ghcr.io/${{ inputs.repository }}
       TAG: ${{ inputs.tag }}
+      NETWORK: hoatheomua-network-${{ inputs.profile }}
       API_BASE_URL: ${{ secrets.API_BASE_URL }}
       TASKCOPER_API_BASE_URL: ${{ secrets.TASKCOPER_API_BASE_URL }}
       FILE_BASE_URL: ${{ secrets.FILE_BASE_URL }}
@@ -61,7 +65,7 @@ jobs:
 
       - name: Verify external network
         shell: bash
-        run: docker network inspect hoatheomua-network-dev >/dev/null
+        run: docker network inspect "$NETWORK" >/dev/null
 
       - name: Pull new image
         shell: bash
@@ -76,10 +80,11 @@ jobs:
           docker compose -f .docker/compose.yaml
           -p hoatheomua-fe-${{ inputs.profile }}
           --profile "${{ inputs.profile }}" up -d --no-build
+          --wait --wait-timeout 120
 
       - name: Prune old images
         shell: bash
-        run: docker image prune -af --filter "until=24h"
+        run: docker image prune -f --filter "until=24h"
 
       - name: Report deployment
         run: echo "Deployment completed successfully."
