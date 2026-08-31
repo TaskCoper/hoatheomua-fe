@@ -1,21 +1,24 @@
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import axios from 'axios'
-import { AhamoveResult, ProductNhanhResult } from './ahamove.type'
+import type { AhamoveEstimateResult } from './ahamove.type'
 import type {
   CheckoutPayload,
   EstimatePayload,
+  EstimateResult,
   GeocodeAutocompleteResponse,
   GeocodeResponse,
   GeocodeReverseResponse,
   GeoResponse,
-  GeoResult,
   Order,
   OrderDetail,
   OrderStatus,
   ShippingLocation,
-  ShippingLocationType,
-  TaxBusinessInfo
+  ShippingLocationType
 } from './types'
+import { ShippingGateway } from './types'
+import { toAhamoveQuotes, toXanhSmQuotes } from './utils/normalize-shipping-quotes'
+import { normalizeTaxBusinessInfo } from './utils/normalize-tax-business-info'
+import type { XanhSmEstimateResult } from './xanhsm.type'
 
 interface GetOrderShippingLocationsBody {
   locationVersion: 'v2'
@@ -23,46 +26,9 @@ interface GetOrderShippingLocationsBody {
   parentId?: number
 }
 
-const COMBINING_MARKS = /[̀-ͯ]/g
-
-const normalizeAddress = (value: string): string =>
-  value.normalize('NFD').replace(COMBINING_MARKS, '').toLowerCase().replace(/\s+/g, ' ').trim()
-
-const normalizeTaxBusinessInfo = (response: unknown): TaxBusinessInfo | null => {
-  const candidate =
-    response && typeof response === 'object' ? ((response as { data?: unknown }).data ?? response) : null
-
-  if (!candidate || typeof candidate !== 'object') {
-    return null
-  }
-
-  const raw = candidate as Partial<TaxBusinessInfo>
-
-  if (!raw.id || !raw.name || !raw.address) {
-    return null
-  }
-
-  return {
-    id: String(raw.id),
-    name: String(raw.name),
-    address: String(raw.address)
-  }
-}
-
-export const pickBestGeocodeResult = (inputAddress: string, response?: GeoResponse): GeoResult | null => {
-  if (!response || response.status !== 'OK' || response.results.length === 0) {
-    return null
-  }
-
-  const normalizedInput = normalizeAddress(inputAddress)
-
-  const exactMatch = response.results.find((result) => normalizeAddress(result.formatted_address) === normalizedInput)
-
-  if (exactMatch) {
-    return exactMatch
-  }
-
-  return response.results[0]
+const ESTIMATE_ENDPOINT: Record<ShippingGateway, string> = {
+  [ShippingGateway.Ahamove]: 'v1/ahamove/estimate',
+  [ShippingGateway.XanhSm]: 'v1/xanhsm/estimate'
 }
 
 class OrderService {
@@ -80,15 +46,24 @@ class OrderService {
     return data
   }
 
-  estimateOrder = async ({ body }: { body: EstimatePayload }) => {
-    const { data } = await api.post<
-      BaseResponse<{
-        ahamoveResult: AhamoveResult[]
-        productNhanhResult: ProductNhanhResult
-      }>
-    >(`v1/ahamove/estimate`, body)
+  estimateOrder = async ({
+    body,
+    shippingGateway
+  }: {
+    body: EstimatePayload
+    shippingGateway: ShippingGateway
+  }): Promise<EstimateResult> => {
+    const endpoint = ESTIMATE_ENDPOINT[shippingGateway]
 
-    return data.value
+    if (shippingGateway === ShippingGateway.XanhSm) {
+      const { data } = await api.post<BaseResponse<XanhSmEstimateResult>>(endpoint, body)
+
+      return { quotes: toXanhSmQuotes(data.value), products: [] }
+    }
+
+    const { data } = await api.post<BaseResponse<AhamoveEstimateResult>>(endpoint, body)
+
+    return { quotes: toAhamoveQuotes(data.value), products: data.value.products ?? [] }
   }
 
   lookupTaxCode = async ({ taxCode }: { taxCode: string }) => {

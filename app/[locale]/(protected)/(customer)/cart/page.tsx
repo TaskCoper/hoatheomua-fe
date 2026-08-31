@@ -1,5 +1,6 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -50,6 +51,8 @@ interface MergedCartLine {
   stock: number | null
   isOverStock: boolean
   isSelectable: boolean
+  /** A material shortage depends on how many are wanted, so a smaller order may still go through. */
+  canReduceQuantity: boolean
   unitPrice: number
   lineSubtotal: number
 }
@@ -133,7 +136,8 @@ export default function CartPage() {
           unavailableReason: null,
           stock,
           isOverStock: false,
-          isSelectable: false
+          isSelectable: false,
+          canReduceQuantity: false
         }
       }
 
@@ -146,7 +150,8 @@ export default function CartPage() {
           unavailableReason: 'missing',
           stock: null,
           isOverStock: false,
-          isSelectable: false
+          isSelectable: false,
+          canReduceQuantity: false
         }
       }
 
@@ -158,7 +163,8 @@ export default function CartPage() {
           unavailableReason: 'out-of-stock',
           stock,
           isOverStock: false,
-          isSelectable: false
+          isSelectable: false,
+          canReduceQuantity: false
         }
       }
 
@@ -170,7 +176,8 @@ export default function CartPage() {
           unavailableReason: 'materials',
           stock,
           isOverStock: false,
-          isSelectable: false
+          isSelectable: false,
+          canReduceQuantity: cartItem.quantity > 1
         }
       }
 
@@ -182,7 +189,8 @@ export default function CartPage() {
         unavailableReason: null,
         stock,
         isOverStock,
-        isSelectable: !isOverStock
+        isSelectable: !isOverStock,
+        canReduceQuantity: cartItem.quantity > 1
       }
     })
   }, [items, productSummaryById, sellableQuantityById, materialBlockedIds])
@@ -455,7 +463,17 @@ interface CartLineRowProps {
 }
 
 function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemove, onUseMax, t }: CartLineRowProps) {
-  const { cartItem, product, isResolving, isUnavailable, unavailableReason, stock, isOverStock, isSelectable } = line
+  const {
+    cartItem,
+    product,
+    isResolving,
+    isUnavailable,
+    unavailableReason,
+    stock,
+    isOverStock,
+    isSelectable,
+    canReduceQuantity
+  } = line
   const unitName = cartItem.selectedOptions?.unit
   const avatar = product?.coverImage ?? null
   const retailPrice = product?.price ?? 0
@@ -520,7 +538,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
                 {product.parent?.productName ?? product.productName}
               </Link>
               {product.parent && (
-                <p className='line-clamp-1 text-xs font-medium text-muted-foreground'>{product.productName}</p>
+                <Badge variant='secondary' className='max-w-full font-semibold'>
+                  <span className='truncate'>{product.productName}</span>
+                </Badge>
               )}
             </>
           ) : isResolving ? (
@@ -552,7 +572,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
                 {
                   missing: t('cart.unavailable.missing'),
                   'out-of-stock': t('cart.unavailable.outOfStock'),
-                  materials: t('cart.unavailable.materials')
+                  materials: canReduceQuantity ? t('cart.unavailable.materialsAction') : t('cart.unavailable.materials')
                 }[unavailableReason]
               }
             </p>
@@ -586,7 +606,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             variant='ghost'
             className='rounded-l-full rounded-r-none'
             onClick={onDecrement}
-            disabled={isUnavailable || cartItem.quantity <= 1}
+            disabled={!canReduceQuantity}
             aria-label={t('cart.actions.decrease')}
           >
             <HugeiconsIcon icon={MinusSignIcon} className='size-3.5' />

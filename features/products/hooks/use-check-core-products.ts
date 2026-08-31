@@ -59,26 +59,9 @@ export const useCheckCoreProducts = () => {
         )
 
         if (notify) {
-          toast.error(t('products.core.unavailable'), {
-            description: shortages
-              .map((shortage) => {
-                const names = (shortage.affectedProducts ?? [])
-                  .map((product) => product.productName?.trim())
-                  .filter((name): name is string => Boolean(name))
-
-                const line = t('products.core.materialLine', {
-                  material: shortage.materialName?.trim() || t('products.core.unnamedMaterial'),
-                  available: shortage.availableQuantity,
-                  required: shortage.requiredQuantity
-                })
-
-                // A material name means nothing to a buyer without the bouquet it blocks.
-                return names.length > 0
-                  ? `${line}\n${t('products.core.affectedLine', { products: names.join(', ') })}`
-                  : line
-              })
-              .join('\n')
-          })
+          // Material names and counts are internal stock detail - the buyer only
+          // needs to know the order cannot be prepared right now.
+          toast.error(t('products.core.unavailable'), { description: t('products.core.unavailableHint') })
         }
 
         return { ok: false, shortages, blockedProductIds }

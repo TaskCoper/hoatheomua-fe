@@ -581,7 +581,8 @@
       "inactive": "This product is currently inactive.",
       "outOfStock": "This product is out of stock.",
       "materials": "Temporarily unavailable",
-      "materialsNote": "We're short on materials for the highlighted items. Deselect or remove them to continue."
+      "materialsAction": "We can't prepare this many right now — please reduce the quantity.",
+      "materialsNote": "We're short on materials for the highlighted items. Reduce the quantity, deselect or remove them to continue."
     },
     "overStock": "Only {stock} left in stock. Please reduce the quantity.",
     "overStockAction": "Only {stock} left in stock — tap to reduce the quantity.",
@@ -669,6 +670,7 @@
       "deliveryNoteHeading": "Delivery timing",
       "comboboxEmpty": "No results",
       "emptyCart": "Your cart is empty.",
+      "shippingMissing": "Please choose a delivery service.",
       "reviewTitle": "Review your order",
       "reviewDescription": "Check your items and pick a delivery option before placing the order.",
       "recipientHeading": "Delivery details",
@@ -681,6 +683,17 @@
       "shippingHeading": "Shipping option",
       "shippingEmpty": "No shipping services available for this address.",
       "shippingMeta": "{km} km · {min} min",
+      "shippingFree": "Free",
+      "shippingChosenTitle": "Your delivery method",
+      "shippingChosenDescription": "Go back to switch carriers.",
+      "shippingGateway": {
+        "ahamove": {
+          "label": "Ahamove"
+        },
+        "xanhSm": {
+          "label": "Xanh SM"
+        }
+      },
       "bestPrice": "Best price",
       "taxBusinessHeading": "Tax code information",
       "taxBusinessId": "Tax code",
@@ -711,9 +724,10 @@
       "gatewayDescription": "Choose the payment gateway you want to use to continue.",
       "paymentTitle": "Payment method",
       "paymentDescription": "We currently support bank transfer only.",
+      "paymentEmpty": "No payment methods are currently available.",
       "bankTransferTitle": "Bank transfer",
       "bankTransferHint": "You'll receive our bank details and a QR code to complete payment after placing the order.",
-      "shippingDescription": "Choose a delivery service from Ahamove.",
+      "shippingDescription": "Choose a carrier. The shipping fee is quoted for your address in the next step.",
       "paymentNote": "Your order will be held until payment is received. Please transfer within 24 hours.",
       "cancellationTitle": "Cancellation policy",
       "cancellationBody": "We understand plans can change. You may cancel or modify your order up to 12 hours before the scheduled delivery time. After that, cancellation fees may apply.",
@@ -767,7 +781,7 @@
         "onlyLeft": "Only {available} left",
         "materials": "Temporarily unavailable",
         "materialsBlockedTitle": "Some items cannot be prepared right now",
-        "materialsBlockedBody": "We're short on materials for the highlighted items. Remove them or go back to the cart to continue."
+        "materialsBlockedBody": "We're short on materials for the highlighted items. Go back to the cart to reduce the quantity, or remove them to continue."
       }
     },
     "list": {
@@ -1470,9 +1484,7 @@
     },
     "core": {
       "unavailable": "Some products are temporarily unavailable",
-      "materialLine": "{material}: {available} left, {required} needed",
-      "affectedLine": "Affects: {products}",
-      "unnamedMaterial": "A material",
+      "unavailableHint": "Please reduce the quantity, pick another product, or contact us for help.",
       "checking": "Checking availability…"
     }
   },

@@ -217,9 +217,9 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
               {isPending ? t('orders.list.qr.openHint') : t('orders.list.detail.openHint')}
             </span>
 
-            {isPaid && order.ahahaMoveTrackingUrl ? (
+            {isPaid && order.shippingTrackingUrl ? (
               <a
-                href={order.ahahaMoveTrackingUrl}
+                href={order.shippingTrackingUrl}
                 target='_blank'
                 rel='noreferrer noopener'
                 onClick={(event) => event.stopPropagation()}

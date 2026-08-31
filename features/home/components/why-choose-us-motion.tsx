@@ -20,7 +20,7 @@ const WHY_CHOOSE_FEATURES = [
   {
     number: '04',
     key: 'refund',
-    className: 'lg:right-10 lg:bottom-18 xl:right-20 xl:bottom-22 2xl:right-28 2xl:bottom-22'
+    className: 'lg:right-6 lg:bottom-18 xl:right-16 xl:bottom-22 2xl:right-20 2xl:bottom-22'
   }
 ] as const
 
@@ -63,7 +63,6 @@ export default function WhyChooseUsMotion({ strings }: { strings: WhyChooseUsStr
             color='#516c6c'
           />
 
-          {/* h2: the home page's single h1 is the "Hoa Mỗi Ngày" section heading. */}
           <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
             {strings.title}
           </h2>
@@ -106,7 +105,7 @@ export default function WhyChooseUsMotion({ strings }: { strings: WhyChooseUsStr
           whileInView='visible'
           viewport={{ once: true, margin: '-60px' }}
           variants={cardStagger}
-          className='mt-8 grid grid-cols-1 gap-4 mb-8 lg:mb-0 lg:mt-0 lg:block lg:gap-0'
+          className='mt-8 grid grid-cols-1 gap-6 mb-8 lg:mb-0 lg:mt-0 lg:block lg:gap-0'
         >
           {WHY_CHOOSE_FEATURES.map((feature) => (
             <motion.div

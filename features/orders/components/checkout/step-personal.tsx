@@ -2,6 +2,7 @@
 
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Address } from '@/features/addresses/types'
+import type { CheckoutDeliveryOption } from '../../checkout-methods'
 import { CheckoutFields } from '../checkout-fields'
 
 interface StepPersonalProps {
@@ -14,6 +15,9 @@ interface StepPersonalProps {
   manualAddress: boolean
   onManualAddressChange: (value: boolean) => void
   onLoadingShippingLocationsChange?: (isLoading: boolean) => void
+  deliveryMethods: CheckoutDeliveryOption[]
+  selectedDeliveryMethodId: string
+  onSelectDeliveryMethod: (id: string) => void
 }
 
 export function StepPersonal({
@@ -25,7 +29,10 @@ export function StepPersonal({
   onClearAddress,
   manualAddress,
   onManualAddressChange,
-  onLoadingShippingLocationsChange
+  onLoadingShippingLocationsChange,
+  deliveryMethods,
+  selectedDeliveryMethodId,
+  onSelectDeliveryMethod
 }: StepPersonalProps) {
   if (isLoadingAddresses) {
     return (
@@ -55,6 +62,9 @@ export function StepPersonal({
       manualAddress={manualAddress}
       onManualAddressChange={onManualAddressChange}
       onLoadingShippingLocationsChange={onLoadingShippingLocationsChange}
+      deliveryMethods={deliveryMethods}
+      selectedDeliveryMethodId={selectedDeliveryMethodId}
+      onSelectDeliveryMethod={onSelectDeliveryMethod}
     />
   )
 }

@@ -9,7 +9,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import type { CheckoutStep } from '../components/checkout/checkout-stepper'
 import { buildCheckoutPayload, buildEstimatePayload, type OrderContact } from '../payloads'
-import type { PaymentGateway, PaymentMethod } from '../types'
+import type { CheckoutSelection, ShippingGateway } from '../types'
 import { createEstimateSchema, type CheckoutFormValues } from '../validations'
 import { useCreateOrder } from './use-create-order'
 import { useEstimateOrder } from './use-estimate-order'
@@ -42,6 +42,8 @@ export const useCheckoutFlow = ({
   const { checkCoreProducts, isCheckingCoreProducts } = useCheckCoreProducts()
 
   const [step, setStep] = useState<CheckoutStep>(1)
+  // The carrier the quote in hand was priced by. Null means nothing is priced.
+  const [estimatedGateway, setEstimatedGateway] = useState<ShippingGateway | null>(null)
   const [materialBlockedProductIds, setMaterialBlockedProductIds] = useState<ReadonlySet<string>>(() => new Set())
   const hasSubmittedRef = useRef(false)
 
@@ -78,9 +80,14 @@ export const useCheckoutFlow = ({
     return stock.ok && core.ok
   }
 
-  const handleGoToPayment = async () => {
+  const handleGoToPayment = async (shippingGateway: ShippingGateway | undefined) => {
     if (items.length === 0) {
       toast.error(t('orders.checkout.emptyCart'))
+      return
+    }
+
+    if (!shippingGateway) {
+      toast.error(t('orders.checkout.shippingMissing'))
       return
     }
 
@@ -101,10 +108,19 @@ export const useCheckoutFlow = ({
     if (!(await isFulfillable())) return
 
     try {
-      await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById, contact) })
+      await estimateOrder({
+        body: buildEstimatePayload(parsed.data, items, productById, contact),
+        shippingGateway
+      })
+      setEstimatedGateway(shippingGateway)
       setStep(2)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {}
+  }
+
+  const clearEstimate = () => {
+    resetEstimate()
+    setEstimatedGateway(null)
   }
 
   // Address changed during payment. Drop the stale shippingFee and rewind
@@ -114,13 +130,13 @@ export const useCheckoutFlow = ({
       return false
     }
 
-    resetEstimate()
+    clearEstimate()
     setStep(1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
     return true
   }
 
-  const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway, shippingFee: number) =>
+  const handleConfirmOrder = (selection: CheckoutSelection) =>
     methods.handleSubmit(
       async (values) => {
         if (!hasContact()) return
@@ -128,7 +144,7 @@ export const useCheckoutFlow = ({
 
         try {
           const { mrc_order_id } = await createOrder({
-            body: buildCheckoutPayload(values, items, productById, contact, paymentMethod, gateway, shippingFee)
+            body: buildCheckoutPayload(values, items, productById, contact, selection)
           })
 
           if (source === 'cart') {
@@ -160,9 +176,11 @@ export const useCheckoutFlow = ({
     source,
     isVerifyingAvailability: isVerifyingSellableQuantity || isCheckingCoreProducts,
     materialBlockedProductIds,
+    estimatedGateway,
     handleGoToPayment,
     handleConfirmOrder,
     handleCancel,
+    clearEstimate,
     invalidateEstimate
   }
 }

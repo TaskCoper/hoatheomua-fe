@@ -14,12 +14,14 @@ import { DeliveryTruck02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
+import type { CheckoutDeliveryOption } from '../checkout-methods'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
 import { toOrderTimestamp } from '../payloads'
 import { matchShippingLocation } from '../utils/match-shipping-location'
 import type { CheckoutFormValues } from '../validations'
 import { AddressAutocomplete } from './address-autocomplete'
 import { AddressMapField } from './address-map-field'
+import { DeliveryMethodPicker } from './checkout/delivery-method-picker'
 import { LocationCombobox } from './location-combobox'
 import { SavedAddressPicker } from './saved-address-picker'
 
@@ -34,6 +36,9 @@ interface CheckoutFieldsProps {
   manualAddress: boolean
   onManualAddressChange: (value: boolean) => void
   onLoadingShippingLocationsChange?: (isLoading: boolean) => void
+  deliveryMethods: CheckoutDeliveryOption[]
+  selectedDeliveryMethodId: string
+  onSelectDeliveryMethod: (id: string) => void
 }
 
 export function CheckoutFields({
@@ -44,7 +49,10 @@ export function CheckoutFields({
   onClearAddress,
   manualAddress,
   onManualAddressChange,
-  onLoadingShippingLocationsChange
+  onLoadingShippingLocationsChange,
+  deliveryMethods,
+  selectedDeliveryMethodId,
+  onSelectDeliveryMethod
 }: CheckoutFieldsProps) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
@@ -409,6 +417,12 @@ export function CheckoutFields({
         ) : null}
       </CheckoutSection>
 
+      <DeliveryMethodPicker
+        methods={deliveryMethods}
+        selectedId={selectedDeliveryMethodId}
+        onSelect={onSelectDeliveryMethod}
+      />
+
       <CheckoutSection
         title={t('orders.checkout.deliveryOptionsHeading')}
         description={t('orders.checkout.deliveryOptionsDescription')}
@@ -475,9 +489,7 @@ export function CheckoutFields({
                 rows={3}
                 placeholder={t('orders.checkout.remarksPlaceholder')}
               />
-              <div className='min-h-4'>
-                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-              </div>
+              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
             </Field>
           )}
         />

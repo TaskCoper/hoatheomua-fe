@@ -1,6 +1,7 @@
 import type { ProductSummary } from '@/features/products/types'
 import type { CartItem } from '@/stores/cart.store'
-import type { CheckoutPayload, EstimatePayload, PaymentGateway, PaymentMethod } from './types'
+import type { CheckoutPayload, CheckoutSelection, EstimatePayload } from './types'
+import { PaymentGatewayCode } from './types'
 import type { CheckoutFormValues, EstimateFormValues } from './validations'
 
 export interface OrderContact {
@@ -60,14 +61,22 @@ export const buildCheckoutPayload = (
   items: CartItem[],
   productById: Map<string, ProductSummary>,
   contact: OrderContact,
-  paymentMethod: PaymentMethod,
-  gateway: PaymentGateway,
-  shippingFee: number
+  selection: CheckoutSelection
 ): CheckoutPayload => {
+  const { paymentMethod, gateway, shippingGateway, shippingFee } = selection
+
   const base = {
     ...buildEstimatePayload(values, items, productById, contact),
     fullNameReceiver: values.fullNameReceiver.trim(),
     phoneReceiver: values.phoneReceiver.trim()
+  }
+
+  const gateways = {
+    paymentMethod,
+    gateway,
+    paymentGateway: PaymentGatewayCode[gateway],
+    shippingGateway,
+    shippingFee
   }
 
   if (!values.isExportInvoice) {
@@ -81,9 +90,7 @@ export const buildCheckoutPayload = (
       receiptEmail: null,
       isExportInvoice: false,
       invoiceType: null,
-      paymentMethod,
-      gateway,
-      shippingFee
+      ...gateways
     }
   }
 
@@ -97,8 +104,6 @@ export const buildCheckoutPayload = (
     receiptEmail: values.receiptEmail?.trim() ? values.receiptEmail : null,
     isExportInvoice: true,
     invoiceType: values.invoiceType,
-    paymentMethod,
-    gateway,
-    shippingFee
+    ...gateways
   }
 }

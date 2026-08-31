@@ -34,12 +34,6 @@ export default function HomeContent({ categories }: { categories: SortableCatego
       />
 
       <div className='cv-auto'>
-        {/*
-          CategoryFilterSection reads search params, so it can't be part of the
-          static shell. Scoping the boundary to just these sections keeps the
-          rest of the page - hero copy, criteria, why-us, testimonials - in the
-          prerendered HTML for LCP and crawlers.
-        */}
         <Suspense fallback={<ProductGridSkeleton count={8} />}>
           <HomeCategorySections categories={categories} />
         </Suspense>

@@ -581,7 +581,8 @@
       "inactive": "Sản phẩm này hiện không hoạt động.",
       "outOfStock": "Sản phẩm này đã hết hàng.",
       "materials": "Tạm thời không thể chuẩn bị",
-      "materialsNote": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng bỏ chọn hoặc xoá để tiếp tục."
+      "materialsAction": "Tạm thời không thể chuẩn bị số lượng này, vui lòng giảm số lượng.",
+      "materialsNote": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng giảm số lượng, bỏ chọn hoặc xoá để tiếp tục."
     },
     "overStock": "Chỉ còn {stock} trong kho. Vui lòng giảm số lượng.",
     "overStockAction": "Chỉ còn {stock} trong kho, nhấn để giảm số lượng.",
@@ -669,6 +670,7 @@
       "deliveryNoteHeading": "Thời gian giao dự kiến",
       "comboboxEmpty": "Không có kết quả",
       "emptyCart": "Giỏ hàng của bạn đang trống.",
+      "shippingMissing": "Vui lòng chọn đơn vị giao hàng.",
       "reviewTitle": "Xác nhận đơn hàng",
       "reviewDescription": "Kiểm tra sản phẩm và chọn phương thức giao hàng trước khi đặt.",
       "recipientHeading": "Thông tin giao hàng",
@@ -681,6 +683,17 @@
       "shippingHeading": "Phương thức giao hàng",
       "shippingEmpty": "Hiện chưa có dịch vụ giao hàng phù hợp.",
       "shippingMeta": "{km} km · {min} phút",
+      "shippingFree": "Miễn phí",
+      "shippingChosenTitle": "Phương thức giao hàng của bạn",
+      "shippingChosenDescription": "Quay lại nếu bạn muốn đổi đơn vị giao hàng.",
+      "shippingGateway": {
+        "ahamove": {
+          "label": "Ahamove"
+        },
+        "xanhSm": {
+          "label": "Xanh SM"
+        }
+      },
       "bestPrice": "Tiết kiệm nhất",
       "taxBusinessHeading": "Thông tin mã số thuế",
       "taxBusinessId": "Mã số thuế",
@@ -711,9 +724,10 @@
       "gatewayDescription": "Chọn cổng thanh toán bạn muốn sử dụng để tiếp tục.",
       "paymentTitle": "Phương thức thanh toán",
       "paymentDescription": "Hiện tại chúng tôi chỉ hỗ trợ chuyển khoản ngân hàng.",
+      "paymentEmpty": "Hiện chưa có phương thức thanh toán khả dụng.",
       "bankTransferTitle": "Chuyển khoản ngân hàng",
       "bankTransferHint": "Bạn sẽ nhận được thông tin tài khoản và mã QR để hoàn tất thanh toán sau khi đặt đơn.",
-      "shippingDescription": "Chọn dịch vụ giao hàng từ Ahamove.",
+      "shippingDescription": "Chọn đơn vị giao hàng. Phí giao sẽ được báo theo địa chỉ của bạn ở bước sau.",
       "paymentNote": "Đơn hàng sẽ được giữ chỗ đến khi nhận được thanh toán. Vui lòng chuyển khoản trong vòng 24 giờ.",
       "cancellationTitle": "Chính sách huỷ đơn",
       "cancellationBody": "Chúng tôi hiểu kế hoạch có thể thay đổi. Bạn có thể huỷ hoặc chỉnh sửa đơn hàng trước thời gian giao hàng dự kiến 12 giờ. Sau thời điểm đó, phí huỷ có thể được áp dụng.",
@@ -767,7 +781,7 @@
         "onlyLeft": "Chỉ còn {available}",
         "materials": "Tạm thời không thể chuẩn bị",
         "materialsBlockedTitle": "Một số sản phẩm chưa thể chuẩn bị",
-        "materialsBlockedBody": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng xoá hoặc quay lại giỏ hàng để tiếp tục."
+        "materialsBlockedBody": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng quay lại giỏ hàng để giảm số lượng hoặc xoá sản phẩm để tiếp tục."
       }
     },
     "list": {
@@ -1470,9 +1484,7 @@
     },
     "core": {
       "unavailable": "Một số sản phẩm tạm thời không thể chuẩn bị",
-      "materialLine": "{material}: còn {available}, cần {required}",
-      "affectedLine": "Ảnh hưởng: {products}",
-      "unnamedMaterial": "Một nguyên liệu",
+      "unavailableHint": "Vui lòng giảm số lượng, chọn sản phẩm khác hoặc liên hệ với chúng tôi để được hỗ trợ.",
       "checking": "Đang kiểm tra…"
     }
   },

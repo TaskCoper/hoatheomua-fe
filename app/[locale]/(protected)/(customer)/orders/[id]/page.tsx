@@ -282,8 +282,8 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
     }
   }
 
-  const hasTracking = Boolean(order.ahahaMoveTrackingUrl)
-  const hasTrackingIds = Boolean(order.ahahaMoveOrderId || order.trackNumber)
+  const hasTracking = Boolean(order.shippingTrackingUrl)
+  const hasTrackingIds = Boolean(order.shippingPartyOrderId || order.trackNumber)
 
   return (
     <section className='relative px-4 pt-4 pb-12 sm:pt-6 md:pt-8 lg:pt-10'>
@@ -460,17 +460,17 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                       value={<span className='font-mono'>{order.trackNumber}</span>}
                     />
                   ) : null}
-                  {order.ahahaMoveOrderId ? (
+                  {order.shippingPartyOrderId ? (
                     <DetailRow
                       label={t('orders.list.ahamoveOrderId')}
-                      value={<span className='font-mono'>{order.ahahaMoveOrderId}</span>}
+                      value={<span className='font-mono'>{order.shippingPartyOrderId}</span>}
                     />
                   ) : null}
                 </dl>
-                {order.ahahaMoveTrackingUrl ? (
+                {order.shippingTrackingUrl ? (
                   <div className='mt-3 flex flex-wrap gap-2 border-t border-border/60 pt-3'>
                     <a
-                      href={order.ahahaMoveTrackingUrl}
+                      href={order.shippingTrackingUrl}
                       target='_blank'
                       rel='noreferrer noopener'
                       className='inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-3 py-1.5 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
