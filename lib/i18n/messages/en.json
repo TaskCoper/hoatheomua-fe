@@ -796,10 +796,10 @@
       "trackNumber": "Tracking number",
       "createdAt": "Placed at",
       "nhanhOrderId": "Nhanh order ID",
-      "ahamoveOrderId": "Ahamove order ID",
+      "shippingPartyOrderId": "{gateway} order ID",
       "transactionDate": "Paid at",
       "trackNhanh": "Track on Nhanh",
-      "trackAhamove": "Track on Ahamove",
+      "trackShipment": "Track on {gateway}",
       "status": {
         "Pending": "Pending",
         "Paid": "Paid",

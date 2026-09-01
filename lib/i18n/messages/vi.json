@@ -796,10 +796,10 @@
       "trackNumber": "Mã vận đơn",
       "createdAt": "Đặt lúc",
       "nhanhOrderId": "Mã đơn Nhanh",
-      "ahamoveOrderId": "Mã đơn Ahamove",
+      "shippingPartyOrderId": "Mã đơn {gateway}",
       "transactionDate": "Thanh toán lúc",
       "trackNhanh": "Theo dõi Nhanh",
-      "trackAhamove": "Theo dõi Ahamove",
+      "trackShipment": "Theo dõi {gateway}",
       "status": {
         "Pending": "Chờ xác nhận",
         "Paid": "Đã thanh toán",
