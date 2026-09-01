@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetOrders } from '@/features/orders/hooks/use-get-orders'
-import { OrderStatus, OrderStatusLabel, type Order } from '@/features/orders/types'
+import { OrderStatus, OrderStatusLabel, ShippingGatewayLabel, type Order } from '@/features/orders/types'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
@@ -226,7 +226,7 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
                 className='pointer-events-auto relative z-10 inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
               >
                 <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
-                {t('orders.list.trackAhamove')}
+                {t('orders.list.trackShipment', { gateway: t(ShippingGatewayLabel[order.shippingGateway]) })}
               </a>
             ) : null}
           </div>
