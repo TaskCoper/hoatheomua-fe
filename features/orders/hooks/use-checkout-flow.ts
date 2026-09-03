@@ -1,3 +1,4 @@
+import { useCheckCoreProducts } from '@/features/products/hooks/use-check-core-products'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
@@ -8,7 +9,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import type { CheckoutStep } from '../components/checkout/checkout-stepper'
 import { buildCheckoutPayload, buildEstimatePayload, type OrderContact } from '../payloads'
-import type { PaymentGateway, PaymentMethod } from '../types'
+import type { CheckoutSelection, ShippingGateway } from '../types'
 import { createEstimateSchema, type CheckoutFormValues } from '../validations'
 import { useCreateOrder } from './use-create-order'
 import { useEstimateOrder } from './use-estimate-order'
@@ -38,8 +39,12 @@ export const useCheckoutFlow = ({
   const removeCartItem = useCartStore((state) => state.removeItem)
   const productById = useProductsByIds(items)
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
+  const { checkCoreProducts, isCheckingCoreProducts } = useCheckCoreProducts()
 
   const [step, setStep] = useState<CheckoutStep>(1)
+  // The carrier the quote in hand was priced by. Null means nothing is priced.
+  const [estimatedGateway, setEstimatedGateway] = useState<ShippingGateway | null>(null)
+  const [materialBlockedProductIds, setMaterialBlockedProductIds] = useState<ReadonlySet<string>>(() => new Set())
   const hasSubmittedRef = useRef(false)
 
   useEffect(() => {
@@ -58,20 +63,31 @@ export const useCheckoutFlow = ({
     return false
   }
 
-  const hasSellableQuantity = async () => {
-    const { ok } = await verifySellableQuantity(
-      items.map((item) => ({
-        productId: item.productId,
-        productName: productById.get(item.productId)?.productName ?? null,
-        quantity: item.quantity
-      }))
-    )
-    return ok
+  // Stock and materials are separate limits, and either can have moved since the cart.
+  const isFulfillable = async () => {
+    const wanted = items.map((item) => ({
+      productId: item.productId,
+      productName: productById.get(item.productId)?.productName ?? null,
+      quantity: item.quantity
+    }))
+
+    const [stock, core] = await Promise.all([verifySellableQuantity(wanted), checkCoreProducts(wanted)])
+
+    // The toast is gone in a few seconds; the summary keeps the offending lines
+    // marked until a later check clears them.
+    setMaterialBlockedProductIds(core.blockedProductIds)
+
+    return stock.ok && core.ok
   }
 
-  const handleGoToPayment = async () => {
+  const handleGoToPayment = async (shippingGateway: ShippingGateway | undefined) => {
     if (items.length === 0) {
       toast.error(t('orders.checkout.emptyCart'))
+      return
+    }
+
+    if (!shippingGateway) {
+      toast.error(t('orders.checkout.shippingMissing'))
       return
     }
 
@@ -89,13 +105,22 @@ export const useCheckoutFlow = ({
       return
     }
 
-    if (!(await hasSellableQuantity())) return
+    if (!(await isFulfillable())) return
 
     try {
-      await estimateOrder({ body: buildEstimatePayload(parsed.data, items, productById, contact) })
+      await estimateOrder({
+        body: buildEstimatePayload(parsed.data, items, productById, contact),
+        shippingGateway
+      })
+      setEstimatedGateway(shippingGateway)
       setStep(2)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {}
+  }
+
+  const clearEstimate = () => {
+    resetEstimate()
+    setEstimatedGateway(null)
   }
 
   // Address changed during payment. Drop the stale shippingFee and rewind
@@ -105,21 +130,21 @@ export const useCheckoutFlow = ({
       return false
     }
 
-    resetEstimate()
+    clearEstimate()
     setStep(1)
     window.scrollTo({ top: 0, behavior: 'smooth' })
     return true
   }
 
-  const handleConfirmOrder = (paymentMethod: PaymentMethod, gateway: PaymentGateway, shippingFee: number) =>
+  const handleConfirmOrder = (selection: CheckoutSelection) =>
     methods.handleSubmit(
       async (values) => {
         if (!hasContact()) return
-        if (!(await hasSellableQuantity())) return
+        if (!(await isFulfillable())) return
 
         try {
           const { mrc_order_id } = await createOrder({
-            body: buildCheckoutPayload(values, items, productById, contact, paymentMethod, gateway, shippingFee)
+            body: buildCheckoutPayload(values, items, productById, contact, selection)
           })
 
           if (source === 'cart') {
@@ -149,10 +174,13 @@ export const useCheckoutFlow = ({
     goBack,
     items,
     source,
-    isVerifyingSellableQuantity,
+    isVerifyingAvailability: isVerifyingSellableQuantity || isCheckingCoreProducts,
+    materialBlockedProductIds,
+    estimatedGateway,
     handleGoToPayment,
     handleConfirmOrder,
     handleCancel,
+    clearEstimate,
     invalidateEstimate
   }
 }

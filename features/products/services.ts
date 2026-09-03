@@ -1,6 +1,11 @@
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import { GetProductsParams } from './hooks/use-get-products'
-import type { ProductDetail, ProductSellableQuantity, ProductSummary } from './types'
+import type { CoreMaterialShortage, ProductDetail, ProductSellableQuantity, ProductSummary } from './types'
+
+export interface CoreProductCheckItem {
+  productId: string
+  quantity: number
+}
 
 class ProductService {
   private readonly baseUrl = 'products'
@@ -49,6 +54,15 @@ class ProductService {
     })
 
     return data.value
+  }
+
+  checkCoreProducts = async ({ items }: { items: CoreProductCheckItem[] }) => {
+    const { data } = await api.post<BaseResponse<CoreMaterialShortage[]>>(`/v1/${this.baseUrl}/check-core`, {
+      items
+    })
+
+    // A fulfillable order has nothing to report, which the API may send as null.
+    return data.value ?? []
   }
 }
 

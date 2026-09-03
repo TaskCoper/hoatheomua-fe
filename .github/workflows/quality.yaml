@@ -2,7 +2,7 @@ name: Quality Check
 
 on:
   pull_request:
-    branches: [demo]
+    branches: [demo, main]
   workflow_dispatch:
 
 jobs:

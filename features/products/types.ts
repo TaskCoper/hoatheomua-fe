@@ -263,6 +263,20 @@ export interface ProductSellableQuantity {
   sellableQuantity: number
 }
 
+export interface CoreMaterialAffectedProduct {
+  productId: string
+  productName: string | null
+}
+
+/** A short material from `POST /v1/products/check-core` - a product with stock left can still be unmakeable. */
+export interface CoreMaterialShortage {
+  materialId: string
+  materialName: string | null
+  requiredQuantity: number
+  availableQuantity: number
+  affectedProducts: CoreMaterialAffectedProduct[]
+}
+
 /** Slim product shape from `GET /v2/products/{id}/detail` - just enough to render a cart/order line. */
 export interface ProductSummary {
   id: string

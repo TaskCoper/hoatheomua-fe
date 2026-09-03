@@ -2,8 +2,9 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useGetOrders } from '@/features/orders/hooks/use-get-orders'
-import { OrderStatus, OrderStatusLabel, type Order } from '@/features/orders/types'
+import { OrderStatus, OrderStatusLabel, ShippingGatewayLabel, type Order } from '@/features/orders/types'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
@@ -51,9 +52,9 @@ export default function OrdersPage() {
         <OrdersHeading title={t('orders.list.title')} subtitle={t('orders.list.loading')} />
         <div className='mx-auto mt-8 grid w-full max-w-4xl gap-3'>
           {Array.from({ length: 3 }).map((_, index) => (
-            <div
+            <Skeleton
               key={index}
-              className='h-24 animate-pulse rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5'
+              className='h-24 rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5'
             />
           ))}
         </div>
@@ -216,16 +217,16 @@ function OrderRow({ order, t, formatDateTime }: OrderRowProps) {
               {isPending ? t('orders.list.qr.openHint') : t('orders.list.detail.openHint')}
             </span>
 
-            {isPaid && order.ahahaMoveTrackingUrl ? (
+            {isPaid && order.shippingTrackingUrl ? (
               <a
-                href={order.ahahaMoveTrackingUrl}
+                href={order.shippingTrackingUrl}
                 target='_blank'
                 rel='noreferrer noopener'
                 onClick={(event) => event.stopPropagation()}
                 className='pointer-events-auto relative z-10 inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-2.5 py-1 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
               >
                 <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
-                {t('orders.list.trackAhamove')}
+                {t('orders.list.trackShipment', { gateway: t(ShippingGatewayLabel[order.shippingGateway]) })}
               </a>
             ) : null}
           </div>

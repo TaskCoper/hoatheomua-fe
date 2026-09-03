@@ -18,6 +18,18 @@ x-hoatheomua-fe-base: &hoatheomua-fe-base
     PORT: 3000
     VIETMAP_API_KEY: ${VIETMAP_API_KEY:?VIETMAP_API_KEY is required}
     REVALIDATE_SECRET: ${REVALIDATE_SECRET:?REVALIDATE_SECRET is required}
+  healthcheck:
+    test:
+      [
+        'CMD',
+        'node',
+        '-e',
+        "fetch('http://127.0.0.1:3000/robots.txt').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+      ]
+    interval: 15s
+    timeout: 5s
+    retries: 5
+    start_period: 30s
 
 services:
   hoatheomua-fe-demo:
@@ -27,7 +39,17 @@ services:
     networks: [hoatheomua-network-dev]
     profiles: [demo, hoatheomua-fe-demo, hoatheomua-fe]
 
+  hoatheomua-fe-prod:
+    <<: *hoatheomua-fe-base
+    container_name: hoatheomua-fe-prod
+    hostname: hoatheomua-fe-prod
+    networks: [hoatheomua-network-prod]
+    profiles: [prod, hoatheomua-fe-prod, hoatheomua-fe]
+
 networks:
   hoatheomua-network-dev:
     name: hoatheomua-network-dev
+    external: true
+  hoatheomua-network-prod:
+    name: hoatheomua-network-prod
     external: true

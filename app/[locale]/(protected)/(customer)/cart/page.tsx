@@ -1,9 +1,11 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
 import { buildProductVariantHref } from '@/features/products/components/product-variant-context'
+import { useCheckCoreProducts } from '@/features/products/hooks/use-check-core-products'
 import { useGetProductSummary } from '@/features/products/hooks/use-get-product-summary'
 import { useGetProductsSellableQuantity } from '@/features/products/hooks/use-get-products-sellable-quantity'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
@@ -31,7 +33,14 @@ import { motion, type Variants } from 'motion/react'
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
 
-type UnavailableReason = 'missing' | 'out-of-stock'
+type UnavailableReason = 'missing' | 'out-of-stock' | 'materials'
+
+interface MaterialBlock {
+  signature: string
+  productIds: ReadonlySet<string>
+}
+
+const NO_BLOCKED_PRODUCTS: ReadonlySet<string> = new Set()
 
 interface MergedCartLine {
   cartItem: CartItem
@@ -42,6 +51,8 @@ interface MergedCartLine {
   stock: number | null
   isOverStock: boolean
   isSelectable: boolean
+  /** A material shortage depends on how many are wanted, so a smaller order may still go through. */
+  canReduceQuantity: boolean
   unitPrice: number
   lineSubtotal: number
 }
@@ -76,6 +87,10 @@ export default function CartPage() {
   const clearCart = useCartStore((state) => state.clearCart)
 
   const [deselectedIds, setDeselectedIds] = useState<Set<string>>(() => new Set())
+  const [materialBlock, setMaterialBlock] = useState<MaterialBlock | null>(null)
+
+  const cartSignature = useMemo(() => items.map((item) => `${item.lineId}:${item.quantity}`).join('|'), [items])
+  const materialBlockedIds = materialBlock?.signature === cartSignature ? materialBlock.productIds : NO_BLOCKED_PRODUCTS
 
   const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
   const isPhoneMissing = !isLoadingPhoneNumber && !hasPhoneNumber
@@ -91,6 +106,7 @@ export default function CartPage() {
   // every line below is judged against.
   const { sellableQuantityById } = useGetProductsSellableQuantity({ productIds })
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
+  const { checkCoreProducts, isCheckingCoreProducts } = useCheckCoreProducts()
 
   const mergedLines = useMemo<MergedCartLine[]>(() => {
     return items.map<MergedCartLine>((cartItem) => {
@@ -120,7 +136,8 @@ export default function CartPage() {
           unavailableReason: null,
           stock,
           isOverStock: false,
-          isSelectable: false
+          isSelectable: false,
+          canReduceQuantity: false
         }
       }
 
@@ -133,7 +150,8 @@ export default function CartPage() {
           unavailableReason: 'missing',
           stock: null,
           isOverStock: false,
-          isSelectable: false
+          isSelectable: false,
+          canReduceQuantity: false
         }
       }
 
@@ -145,7 +163,21 @@ export default function CartPage() {
           unavailableReason: 'out-of-stock',
           stock,
           isOverStock: false,
-          isSelectable: false
+          isSelectable: false,
+          canReduceQuantity: false
+        }
+      }
+
+      if (materialBlockedIds.has(cartItem.productId)) {
+        return {
+          ...base,
+          isResolving: false,
+          isUnavailable: true,
+          unavailableReason: 'materials',
+          stock,
+          isOverStock: false,
+          isSelectable: false,
+          canReduceQuantity: cartItem.quantity > 1
         }
       }
 
@@ -157,10 +189,11 @@ export default function CartPage() {
         unavailableReason: null,
         stock,
         isOverStock,
-        isSelectable: !isOverStock
+        isSelectable: !isOverStock,
+        canReduceQuantity: cartItem.quantity > 1
       }
     })
-  }, [items, productSummaryById, sellableQuantityById])
+  }, [items, productSummaryById, sellableQuantityById, materialBlockedIds])
 
   const isLineChecked = (line: MergedCartLine) => line.isSelectable && !deselectedIds.has(line.cartItem.lineId)
 
@@ -193,14 +226,15 @@ export default function CartPage() {
   // pressed. On a shortage the fresh numbers land in the query cache, which re-marks
   // the offending lines as over-stock or sold out and drops them out of the selection.
   const handleCheckout = async () => {
-    const { ok } = await verifySellableQuantity(
-      selectedLines.map((line) => ({
-        productId: line.cartItem.productId,
-        productName: line.product?.productName ?? null,
-        quantity: line.cartItem.quantity
-      }))
-    )
-    if (!ok) return
+    const wanted = selectedLines.map((line) => ({
+      productId: line.cartItem.productId,
+      productName: line.product?.productName ?? null,
+      quantity: line.cartItem.quantity
+    }))
+
+    const [stock, core] = await Promise.all([verifySellableQuantity(wanted), checkCoreProducts(wanted)])
+    setMaterialBlock({ signature: cartSignature, productIds: core.blockedProductIds })
+    if (!stock.ok || !core.ok) return
 
     setCheckoutIntent(selectedCartItems, 'cart')
     router.push('/checkout')
@@ -208,7 +242,18 @@ export default function CartPage() {
 
   if (!hasHydrated) {
     return (
-      <div className='mx-auto w-full max-w-7xl px-4 py-16 text-center text-muted-foreground'>{t('cart.loading')}</div>
+      <section className='relative px-4 pt-4 pb-12 sm:pt-6 md:pt-8 lg:pt-10'>
+        <CartHeading title={t('cart.title')} />
+        <div className='mx-auto mt-6 grid w-full max-w-7xl gap-5 sm:gap-6 lg:mt-10 lg:grid-cols-3 lg:gap-6'>
+          <div className='space-y-3 lg:col-span-2'>
+            <Skeleton className='h-14 w-full rounded-3xl' />
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Skeleton key={index} className='h-40 w-full rounded-3xl sm:h-36' />
+            ))}
+          </div>
+          <Skeleton className='h-72 w-full rounded-3xl lg:col-span-1' />
+        </div>
+      </section>
     )
   }
 
@@ -327,6 +372,13 @@ export default function CartPage() {
               </div>
             </div>
 
+            {materialBlockedIds.size > 0 && (
+              <div className='flex items-start gap-2 rounded-2xl bg-destructive/8 px-3 py-2.5 ring-1 ring-destructive/10'>
+                <HugeiconsIcon icon={Alert02Icon} className='mt-0.5 size-3.5 shrink-0 text-destructive' />
+                <p className='text-xs leading-relaxed text-destructive'>{t('cart.unavailable.materialsNote')}</p>
+              </div>
+            )}
+
             <p className='text-xs leading-relaxed text-muted-foreground'>{t('cart.summary.shippingNote')}</p>
 
             <motion.div
@@ -340,13 +392,15 @@ export default function CartPage() {
                 </Button>
               ) : (
                 <Button
-                  disabled={noneChecked || isVerifyingSellableQuantity}
+                  disabled={noneChecked || isVerifyingSellableQuantity || isCheckingCoreProducts}
                   className='w-full'
                   size='lg'
                   onClick={handleCheckout}
                 >
                   <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                  {isVerifyingSellableQuantity ? t('products.stock.checking') : t('cart.actions.checkout')}
+                  {isVerifyingSellableQuantity || isCheckingCoreProducts
+                    ? t('products.stock.checking')
+                    : t('cart.actions.checkout')}
                 </Button>
               )}
             </motion.div>
@@ -409,7 +463,17 @@ interface CartLineRowProps {
 }
 
 function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemove, onUseMax, t }: CartLineRowProps) {
-  const { cartItem, product, isResolving, isUnavailable, unavailableReason, stock, isOverStock, isSelectable } = line
+  const {
+    cartItem,
+    product,
+    isResolving,
+    isUnavailable,
+    unavailableReason,
+    stock,
+    isOverStock,
+    isSelectable,
+    canReduceQuantity
+  } = line
   const unitName = cartItem.selectedOptions?.unit
   const avatar = product?.coverImage ?? null
   const retailPrice = product?.price ?? 0
@@ -474,7 +538,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
                 {product.parent?.productName ?? product.productName}
               </Link>
               {product.parent && (
-                <p className='line-clamp-1 text-xs font-medium text-muted-foreground'>{product.productName}</p>
+                <Badge variant='secondary' className='max-w-full font-semibold'>
+                  <span className='truncate'>{product.productName}</span>
+                </Badge>
               )}
             </>
           ) : isResolving ? (
@@ -499,9 +565,16 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             </div>
           )}
 
-          {isUnavailable && (
-            <p className='text-xs font-medium text-destructive'>
-              {unavailableReason === 'missing' ? t('cart.unavailable.missing') : t('cart.unavailable.outOfStock')}
+          {isUnavailable && unavailableReason && (
+            <p className='inline-flex items-center gap-1.5 text-xs font-medium text-destructive'>
+              <HugeiconsIcon icon={Alert02Icon} className='size-3.5 shrink-0' />
+              {
+                {
+                  missing: t('cart.unavailable.missing'),
+                  'out-of-stock': t('cart.unavailable.outOfStock'),
+                  materials: canReduceQuantity ? t('cart.unavailable.materialsAction') : t('cart.unavailable.materials')
+                }[unavailableReason]
+              }
             </p>
           )}
 
@@ -533,7 +606,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             variant='ghost'
             className='rounded-l-full rounded-r-none'
             onClick={onDecrement}
-            disabled={isUnavailable || cartItem.quantity <= 1}
+            disabled={!canReduceQuantity}
             aria-label={t('cart.actions.decrease')}
           >
             <HugeiconsIcon icon={MinusSignIcon} className='size-3.5' />

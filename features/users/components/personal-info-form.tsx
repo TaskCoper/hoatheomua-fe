@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { useUploadFileWithToast } from '@/hooks/use-upload-file-with-toast'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -130,7 +131,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
     return (
       <div className='space-y-3'>
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className='h-14 rounded-xl bg-muted/40' />
+          <Skeleton key={i} className='h-14 rounded-xl' />
         ))}
       </div>
     )

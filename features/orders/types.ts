@@ -1,4 +1,5 @@
 import { I18nKey } from '@/lib/i18n/types'
+import type { EstimateProduct } from './ahamove.type'
 
 export const OrderStatus = {
   Pending: 'Pending',
@@ -58,8 +59,35 @@ export const PaymentGatewayDescription: Record<PaymentGateway, I18nKey> = {
 
 export type PaymentGatewayDescription = (typeof PaymentGatewayDescription)[keyof typeof PaymentGatewayDescription]
 
-// Which payment methods each gateway exposes. BaoKim uses VA (1);
-// Sepay uses VNPayQR (6).
+export const PaymentGatewayCode = {
+  [PaymentGateway.BaoKim]: 1,
+  [PaymentGateway.Sepay]: 2
+} as const satisfies Record<PaymentGateway, number>
+
+export type PaymentGatewayCode = (typeof PaymentGatewayCode)[PaymentGateway]
+
+export const ShippingGateway = {
+  Ahamove: 1,
+  XanhSm: 2
+} as const
+
+export type ShippingGateway = (typeof ShippingGateway)[keyof typeof ShippingGateway]
+
+export const ShippingGatewayLabel: Record<ShippingGateway, I18nKey> = {
+  [ShippingGateway.Ahamove]: 'orders.checkout.shippingGateway.ahamove.label',
+  [ShippingGateway.XanhSm]: 'orders.checkout.shippingGateway.xanhSm.label'
+}
+
+export type ShippingGatewayLabel = (typeof ShippingGatewayLabel)[keyof typeof ShippingGatewayLabel]
+
+export interface ShippingQuote {
+  serviceId: string | null
+  shippingGateway: ShippingGateway
+  distanceKm: number
+  durationSeconds: number
+  totalFee: number
+}
+
 export const GatewayPaymentMethods: Record<PaymentGateway, PaymentMethod[]> = {
   [PaymentGateway.BaoKim]: [PaymentMethod[1]],
   [PaymentGateway.Sepay]: [PaymentMethod[6]]
@@ -72,8 +100,10 @@ export interface Order {
   trackNumber: string
   nhanhOrderId: string | null
   nhanhTrackingUrl: string | null
-  ahahaMoveOrderId: string | null
-  ahahaMoveTrackingUrl: string | null
+  paymentGateway: PaymentGatewayCode
+  shippingGateway: ShippingGateway
+  shippingPartyOrderId: string | null
+  shippingTrackingUrl: string | null
   createAt: string
   updateAt: null
 }
@@ -91,8 +121,10 @@ export interface OrderDetail {
   status: OrderStatus
   createAt: string
   trackNumber: string
-  ahahaMoveOrderId: string | null
-  ahahaMoveTrackingUrl: string | null
+  paymentGateway: PaymentGatewayCode
+  shippingGateway: ShippingGateway
+  shippingPartyOrderId: string | null
+  shippingTrackingUrl: string | null
   remark: string | null
   taxCode: string | null
   orderTime: number
@@ -166,10 +198,14 @@ export interface EstimatePayload {
   phone: string
   remarks: string
   orderTime: number
-  // `itemId` is the Nhanh warehouse id the fulfilment side keys on; `productId` is
-  // our own catalogue id, which is what stock is checked against.
   items: { itemId: string; productId: string; number: number }[]
   tagIds: number[]
+}
+
+// `products` is only ever echoed back by Ahamove.
+export interface EstimateResult {
+  quotes: ShippingQuote[]
+  products: EstimateProduct[]
 }
 
 export interface CheckoutPayload extends EstimatePayload {
@@ -185,8 +221,23 @@ export interface CheckoutPayload extends EstimatePayload {
   invoiceType: InvoiceType | null
   paymentMethod: PaymentMethod
   gateway: PaymentGateway
-  // Client-computed shipping fee (0 when the free-ship distance rule applies).
+  paymentGateway: PaymentGatewayCode
+  shippingGateway: ShippingGateway
   shippingFee: number
+}
+
+export interface CheckoutSelection {
+  paymentMethod: PaymentMethod
+  gateway: PaymentGateway
+  shippingGateway: ShippingGateway
+  shippingFee: number
+}
+
+export interface UpdateShippingRequest {
+  orderId: string
+  shippingTrackingUrl?: string | null
+  trackingNumber?: string | null
+  shippingFee?: number | null
 }
 
 export interface TaxBusinessInfo {

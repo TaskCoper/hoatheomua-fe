@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# Create/update the GitHub "demo" environment and load its secrets from
-# .docker/.env.demo. Requires an authenticated gh CLI with repository admin access.
+# Create/update GitHub deployment environments and load their secrets from
+# .docker/.env.<environment>. Requires an authenticated gh CLI with repository
+# admin access. Examples:
+#   ENVIRONMENTS=demo .docker/sync-env-secrets.sh
+#   ENVIRONMENTS=prod .docker/sync-env-secrets.sh
+#   ENVIRONMENTS="demo prod" .docker/sync-env-secrets.sh
 set -euo pipefail
 
 REPO="${REPO:-TaskCoper/hoatheomua-fe}"
@@ -12,6 +16,7 @@ EXCLUDE='^(REGISTRY|TAG|PROFILE)='
 branch_for_env() {
   case "$1" in
     demo) echo "demo" ;;
+    prod) echo "main" ;;
     *) echo "" ;;
   esac
 }

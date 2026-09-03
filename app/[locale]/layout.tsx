@@ -6,7 +6,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import type { Metadata } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
-import { Be_Vietnam_Pro, Playfair_Display } from 'next/font/google'
+import { Be_Vietnam_Pro, Lora } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
@@ -42,7 +42,7 @@ const beVietnamPro = Be_Vietnam_Pro({
   fallback: ['system-ui', 'Segoe UI', 'Roboto', 'Arial', 'sans-serif']
 })
 
-const playfairDisplay = Playfair_Display({
+const lora = Lora({
   weight: ['700'],
   subsets: ['latin'],
   display: 'swap',
@@ -103,7 +103,7 @@ export default async function RootLayout({
   const clientMessages = pickClientMessages(messages as Record<string, unknown>)
 
   return (
-    <html lang={locale} className={`${beVietnamPro.variable} ${playfairDisplay.variable} font-sans h-full antialiased`}>
+    <html lang={locale} className={`${beVietnamPro.variable} ${lora.variable} font-sans h-full antialiased`}>
       <body className='min-h-full flex flex-col'>
         <RouteScrollReset />
 

@@ -5,23 +5,25 @@ import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useGetUser } from '@/features/users/hooks/use-get-user'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
-import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
-import type { AhamoveConfigItem } from '@/types/config.type'
 import { Alert02Icon, ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { useCheckoutAddressSelection } from '../../hooks/use-checkout-address-selection'
+import { useCheckoutDeliveryMethods } from '../../hooks/use-checkout-delivery-methods'
 import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
+import { useCheckoutPaymentMethods } from '../../hooks/use-checkout-payment-methods'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
+import { useFreeShipKm } from '../../hooks/use-free-ship-km'
 import type { OrderContact } from '../../payloads'
-import { PaymentGateway, PaymentMethod, type TaxBusinessInfo } from '../../types'
+import { resolveShippingFee } from '../../shipping-fee'
+import type { TaxBusinessInfo } from '../../types'
 import { CheckoutSidebar } from './checkout-sidebar'
 import { CheckoutStepper } from './checkout-stepper'
 import { StepComplete } from './step-complete'
@@ -54,18 +56,20 @@ export function CheckoutClient() {
     [user?.firstName, user?.lastName, user?.phoneNumber]
   )
 
-  const { configs: ahamoveConfigs } = useGetPublicConfigs<AhamoveConfigItem>({ group: 'ahamove' })
-  const freeShipKm = Number(ahamoveConfigs.find((config) => config.key === 'ahamove.free_ship')?.value.value)
+  const freeShipKm = useFreeShipKm()
 
   const {
     step,
     goBack,
     items,
     source,
-    isVerifyingSellableQuantity,
+    isVerifyingAvailability,
+    materialBlockedProductIds,
+    estimatedGateway,
     handleGoToPayment,
     handleConfirmOrder,
     handleCancel,
+    clearEstimate,
     invalidateEstimate
   } = useCheckoutFlow({
     methods,
@@ -77,16 +81,15 @@ export function CheckoutClient() {
 
   const [manualAddress, setManualAddress] = useState(false)
   const [isLoadingShippingLocations, setIsLoadingShippingLocations] = useState(false)
-  const [gateway, setGateway] = useState<PaymentGateway>(PaymentGateway.BaoKim)
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('1')
+  const [pickedPaymentMethodId, setPickedPaymentMethodId] = useState<string | null>(null)
+  const [pickedDeliveryMethodId, setPickedDeliveryMethodId] = useState<string | null>(null)
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
 
   // The selected address was edited elsewhere (profile sheet) and the form has
   // just been re-synced to it. Past the address step that also voids the
-  // shipping quote, so the pick is dropped and the user is rewound to confirm
-  // the new address before it gets re-priced.
+  // shipping quote, so the user is rewound to confirm the new address before it
+  // gets re-priced. The carrier pick is not address-dependent and survives.
   const handleSelectedAddressRevised = () => {
-    setPickedServiceId(null)
     toast.info(invalidateEstimate() ? t('orders.checkout.addressRevisedReprice') : t('orders.checkout.addressRevised'))
   }
 
@@ -97,30 +100,40 @@ export function CheckoutClient() {
     onSelectedAddressRevised: handleSelectedAddressRevised
   })
 
-  // Sepay only offers VNPayQR (6); BaoKim exposes the full method list.
-  const handleGatewayChange = (value: PaymentGateway) => {
-    setGateway(value)
-    setPaymentMethod(value === PaymentGateway.Sepay ? PaymentMethod[6] : PaymentMethod[1])
-  }
   const [taxBusinessLookupState, setTaxBusinessLookupState] = useState<LookupState>('idle')
 
-  const sortedAhamove = useMemo(
-    () =>
-      estimatedOrder
-        ? [...estimatedOrder.ahamoveResult].sort((a, b) => (a.data?.total_fee ?? 0) - (b.data?.total_fee ?? 0))
-        : [],
-    [estimatedOrder]
-  )
-  const [pickedServiceId, setPickedServiceId] = useState<string | null>(null)
-  const selectedServiceId = pickedServiceId ?? sortedAhamove[0]?.service_id ?? ''
-  const selectedService = sortedAhamove.find((s) => s.service_id === selectedServiceId)
-  // Ahamove returns the delivery distance in km; a trip shorter than the
-  // configured free-ship threshold waives the shipping fee entirely.
-  const distanceKm = selectedService?.data?.distance ?? 0
-  const isFreeShip = freeShipKm >= 0 && distanceKm >= 0 && distanceKm <= freeShipKm
-  const rawShippingFee = selectedService?.data?.total_fee ?? 0
-  const shippingFee = isFreeShip ? 0 : rawShippingFee
-  const shippingDiscount = isFreeShip ? rawShippingFee : 0
+  const {
+    methods: paymentMethods,
+    defaultMethod: defaultPaymentMethod,
+    isGettingMethods: isGettingPaymentMethods
+  } = useCheckoutPaymentMethods()
+  const selectedPaymentMethod =
+    paymentMethods.find((method) => method.id === pickedPaymentMethodId) ?? defaultPaymentMethod
+  const selectedPaymentMethodId = selectedPaymentMethod?.id ?? ''
+
+  const quotes = useMemo(() => estimatedOrder?.quotes ?? [], [estimatedOrder])
+  const {
+    methods: deliveryMethods,
+    defaultMethod: defaultDeliveryMethod,
+    isGettingMethods: isGettingDeliveryMethods
+  } = useCheckoutDeliveryMethods({ quotes, estimatedGateway })
+  const selectedDeliveryMethod =
+    deliveryMethods.find((method) => method.id === pickedDeliveryMethodId) ?? defaultDeliveryMethod
+  const selectedDeliveryMethodId = selectedDeliveryMethod?.id ?? ''
+  const selectedService = selectedDeliveryMethod?.quote
+
+  // Each carrier is priced by its own estimate endpoint, so switching carriers
+  // throws away the quote rather than showing one carrier's fee against another.
+  const handleSelectDeliveryMethod = (id: string) => {
+    setPickedDeliveryMethodId(id)
+
+    const next = deliveryMethods.find((method) => method.id === id)
+    if (next && next.shippingGateway !== estimatedGateway) {
+      clearEstimate()
+    }
+  }
+
+  const { isFreeShip, rawShippingFee, shippingFee, shippingDiscount } = resolveShippingFee(selectedService, freeShipKm)
 
   const watchedAddressLine = useWatch({ control: methods.control, name: 'addressLine' })
   const watchedWard = useWatch({ control: methods.control, name: 'ward' })
@@ -139,39 +152,51 @@ export function CheckoutClient() {
 
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 
-  const { summaryLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } = useCheckoutSummary(
-    {
+  const { summaryLines, unavailableLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } =
+    useCheckoutSummary({
       items,
       hasTaxCode,
-      shippingFee
-    }
-  )
+      shippingFee,
+      materialBlockedProductIds
+    })
 
   const isLoading =
     isEstimatingOrder ||
     isCreatingOrder ||
     isLoadingAddresses ||
     isLoadingShippingLocations ||
-    isVerifyingSellableQuantity
+    isVerifyingAvailability ||
+    isGettingPaymentMethods ||
+    isGettingDeliveryMethods
 
   const isBlockedByStock = hasUnavailableLines && step < 3
+
+  // A material shortage has no stock number to act on here, so it gets its own copy
+  // pointing back to the cart - but only when nothing worse is also wrong with the order.
+  const isBlockedByMaterialsOnly = unavailableLines.every((line) => line.issue === 'materials')
 
   const sidebarAction =
     step === 1
       ? {
-          label: isVerifyingSellableQuantity ? t('products.stock.checking') : t('orders.checkout.sidebar.goToPayment'),
-          onClick: () => handleGoToPayment(),
-          disabled: items.length === 0 || isLoading || isBlockedByStock,
-          loading: isEstimatingOrder || isVerifyingSellableQuantity
+          label: isVerifyingAvailability ? t('products.stock.checking') : t('orders.checkout.sidebar.goToPayment'),
+          onClick: () => handleGoToPayment(selectedDeliveryMethod?.shippingGateway),
+          disabled: items.length === 0 || !selectedDeliveryMethod || isLoading || isBlockedByStock,
+          loading: isEstimatingOrder || isVerifyingAvailability
         }
       : step === 2
         ? {
-            label: isVerifyingSellableQuantity
-              ? t('products.stock.checking')
-              : t('orders.checkout.sidebar.payForBooking'),
-            onClick: () => handleConfirmOrder(paymentMethod, gateway, shippingFee),
-            disabled: !selectedServiceId || isLoading || isBlockedByStock,
-            loading: isCreatingOrder || isVerifyingSellableQuantity
+            label: isVerifyingAvailability ? t('products.stock.checking') : t('orders.checkout.sidebar.payForBooking'),
+            onClick: () =>
+              selectedPaymentMethod &&
+              selectedDeliveryMethod &&
+              handleConfirmOrder({
+                paymentMethod: selectedPaymentMethod.paymentMethod,
+                gateway: selectedPaymentMethod.gateway,
+                shippingGateway: selectedDeliveryMethod.shippingGateway,
+                shippingFee
+              }),
+            disabled: !selectedPaymentMethod || !selectedDeliveryMethod || isLoading || isBlockedByStock,
+            loading: isCreatingOrder || isVerifyingAvailability
           }
         : {
             label: t('orders.checkout.sidebar.viewOrders'),
@@ -224,8 +249,16 @@ export function CheckoutClient() {
                     className='mt-0.5 size-5 shrink-0 text-destructive'
                   />
                   <div className='space-y-0.5'>
-                    <p className='text-sm font-semibold text-destructive'>{t('orders.checkout.stock.blockedTitle')}</p>
-                    <p className='text-xs text-muted-foreground'>{t('orders.checkout.stock.blockedBody')}</p>
+                    <p className='text-sm font-semibold text-destructive'>
+                      {isBlockedByMaterialsOnly
+                        ? t('orders.checkout.stock.materialsBlockedTitle')
+                        : t('orders.checkout.stock.blockedTitle')}
+                    </p>
+                    <p className='text-xs text-muted-foreground'>
+                      {isBlockedByMaterialsOnly
+                        ? t('orders.checkout.stock.materialsBlockedBody')
+                        : t('orders.checkout.stock.blockedBody')}
+                    </p>
                   </div>
                 </div>
                 <Button asChild type='button' variant='outline' className='shrink-0'>
@@ -251,16 +284,19 @@ export function CheckoutClient() {
                     manualAddress={manualAddress}
                     onManualAddressChange={setManualAddress}
                     onLoadingShippingLocationsChange={setIsLoadingShippingLocations}
+                    deliveryMethods={deliveryMethods}
+                    selectedDeliveryMethodId={selectedDeliveryMethodId}
+                    onSelectDeliveryMethod={handleSelectDeliveryMethod}
                   />
                 ) : step === 2 ? (
                   <StepPayment
-                    gateway={gateway}
-                    onGatewayChange={handleGatewayChange}
-                    paymentMethod={paymentMethod}
-                    onPaymentMethodChange={setPaymentMethod}
-                    shippingOptions={sortedAhamove}
-                    selectedServiceId={selectedServiceId}
-                    onSelectShipping={setPickedServiceId}
+                    paymentMethods={paymentMethods}
+                    selectedPaymentMethodId={selectedPaymentMethodId}
+                    onSelectPaymentMethod={setPickedPaymentMethodId}
+                    deliveryMethod={selectedDeliveryMethod}
+                    rawShippingFee={rawShippingFee}
+                    isFreeShip={isFreeShip}
+                    onChangeDeliveryMethod={goBack}
                     taxBusinessInfo={taxBusinessInfo}
                     taxBusinessLookupState={taxBusinessLookupState}
                     onTaxBusinessInfoChange={setTaxBusinessInfo}

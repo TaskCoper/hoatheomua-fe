@@ -5,13 +5,22 @@ import type { CartItem } from '@/stores/cart.store'
 import { useMemo } from 'react'
 import type { CheckoutLineIssue, CheckoutSummaryLine } from '../components/checkout/checkout-sidebar'
 
+const NO_BLOCKED_PRODUCTS: ReadonlySet<string> = new Set()
+
 interface UseCheckoutSummaryArgs {
   items: CartItem[]
   hasTaxCode: boolean
   shippingFee: number
+  /** Products the last check-core verdict blamed for a material shortage. */
+  materialBlockedProductIds?: ReadonlySet<string>
 }
 
-export const useCheckoutSummary = ({ items, hasTaxCode, shippingFee }: UseCheckoutSummaryArgs) => {
+export const useCheckoutSummary = ({
+  items,
+  hasTaxCode,
+  shippingFee,
+  materialBlockedProductIds = NO_BLOCKED_PRODUCTS
+}: UseCheckoutSummaryArgs) => {
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.productId))), [items])
   const { productSummaryById } = useGetProductSummary({ productIds })
 
@@ -57,21 +66,27 @@ export const useCheckoutSummary = ({ items, hasTaxCode, shippingFee }: UseChecko
                 ? 'sold-out'
                 : available !== null && item.quantity > available
                   ? 'over-stock'
-                  : null
+                  : // Last, because a stock reason is concrete where this one is only
+                    // "the workshop is short on something" - a buyer can act on the former.
+                    materialBlockedProductIds.has(item.productId)
+                    ? 'materials'
+                    : null
 
         return {
           lineId: item.lineId,
-          name: product?.parent?.productName ?? product?.productName ?? `#${item.productId}`,
+          // Empty while in flight; the sidebar shows a skeleton instead of a raw id.
+          name: product?.parent?.productName ?? product?.productName ?? '',
           variantName: product?.parent ? product.productName : null,
           image: product?.coverImage ?? null,
           quantity: item.quantity,
           unitPrice,
           subtotal: unitPrice * item.quantity,
+          isResolving,
           issue,
           available
         }
       }),
-    [items, productSummaryById, sellableQuantityById, inactiveIds]
+    [items, productSummaryById, sellableQuantityById, inactiveIds, materialBlockedProductIds]
   )
 
   const unavailableLines = useMemo(() => summaryLines.filter((line) => line.issue !== null), [summaryLines])
