@@ -60,10 +60,10 @@ export default function B2BFaqSection({ faq, locale }: { faq: OverviewFaq; local
         variants={fadeUp}
         className='mx-auto w-full max-w-3xl space-y-1 sm:space-y-1.5 md:space-y-2'
       >
-        <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
+        <h2 className='text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
           {pick(faq.title, locale)}
         </h2>
-        <p className='leading-relaxed mx-auto max-w-full sm:max-w-180 text-left sm:text-center text-xs sm:text-sm text-foreground'>
+        <p className='leading-relaxed mx-auto max-w-full sm:max-w-180 text-center text-xs sm:text-sm text-foreground'>
           {pick(faq.description, locale)}
         </p>
       </motion.div>

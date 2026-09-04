@@ -5,6 +5,7 @@ import type { ServiceCard } from '@/features/b2b/service/palette'
 import { Link } from '@/lib/i18n/navigation'
 import type { Locale } from '@/lib/i18n/routing'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import { cn } from '@/shared/utils'
 import {
   ArrowRight02Icon,
   Building03Icon,
@@ -80,7 +81,7 @@ export default function B2BServicesSection({
             color='#516c6c'
           />
 
-          <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
+          <h2 className='text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold'>
             {pick(services.title, locale)}
           </h2>
 
@@ -92,7 +93,7 @@ export default function B2BServicesSection({
           />
         </div>
 
-        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
+        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-center text-xs sm:text-sm text-foreground'>
           {pick(services.description, locale)}
         </p>
       </motion.div>
@@ -142,52 +143,40 @@ export default function B2BServicesSection({
                   aria-hidden='true'
                   whileHover={{ scale: 1.12, rotate: 4 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 14 }}
-                  className={`pointer-events-none absolute font-title font-bold leading-none transition-colors ${
+                  className={cn(
+                    'pointer-events-none absolute font-title font-bold leading-none transition-colors',
                     isFeatured
-                      ? 'right-4 -top-2 text-5xl text-secondary/35 group-hover:text-secondary/55 sm:right-5 sm:-top-3 sm:text-6xl lg:text-7xl'
-                      : 'right-3 -top-1 text-5xl text-secondary/40 group-hover:text-secondary/70 sm:right-4 sm:-top-2 sm:text-6xl'
-                  }`}
+                      ? 'right-4 bottom-4 text-5xl text-secondary/35 group-hover:text-secondary/55 sm:right-4 sm:bottom-2 sm:text-6xl lg:text-7xl xl:top-4 xl:right-4'
+                      : 'right-4 bottom-4 text-5xl text-secondary/40 group-hover:text-secondary/70 sm:right-4 sm:bottom-2 sm:text-6xl xl:top-4 xl:right-4',
+                    service.linkToPackages ? '-bottom-6 sm:-bottom-8' : ''
+                  )}
                 >
                   {String(index + 1).padStart(2, '0')}
                 </motion.span>
 
-                <div className='relative flex items-center gap-3'>
-                  <div
-                    className='icon-bob shrink-0'
-                    style={{ ['--bob-duration' as string]: `${2.6 + (index % 3) * 0.3}s` }}
-                  >
-                    <motion.div
-                      whileHover={{ rotate: -14, scale: 1.18 }}
-                      transition={{
-                        rotate: { type: 'spring', stiffness: 380, damping: 12 },
-                        scale: { type: 'spring', stiffness: 380, damping: 12 }
-                      }}
-                      className={`grid shrink-0 place-items-center rounded-2xl shadow-md ${
-                        isFeatured
-                          ? 'size-12 bg-card text-primary sm:size-14'
-                          : service.accent === 'leaf'
-                            ? 'size-11 bg-leaf text-leaf-foreground sm:size-12'
-                            : 'size-11 bg-primary text-primary-foreground sm:size-12'
-                      }`}
-                    >
-                      <HugeiconsIcon
-                        icon={service.icon}
-                        className={isFeatured ? 'size-6 sm:size-7' : 'size-5 sm:size-6'}
-                      />
-                    </motion.div>
-                  </div>
-
-                  <span
-                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold tracking-wide ring-1 ${
+                <div
+                  className='icon-bob shrink-0'
+                  style={{ ['--bob-duration' as string]: `${2.6 + (index % 3) * 0.3}s` }}
+                >
+                  <motion.div
+                    whileHover={{ rotate: -14, scale: 1.18 }}
+                    transition={{
+                      rotate: { type: 'spring', stiffness: 380, damping: 12 },
+                      scale: { type: 'spring', stiffness: 380, damping: 12 }
+                    }}
+                    className={`grid shrink-0 place-items-center rounded-2xl shadow-md ${
                       isFeatured
-                        ? 'bg-primary-foreground/12 text-primary-foreground ring-primary-foreground/25 backdrop-blur-sm sm:text-xs'
+                        ? 'size-12 bg-card text-primary sm:size-14'
                         : service.accent === 'leaf'
-                          ? 'bg-leaf/15 text-leaf ring-leaf/20'
-                          : 'bg-secondary/60 text-primary ring-primary/10'
+                          ? 'size-11 bg-leaf text-leaf-foreground sm:size-12'
+                          : 'size-11 bg-primary text-primary-foreground sm:size-12'
                     }`}
                   >
-                    {pick(service.card.tag, locale)}
-                  </span>
+                    <HugeiconsIcon
+                      icon={service.icon}
+                      className={isFeatured ? 'size-6 sm:size-7' : 'size-5 sm:size-6'}
+                    />
+                  </motion.div>
                 </div>
 
                 <div className='relative flex-1 space-y-1.5'>

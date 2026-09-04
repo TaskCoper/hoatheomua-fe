@@ -66,11 +66,11 @@ export default function B2BPackagesSection({ packages, locale }: { packages: Ove
         variants={fadeUp}
         className='relative mx-auto w-full max-w-7xl space-y-0.5 sm:space-y-1 md:space-y-1.5 lg:space-y-2 px-4'
       >
-        <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
+        <h2 className='text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
           {pick(packages.title, locale)}
         </h2>
 
-        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
+        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-center text-xs sm:text-sm text-foreground'>
           {pick(packages.description, locale)}
         </p>
       </motion.div>

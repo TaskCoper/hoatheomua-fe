@@ -46,11 +46,11 @@ export default function B2BProcessSection({ process, locale }: { process: Overvi
           </span>
         </div>
 
-        <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
+        <h2 className='text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
           {pick(process.title, locale)}
         </h2>
 
-        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
+        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-center text-xs sm:text-sm text-foreground'>
           {pick(process.description, locale)}
         </p>
       </motion.div>

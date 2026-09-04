@@ -131,10 +131,10 @@ export default function B2BCaseStudySection({
         variants={fadeUp}
         className='mx-auto w-full max-w-7xl space-y-1 sm:space-y-1.5 md:space-y-2'
       >
-        <h2 className='shrink-0 text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
+        <h2 className='text-center font-title text-2xl md:text-3xl lg:text-4xl font-bold text-primary'>
           {pick(caseStudies.title, locale)}
         </h2>
-        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-left sm:text-center text-xs sm:text-sm text-foreground'>
+        <p className='leading-relaxed mx-auto max-w-full sm:max-w-200 text-center text-xs sm:text-sm text-foreground'>
           {pick(caseStudies.description, locale)}
         </p>
       </motion.div>
@@ -149,7 +149,6 @@ export default function B2BCaseStudySection({
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8'>
           <motion.div variants={fadeUp} className='space-y-3 lg:col-span-7'>
             <div className='flex flex-wrap items-center gap-3'>
-              {/* TODO(b2b): swap placeholder with Indigo Saigon Hotel SVG when brand team delivers */}
               <div
                 aria-label={hotelName}
                 className='flex items-center gap-2 rounded-xl bg-secondary/40 ring-1 ring-primary/10 py-1.5 pl-2 pr-3'
@@ -237,13 +236,13 @@ export default function B2BCaseStudySection({
         variants={fadeUp}
         className='mx-auto mt-10 w-full max-w-7xl space-y-1 sm:space-y-1.5 md:space-y-2 sm:mt-12'
       >
-        <div className='flex items-center justify-start sm:justify-center gap-3'>
+        <div className='flex items-center justify-center gap-3'>
           <SparkleDivider
             className='min-w-0 max-w-72 flex-1 hidden sm:flex'
             iconClassName='sm:size-4 md:size-5'
             color='#516c6c'
           />
-          <h3 className='shrink-0 text-center font-title text-xl md:text-2xl lg:text-3xl font-bold text-primary'>
+          <h3 className='font-title text-xl md:text-2xl lg:text-3xl font-bold text-primary'>
             {pick(partners.title, locale)}
           </h3>
           <SparkleDivider
@@ -253,7 +252,8 @@ export default function B2BCaseStudySection({
             color='#516c6c'
           />
         </div>
-        <p className='mx-auto max-w-full text-left sm:max-w-200 sm:text-center text-xs leading-relaxed text-foreground sm:text-sm'>
+
+        <p className='mx-auto max-w-full sm:max-w-200 text-center text-xs leading-relaxed text-foreground sm:text-sm'>
           {pick(partners.description, locale)}
         </p>
       </motion.div>
@@ -269,6 +269,7 @@ export default function B2BCaseStudySection({
           const name = pick(partner.name, locale)
           const logoAlt = pick(partner.logoAlt, locale)
           const logoPath = partner.logo || PARTNER_LOGO[partner.id]
+
           return (
             <motion.article
               key={partner.id}
