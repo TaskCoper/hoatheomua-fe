@@ -1491,6 +1491,196 @@
       "checking": "Đang kiểm tra…"
     }
   },
+  "studio": {
+    "stepOf": "Bước {step}/4",
+    "header": {
+      "homeAriaLabel": "Trang chủ Hoa Theo Mùa",
+      "logoAlt": "Hoa Theo Mùa",
+      "title": "Flower Studio",
+      "progressAriaLabel": "Tiến trình tạo mẫu",
+      "stepAriaLabel": "Bước {step}: {label}",
+      "saved": "Đã lưu",
+      "save": "Lưu",
+      "exitAriaLabel": "Thoát Flower Studio"
+    },
+    "steps": {
+      "ingredients": "Nguyên liệu",
+      "mockup": "Bối cảnh",
+      "preview": "Xem lại",
+      "result": "Kết quả"
+    },
+    "generation": {
+      "stages": {
+        "preparing": "Đang chuẩn bị hoa",
+        "lighting": "Đang chỉnh ánh sáng",
+        "composing": "Đang dựng hình",
+        "finishing": "Đang hoàn thiện chi tiết"
+      },
+      "generating": "Đang tạo",
+      "creating": "Đang tạo “{name}”…"
+    },
+    "preview": {
+      "ariaLabel": "Xem trước tác phẩm",
+      "liveLabel": "Xem trước trực tiếp",
+      "stage": {
+        "ingredients": "Lựa chọn hoa của bạn",
+        "mockup": "Xem trước bối cảnh",
+        "review": "Xem lại lựa chọn",
+        "resultReady": "Kết quả AI của bạn",
+        "resultPending": "Sẵn sàng tạo mẫu"
+      },
+      "createdForYou": "Được tạo riêng cho bạn",
+      "workTableAlt": "Bàn làm việc của thợ cắm hoa",
+      "mockupSceneAlt": "{product} trong {mockup}"
+    },
+    "step1": {
+      "eyebrow": "01 - Khám phá hoa của bạn",
+      "title": "Điều làm nên sự đặc biệt của {name}.",
+      "body": "Bạn đã chọn thiết kế này từ bộ sưu tập của chúng tôi. Khám phá từng loại hoa và chi tiết hoàn thiện trước khi tiếp tục.",
+      "insideTitle": "Nguyên liệu của {name}",
+      "ingredientsCount": "{count} nguyên liệu",
+      "nameLabel": "Đặt tên cho tác phẩm của bạn",
+      "namePlaceholder": "Nhập tên cho thiết kế này...",
+      "nameError": "Nhập ít nhất 2 ký tự.",
+      "nameHelp": "Tên này sẽ xuất hiện cùng tác phẩm hoàn thiện của bạn.",
+      "detailsTitle": "Điều nên biết",
+      "details": {
+        "size": {
+          "label": "Kích thước",
+          "value": "Khoảng 40 × 55 cm, được bó thủ công."
+        },
+        "wrapping": {
+          "label": "Gói hoa",
+          "value": "Giấy kraft, màng kính mờ và ruy băng sa tanh."
+        },
+        "freshness": {
+          "label": "Độ tươi",
+          "value": "Tươi đẹp 5 - 7 ngày nếu thay nước mỗi ngày."
+        },
+        "handover": {
+          "label": "Giao nhận",
+          "value": "Giao đứng trong hộp cố định kèm thẻ hướng dẫn chăm sóc."
+        }
+      },
+      "detailsNote": "Mỗi cành hoa được cắt và dưỡng vào sáng ngày giao, nên đôi chút khác biệt tự nhiên về sắc độ và kích thước là điều làm nên nét thủ công.",
+      "ingredientMeaningLabel": "Ý nghĩa",
+      "ingredientExpandAriaLabel": "Xem ý nghĩa của {name}",
+      "ingredientCollapseAriaLabel": "Ẩn ý nghĩa của {name}"
+    },
+    "ingredients": {
+      "rose": {
+        "name": "Hoa Hồng Vườn",
+        "amount": "5 cành",
+        "color": "Hồng phấn",
+        "meaning": "Hoa hồng phấn tượng trưng cho tình yêu dịu dàng và sự tận tâm thầm lặng - trái tim của mỗi bó hoa."
+      },
+      "tulip": {
+        "name": "Tulip Pháp",
+        "amount": "3 cành",
+        "color": "Ngà ấm",
+        "meaning": "Tulip ngà tượng trưng cho sự tha thứ và khởi đầu mới, mang đến nét thanh lịch nhẹ nhàng cho bó hoa."
+      },
+      "breath": {
+        "name": "Hoa Baby",
+        "amount": "2 nhánh",
+        "color": "Trắng mây",
+        "meaning": "Hoa baby mỏng manh tượng trưng cho tình yêu vĩnh cửu, lấp đầy khoảng trống bằng nét lãng mạn nhẹ nhàng."
+      },
+      "eucalyptus": {
+        "name": "Bạch Đàn Bạc",
+        "amount": "4 cành",
+        "color": "Xanh bạc",
+        "meaning": "Bạch đàn tượng trưng cho sự bảo vệ và tái sinh, tô điểm cho các bông hoa bằng sắc xanh bạc mềm mại."
+      },
+      "ribbon": {
+        "name": "Ruy Băng Sa Tanh Hồng Đất",
+        "amount": "1 ruy băng",
+        "color": "Hồng đất",
+        "meaning": "Ruy băng sa tanh hồng đất kết nối câu chuyện, tượng trưng cho lòng biết ơn và sự chăm chút tỉ mỉ."
+      }
+    },
+    "step2": {
+      "eyebrowStart": "Không gian",
+      "title": "Chọn bối cảnh.",
+      "body": "Hoa của bạn sẽ được cập nhật trong bản xem trước ngay khi bạn chọn một bối cảnh.",
+      "chooseTitle": "Chọn bối cảnh của bạn",
+      "chooseNote": "{count} không gian, mỗi nơi một ánh sáng và cảm xúc riêng",
+      "scenesAriaLabel": "Chọn một bối cảnh",
+      "sceneLabel": "Bối cảnh 0{index}",
+      "selectedScene": "Bối cảnh đã chọn",
+      "fullScene": "Xem toàn bộ bối cảnh",
+      "sceneBrief": "Giới thiệu bối cảnh",
+      "sceneStoryLabel": "Câu chuyện",
+      "sceneMoodLabel": "Cảm xúc",
+      "sceneNote": "Bối cảnh chỉ là bản dựng minh hoạ. Mỗi bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm của bạn luôn mang nét tự nhiên riêng.",
+      "communityExamplesAriaLabel": "Mẫu tham khảo cho {name}",
+      "inThisScene": "Trong bối cảnh {name}",
+      "floristStudies": "Ba mẫu được chụp trong không gian này",
+      "exampleBy": "Bởi {creator}",
+      "exampleByAlt": "{title} bởi {creator}",
+      "emptyTitle": "Chọn một bối cảnh ở trên",
+      "emptyBody": "Không khí và các mẫu tham khảo sẽ hiển thị ở đây."
+    },
+    "step3": {
+      "eyebrow": "03 - Xem lại lựa chọn",
+      "title": "Tất cả trong một.",
+      "body": "Kiểm tra hoa, bối cảnh và tên bạn đã chọn. Quá trình tạo bằng AI chỉ bắt đầu sau khi bạn xác nhận lần cuối.",
+      "yourFlowers": "Hoa của bạn",
+      "yourMockup": "Bối cảnh của bạn",
+      "creationName": "Tên tác phẩm",
+      "price": "Giá",
+      "flowersTitle": "Những bông hoa",
+      "flowersNote": "{count} thành phần được chọn riêng cho {name}",
+      "sceneTitle": "Bối cảnh",
+      "sceneNote": "Nơi bó hoa của bạn được chụp và thứ ánh sáng dành cho nó.",
+      "finishingTitle": "Hoàn thiện",
+      "finishingNote": "Cách bó hoa được gói, giữ tươi và trao đến bạn.",
+      "finalNote": "Đây là bản xem trước cuối cùng. Chọn Tạo mẫu khi mọi thứ đã ưng ý; quay lại thanh bước phía trên nếu muốn đổi bất kỳ lựa chọn nào."
+    },
+    "step4": {
+      "eyebrow": "Kết quả của bạn",
+      "readyTitle": "Tác phẩm của bạn đã sẵn sàng.",
+      "readyBody": "Xem lại kết quả đầy đủ trong bản xem trước.",
+      "flowers": "Hoa",
+      "mockup": "Bối cảnh",
+      "price": "Giá",
+      "status": "Trạng thái",
+      "ready": "Sẵn sàng",
+      "generateAnother": "Tạo phiên bản khác",
+      "generateAnotherNote": "Chọn một bối cảnh khác. Mọi phiên bản bạn tạo đều được giữ trong bản xem trước.",
+      "pendingTitle": "Sẵn sàng khi bạn muốn.",
+      "pendingBody": "Chúng tôi sẽ kết hợp thiết kế hoa của bạn với {mockup}. Quá trình tạo mẫu chỉ mất một chút thời gian.",
+      "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng."
+    },
+    "versions": {
+      "ariaLabel": "Các phiên bản bạn đã tạo",
+      "counter": "Phiên bản {index}/{total}",
+      "short": "P{index}",
+      "slideAriaLabel": "Phiên bản {index}: {name} trong {mockup}",
+      "previous": "Phiên bản trước",
+      "next": "Phiên bản sau"
+    },
+    "nav": {
+      "next": "Tiếp theo",
+      "back": "Quay lại",
+      "generate": "Tạo mẫu",
+      "backToReview": "Quay lại xem lại",
+      "backToIngredients": "Quay lại nguyên liệu",
+      "backToMockups": "Quay lại bối cảnh",
+      "addedToBag": "Đã thêm vào giỏ",
+      "addToBag": "Thêm vào giỏ",
+      "buyNow": "Mua ngay"
+    },
+    "sceneDialog": {
+      "closeAriaLabel": "Đóng xem bối cảnh",
+      "fullSceneAlt": "Toàn cảnh {name}",
+      "mockupPreview": "Xem trước bối cảnh",
+      "badge": "Không gian dành cho hoa của bạn",
+      "readyForLabel": "Bối cảnh này đã sẵn sàng cho",
+      "newCreation": "Tác phẩm mới của bạn",
+      "otherArrangements": "Các mẫu cắm hoa khác trong không gian này"
+    }
+  },
   "b2b": {
     "hero": {
       "eyebrow": "Hoa Theo Mùa cho Doanh nghiệp",

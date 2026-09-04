@@ -581,11 +581,11 @@
       "inactive": "This product is currently inactive.",
       "outOfStock": "This product is out of stock.",
       "materials": "Temporarily unavailable",
-      "materialsAction": "We can't prepare this many right now — please reduce the quantity.",
+      "materialsAction": "We can't prepare this many right now - please reduce the quantity.",
       "materialsNote": "We're short on materials for the highlighted items. Reduce the quantity, deselect or remove them to continue."
     },
     "overStock": "Only {stock} left in stock. Please reduce the quantity.",
-    "overStockAction": "Only {stock} left in stock — tap to reduce the quantity.",
+    "overStockAction": "Only {stock} left in stock - tap to reduce the quantity.",
     "inStock": "{stock} in stock",
     "lineSubtotal": "Subtotal",
     "unitLabel": "Variant: {unit}",
@@ -1489,6 +1489,196 @@
       "unavailable": "Some products are temporarily unavailable",
       "unavailableHint": "Please reduce the quantity, pick another product, or contact us for help.",
       "checking": "Checking availability…"
+    }
+  },
+  "studio": {
+    "stepOf": "Step {step} of 4",
+    "header": {
+      "homeAriaLabel": "Hoa Theo Mùa home",
+      "logoAlt": "Hoa Theo Mùa",
+      "title": "Flower Studio",
+      "progressAriaLabel": "Creation progress",
+      "stepAriaLabel": "Step {step}: {label}",
+      "saved": "Saved",
+      "save": "Save",
+      "exitAriaLabel": "Exit Flower Studio"
+    },
+    "steps": {
+      "ingredients": "Ingredients",
+      "mockup": "Mockup",
+      "preview": "Preview",
+      "result": "Result"
+    },
+    "generation": {
+      "stages": {
+        "preparing": "Preparing your flowers",
+        "lighting": "Setting the light",
+        "composing": "Composing the image",
+        "finishing": "Finishing the details"
+      },
+      "generating": "Generating",
+      "creating": "Creating “{name}”…"
+    },
+    "preview": {
+      "ariaLabel": "Creation preview",
+      "liveLabel": "Live preview",
+      "stage": {
+        "ingredients": "Your flower choice",
+        "mockup": "Mockup preview",
+        "review": "Selection preview",
+        "resultReady": "Your AI result",
+        "resultPending": "Ready to create"
+      },
+      "createdForYou": "Created for you",
+      "workTableAlt": "Florist worktable",
+      "mockupSceneAlt": "{product} in {mockup}"
+    },
+    "step1": {
+      "eyebrow": "01 - Meet your flowers",
+      "title": "See what makes {name} special.",
+      "body": "You chose this design from our collection. Explore every flower and finishing detail before moving on.",
+      "insideTitle": "Inside {name}",
+      "ingredientsCount": "{count} ingredients",
+      "nameLabel": "Name your creation",
+      "namePlaceholder": "Enter the name for this design...",
+      "nameError": "Use at least 2 characters.",
+      "nameHelp": "This name will appear with your finished creation.",
+      "detailsTitle": "Good to know",
+      "details": {
+        "size": {
+          "label": "Size",
+          "value": "About 40 × 55 cm, hand-tied by a florist."
+        },
+        "wrapping": {
+          "label": "Wrapping",
+          "value": "Kraft paper, matte cellophane and a satin ribbon."
+        },
+        "freshness": {
+          "label": "Freshness",
+          "value": "Stays beautiful 5 - 7 days with a daily water change."
+        },
+        "handover": {
+          "label": "Handover",
+          "value": "Delivered upright in a stabilised box with a care card."
+        }
+      },
+      "detailsNote": "Every stem is cut and conditioned on the morning of your delivery, so small natural differences in tone and size are part of the craft.",
+      "ingredientMeaningLabel": "Meaning",
+      "ingredientExpandAriaLabel": "Show meaning of {name}",
+      "ingredientCollapseAriaLabel": "Hide meaning of {name}"
+    },
+    "ingredients": {
+      "rose": {
+        "name": "Garden Rose",
+        "amount": "5 stems",
+        "color": "Blush pink",
+        "meaning": "Blush garden roses stand for graceful love and quiet devotion - the heart of every bouquet."
+      },
+      "tulip": {
+        "name": "French Tulip",
+        "amount": "3 stems",
+        "color": "Warm ivory",
+        "meaning": "Ivory tulips symbolize forgiveness and fresh beginnings, adding soft elegance to the mix."
+      },
+      "breath": {
+        "name": "Baby's Breath",
+        "amount": "2 sprays",
+        "color": "Cloud white",
+        "meaning": "Delicate baby's breath represents everlasting love, filling the gaps with airy romance."
+      },
+      "eucalyptus": {
+        "name": "Silver Eucalyptus",
+        "amount": "4 stems",
+        "color": "Silver green",
+        "meaning": "Eucalyptus stands for protection and renewal, framing the blooms with soft, silvery greenery."
+      },
+      "ribbon": {
+        "name": "Dusty Rose Satin",
+        "amount": "1 ribbon",
+        "color": "Dusty rose",
+        "meaning": "A dusty rose satin ribbon ties the story together, symbolizing gratitude and thoughtful care."
+      }
+    },
+    "step2": {
+      "eyebrowStart": "The setting",
+      "title": "Set the scene.",
+      "body": "Your flowers update in the live preview as soon as you select a scene.",
+      "chooseTitle": "Choose your scene",
+      "chooseNote": "{count} settings, each with its own light and mood",
+      "scenesAriaLabel": "Choose a scene",
+      "sceneLabel": "Scene 0{index}",
+      "selectedScene": "Selected scene",
+      "fullScene": "Full scene",
+      "sceneBrief": "Scene brief",
+      "sceneStoryLabel": "Story",
+      "sceneMoodLabel": "Mood",
+      "sceneNote": "Scenes are styled previews. Every bouquet is still arranged by hand on the day, so your finished flowers carry their own natural character.",
+      "communityExamplesAriaLabel": "Community examples for {name}",
+      "inThisScene": "In {name}",
+      "floristStudies": "Three studies shot in this setting",
+      "exampleBy": "By {creator}",
+      "exampleByAlt": "{title} by {creator}",
+      "emptyTitle": "Select a scene above",
+      "emptyBody": "We’ll show the atmosphere and florist studies here."
+    },
+    "step3": {
+      "eyebrow": "03 - Review selections",
+      "title": "Everything in one place.",
+      "body": "Check your flowers, mockup and name. AI generation starts only after your final confirmation.",
+      "yourFlowers": "Your flowers",
+      "yourMockup": "Your scene",
+      "creationName": "Creation name",
+      "price": "Price",
+      "flowersTitle": "The flowers",
+      "flowersNote": "{count} elements, hand-picked for {name}",
+      "sceneTitle": "The scene",
+      "sceneNote": "Where your bouquet is photographed, and the light it is given.",
+      "finishingTitle": "The finishing",
+      "finishingNote": "How it is wrapped, kept fresh and handed over.",
+      "finalNote": "This is your final preview. Select Generate when everything looks right; step back through the rail above to change any choice."
+    },
+    "step4": {
+      "eyebrow": "Your result",
+      "readyTitle": "Your creation is ready.",
+      "readyBody": "Review the full result in the preview.",
+      "flowers": "Flowers",
+      "mockup": "Mockup",
+      "price": "Price",
+      "status": "Status",
+      "ready": "Ready",
+      "generateAnother": "Generate another version",
+      "generateAnotherNote": "Pick a different scene. Every version you make stays in the preview.",
+      "pendingTitle": "Ready when you are.",
+      "pendingBody": "We’ll combine your flower design with {mockup}. Generation takes only a moment.",
+      "pendingNote": "AI will create one unique image from these selections. You’ll review the result here before adding it to your bag."
+    },
+    "versions": {
+      "ariaLabel": "Your generated versions",
+      "counter": "Version {index}/{total}",
+      "short": "V{index}",
+      "slideAriaLabel": "Version {index}: {name} in {mockup}",
+      "previous": "Previous version",
+      "next": "Next version"
+    },
+    "nav": {
+      "next": "Next",
+      "back": "Back",
+      "generate": "Generate",
+      "backToReview": "Back to review",
+      "backToIngredients": "Back to ingredients",
+      "backToMockups": "Back to mockups",
+      "addedToBag": "Added to Bag",
+      "addToBag": "Add to Bag",
+      "buyNow": "Buy Now"
+    },
+    "sceneDialog": {
+      "closeAriaLabel": "Close scene view",
+      "fullSceneAlt": "{name} full scene",
+      "mockupPreview": "Mockup preview",
+      "badge": "A place for your flowers",
+      "readyForLabel": "This mockup is ready for",
+      "newCreation": "Your new creation",
+      "otherArrangements": "Other arrangements in this setting"
     }
   },
   "b2b": {

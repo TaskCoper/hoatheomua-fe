@@ -199,7 +199,7 @@ export default function CustomizableProductCard({
       ) : null}
 
       <Link
-        href={href ?? `/products/${product.id}/custom`}
+        href={href ?? `/products/${product.id}/studio`}
         onFocus={() => setIsHovered(true)}
         onBlur={() => setIsHovered(false)}
         className='relative z-10 flex h-full flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-[box-shadow,transform] duration-300 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.995]'
