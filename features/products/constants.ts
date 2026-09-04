@@ -29,3 +29,5 @@ export const PRICE_RANGES = [
   { min: 1_000_000, max: 2_000_000, labelKey: 'products.filter.priceRanges.r1000to2000' },
   { min: 2_000_000, max: 5_000_000, labelKey: 'products.filter.priceRanges.r2000to5000' }
 ] as const
+
+export const PRODUCT_NOT_FOUND_MESSAGE_CODE = 'PRODUCT_NOT_FOUND'

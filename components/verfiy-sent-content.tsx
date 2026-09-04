@@ -4,8 +4,6 @@ import VerifyEmailForm from '@/features/users/components/verify-email-form'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import emailImage from '@/public/images/emailBigIcon.png'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 
 function EmailIcon() {
   return (
@@ -21,17 +19,8 @@ function EmailIcon() {
   )
 }
 
-export default function VerifySentContent({ email }: { email?: string }) {
-  const router = useRouter()
+export default function VerifySentContent({ email }: { email: string }) {
   const { t } = useTranslation()
-
-  useEffect(() => {
-    if (!email) {
-      router.replace('/')
-    }
-  }, [email, router])
-
-  if (!email) return null
 
   return (
     <>

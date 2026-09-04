@@ -40,6 +40,7 @@ interface CartState {
 
   addItem: (input: AddCartItemInput) => CartItem
   removeItem: (lineId: string) => void
+  removeProduct: (productId: string) => void
   updateQuantity: (lineId: string, quantity: number) => void
   incrementItem: (lineId: string) => void
   decrementItem: (lineId: string) => void
@@ -171,17 +172,18 @@ export const useCartStore = create<CartState>()(
         set({ items: [...get().items, created] })
         return created
       },
-
-      // `addItem` is deliberately not invalidating: every caller runs
-      // `verifySellableQuantity` first, which already fetches fresh numbers and
-      // pushes them into every stock cache. A second pass here would refetch what
-      // just landed.
-
       removeItem: (lineId) => {
         set({ items: get().items.filter((item) => item.lineId !== lineId) })
         invalidateSellableQuantity()
       },
+      removeProduct: (productId) => {
+        const items = get().items
+        const remaining = items.filter((item) => item.productId !== productId)
+        if (remaining.length === items.length) return
 
+        set({ items: remaining })
+        invalidateSellableQuantity()
+      },
       updateQuantity: (lineId, quantity) => {
         const nextQuantity = sanitizeQuantity(quantity)
         const timestamp = nowIso()
@@ -192,7 +194,6 @@ export const useCartStore = create<CartState>()(
         })
         invalidateSellableQuantity()
       },
-
       incrementItem: (lineId) => {
         const timestamp = nowIso()
         set({
@@ -204,7 +205,6 @@ export const useCartStore = create<CartState>()(
         })
         invalidateSellableQuantity()
       },
-
       decrementItem: (lineId) => {
         const timestamp = nowIso()
         const current = get().items.find((item) => item.lineId === lineId)

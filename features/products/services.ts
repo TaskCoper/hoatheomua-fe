@@ -1,6 +1,7 @@
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import { GetProductsParams } from './hooks/use-get-products'
 import type { CoreMaterialShortage, ProductDetail, ProductSellableQuantity, ProductSummary } from './types'
+import { forgetMissingProduct, isProductNotFoundError } from './utils'
 
 export interface CoreProductCheckItem {
   productId: string
@@ -35,15 +36,32 @@ class ProductService {
   }
 
   getProduct = async ({ id }: { id: string }) => {
-    const { data } = await api.get<BaseResponse<ProductDetail>>(`/v1/${this.baseUrl}/${id}`)
+    try {
+      const { data } = await api.get<BaseResponse<ProductDetail>>(`/v1/${this.baseUrl}/${id}`)
 
-    return data.value
+      return data.value
+    } catch (error) {
+      if (isProductNotFoundError(error)) {
+        forgetMissingProduct(id)
+      }
+
+      throw error
+    }
   }
 
-  getProductSummary = async ({ id }: { id: string }) => {
-    const { data } = await api.get<BaseResponse<ProductSummary>>(`/v2/${this.baseUrl}/${id}/detail`)
+  getProductSummary = async ({ id }: { id: string }): Promise<ProductSummary | null> => {
+    try {
+      const { data } = await api.get<BaseResponse<ProductSummary>>(`/v2/${this.baseUrl}/${id}/detail`)
 
-    return data.value
+      return data.value
+    } catch (error) {
+      if (!isProductNotFoundError(error)) {
+        throw error
+      }
+
+      forgetMissingProduct(id)
+      return null
+    }
   }
 
   getMaxPriceProduct = async ({ categoryIds }: { categoryIds?: string[] }) => {

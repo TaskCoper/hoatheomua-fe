@@ -1,4 +1,6 @@
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { useRouter } from '@/lib/i18n/navigation'
+import { writeSessionHint } from '@/shared/session-hint'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useMemo } from 'react'
@@ -12,6 +14,7 @@ interface UseVerifyEmailProps {
 }
 
 export const useVerifyEmail = ({ email }: UseVerifyEmailProps) => {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
@@ -28,8 +31,13 @@ export const useVerifyEmail = ({ email }: UseVerifyEmailProps) => {
   const { mutate: verifyEmail, isPending: isVerifyingEmail } = useMutation({
     mutationFn: authService.verifyEmail,
     onSuccess: () => {
+      writeSessionHint()
+
       queryClient.invalidateQueries({ queryKey: ['me'] })
       verifyEmailMethods.reset({ email, code: '' })
+
+      toast.success(t('auth.verifyEmail.success'))
+      router.replace('/')
     },
     onError: (error) => {
       toast.error(t('error.somethingWentWrong'), {
