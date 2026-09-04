@@ -1,11 +1,20 @@
-import { queryOptions } from '@tanstack/react-query'
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from '@/shared/constants'
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query'
 import orderService from './services'
-import type { ShippingLocationType } from './types'
+import type { GetOrdersParams, ShippingLocationType } from './types'
 
-export const getOrdersQuery = () =>
-  queryOptions({
-    queryKey: ['orders'] as const,
-    queryFn: () => orderService.getOrders()
+export const ordersQueryKey = ({ pageSize = DEFAULT_PAGE_SIZE, status }: Omit<GetOrdersParams, 'pageIndex'> = {}) =>
+  ['orders', pageSize, status ?? null] as const
+
+export const getOrdersQuery = ({ pageSize = DEFAULT_PAGE_SIZE, status }: Omit<GetOrdersParams, 'pageIndex'> = {}) =>
+  infiniteQueryOptions({
+    queryKey: ordersQueryKey({ pageSize, status }),
+    queryFn: ({ pageParam }) => orderService.getOrders({ pageIndex: pageParam, pageSize, status }),
+    initialPageParam: DEFAULT_PAGE_INDEX,
+    // Page numbers come back from the server; `allPages.length` only covers the
+    // case where it echoes a 0/absent `pageIndex`, which would otherwise refetch page 1.
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.value.hasNextPage ? (lastPage.value.pageIndex || allPages.length) + 1 : undefined
   })
 
 export const getOrderQuery = ({ orderId }: { orderId: string }) =>

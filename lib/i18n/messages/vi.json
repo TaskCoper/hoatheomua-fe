@@ -91,7 +91,17 @@
     "account": "Tài khoản",
     "language": "Ngôn ngữ",
     "settings": "Cài đặt",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "title": "Tài khoản của bạn",
+    "nav": {
+      "label": "Điều hướng tài khoản",
+      "orders": "Đơn hàng của tôi",
+      "profile": "Thông tin cá nhân",
+      "addresses": "Địa chỉ của bạn",
+      "security": "Đăng nhập & bảo mật",
+      "cart": "Giỏ hàng",
+      "support": "Hỗ trợ khách hàng"
+    }
   },
   "language": {
     "english": "Tiếng Anh",
@@ -860,7 +870,15 @@
         "paidToast": "Đã xác nhận thanh toán",
         "paidToastDescription": "Chúng tôi đã nhận được chuyển khoản của bạn. Đơn hàng đang được chuẩn bị.",
         "paymentMethod": "Phương thức thanh toán"
-      }
+      },
+      "tabs": {
+        "all": "Tất cả"
+      },
+      "deliveredTo": "Giao đến",
+      "moreItems": "Xem thêm {count} sản phẩm",
+      "itemsUnavailable": "Chưa tải được sản phẩm của đơn hàng này.",
+      "loadMore": "Xem thêm đơn hàng",
+      "emptyFilter": "Không có đơn hàng nào ở trạng thái này."
     }
   },
   "news": {

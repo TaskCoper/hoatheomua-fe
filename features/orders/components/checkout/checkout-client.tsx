@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
+import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useGetUser } from '@/features/users/hooks/use-get-user'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
@@ -44,6 +45,7 @@ export function CheckoutClient() {
   const { orderTags } = useGetOrderTags()
 
   const { me, isGettingMe } = useGetMe()
+  const ordersHref = useAccountHref('orders')
   const { user, isLoading: isLoadingUser } = useGetUser(me?.slug)
 
   const isProfileLoading = isGettingMe || isLoadingUser
@@ -200,7 +202,7 @@ export function CheckoutClient() {
           }
         : {
             label: t('orders.checkout.sidebar.viewOrders'),
-            onClick: () => router.push('/orders')
+            onClick: () => router.push(ordersHref)
           }
 
   return (

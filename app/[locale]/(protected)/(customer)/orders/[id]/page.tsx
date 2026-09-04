@@ -1,6 +1,5 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,6 +13,8 @@ import {
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
+import { OrderLineItem } from '@/features/orders/components/order-line-item'
+import { OrderStatusBadge } from '@/features/orders/components/order-status-badge'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useGetOrder } from '@/features/orders/hooks/use-get-order'
 import { useGetOrderStatus } from '@/features/orders/hooks/use-get-order-status'
@@ -21,14 +22,12 @@ import {
   InvoiceType,
   InvoiceTypeLabel,
   OrderStatus,
-  OrderStatusLabel,
   PaymentMethod,
   PaymentMethodLabel,
   ShippingGatewayLabel,
-  type OrderDetail,
-  type OrderItem
+  type OrderDetail
 } from '@/features/orders/types'
-import { buildProductVariantHref } from '@/features/products/components/product-variant-context'
+import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
@@ -39,10 +38,8 @@ import {
   ArrowLeft02Icon,
   BankIcon,
   CalendarCheckOut01Icon,
-  CancelCircleIcon,
   CheckmarkCircle02Icon,
   DeliveryTruck02Icon,
-  FlowerIcon,
   InvoiceIcon,
   MapPinpoint02Icon,
   NoteEditIcon,
@@ -51,12 +48,10 @@ import {
   ReceiptTextIcon,
   Rocket02Icon,
   SmartPhone01Icon,
-  TimeQuarterPassIcon,
   UserIcon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
-import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -98,6 +93,7 @@ export default function OrderDetailPage() {
   const { t } = useTranslation()
   const { formatDateTime } = useDateFormat()
   const queryClient = useQueryClient()
+  const ordersHref = useAccountHref('orders')
 
   const { order, isLoadingOrder } = useGetOrder({ orderId, enabled: !!orderId })
   const isPending = order?.status === OrderStatus.Pending
@@ -165,7 +161,7 @@ export default function OrderDetailPage() {
           </h2>
           <p className='text-sm leading-relaxed text-muted-foreground'>{t('orders.list.detail.notFoundDescription')}</p>
           <Button asChild size='lg' className='mt-2'>
-            <Link href='/orders'>
+            <Link href={ordersHref}>
               <HugeiconsIcon icon={ArrowLeft02Icon} className='size-4' />
               {t('orders.list.detail.backToOrdersCta')}
             </Link>
@@ -186,11 +182,9 @@ interface OrderDetailContentProps {
 
 function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProps) {
   const router = useRouter()
+  const ordersHref = useAccountHref('orders')
   const isPaid = order.status === OrderStatus.Paid
   const isPendingOrder = order.status === OrderStatus.Pending
-  const isCancelledOrder = order.status === OrderStatus.Cancelled
-  const statusLabel = t(OrderStatusLabel[order.status])
-  const statusIcon = isPaid ? CheckmarkCircle02Icon : isCancelledOrder ? CancelCircleIcon : TimeQuarterPassIcon
 
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
   const { cancelOrder, isCancellingOrder } = useCancelOrder()
@@ -202,7 +196,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
         onSuccess: () => {
           toast.success(t('orders.list.detail.cancelSuccess'))
           setIsCancelDialogOpen(false)
-          router.push('/orders')
+          router.push(ordersHref)
         },
         onError: () => {
           toast.error(t('orders.list.detail.cancelError'))
@@ -296,7 +290,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
         >
           <ol className='flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-muted-foreground'>
             <li>
-              <Link href='/orders' className='transition-colors hover:text-primary'>
+              <Link href={ordersHref} className='transition-colors hover:text-primary'>
                 {t('orders.list.detail.breadcrumbList')}
               </Link>
             </li>
@@ -307,20 +301,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
           </ol>
 
           <div className='flex shrink-0 items-center gap-2'>
-            <Badge
-              variant='outline'
-              className={cn(
-                'gap-1 rounded-full px-2 py-1 text-[0.7rem] font-semibold tracking-wider',
-                isPaid
-                  ? 'border-leaf/30 bg-leaf/10 text-leaf'
-                  : isCancelledOrder
-                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
-                    : 'border-warning/40 bg-warning/10 text-warning'
-              )}
-            >
-              <HugeiconsIcon icon={statusIcon} strokeWidth={2} className='size-3' />
-              {statusLabel}
-            </Badge>
+            <OrderStatusBadge status={order.status} className='px-2 py-1 text-[0.7rem] normal-case' />
           </div>
         </nav>
 
@@ -379,7 +360,13 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               >
                 <ul className='divide-y divide-border/60'>
                   {items.map((item) => (
-                    <OrderItemRow key={item.orderDetailsId} item={item} t={t} />
+                    <OrderLineItem
+                      key={item.orderDetailsId}
+                      item={item}
+                      size='md'
+                      showLineTotal
+                      className='py-3 first:pt-0 last:pb-0'
+                    />
                   ))}
                 </ul>
               </SectionCard>
@@ -539,8 +526,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                       order.orderTime > 0 ? (
                         <span className='inline-flex flex-wrap items-baseline gap-x-1'>
                           <span>{formatDateTime(order.orderTime * 1000, 'dateMedium')}</span>
-                          {/* No tag means no time slot was requested - say so
-                              instead of leaving the date to stand alone. */}
                           <span className='text-xs font-medium text-primary'>
                             ({deliveryTagLabel ?? t('orders.checkout.tagNone')})
                           </span>
@@ -652,76 +637,6 @@ function IconRowList({ rows }: { rows: IconRow[] }) {
         </li>
       ))}
     </ul>
-  )
-}
-
-interface OrderItemRowProps {
-  item: OrderItem
-  t: ReturnType<typeof useTranslation>['t']
-}
-
-function OrderItemRow({ item, t }: OrderItemRowProps) {
-  const parentName = item.parentProductName?.trim()
-  // A variant line points at its parent page with the variant preselected, so the
-  // customer lands on the same picker they bought from.
-  const href = item.parentProductId
-    ? buildProductVariantHref(item.parentProductId, item.productId)
-    : item.productId
-      ? `/products/${item.productId}`
-      : null
-
-  const headline = parentName || item.name
-  const variantName = parentName && item.name !== parentName ? item.name : null
-
-  return (
-    <li className='flex items-center gap-3 py-3 first:pt-0 last:pb-0'>
-      {href ? (
-        <Link
-          href={href}
-          className='relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-primary/10 sm:size-20'
-        >
-          {item.coverImage ? (
-            <Image src={item.coverImage} alt={item.name} fill sizes='80px' quality={65} className='object-cover' />
-          ) : (
-            <HugeiconsIcon icon={FlowerIcon} className='size-7 text-primary/40' />
-          )}
-        </Link>
-      ) : (
-        <div className='flex size-16 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 ring-1 ring-foreground/5 sm:size-20'>
-          <HugeiconsIcon icon={FlowerIcon} className='size-7 text-muted-foreground/50' />
-        </div>
-      )}
-
-      <div className='min-w-0 flex-1'>
-        {href ? (
-          <Link
-            href={href}
-            className='font-title line-clamp-2 text-sm font-bold leading-tight text-primary hover:text-primary/80'
-          >
-            {headline}
-          </Link>
-        ) : (
-          <p className='line-clamp-2 text-sm font-medium'>{headline}</p>
-        )}
-
-        {variantName ? (
-          <p className='mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5'>
-            <span className='text-[0.7rem] font-medium text-muted-foreground'>
-              {t('orders.list.detail.variantLabel')}
-            </span>
-            <span className='inline-flex rounded-full bg-secondary/40 px-2 py-0.5 text-[0.7rem] font-semibold text-secondary-foreground ring-1 ring-primary/10'>
-              {variantName}
-            </span>
-          </p>
-        ) : null}
-
-        <p className='mt-1 text-xs text-muted-foreground'>
-          {t('orders.checkout.lineQty', { qty: item.number, price: formatVnd(item.price) })}
-        </p>
-      </div>
-
-      <span className='shrink-0 text-sm font-semibold text-primary'>{formatVnd(item.price * item.number)}</span>
-    </li>
   )
 }
 

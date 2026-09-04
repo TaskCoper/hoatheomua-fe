@@ -91,7 +91,17 @@
     "account": "Account",
     "language": "Language",
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "title": "Your account",
+    "nav": {
+      "label": "Account navigation",
+      "orders": "My orders",
+      "profile": "Personal information",
+      "addresses": "Your addresses",
+      "security": "Login & security",
+      "cart": "My cart",
+      "support": "Customer support"
+    }
   },
   "language": {
     "english": "English",
@@ -860,7 +870,15 @@
         "paymentMethod": "Payment method",
         "paidToast": "Payment confirmed",
         "paidToastDescription": "We've received your transfer. Your order is being prepared."
-      }
+      },
+      "tabs": {
+        "all": "All orders"
+      },
+      "deliveredTo": "Delivered to",
+      "moreItems": "View {count} more products",
+      "itemsUnavailable": "We couldn't load the products for this order.",
+      "loadMore": "Show more orders",
+      "emptyFilter": "No orders with this status yet."
     }
   },
   "news": {
