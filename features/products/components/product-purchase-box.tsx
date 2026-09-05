@@ -6,13 +6,10 @@ import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-
 import type { ProductDetail } from '@/features/products/types'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
-import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { useHasMounted } from '@/hooks/use-has-mounted'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
-import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
-import { isFeatureEnabled } from '@/shared/feature-flags'
 import { cn } from '@/shared/utils'
 import { buildLineId, MAX_QUANTITY, useCartStore, type CartItem } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
@@ -72,13 +69,9 @@ export default function ProductPurchaseBox() {
   const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
 
-  // Buy now goes straight to checkout; the cart itself is unaffected.
-  const canBuyNow = isFeatureEnabled('ordering')
-  const notifyUnavailable = useFeatureUnavailableToast()
-
   const isPhoneMissing = isQualifiedBuyer && !isLoadingPhoneNumber && !hasPhoneNumber
   const isAddToCartDisabled = isPurchaseDisabled || isVerifyingSellableQuantity
-  const isBuyNowDisabled = isAddToCartDisabled || isPhoneMissing || !canBuyNow
+  const isBuyNowDisabled = isAddToCartDisabled || isPhoneMissing
 
   const stepperCap = Math.max(remainingStock, 1)
   const effectiveQuantity = Math.min(Math.max(quantity, 1), stepperCap)
@@ -139,11 +132,6 @@ export default function ProductPurchaseBox() {
   }, [targetLineId, productId, effectiveQuantity, selectedOptions])
 
   const handleBuyNow = async () => {
-    if (!canBuyNow) {
-      notifyUnavailable()
-      return
-    }
-
     if (!guardPurchase()) return
     if (!hasPhoneNumber) {
       toast.error(t('orders.checkout.contactMissing'))
@@ -290,8 +278,6 @@ export default function ProductPurchaseBox() {
             {t('products.detail.purchase.buyNow')}
           </Button>
         </motion.div>
-
-        {!canBuyNow ? <FeatureUnavailableNotice className='w-full' /> : null}
 
         {isPhoneMissing && mySlug ? (
           <div className='flex w-full items-center justify-between gap-3 rounded-xl bg-destructive/10 px-3.5 py-2.5'>

@@ -124,7 +124,6 @@
     }
   },
   "common": {
-    "featureUnavailable": "This feature is temporarily unavailable while we're preparing the store.",
     "ui": {
       "more": "More",
       "uploading": "Uploading...",
@@ -898,7 +897,6 @@
     }
   },
   "header": {
-    "developmentBanner": "This site is currently under development",
     "brand": "Hoa Theo Mua",
     "logoAlt": "Logo",
     "vineAlt": "Vine branch",

@@ -8,8 +8,6 @@ import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
-import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
-import { isFeatureEnabled } from '@/shared/feature-flags'
 import { Alert02Icon, ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
@@ -65,8 +63,6 @@ export function CheckoutClient() {
     goBack,
     items,
     source,
-    canPlaceOrder,
-    canQuoteShipping,
     isVerifyingAvailability,
     materialBlockedProductIds,
     estimatedGateway,
@@ -179,18 +175,12 @@ export function CheckoutClient() {
   // pointing back to the cart - but only when nothing worse is also wrong with the order.
   const isBlockedByMaterialsOnly = unavailableLines.every((line) => line.issue === 'materials')
 
-  // Step 1 prices the delivery with the carrier, step 2 books and pays for it -
-  // each step is gated by the flag that owns the side effect it triggers.
-  const canPay = isFeatureEnabled('payment')
-  const isStepBlockedByFlag = step === 1 ? !canQuoteShipping : step === 2 ? !canPlaceOrder || !canPay : false
-
   const sidebarAction =
     step === 1
       ? {
           label: isVerifyingAvailability ? t('products.stock.checking') : t('orders.checkout.sidebar.goToPayment'),
           onClick: () => handleGoToPayment(selectedDeliveryMethod?.shippingGateway),
-          disabled:
-            items.length === 0 || !selectedDeliveryMethod || isLoading || isBlockedByStock || isStepBlockedByFlag,
+          disabled: items.length === 0 || !selectedDeliveryMethod || isLoading || isBlockedByStock,
           loading: isEstimatingOrder || isVerifyingAvailability
         }
       : step === 2
@@ -205,8 +195,7 @@ export function CheckoutClient() {
                 shippingGateway: selectedDeliveryMethod.shippingGateway,
                 shippingFee
               }),
-            disabled:
-              !selectedPaymentMethod || !selectedDeliveryMethod || isLoading || isBlockedByStock || isStepBlockedByFlag,
+            disabled: !selectedPaymentMethod || !selectedDeliveryMethod || isLoading || isBlockedByStock,
             loading: isCreatingOrder || isVerifyingAvailability
           }
         : {
@@ -312,7 +301,6 @@ export function CheckoutClient() {
                     taxBusinessLookupState={taxBusinessLookupState}
                     onTaxBusinessInfoChange={setTaxBusinessInfo}
                     onTaxBusinessLookupStateChange={setTaxBusinessLookupState}
-                    canPay={canPay}
                   />
                 ) : (
                   <StepComplete />
@@ -334,7 +322,6 @@ export function CheckoutClient() {
                   showShipping={step >= 2}
                   grandTotal={grandTotal}
                   action={sidebarAction}
-                  notice={isStepBlockedByFlag ? <FeatureUnavailableNotice /> : null}
                   showTerms={step < 3}
                 />
               </div>

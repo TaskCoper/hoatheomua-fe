@@ -56,8 +56,6 @@ interface CheckoutSidebarProps {
     disabled?: boolean
     loading?: boolean
   }
-  /** Sits right above the action button - why it cannot be pressed. */
-  notice?: React.ReactNode
   showTerms?: boolean
 }
 
@@ -76,7 +74,6 @@ export function CheckoutSidebar({
   showShipping = true,
   grandTotal,
   action,
-  notice,
   showTerms = true
 }: CheckoutSidebarProps) {
   const { t } = useTranslation()
@@ -167,8 +164,6 @@ export function CheckoutSidebar({
             </span>
           </label>
         ) : null}
-
-        {notice}
 
         <Button type='button' size='lg' className='w-full' onClick={action.onClick} disabled={isActionDisabled}>
           {action.loading ? <Spinner /> : null}

@@ -29,14 +29,11 @@ import {
   type OrderItem
 } from '@/features/orders/types'
 import { buildProductVariantHref } from '@/features/products/components/product-variant-context'
-import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
-import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
-import { isFeatureEnabled } from '@/shared/feature-flags'
 import { cn } from '@/shared/utils'
 import {
   ArrowLeft02Icon,
@@ -198,18 +195,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
   const { cancelOrder, isCancellingOrder } = useCancelOrder()
 
-  // Paying is a gateway hand-off; cancelling unwinds the order upstream. Both
-  // stay on screen while they are switched off, just inert.
-  const canPay = isFeatureEnabled('payment')
-  const canCancelOrder = isFeatureEnabled('ordering')
-  const notifyUnavailable = useFeatureUnavailableToast()
-
   const handleConfirmCancel = () => {
-    if (!canCancelOrder) {
-      notifyUnavailable()
-      return
-    }
-
     cancelOrder(
       { id: order.orderId },
       {
@@ -237,10 +223,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   }, [orderTags, order.tagsId])
 
   const sepayDetails = useMemo(() => parseSepayDetails(order.sepayUrl), [order.sepayUrl])
-  const hasSepayQr = isPendingOrder && !order.paymentUrl && Boolean(order.sepayUrl) && Boolean(sepayDetails)
-  // A rendered QR is a live transfer waiting to happen, so it is withheld rather
-  // than merely greyed out - the card stays, its contents are replaced.
-  const showSepayQr = hasSepayQr && canPay
+  const showSepayQr = isPendingOrder && !order.paymentUrl && Boolean(order.sepayUrl) && Boolean(sepayDetails)
 
   const items = useMemo(() => order.details ?? [], [order.details])
 
@@ -299,15 +282,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
       invoiceRows.push({ label: t('orders.checkout.receiptAddress'), value: order.receiptAddress })
     }
   }
-
-  const payNowButton = (
-    <Button className='w-full gap-1.5 font-semibold' disabled={!canPay}>
-      {order.paymentMethod ? (
-        <HugeiconsIcon icon={PAYMENT_METHOD_ICONS[order.paymentMethod]} strokeWidth={2} className='size-4' />
-      ) : null}
-      {t('orders.list.detail.payNow')}
-    </Button>
-  )
 
   const hasTracking = Boolean(order.shippingTrackingUrl)
   const hasTrackingIds = Boolean(order.shippingPartyOrderId || order.trackNumber)
@@ -394,12 +368,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 <p className='mt-3 border-t border-border/60 pt-3 text-xs text-muted-foreground'>
                   {t('orders.list.qr.waiting')}
                 </p>
-              </SectionCard>
-            ) : null}
-
-            {hasSepayQr && !canPay ? (
-              <SectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
-                <FeatureUnavailableNotice />
               </SectionCard>
             ) : null}
 
@@ -589,22 +557,24 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
 
             <div className='space-y-2'>
               {isPendingOrder && order.paymentUrl ? (
-                canPay ? (
-                  <a href={order.paymentUrl} target='_blank' rel='noopener noreferrer' className='block'>
-                    {payNowButton}
-                  </a>
-                ) : (
-                  // No anchor while payments are off - the gateway must not be reachable.
-                  payNowButton
-                )
+                <a href={order.paymentUrl} target='_blank' rel='noopener noreferrer' className='block'>
+                  <Button className='w-full gap-1.5 font-semibold'>
+                    {order.paymentMethod ? (
+                      <HugeiconsIcon
+                        icon={PAYMENT_METHOD_ICONS[order.paymentMethod]}
+                        strokeWidth={2}
+                        className='size-4'
+                      />
+                    ) : null}
+                    {t('orders.list.detail.payNow')}
+                  </Button>
+                </a>
               ) : null}
-
-              {isPendingOrder && (!canPay || !canCancelOrder) ? <FeatureUnavailableNotice /> : null}
 
               {isPendingOrder ? (
                 <Dialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant='destructive' className='w-full' disabled={!canCancelOrder}>
+                    <Button variant='destructive' className='w-full'>
                       {t('orders.list.detail.cancelCta')}
                     </Button>
                   </DialogTrigger>
@@ -619,11 +589,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                           {t('orders.list.detail.cancelKeep')}
                         </Button>
                       </DialogClose>
-                      <Button
-                        variant='destructive'
-                        onClick={handleConfirmCancel}
-                        disabled={isCancellingOrder || !canCancelOrder}
-                      >
+                      <Button variant='destructive' onClick={handleConfirmCancel} disabled={isCancellingOrder}>
                         {isCancellingOrder ? <Spinner className='size-4' /> : null}
                         {t('orders.list.detail.cancelConfirmCta')}
                       </Button>

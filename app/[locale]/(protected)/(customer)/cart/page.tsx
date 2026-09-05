@@ -13,13 +13,10 @@ import { toSellableQuantity } from '@/features/products/stock'
 import type { ProductSummary } from '@/features/products/types'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
-import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
-import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import { isFeatureEnabled } from '@/shared/feature-flags'
 import { type CartItem, useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import {
@@ -97,10 +94,6 @@ export default function CartPage() {
 
   const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
   const isPhoneMissing = !isLoadingPhoneNumber && !hasPhoneNumber
-
-  // Editing the cart stays live; only the hand-off to checkout is switched off.
-  const canCheckout = isFeatureEnabled('ordering')
-  const notifyUnavailable = useFeatureUnavailableToast()
 
   const productIds = useMemo(
     () => (hasHydrated ? Array.from(new Set(items.map((item) => item.productId))) : []),
@@ -233,11 +226,6 @@ export default function CartPage() {
   // pressed. On a shortage the fresh numbers land in the query cache, which re-marks
   // the offending lines as over-stock or sold out and drops them out of the selection.
   const handleCheckout = async () => {
-    if (!canCheckout) {
-      notifyUnavailable()
-      return
-    }
-
     const wanted = selectedLines.map((line) => ({
       productId: line.cartItem.productId,
       productName: line.product?.productName ?? null,
@@ -393,11 +381,9 @@ export default function CartPage() {
 
             <p className='text-xs leading-relaxed text-muted-foreground'>{t('cart.summary.shippingNote')}</p>
 
-            {canCheckout ? null : <FeatureUnavailableNotice />}
-
             <motion.div
-              whileHover={!noneChecked && canCheckout ? { y: -2, scale: 1.02 } : undefined}
-              whileTap={!noneChecked && canCheckout ? { scale: 0.97 } : undefined}
+              whileHover={!noneChecked ? { y: -2, scale: 1.02 } : undefined}
+              whileTap={!noneChecked ? { scale: 0.97 } : undefined}
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
             >
               {!noneChecked && isPhoneMissing && mySlug ? (
@@ -406,7 +392,7 @@ export default function CartPage() {
                 </Button>
               ) : (
                 <Button
-                  disabled={!canCheckout || noneChecked || isVerifyingSellableQuantity || isCheckingCoreProducts}
+                  disabled={noneChecked || isVerifyingSellableQuantity || isCheckingCoreProducts}
                   className='w-full'
                   size='lg'
                   onClick={handleCheckout}
