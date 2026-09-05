@@ -24,6 +24,7 @@ import {
   OrderStatusLabel,
   PaymentMethod,
   PaymentMethodLabel,
+  ShippingGatewayLabel,
   type OrderDetail,
   type OrderItem
 } from '@/features/orders/types'
@@ -284,6 +285,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
 
   const hasTracking = Boolean(order.shippingTrackingUrl)
   const hasTrackingIds = Boolean(order.shippingPartyOrderId || order.trackNumber)
+  const shippingGatewayLabel = t(ShippingGatewayLabel[order.shippingGateway])
 
   return (
     <section className='relative px-4 pt-4 pb-12 sm:pt-6 md:pt-8 lg:pt-10'>
@@ -462,7 +464,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                   ) : null}
                   {order.shippingPartyOrderId ? (
                     <DetailRow
-                      label={t('orders.list.ahamoveOrderId')}
+                      label={t('orders.list.shippingPartyOrderId', { gateway: shippingGatewayLabel })}
                       value={<span className='font-mono'>{order.shippingPartyOrderId}</span>}
                     />
                   ) : null}
@@ -476,7 +478,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                       className='inline-flex items-center gap-1.5 rounded-full bg-leaf/10 px-3 py-1.5 text-xs font-semibold text-leaf ring-1 ring-leaf/20 hover:bg-leaf/15'
                     >
                       <HugeiconsIcon icon={DeliveryTruck02Icon} strokeWidth={2} className='size-3.5' />
-                      {t('orders.list.trackAhamove')}
+                      {t('orders.list.trackShipment', { gateway: shippingGatewayLabel })}
                     </a>
                   </div>
                 ) : null}
