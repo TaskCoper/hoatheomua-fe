@@ -1,4 +1,5 @@
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
+import { assertFeatureEnabled } from '@/shared/feature-flags'
 import axios from 'axios'
 import type { AhamoveEstimateResult } from './ahamove.type'
 import type {
@@ -40,7 +41,11 @@ class OrderService {
     return data
   }
 
+  // Cancelling unwinds a real order upstream (refund, shipment cancellation,
+  // notifications), so it rides on the same flag as creating one.
   cancelOrder = async ({ id }: { id: string }) => {
+    assertFeatureEnabled('ordering')
+
     const { data } = await api.patch(`${this.baseUrl}/${id}/cancel`)
 
     return data
@@ -53,6 +58,9 @@ class OrderService {
     body: EstimatePayload
     shippingGateway: ShippingGateway
   }): Promise<EstimateResult> => {
+    // Quoting hits the carrier (Ahamove / Xanh SM) for real.
+    assertFeatureEnabled('externalServices')
+
     const endpoint = ESTIMATE_ENDPOINT[shippingGateway]
 
     if (shippingGateway === ShippingGateway.XanhSm) {
@@ -72,7 +80,11 @@ class OrderService {
     return normalizeTaxBusinessInfo(data)
   }
 
+  // One order creation fans out into everything downstream: stock decrement, a
+  // payment session, a shipment booking and the order emails/SMS.
   createOrder = async ({ body }: { body: CheckoutPayload }) => {
+    assertFeatureEnabled('ordering')
+
     const { data } = await api.post<
       BaseResponse<{
         order_id: number

@@ -1,7 +1,9 @@
 import { useCheckCoreProducts } from '@/features/products/hooks/use-check-core-products'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
+import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
+import { FeatureUnavailableError, isFeatureEnabled, ORDERING_DISABLED_REDIRECT_PATH } from '@/shared/feature-flags'
 import { useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { useEffect, useRef, useState } from 'react'
@@ -32,6 +34,12 @@ export const useCheckoutFlow = ({
 }: UseCheckoutFlowArgs) => {
   const { t } = useTranslation()
   const router = useRouter()
+  const notifyUnavailable = useFeatureUnavailableToast()
+
+  // Mirrors the middleware block in proxy.ts, for the soft navigations it does
+  // not see (a prefetched route entered from the cart, a stale client bundle).
+  const canPlaceOrder = isFeatureEnabled('ordering')
+  const canQuoteShipping = isFeatureEnabled('externalServices')
 
   const items = useCheckoutIntentStore((state) => state.items)
   const source = useCheckoutIntentStore((state) => state.source)
@@ -48,9 +56,14 @@ export const useCheckoutFlow = ({
   const hasSubmittedRef = useRef(false)
 
   useEffect(() => {
+    if (!canPlaceOrder) {
+      router.replace(ORDERING_DISABLED_REDIRECT_PATH)
+      return
+    }
+
     if (hasSubmittedRef.current) return
     if (items.length === 0) router.replace('/cart')
-  }, [items.length, router])
+  }, [canPlaceOrder, items.length, router])
 
   const goBack = () => setStep((prev) => (prev - 1) as CheckoutStep)
 
@@ -81,6 +94,11 @@ export const useCheckoutFlow = ({
   }
 
   const handleGoToPayment = async (shippingGateway: ShippingGateway | undefined) => {
+    if (!canQuoteShipping) {
+      notifyUnavailable()
+      return
+    }
+
     if (items.length === 0) {
       toast.error(t('orders.checkout.emptyCart'))
       return
@@ -136,8 +154,14 @@ export const useCheckoutFlow = ({
     return true
   }
 
-  const handleConfirmOrder = (selection: CheckoutSelection) =>
-    methods.handleSubmit(
+  const handleConfirmOrder = (selection: CheckoutSelection) => {
+    // Confirming both places the order and opens a payment session upstream.
+    if (!canPlaceOrder || !isFeatureEnabled('payment')) {
+      notifyUnavailable()
+      return
+    }
+
+    return methods.handleSubmit(
       async (values) => {
         if (!hasContact()) return
         if (!(await isFulfillable())) return
@@ -156,12 +180,19 @@ export const useCheckoutFlow = ({
 
           router.push(`/orders/${mrc_order_id}`)
         } catch (error) {
+          // The service-level backstop speaks English; say it in the buyer's language.
+          if (error instanceof FeatureUnavailableError) {
+            notifyUnavailable()
+            return
+          }
+
           const message = error instanceof Error ? error.message : t('orders.checkout.createError')
           toast.error(t('orders.checkout.createError'), { description: message })
         }
       },
       () => toast.error(t('common.validation.fixErrors'))
     )()
+  }
 
   const handleCancel = () => {
     clearIntent()
@@ -174,6 +205,8 @@ export const useCheckoutFlow = ({
     goBack,
     items,
     source,
+    canPlaceOrder,
+    canQuoteShipping,
     isVerifyingAvailability: isVerifyingSellableQuantity || isCheckingCoreProducts,
     materialBlockedProductIds,
     estimatedGateway,

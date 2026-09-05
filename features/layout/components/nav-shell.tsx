@@ -1,5 +1,6 @@
 'use client'
 
+import DevelopmentBanner from '@/features/layout/components/development-banner'
 import NavBar from '@/features/layout/components/nav-bar'
 import { useEffect, useState } from 'react'
 
@@ -20,6 +21,8 @@ export default function NavShell() {
         isScrolled ? 'border-secondary/40 bg-secondary/30 backdrop-blur-md' : 'border-transparent bg-transparent'
       ].join(' ')}
     >
+      <DevelopmentBanner />
+
       <div className='mx-auto w-full max-w-7xl px-4 py-3'>
         <NavBar />
       </div>
