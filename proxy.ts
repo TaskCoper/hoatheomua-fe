@@ -2,6 +2,7 @@ import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
 import { GUEST_ONLY_ROUTES, isPublicRoutePath, SESSION_HINT_COOKIE } from './shared/constants'
+import { isOrderingBlockedPath, ORDERING_DISABLED_REDIRECT_PATH } from './shared/feature-flags'
 
 const ACCESS_TOKEN_COOKIE = 'accessToken'
 const REFRESH_TOKEN_COOKIE = 'refreshToken'
@@ -27,6 +28,11 @@ const buildRedirect = (request: NextRequest, target: string, search?: URLSearchP
   url.search = search ? `?${search.toString()}` : ''
   return NextResponse.redirect(url)
 }
+
+const isPrefetchRequest = (request: NextRequest) =>
+  request.headers.get('next-router-prefetch') === '1' ||
+  request.headers.get('purpose') === 'prefetch' ||
+  request.headers.get('sec-purpose')?.includes('prefetch') === true
 
 const withSessionHint = <T extends NextResponse>(response: T, isProbablyAuthed: boolean): T => {
   if (isProbablyAuthed) {
@@ -65,6 +71,10 @@ export default function proxy(request: NextRequest) {
 
   if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed) {
     return withSessionHint(buildRedirect(request, '/'), isProbablyAuthed)
+  }
+
+  if (isOrderingBlockedPath(pathname) && !isPrefetchRequest(request)) {
+    return withSessionHint(buildRedirect(request, ORDERING_DISABLED_REDIRECT_PATH), isProbablyAuthed)
   }
 
   if (!isPublicRoutePath(pathname) && !isProbablyAuthed) {
