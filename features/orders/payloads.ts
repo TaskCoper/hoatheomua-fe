@@ -56,6 +56,8 @@ export const buildEstimatePayload = (
   }
 }
 
+// TODO(backend): `values.cards` is validated but dropped here - `CheckoutPayload` has no
+// card field yet. Map it in once the order API accepts cards.
 export const buildCheckoutPayload = (
   values: CheckoutFormValues,
   items: CartItem[],

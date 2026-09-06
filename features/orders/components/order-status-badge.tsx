@@ -3,7 +3,12 @@
 import { Badge } from '@/components/ui/badge'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
-import { CancelCircleIcon, CheckmarkCircle02Icon, TimeQuarterPassIcon } from '@hugeicons/core-free-icons'
+import {
+  CancelCircleIcon,
+  CheckmarkCircle02Icon,
+  HelpCircleIcon,
+  TimeQuarterPassIcon
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { OrderStatus, OrderStatusLabel } from '../types'
 
@@ -19,20 +24,22 @@ const STATUS_TONE: Record<OrderStatus, string> = {
   [OrderStatus.Cancelled]: 'border-destructive/40 bg-destructive/10 text-destructive'
 }
 
-export function OrderStatusBadge({ status, className }: { status: OrderStatus; className?: string }) {
+export default function OrderStatusBadge({ status, className }: { status: OrderStatus; className?: string }) {
   const { t } = useTranslation()
+
+  const label = OrderStatusLabel[status]
 
   return (
     <Badge
       variant='outline'
       className={cn(
         'gap-1 rounded-full px-2.5 py-0.5 text-[0.625rem] font-semibold tracking-wider uppercase',
-        STATUS_TONE[status],
+        STATUS_TONE[status] ?? 'border-muted-foreground/30 bg-muted text-muted-foreground',
         className
       )}
     >
-      <HugeiconsIcon icon={STATUS_ICON[status]} strokeWidth={2} className='size-3' />
-      {t(OrderStatusLabel[status])}
+      <HugeiconsIcon icon={STATUS_ICON[status] ?? HelpCircleIcon} strokeWidth={2} className='size-3' />
+      {label ? t(label) : status}
     </Badge>
   )
 }

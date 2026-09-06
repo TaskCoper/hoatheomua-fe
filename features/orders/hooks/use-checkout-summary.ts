@@ -11,6 +11,7 @@ interface UseCheckoutSummaryArgs {
   items: CartItem[]
   hasTaxCode: boolean
   shippingFee: number
+  cardsTotal?: number
   /** Products the last check-core verdict blamed for a material shortage. */
   materialBlockedProductIds?: ReadonlySet<string>
 }
@@ -19,19 +20,14 @@ export const useCheckoutSummary = ({
   items,
   hasTaxCode,
   shippingFee,
+  cardsTotal = 0,
   materialBlockedProductIds = NO_BLOCKED_PRODUCTS
 }: UseCheckoutSummaryArgs) => {
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.productId))), [items])
   const { productSummaryById } = useGetProductSummary({ productIds })
 
-  // Checkout is entered with a stock verdict taken back on the cart, and a buyer can
-  // sit on this page for minutes. Stock is re-read on mount and on window focus so a
-  // product that sold out or was switched off meanwhile surfaces before payment.
   const { sellableQuantities, sellableQuantityById } = useGetProductsSellableQuantity({ productIds })
 
-  // `sellableQuantityById` already reports an inactive product as 0, which is right
-  // for arithmetic but reads as "sold out" - the raw rows keep the two apart so the
-  // line can say which one it is.
   const inactiveIds = useMemo(() => {
     const ids = new Set<string>()
     sellableQuantities?.forEach((row) => {
@@ -53,9 +49,6 @@ export const useCheckoutSummary = ({
         const isStockKnown = typeof rawStock === 'number' && Number.isFinite(rawStock)
         const available = isStockKnown ? toSellableQuantity(rawStock) : null
 
-        // A line still loading is not a problem yet, and a product the stock endpoint
-        // said nothing about is unknown rather than sold out - blocking on either
-        // would turn a slow response into a dead checkout.
         const issue: CheckoutLineIssue | null = isResolving
           ? null
           : !product
@@ -66,15 +59,12 @@ export const useCheckoutSummary = ({
                 ? 'sold-out'
                 : available !== null && item.quantity > available
                   ? 'over-stock'
-                  : // Last, because a stock reason is concrete where this one is only
-                    // "the workshop is short on something" - a buyer can act on the former.
-                    materialBlockedProductIds.has(item.productId)
+                  : materialBlockedProductIds.has(item.productId)
                     ? 'materials'
                     : null
 
         return {
           lineId: item.lineId,
-          // Empty while in flight; the sidebar shows a skeleton instead of a raw id.
           name: product?.parent?.productName ?? product?.productName ?? '',
           variantName: product?.parent ? product.productName : null,
           image: product?.coverImage ?? null,
@@ -94,7 +84,7 @@ export const useCheckoutSummary = ({
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
   const productsSubtotal = summaryLines.reduce((sum, line) => sum + line.subtotal, 0)
   const vatAmount = hasTaxCode ? Math.round(productsSubtotal * 0.08) : 0
-  const grandTotal = productsSubtotal + vatAmount + shippingFee
+  const grandTotal = productsSubtotal + vatAmount + shippingFee + cardsTotal
 
   return {
     summaryLines,
@@ -103,6 +93,7 @@ export const useCheckoutSummary = ({
     totalItems,
     productsSubtotal,
     vatAmount,
+    cardsTotal,
     grandTotal
   }
 }

@@ -9,7 +9,7 @@ import { DeliveryTruck02Icon, QrCodeIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { OrderStatus, ShippingGatewayLabel, type Order } from '../types'
 import { OrderLineItem } from './order-line-item'
-import { OrderStatusBadge } from './order-status-badge'
+import OrderStatusBadge from './order-status-badge'
 
 const MAX_PREVIEW_ITEMS = 4
 

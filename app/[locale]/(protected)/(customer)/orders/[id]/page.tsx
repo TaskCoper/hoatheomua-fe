@@ -14,7 +14,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { OrderLineItem } from '@/features/orders/components/order-line-item'
-import { OrderStatusBadge } from '@/features/orders/components/order-status-badge'
+import OrderStatusBadge from '@/features/orders/components/order-status-badge'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useGetOrder } from '@/features/orders/hooks/use-get-order'
 import { useGetOrderStatus } from '@/features/orders/hooks/use-get-order-status'

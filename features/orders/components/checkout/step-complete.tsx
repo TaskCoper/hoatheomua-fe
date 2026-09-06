@@ -6,13 +6,14 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { CheckoutPanel } from './checkout-section'
 
-export function StepComplete() {
+export default function StepComplete() {
   const { t } = useTranslation()
   const ordersHref = useAccountHref('orders')
 
   return (
-    <section className='rounded-3xl bg-card p-8 sm:p-10 border border-border text-center'>
+    <CheckoutPanel className='p-8 text-center sm:p-10'>
       <div className='mx-auto mb-4 grid size-16 place-items-center rounded-full bg-primary/10 text-primary'>
         <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} className='size-8' />
       </div>
@@ -27,6 +28,6 @@ export function StepComplete() {
           <Link href='/products'>{t('orders.checkout.completeContinueShopping')}</Link>
         </Button>
       </div>
-    </section>
+    </CheckoutPanel>
   )
 }
