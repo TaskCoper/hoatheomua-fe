@@ -30,7 +30,7 @@ export default function CardMessageField({ value, onChange, label, placeholder, 
         value={value}
         onChange={(event) => onChange(event.target.value.slice(0, CARD_MESSAGE_MAX_LENGTH))}
         maxLength={CARD_MESSAGE_MAX_LENGTH}
-        rows={3}
+        className='h-40'
         placeholder={placeholder}
         aria-invalid={invalid}
       />

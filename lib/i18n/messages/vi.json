@@ -879,6 +879,66 @@
       "stepCards": "Thiệp",
       "stepReview": "Xác nhận"
     },
+    "cards": {
+      "heading": "Thiệp AI theo yêu cầu",
+      "description": "Những tấm thiệp này được in kèm hoa. Bạn có thể tạo lại hình thiệp bao nhiêu lần tuỳ thích - chúng tôi in đúng phiên bản bạn giữ lại.",
+      "cardCount": "{count} thiệp",
+      "forProduct": "Cho {name}",
+      "quantity": "{count} tấm",
+      "design": "Thiết kế",
+      "designAriaLabel": "Thiết kế thiệp cho {name}",
+      "selectedVersion": "Đang chọn phiên bản {index}",
+      "noVersion": "Chưa có hình thiệp",
+      "dialogTitle": "Thiệp AI theo yêu cầu",
+      "dialogDescription": "Viết lại lời nhắn và tạo hình thiệp mới. Phiên bản bạn giữ lại là phiên bản chúng tôi in.",
+      "locked": {
+        "heading": "Đã chốt cùng đơn hàng",
+        "note": "Mẫu thiệp và kích thước đã được xác nhận khi thanh toán và không thể thay đổi.",
+        "template": "Mẫu thiệp",
+        "size": "Kích thước",
+        "badge": "Đã khoá"
+      },
+      "versions": {
+        "heading": "Phiên bản",
+        "label": "Phiên bản {index}",
+        "counter": "{index}/{total}",
+        "select": "Xem phiên bản {index}",
+        "printed": "Đang dùng cho đơn",
+        "createdAt": "Tạo lúc {date}",
+        "empty": "Hình thiệp đầu tiên của bạn sẽ xuất hiện ở đây."
+      },
+      "generation": {
+        "badge": "Đang tạo",
+        "title": "Đang vẽ phiên bản {index}…",
+        "stages": {
+          "reading": "Đọc lời nhắn của bạn",
+          "sketching": "Phác bố cục",
+          "painting": "Vẽ hình thiệp",
+          "finishing": "Hoàn thiện chi tiết"
+        }
+      },
+      "actions": {
+        "generate": "Tạo phiên bản mới",
+        "generateFirst": "Tạo hình thiệp",
+        "regenerate": "Tạo lại",
+        "apply": "Dùng phiên bản này",
+        "applied": "Đang dùng cho đơn này",
+        "applyHint": "Hãy tạo hình thiệp để áp dụng lời nhắn mới.",
+        "close": "Đóng"
+      },
+      "toast": {
+        "applied": "Phiên bản {index} sẽ được in cùng đơn hàng của bạn."
+      },
+      "price": {
+        "paid": "Đã thanh toán",
+        "current": "Giá thiệp hiện tại",
+        "extra": "+{price} cần xác nhận",
+        "refund": "-{price} cần xác nhận",
+        "same": "Không đổi",
+        "note": "Lời nhắn dài hơn hoặc chữ viết tay sẽ làm thay đổi giá thiệp. Chúng tôi sẽ xác nhận phần chênh lệch với bạn trước khi in - tổng đơn hàng vẫn giữ nguyên."
+      },
+      "previewAlt": "Hình thiệp, phiên bản {index}"
+    },
     "list": {
       "title": "Đơn hàng của tôi",
       "loading": "Đang tải đơn hàng…",

@@ -13,7 +13,9 @@ import {
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
+import OrderAiCardsSection from '@/features/orders/components/order-cards/order-ai-cards-section'
 import { OrderLineItem } from '@/features/orders/components/order-line-item'
+import OrderSectionCard from '@/features/orders/components/order-section-card'
 import OrderStatusBadge from '@/features/orders/components/order-status-badge'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useGetOrder } from '@/features/orders/hooks/use-get-order'
@@ -308,7 +310,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex flex-col gap-4 lg:col-span-2'>
             {showSepayQr && order.sepayUrl && sepayDetails ? (
-              <SectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
+              <OrderSectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
                 <p className='mb-4 text-xs text-muted-foreground'>{t('orders.list.qr.description')}</p>
                 <div className='grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start'>
                   <div className='mx-auto sm:mx-0'>
@@ -349,11 +351,11 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 <p className='mt-3 border-t border-border/60 pt-3 text-xs text-muted-foreground'>
                   {t('orders.list.qr.waiting')}
                 </p>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {items.length > 0 ? (
-              <SectionCard
+              <OrderSectionCard
                 icon={PackageIcon}
                 title={t('orders.checkout.productsHeading')}
                 aside={t('orders.checkout.lineCount', { count: items.length })}
@@ -369,10 +371,12 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     />
                   ))}
                 </ul>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
-            <SectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
+            <OrderAiCardsSection items={items} />
+
+            <OrderSectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm'>
                 {/* <SummaryRow
                   label={t('orders.list.orderId')}
@@ -406,10 +410,10 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 <dt className='text-sm font-semibold'>{t('orders.checkout.total')}</dt>
                 <dd className='font-title text-2xl font-bold text-primary'>{formatVnd(order.totalFee)}</dd>
               </div>
-            </SectionCard>
+            </OrderSectionCard>
 
             {isPaid && order.transaction ? (
-              <SectionCard icon={BankIcon} title={t('orders.list.qr.detailsTitle')}>
+              <OrderSectionCard icon={BankIcon} title={t('orders.list.qr.detailsTitle')}>
                 <dl className='space-y-2 text-sm'>
                   {order.transaction.gateway ? (
                     <DetailRow label={t('orders.list.qr.bank')} value={order.transaction.gateway} />
@@ -431,17 +435,17 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     }
                   />
                 </dl>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {order.remark ? (
-              <SectionCard icon={NoteEditIcon} title={t('orders.list.detail.remarksHeading')}>
+              <OrderSectionCard icon={NoteEditIcon} title={t('orders.list.detail.remarksHeading')}>
                 <p className='text-sm leading-relaxed text-foreground/90'>{order.remark}</p>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {hasTracking || hasTrackingIds ? (
-              <SectionCard icon={DeliveryTruck02Icon} title={t('orders.list.detail.trackingHeading')}>
+              <OrderSectionCard icon={DeliveryTruck02Icon} title={t('orders.list.detail.trackingHeading')}>
                 <dl className='space-y-2 text-sm'>
                   {order.trackNumber ? (
                     <DetailRow
@@ -469,24 +473,24 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     </a>
                   </div>
                 ) : null}
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
           </div>
 
           <aside className='flex flex-col gap-4'>
             {customerRows.length > 0 ? (
-              <SectionCard icon={UserIcon} title={t('orders.list.detail.customerHeading')}>
+              <OrderSectionCard icon={UserIcon} title={t('orders.list.detail.customerHeading')}>
                 <IconRowList rows={customerRows} />
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {recipientRows.length > 0 ? (
-              <SectionCard icon={MapPinpoint02Icon} title={t('orders.list.detail.recipientHeading')}>
+              <OrderSectionCard icon={MapPinpoint02Icon} title={t('orders.list.detail.recipientHeading')}>
                 <IconRowList rows={recipientRows} />
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
-            <SectionCard icon={InvoiceIcon} title={t('orders.list.detail.invoiceHeading')}>
+            <OrderSectionCard icon={InvoiceIcon} title={t('orders.list.detail.invoiceHeading')}>
               {order.isExportInvoice && invoiceRows.length > 0 ? (
                 <dl className='space-y-2 text-sm'>
                   {invoiceRows.map((row) => (
@@ -496,9 +500,9 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               ) : (
                 <p className='text-sm text-muted-foreground'>{t('orders.list.detail.invoiceNotRequested')}</p>
               )}
-            </SectionCard>
+            </OrderSectionCard>
 
-            <SectionCard icon={CalendarCheckOut01Icon} title={t('orders.list.detail.timelineHeading')}>
+            <OrderSectionCard icon={CalendarCheckOut01Icon} title={t('orders.list.detail.timelineHeading')}>
               <ol className='flex flex-col'>
                 <TimelineItem
                   icon={Rocket02Icon}
@@ -538,7 +542,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                   />
                 ) : null}
               </ol>
-            </SectionCard>
+            </OrderSectionCard>
 
             <div className='space-y-2'>
               {isPendingOrder && order.paymentUrl ? (
@@ -586,30 +590,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
           </aside>
         </div>
       </div>
-    </section>
-  )
-}
-
-interface SectionCardProps {
-  icon: typeof PackageIcon
-  title: string
-  aside?: React.ReactNode
-  children: React.ReactNode
-}
-
-function SectionCard({ icon, title, aside, children }: SectionCardProps) {
-  return (
-    <section className='rounded-3xl bg-card p-3 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 sm:p-4'>
-      <header className='mb-4 flex items-center justify-between gap-3 border-b border-border/70 pb-3'>
-        <div className='flex items-center gap-2'>
-          <span className='grid size-8 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
-            <HugeiconsIcon icon={icon} strokeWidth={1.75} className='size-4' />
-          </span>
-          <h2 className='font-title text-sm font-semibold sm:text-base'>{title}</h2>
-        </div>
-        {aside ? <div className='shrink-0 text-xs text-muted-foreground'>{aside}</div> : null}
-      </header>
-      {children}
     </section>
   )
 }

@@ -879,6 +879,66 @@
       "stepCards": "Cards",
       "stepReview": "Review"
     },
+    "cards": {
+      "heading": "AI custom cards",
+      "description": "These cards are printed with your flowers. Generate the artwork as often as you like - we print the version you keep.",
+      "cardCount": "{count} card(s)",
+      "forProduct": "For {name}",
+      "quantity": "{count} copies",
+      "design": "Design",
+      "designAriaLabel": "Design the card for {name}",
+      "selectedVersion": "Version {index} selected",
+      "noVersion": "No artwork yet",
+      "dialogTitle": "AI custom card",
+      "dialogDescription": "Rewrite the words and generate the artwork again. The version you keep is the one we print.",
+      "locked": {
+        "heading": "Fixed with your order",
+        "note": "The template and size were confirmed when the order was paid for and cannot be changed.",
+        "template": "Design",
+        "size": "Size",
+        "badge": "Locked"
+      },
+      "versions": {
+        "heading": "Versions",
+        "label": "Version {index}",
+        "counter": "{index} of {total}",
+        "select": "Show version {index}",
+        "printed": "In this order",
+        "createdAt": "Generated {date}",
+        "empty": "Your first artwork will appear here."
+      },
+      "generation": {
+        "badge": "Generating",
+        "title": "Painting version {index}…",
+        "stages": {
+          "reading": "Reading your words",
+          "sketching": "Sketching the layout",
+          "painting": "Painting the artwork",
+          "finishing": "Finishing the details"
+        }
+      },
+      "actions": {
+        "generate": "Generate new version",
+        "generateFirst": "Generate the artwork",
+        "regenerate": "Generate again",
+        "apply": "Use this version",
+        "applied": "Already in this order",
+        "applyHint": "Generate the artwork to apply your new words.",
+        "close": "Close"
+      },
+      "toast": {
+        "applied": "Version {index} will be printed with your order."
+      },
+      "price": {
+        "paid": "Paid at checkout",
+        "current": "Card price now",
+        "extra": "+{price} to confirm",
+        "refund": "-{price} to confirm",
+        "same": "No change",
+        "note": "Longer words or handwriting change the card price. We confirm the difference with you before printing - your order total stays as it is."
+      },
+      "previewAlt": "Card artwork, version {index}"
+    },
     "list": {
       "title": "My orders",
       "loading": "Loading orders…",
