@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import PreviewImage from '@/shared/components/preview-image'
 import { SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
@@ -22,7 +23,6 @@ import CardContentFields from './card-content-fields'
 import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
 import CardHistoryGallery from './card-history-gallery'
-import CardPreviewImage from './card-preview-image'
 import CardWritingPicker from './card-writing-picker'
 import CheckoutProductPicker, { isCardEligibleLine } from './checkout-product-picker'
 
@@ -141,7 +141,7 @@ export default function HistoryCardForm({
 
       {selected ? (
         <div className='flex items-center gap-3 rounded-2xl border border-border/60 bg-background/60 p-3'>
-          <CardPreviewImage
+          <PreviewImage
             key={selected.id}
             src={selected.imageUrl}
             alt={t('orders.checkout.cards.previewAlt')}

@@ -22,6 +22,14 @@ function SectionLoading() {
 
 // Only the panels behind a click are split out - `orders` is the landing section,
 // so lazy-loading it would just trade a request for a flash of skeleton.
+const AccountStudioGenerations = dynamic(() => import('@/features/studio/components/account-studio-generations'), {
+  loading: SectionLoading
+})
+
+const AccountCardGenerations = dynamic(() => import('@/features/orders/components/account-card-generations'), {
+  loading: SectionLoading
+})
+
 const AddressContent = dynamic(() => import('./account-sections').then((m) => m.AddressContent), {
   loading: SectionLoading
 })
@@ -47,9 +55,6 @@ export default function AccountPage({ slug }: { slug: string }) {
   const requestedSection = isAccountSection(paramSection) ? paramSection : undefined
   const activeSection: AccountSection = isOwnAccount ? (requestedSection ?? 'orders') : 'info'
 
-  // Panels are already mounted client-side, so the URL is updated through the
-  // History API rather than the router: same shareable link and back button, but
-  // no RSC round-trip or Suspense fallback just to move between sections.
   const handleSelectSection = useCallback(
     (next: AccountSection) => {
       if (!isOwnAccount) return
@@ -65,6 +70,10 @@ export default function AccountPage({ slug }: { slug: string }) {
     <AccountShell active={activeSection} onSelectSection={handleSelectSection} slug={slug}>
       {activeSection === 'orders' ? (
         <AccountOrders />
+      ) : activeSection === 'studio' ? (
+        <AccountStudioGenerations />
+      ) : activeSection === 'cards' ? (
+        <AccountCardGenerations />
       ) : activeSection === 'info' ? (
         <>
           <AccountSectionHeader title={t('profile.personalInfoTitle')} />

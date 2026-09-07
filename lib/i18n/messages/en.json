@@ -96,6 +96,8 @@
     "nav": {
       "label": "Account navigation",
       "orders": "My orders",
+      "studio": "AI creations",
+      "cards": "Card history",
       "profile": "Personal information",
       "addresses": "Your addresses",
       "security": "Login & security",
@@ -938,7 +940,23 @@
         "same": "No change",
         "note": "Longer words or handwriting change the card price. We confirm the difference with you before printing - your order total stays as it is."
       },
-      "previewAlt": "Card artwork, version {index}"
+      "previewAlt": "Card artwork, version {index}",
+      "history": {
+        "title": "Card history",
+        "loading": "Loading your cards…",
+        "count": "{count} cards",
+        "filterAll": "All",
+        "filterLabel": "Filter cards by writing style",
+        "to": "To",
+        "from": "From",
+        "previewAlt": "Card for {receiver}",
+        "emptyFilter": "No cards written this way yet.",
+        "empty": {
+          "title": "No cards yet",
+          "description": "Add an AI card at checkout and every one you generate is kept here, ready to be reused.",
+          "cta": "Go to cart"
+        }
+      }
     },
     "list": {
       "title": "My orders",
@@ -1844,6 +1862,21 @@
       "readyForLabel": "This mockup is ready for",
       "newCreation": "Your new creation",
       "otherArrangements": "Other arrangements in this setting"
+    },
+    "generations": {
+      "title": "AI creations",
+      "loading": "Loading your creations…",
+      "count": "{count} creations",
+      "filterAll": "All scenes",
+      "filterLabel": "Filter creations by scene",
+      "openInStudio": "Open “{name}” in the studio",
+      "previewAlt": "“{name}” in the {scene} scene",
+      "emptyFilter": "Nothing generated in this scene yet.",
+      "empty": {
+        "title": "No creations yet",
+        "description": "Design a bouquet in the studio and every version you generate is kept here.",
+        "cta": "Start designing"
+      }
     }
   },
   "b2b": {

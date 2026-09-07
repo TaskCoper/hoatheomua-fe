@@ -1,12 +1,12 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import PreviewImage from '@/shared/components/preview-image'
 import { SquareLock02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { findCardTemplate } from '../../cards/card-data'
 import { CARD_SIZE_LABEL_KEYS } from '../../cards/card-labels'
 import type { CardSizeId } from '../../cards/types'
-import CardPreviewImage from '../checkout/cards/card-preview-image'
 
 interface OrderCardLockedSpecsProps {
   templateId: string
@@ -19,7 +19,7 @@ export default function OrderCardLockedSpecs({ templateId, sizeId }: OrderCardLo
 
   return (
     <div className='flex items-start gap-3 rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
-      <CardPreviewImage
+      <PreviewImage
         src={template?.imageUrl ?? null}
         alt={template?.name ?? t('orders.cards.locked.template')}
         sizes='48px'

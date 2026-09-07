@@ -96,6 +96,8 @@
     "nav": {
       "label": "Điều hướng tài khoản",
       "orders": "Đơn hàng của tôi",
+      "studio": "Thiết kế AI",
+      "cards": "Lịch sử thiệp",
       "profile": "Thông tin cá nhân",
       "addresses": "Địa chỉ của bạn",
       "security": "Đăng nhập & bảo mật",
@@ -938,7 +940,23 @@
         "same": "Không đổi",
         "note": "Lời nhắn dài hơn hoặc chữ viết tay sẽ làm thay đổi giá thiệp. Chúng tôi sẽ xác nhận phần chênh lệch với bạn trước khi in - tổng đơn hàng vẫn giữ nguyên."
       },
-      "previewAlt": "Hình thiệp, phiên bản {index}"
+      "previewAlt": "Hình thiệp, phiên bản {index}",
+      "history": {
+        "title": "Lịch sử thiệp",
+        "loading": "Đang tải thiệp của bạn…",
+        "count": "{count} tấm thiệp",
+        "filterAll": "Tất cả",
+        "filterLabel": "Lọc thiệp theo kiểu chữ",
+        "to": "Gửi",
+        "from": "Từ",
+        "previewAlt": "Thiệp gửi {receiver}",
+        "emptyFilter": "Chưa có tấm thiệp nào viết theo kiểu này.",
+        "empty": {
+          "title": "Chưa có tấm thiệp nào",
+          "description": "Thêm thiệp AI khi thanh toán, mọi tấm bạn tạo ra sẽ được lưu ở đây để dùng lại.",
+          "cta": "Đến giỏ hàng"
+        }
+      }
     },
     "list": {
       "title": "Đơn hàng của tôi",
@@ -1844,6 +1862,21 @@
       "readyForLabel": "Bối cảnh này đã sẵn sàng cho",
       "newCreation": "Tác phẩm mới của bạn",
       "otherArrangements": "Các mẫu cắm hoa khác trong không gian này"
+    },
+    "generations": {
+      "title": "Thiết kế AI",
+      "loading": "Đang tải thiết kế của bạn…",
+      "count": "{count} thiết kế",
+      "filterAll": "Tất cả bối cảnh",
+      "filterLabel": "Lọc thiết kế theo bối cảnh",
+      "openInStudio": "Mở “{name}” trong studio",
+      "previewAlt": "“{name}” trong bối cảnh {scene}",
+      "emptyFilter": "Chưa có thiết kế nào trong bối cảnh này.",
+      "empty": {
+        "title": "Chưa có thiết kế nào",
+        "description": "Hãy thiết kế một bó hoa trong studio, mọi phiên bản bạn tạo ra sẽ được lưu ở đây.",
+        "cta": "Bắt đầu thiết kế"
+      }
     }
   },
   "b2b": {

@@ -2,12 +2,12 @@
 
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import { Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useId } from 'react'
 import { CARD_TEMPLATES } from '../../../cards/card-data'
-import CardPreviewImage from './card-preview-image'
 
 interface CardTemplatePickerProps {
   value: string
@@ -44,7 +44,7 @@ export default function CardTemplatePicker({ value, onChange }: CardTemplatePick
             >
               <RadioGroupItem id={id} value={template.id} className='sr-only hidden' />
 
-              <CardPreviewImage
+              <PreviewImage
                 src={template.imageUrl}
                 alt={template.name}
                 sizes='(min-width: 640px) 8vw, 30vw'

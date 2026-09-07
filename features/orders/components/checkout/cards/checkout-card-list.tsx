@@ -3,13 +3,13 @@
 import { Button } from '@/components/ui/button'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import PreviewImage from '@/shared/components/preview-image'
 import { Delete02Icon, Edit02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { findCardTemplate, getCheckoutCardPrice } from '../../../cards/card-data'
 import { CARD_SIZE_LABEL_KEYS, CARD_WRITING_METHOD_LABEL_KEYS } from '../../../cards/card-labels'
 import type { CheckoutCardField, GeneratedCard } from '../../../cards/types'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
-import CardPreviewImage from './card-preview-image'
 
 interface CheckoutCardListProps {
   cards: CheckoutCardField[]
@@ -97,7 +97,7 @@ function CheckoutCardListItem({
 
   return (
     <li className='flex items-start gap-3 p-3'>
-      <CardPreviewImage
+      <PreviewImage
         src={generated?.imageUrl ?? template?.imageUrl ?? null}
         alt={title}
         sizes='64px'

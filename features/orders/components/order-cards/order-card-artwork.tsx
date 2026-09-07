@@ -1,9 +1,9 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import type { CardWritingMethod, OrderCardVersion } from '../../cards/types'
-import CardPreviewImage from '../checkout/cards/card-preview-image'
 
 interface OrderCardArtworkProps {
   version: OrderCardVersion | null
@@ -24,7 +24,7 @@ export default function OrderCardArtwork({
 
   return (
     <div className={cn('relative overflow-hidden bg-secondary/40', className)}>
-      <CardPreviewImage
+      <PreviewImage
         src={version?.imageUrl ?? null}
         alt={version ? t('orders.cards.previewAlt', { index: version.label }) : t('orders.cards.noVersion')}
         sizes={sizes}

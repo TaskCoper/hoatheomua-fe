@@ -1,10 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useFieldArray, type Control } from 'react-hook-form'
+import { useGeneratedCards } from '../hooks/use-generated-cards'
 import type { CheckoutFormValues } from '../validations'
-import { MOCK_GENERATED_CARDS } from './card-data'
-import type { CheckoutCard, GeneratedCard } from './types'
+import type { CheckoutCard } from './types'
 
 interface UseCheckoutCardsArgs {
   control: Control<CheckoutFormValues>
@@ -13,8 +13,7 @@ interface UseCheckoutCardsArgs {
 
 export const useCheckoutCards = ({ control, lineIds }: UseCheckoutCardsArgs) => {
   const { fields, append, update, remove } = useFieldArray({ control, name: 'cards' })
-  // TODO(backend): swap for the user's generated-cards query.
-  const [generatedCards] = useState<GeneratedCard[]>(MOCK_GENERATED_CARDS)
+  const { generatedCards } = useGeneratedCards()
 
   // Dropping a line from the cart has to drop its cards too
   useEffect(() => {

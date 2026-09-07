@@ -7,14 +7,14 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
 
-interface CardPreviewImageProps {
+interface PreviewImageProps {
   src: string | null
   alt: string
   sizes: string
   className?: string
 }
 
-export default function CardPreviewImage({ src, alt, sizes, className }: CardPreviewImageProps) {
+export default function PreviewImage({ src, alt, sizes, className }: PreviewImageProps) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(src ? 'loading' : 'error')
 
   return (

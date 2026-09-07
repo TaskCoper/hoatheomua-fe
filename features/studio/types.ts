@@ -42,3 +42,14 @@ export interface StudioVersion {
   mockupName: string
   imageUrl: string
 }
+
+export interface StudioGeneration {
+  id: string
+  name: string
+  productId: string
+  productName: string
+  mockupId: string
+  mockupName: string
+  imageUrl: string
+  createdAt: string
+}

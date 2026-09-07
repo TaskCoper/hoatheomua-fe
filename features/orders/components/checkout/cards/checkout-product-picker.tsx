@@ -2,10 +2,10 @@
 
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import { useId } from 'react'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
-import CardPreviewImage from './card-preview-image'
 
 export const isCardEligibleLine = (line: CheckoutSummaryLine): boolean => !line.isResolving && !line.issue
 
@@ -55,7 +55,7 @@ export default function CheckoutProductPicker({ lines, value, onChange, label, i
               >
                 <RadioGroupItem id={id} value={line.lineId} disabled={!isEligible} className='size-3.5 shrink-0' />
 
-                <CardPreviewImage
+                <PreviewImage
                   src={line.image}
                   alt={line.name}
                   sizes='40px'

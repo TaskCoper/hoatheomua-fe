@@ -1,4 +1,4 @@
-export const ACCOUNT_SECTIONS = ['orders', 'info', 'address', 'password'] as const
+export const ACCOUNT_SECTIONS = ['orders', 'studio', 'cards', 'info', 'address', 'password'] as const
 
 export type AccountSection = (typeof ACCOUNT_SECTIONS)[number]
 

@@ -3,12 +3,12 @@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import { Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useId } from 'react'
 import type { GeneratedCard } from '../../../cards/types'
-import CardPreviewImage from './card-preview-image'
 
 interface CardHistoryGalleryProps {
   generatedCards: GeneratedCard[]
@@ -51,7 +51,7 @@ export default function CardHistoryGallery({ generatedCards, value, onChange, in
               <RadioGroupItem id={id} value={card.id} className='sr-only hidden' />
 
               <span className='relative block'>
-                <CardPreviewImage
+                <PreviewImage
                   src={card.imageUrl}
                   alt={card.content.message}
                   sizes='(min-width: 640px) 8vw, 30vw'
