@@ -134,6 +134,7 @@
     }
   },
   "common": {
+    "featureUnavailable": "Tính năng này tạm thời không khả dụng trong lúc chúng tôi chuẩn bị cửa hàng.",
     "ui": {
       "more": "Thêm",
       "uploading": "Đang tải lên...",
@@ -1060,6 +1061,7 @@
     }
   },
   "header": {
+    "developmentBanner": "Trang web hiện đang trong quá trình phát triển",
     "brand": "Hoa Theo Mùa",
     "logoAlt": "Logo",
     "vineAlt": "Cành nho",

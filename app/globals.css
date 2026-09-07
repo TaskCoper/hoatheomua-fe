@@ -234,6 +234,33 @@
     will-change: transform;
   }
 
+  /* Development notice above the nav: a deep house-green band, darkened towards
+     the middle so the ends melt into the page, with a slow sheen crossing it. */
+  .dev-stripe {
+    background-image: linear-gradient(
+      90deg,
+      var(--primary) 0%,
+      color-mix(in oklab, var(--primary) 82%, var(--foreground)) 50%,
+      var(--primary) 100%
+    );
+    color: var(--primary-foreground);
+  }
+
+  .dev-stripe::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+      100deg,
+      transparent 38%,
+      color-mix(in oklab, var(--secondary) 26%, transparent) 50%,
+      transparent 62%
+    );
+    animation: dev-sheen 7s ease-in-out infinite;
+    pointer-events: none;
+    will-change: transform;
+  }
+
   .float-y {
     animation: float-y var(--float-duration, 2.8s) ease-in-out infinite;
     animation-delay: var(--float-delay, 0s);
@@ -366,6 +393,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .animate-marquee,
+    .dev-stripe::after,
     .float-y,
     .banner-drift,
     .wind-wiggle-left,
@@ -712,6 +740,16 @@
   }
   to {
     transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes dev-sheen {
+  0% {
+    transform: translate3d(-130%, 0, 0);
+  }
+  55%,
+  100% {
+    transform: translate3d(130%, 0, 0);
   }
 }
 

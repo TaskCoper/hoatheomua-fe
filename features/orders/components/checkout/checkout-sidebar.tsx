@@ -65,6 +65,8 @@ interface CheckoutSidebarProps {
     disabled?: boolean
     loading?: boolean
   }
+  /** Sits right above the action button - why it cannot be pressed. */
+  notice?: React.ReactNode
   showTerms?: boolean
   sticky?: boolean
   /** Off on the review step - StepReview shows recipient/delivery/payment up top. */
@@ -95,6 +97,7 @@ export default function CheckoutSidebar({
   showShipping = true,
   grandTotal,
   action,
+  notice,
   showTerms = true,
   sticky = true,
   showRecap = true,
@@ -218,6 +221,8 @@ export default function CheckoutSidebar({
             </span>
           </label>
         ) : null}
+
+        {notice}
 
         <Button type='button' size='lg' className='w-full' onClick={action.onClick} disabled={isActionDisabled}>
           {action.loading ? <Spinner /> : null}
