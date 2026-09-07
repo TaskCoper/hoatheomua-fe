@@ -21,6 +21,7 @@ const defaultValues: CheckoutFormValues = {
   mapId: '',
   orderTime: null,
   tagIds: [],
+  cards: [],
   taxCode: null,
   identityNumber: null,
   receiptFullName: null,

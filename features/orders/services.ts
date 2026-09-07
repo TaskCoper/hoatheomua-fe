@@ -10,6 +10,7 @@ import type {
   GeocodeResponse,
   GeocodeReverseResponse,
   GeoResponse,
+  GetOrdersParams,
   Order,
   OrderDetail,
   OrderStatus,
@@ -35,8 +36,10 @@ const ESTIMATE_ENDPOINT: Record<ShippingGateway, string> = {
 class OrderService {
   private readonly baseUrl = 'v1/orders'
 
-  getOrders = async () => {
-    const { data } = await api.get<BasePaginationResponse<Order>>(`${this.baseUrl}`)
+  getOrders = async ({ pageIndex, pageSize, status }: GetOrdersParams = {}) => {
+    const { data } = await api.get<BasePaginationResponse<Order>>(`${this.baseUrl}`, {
+      params: { pageIndex, pageSize, status }
+    })
 
     return data
   }

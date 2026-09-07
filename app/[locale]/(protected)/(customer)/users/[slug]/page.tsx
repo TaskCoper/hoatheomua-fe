@@ -1,17 +1,23 @@
-import { ProfileSheetBody } from '@/features/users/components/profile-sheet'
+import { Spinner } from '@/components/ui/spinner'
+import AccountPage from '@/features/users/components/account-page'
+import { Suspense } from 'react'
 
-interface UserProfilePageProps {
+interface UserAccountPageProps {
   params: Promise<{ slug: string }>
 }
 
-export default async function UserProfilePage({ params }: UserProfilePageProps) {
+export default async function UserAccountPage({ params }: UserAccountPageProps) {
   const { slug } = await params
 
   return (
-    <div className='mx-auto w-full max-w-4xl px-4 py-8'>
-      <div className='overflow-hidden rounded-3xl border bg-card shadow-[0_0.8rem_2.5rem_rgb(0_0_0/8%)]'>
-        <ProfileSheetBody slug={slug} />
-      </div>
-    </div>
+    <Suspense
+      fallback={
+        <div className='flex h-screen w-full items-center justify-center'>
+          <Spinner className='size-8 text-muted-foreground' />
+        </div>
+      }
+    >
+      <AccountPage slug={slug} />
+    </Suspense>
   )
 }

@@ -93,19 +93,50 @@ export const GatewayPaymentMethods: Record<PaymentGateway, PaymentMethod[]> = {
   [PaymentGateway.Sepay]: [PaymentMethod[6]]
 }
 
+export interface GetOrdersParams {
+  pageIndex?: number
+  pageSize?: number
+  status?: OrderStatus
+}
+
+export interface OrderSummaryItem {
+  productId: string
+  name: string
+  coverImage: string | null
+  quantity: number
+  price: number
+  parent: OrderSummaryItemParent | null
+}
+
+export interface OrderSummaryItemParent {
+  productId?: string | null
+  name?: string | null
+}
+
 export interface Order {
   orderId: string
   status: OrderStatus
   orderTime: number
   trackNumber: string
-  nhanhOrderId: string | null
-  nhanhTrackingUrl: string | null
   paymentGateway: PaymentGatewayCode
   shippingGateway: ShippingGateway
   shippingPartyOrderId: string | null
   shippingTrackingUrl: string | null
+  address: string
+  remark: string | null
+  taxcode: string | null
+  tagsId: number[]
+  identityNumber: string | null
+  invoiceType: InvoiceType | null
+  isExportInvoice: boolean
+  receiptAddress: string | null
+  receiptEmail: string | null
+  receiptFullName: string | null
+  receiptPhoneNumber: string | null
+  totalFee: number
+  items: OrderSummaryItem[]
   createAt: string
-  updateAt: null
+  updateAt: string | null
 }
 
 export interface OrderTransaction {
@@ -136,10 +167,8 @@ export interface OrderDetail {
   receiptEmail: string | null
   receiptFullName: string | null
   receiptPhoneNumber: string | null
-  // Buyer (account holder) as captured at checkout.
   fullName: string | null
   phone: string | null
-  // Whoever actually receives the bouquet - often not the buyer.
   fullNameReceiver: string | null
   phoneReceiver: string | null
   address: string | null
@@ -202,7 +231,6 @@ export interface EstimatePayload {
   tagIds: number[]
 }
 
-// `products` is only ever echoed back by Ahamove.
 export interface EstimateResult {
   quotes: ShippingQuote[]
   products: EstimateProduct[]

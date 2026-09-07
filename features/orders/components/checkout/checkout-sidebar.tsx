@@ -11,9 +11,14 @@ import { cn } from '@/shared/utils'
 import { Alert02Icon, Tag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { findCardTemplate, getCheckoutCardPrice } from '../../cards/card-data'
+import { CARD_SIZE_LABEL_KEYS, CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
+import type { CheckoutCardField, GeneratedCard } from '../../cards/types'
 
-/** Why a line cannot be bought right now. Stock issues are read at render time; `materials` comes from the last check-core verdict. */
+const EMPTY_CARDS: CheckoutCardField[] = []
+const EMPTY_GENERATED_CARDS: GeneratedCard[] = []
+
 export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stock' | 'materials'
 
 export interface CheckoutSummaryLine {
@@ -24,10 +29,8 @@ export interface CheckoutSummaryLine {
   quantity: number
   unitPrice: number
   subtotal: number
-  /** Product data still in flight - name, image and price are not known yet. */
   isResolving?: boolean
   issue?: CheckoutLineIssue | null
-  /** Live sellable quantity, or null when the stock endpoint said nothing about it. */
   available?: number | null
 }
 
@@ -39,13 +42,19 @@ interface SummaryLine {
 interface CheckoutSidebarProps {
   lines: CheckoutSummaryLine[]
   totalItems: number
+  recipientName?: string
+  recipientPhone?: string
   address?: string
   orderTimeLabel?: string
   deliveryTimeLabel?: string
+  remarks?: string
+  deliveryMethodLabel?: string
+  paymentMethodLabel?: string
   extraLines?: SummaryLine[]
   productsSubtotal: number
   vatAmount: number
   hasTaxCode: boolean
+  cardsFee?: number
   shippingFee: number
   shippingDiscount?: number
   showShipping?: boolean
@@ -59,60 +68,104 @@ interface CheckoutSidebarProps {
   /** Sits right above the action button - why it cannot be pressed. */
   notice?: React.ReactNode
   showTerms?: boolean
+  sticky?: boolean
+  /** Off on the review step - StepReview shows recipient/delivery/payment up top. */
+  showRecap?: boolean
+  /** Cards already added, listed under the product each one is attached to. */
+  cards?: CheckoutCardField[]
+  generatedCards?: GeneratedCard[]
 }
 
-export function CheckoutSidebar({
+export default function CheckoutSidebar({
   lines,
   totalItems,
+  recipientName,
+  recipientPhone,
   address,
   orderTimeLabel,
   deliveryTimeLabel,
+  remarks,
+  deliveryMethodLabel,
+  paymentMethodLabel,
   extraLines,
   productsSubtotal,
   vatAmount,
   hasTaxCode,
+  cardsFee = 0,
   shippingFee,
   shippingDiscount = 0,
   showShipping = true,
   grandTotal,
   action,
   notice,
-  showTerms = true
+  showTerms = true,
+  sticky = true,
+  showRecap = true,
+  cards = EMPTY_CARDS,
+  generatedCards = EMPTY_GENERATED_CARDS
 }: CheckoutSidebarProps) {
   const { t } = useTranslation()
   const [termsAccepted, setTermsAccepted] = useState(true)
   const isActionDisabled = action.disabled || action.loading || (showTerms && !termsAccepted)
-  // Totals would read as 0 until the last line lands, so show placeholders instead.
+  const orderLevelCards = cards.filter((card) => card.type === 'standard')
+
   const isPricingLoading = lines.some((line) => line.isResolving)
 
   return (
-    <aside className='sticky top-6 space-y-2'>
-      <section className='rounded-3xl bg-card p-5 border border-border'>
-        <div className='mb-4 flex items-baseline justify-between'>
+    <aside className={cn('space-y-2', sticky && 'sticky top-6')}>
+      <section className='rounded-3xl border border-border bg-card p-5'>
+        <header className='mb-4 flex items-baseline justify-between gap-3'>
           <h2 className='font-title text-base font-semibold'>{t('orders.checkout.sidebar.summaryTitle')}</h2>
-          <span className='text-xs text-muted-foreground'>
+          <span className='shrink-0 text-xs text-muted-foreground'>
             {t('orders.checkout.sidebar.itemsCount', { count: totalItems })}
           </span>
-        </div>
+        </header>
 
         {lines.length > 0 ? (
-          <ul className='mb-4 divide-y divide-border/60 rounded-2xl border border-border/60 bg-background/50'>
+          <ul className='mb-4 divide-y divide-dashed divide-border border-y border-dashed border-border'>
             {lines.map((line) => (
-              <CheckoutLineItem key={line.lineId} line={line} />
+              <CheckoutLineItem
+                key={line.lineId}
+                line={line}
+                cards={cards.filter((card) => card.type !== 'standard' && card.lineId === line.lineId)}
+                generatedCards={generatedCards}
+              />
             ))}
+
+            {orderLevelCards.length > 0 ? (
+              <li className='space-y-1.5 py-3'>
+                {/* <p className='text-xs font-medium text-muted-foreground'>{t('orders.checkout.cards.orderLevel')}</p> */}
+                {orderLevelCards.map((card) => (
+                  <CheckoutCardLine key={card.id} card={card} generatedCards={generatedCards} />
+                ))}
+              </li>
+            ) : null}
           </ul>
         ) : null}
 
-        <dl className='space-y-3 text-sm'>
-          {address ? <SidebarRow label={t('orders.checkout.sidebar.address')} value={address} multiline /> : null}
-          {orderTimeLabel ? <SidebarRow label={t('orders.checkout.orderTime')} value={orderTimeLabel} /> : null}
-          {deliveryTimeLabel ? <SidebarRow label={t('orders.checkout.tag')} value={deliveryTimeLabel} /> : null}
-          {extraLines?.map((line) => (
-            <SidebarRow key={line.label} label={line.label} value={line.value} />
-          ))}
-        </dl>
+        {showRecap ? (
+          <dl className='space-y-3 text-sm'>
+            {recipientName ? <SidebarRow label={t('orders.checkout.fullNameReceiver')} value={recipientName} /> : null}
+            {recipientPhone ? <SidebarRow label={t('orders.checkout.phoneReceiver')} value={recipientPhone} /> : null}
+            {address ? (
+              <SidebarRow label={t('orders.checkout.sidebar.address')} value={address} multiline clamp />
+            ) : null}
+            {orderTimeLabel ? <SidebarRow label={t('orders.checkout.orderTime')} value={orderTimeLabel} /> : null}
+            {deliveryTimeLabel ? <SidebarRow label={t('orders.checkout.tag')} value={deliveryTimeLabel} /> : null}
+            {remarks ? <SidebarRow label={t('orders.checkout.remarks')} value={remarks} multiline clamp /> : null}
+            {deliveryMethodLabel ? (
+              <SidebarRow label={t('orders.checkout.shippingChosenTitle')} value={deliveryMethodLabel} />
+            ) : null}
+            {paymentMethodLabel ? (
+              <SidebarRow label={t('orders.checkout.paymentTitle')} value={paymentMethodLabel} />
+            ) : null}
+            {extraLines?.map((line) => (
+              <SidebarRow key={line.label} label={line.label} value={line.value} />
+            ))}
+          </dl>
+        ) : null}
 
-        <div className='mt-5 border-t border-border/70 pt-4'>
+        <div className={cn('pt-4', showRecap && 'mt-5 border-t border-dashed border-border')}>
           <h3 className='mb-3 font-title text-base font-semibold'>{t('orders.checkout.sidebar.priceTitle')}</h3>
           <dl className='space-y-2 text-sm'>
             <SidebarRow
@@ -123,6 +176,7 @@ export function CheckoutSidebar({
             {hasTaxCode ? (
               <SidebarRow label={t('orders.checkout.vat')} value={formatVnd(vatAmount)} loading={isPricingLoading} />
             ) : null}
+            {cardsFee > 0 ? <SidebarRow label={t('orders.checkout.cardsFee')} value={formatVnd(cardsFee)} /> : null}
             {showShipping ? (
               <>
                 <SidebarRow label={t('orders.checkout.shippingFee')} value={formatVnd(shippingFee)} />
@@ -132,7 +186,7 @@ export function CheckoutSidebar({
               </>
             ) : null}
           </dl>
-          <div className='mt-3 flex items-center justify-between border-t border-border/70 pt-3'>
+          <div className='mt-4 flex items-center justify-between border-t border-dashed border-border pt-3'>
             <span className='text-sm font-semibold'>{t('orders.checkout.total')}</span>
             {isPricingLoading ? (
               <Skeleton className='h-6 w-28 rounded-md' />
@@ -146,7 +200,7 @@ export function CheckoutSidebar({
         </div>
       </section>
 
-      <section className='space-y-3 rounded-3xl bg-card p-5 border border-border'>
+      <section className='space-y-3 rounded-3xl border border-border bg-card p-5'>
         {showTerms ? (
           <label className='flex items-start gap-2 text-xs leading-relaxed text-muted-foreground'>
             <Checkbox
@@ -179,7 +233,15 @@ export function CheckoutSidebar({
   )
 }
 
-function CheckoutLineItem({ line }: { line: CheckoutSummaryLine }) {
+function CheckoutLineItem({
+  line,
+  cards,
+  generatedCards
+}: {
+  line: CheckoutSummaryLine
+  cards: CheckoutCardField[]
+  generatedCards: GeneratedCard[]
+}) {
   const { t } = useTranslation()
 
   if (line.isResolving) return <CheckoutLineItemSkeleton />
@@ -194,7 +256,6 @@ function CheckoutLineItem({ line }: { line: CheckoutSummaryLine }) {
       }[line.issue]
     : null
 
-  // Unit price only earns a line of its own when it differs from the subtotal shown on the right.
   const meta = [
     line.variantName,
     line.quantity > 1
@@ -205,39 +266,136 @@ function CheckoutLineItem({ line }: { line: CheckoutSummaryLine }) {
     .join(' · ')
 
   return (
-    <li className={cn('flex items-start gap-3 px-3.5 py-3', line.issue ? 'bg-destructive/5' : '')}>
-      <div
-        className={cn(
-          'relative size-12 shrink-0 overflow-hidden rounded-xl border border-border bg-secondary/40',
-          line.issue ? 'opacity-50' : ''
-        )}
+    <li className={cn(line.issue && 'bg-destructive/5')}>
+      <SummaryItemRow
+        imageUrl={line.image}
+        imageAlt={line.name || t('orders.checkout.sidebar.unknownProduct')}
+        title={line.name || t('orders.checkout.sidebar.unknownProduct')}
+        meta={meta}
+        price={formatVnd(line.subtotal)}
+        issueLabel={issueLabel}
+        muted={Boolean(line.issue)}
       >
-        {line.image ? <Image src={line.image} alt={line.name} fill className='object-cover' sizes='48px' /> : null}
+        {cards.length > 0 ? (
+          <div className='mt-2 space-y-1.5'>
+            {cards.map((card) => (
+              <CheckoutCardLine key={card.id} card={card} generatedCards={generatedCards} attached />
+            ))}
+          </div>
+        ) : null}
+      </SummaryItemRow>
+    </li>
+  )
+}
+
+function CheckoutCardLine({
+  card,
+  generatedCards,
+  attached = false
+}: {
+  card: CheckoutCardField
+  generatedCards: GeneratedCard[]
+  attached?: boolean
+}) {
+  const { t } = useTranslation()
+
+  const generated =
+    card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
+
+  const templateId = card.type === 'history' ? generated?.templateId : card.templateId
+  const sizeId = card.type === 'history' ? generated?.sizeId : card.sizeId
+  const writingMethod = card.type === 'standard' ? null : card.writingMethod
+  const template = templateId ? findCardTemplate(templateId) : null
+
+  const title =
+    card.type === 'standard'
+      ? t('orders.checkout.cards.tabs.standard')
+      : card.type === 'ai'
+        ? t('orders.checkout.cards.tabs.ai')
+        : t('orders.checkout.cards.reusedTitle')
+
+  const meta = [
+    template ? t('orders.checkout.cards.templateName', { name: template.name }) : null,
+    sizeId ? t(CARD_SIZE_LABEL_KEYS[sizeId]) : null,
+    writingMethod ? t(CARD_WRITING_METHOD_LABEL_KEYS[writingMethod]) : null
+  ]
+    .filter(Boolean)
+    .join(' - ')
+
+  return (
+    <div className='flex items-start justify-between gap-3 text-xs'>
+      <div className='flex min-w-0 gap-1.5'>
+        {attached ? (
+          <span aria-hidden className='shrink-0 text-muted-foreground/70'>
+            +
+          </span>
+        ) : null}
+        <div className='min-w-0'>
+          <p className='truncate leading-5'>{title}</p>
+          {meta ? <p className='text-muted-foreground'>{meta}</p> : null}
+        </div>
+      </div>
+      <div className='shrink-0 text-right'>
+        <p className='tabular-nums leading-5 text-muted-foreground'>
+          {formatVnd(getCheckoutCardPrice(card, generatedCards))}
+        </p>
+        {card.quantity > 1 ? (
+          <p className='tabular-nums text-muted-foreground/70'>
+            {t('orders.checkout.lineQtyOnly', { qty: card.quantity })}
+          </p>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+function SummaryItemRow({
+  imageUrl,
+  imageAlt,
+  title,
+  meta,
+  price,
+  issueLabel,
+  muted = false,
+  children
+}: {
+  imageUrl: string | null
+  imageAlt: string
+  title: string
+  meta: string
+  price: string
+  issueLabel?: string | null
+  muted?: boolean
+  children?: ReactNode
+}) {
+  return (
+    <div className={cn('flex items-start gap-3 py-3', muted && 'opacity-50')}>
+      <div className='relative size-16 shrink-0 overflow-hidden rounded-xl border border-border bg-secondary/40'>
+        {imageUrl ? <Image src={imageUrl} alt={imageAlt} fill className='object-cover' sizes='64px' /> : null}
       </div>
 
       <div className='min-w-0 flex-1'>
         <div className='flex items-start justify-between gap-3'>
-          <p className='min-w-0 truncate text-sm font-medium leading-5'>
-            {line.name || t('orders.checkout.sidebar.unknownProduct')}
-          </p>
-          <span className='shrink-0 text-sm font-semibold text-primary'>{formatVnd(line.subtotal)}</span>
+          <p className='min-w-0 truncate text-sm font-medium leading-5'>{title}</p>
+          <span className='shrink-0 tabular-nums text-sm font-semibold leading-5'>{price}</span>
         </div>
-        <p className='truncate text-xs text-muted-foreground'>{meta}</p>
+        {meta ? <p className='truncate text-xs text-muted-foreground'>{meta}</p> : null}
         {issueLabel ? (
           <span className='mt-1.5 inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive'>
             <HugeiconsIcon icon={Alert02Icon} strokeWidth={2} className='size-3 shrink-0' />
             {issueLabel}
           </span>
         ) : null}
+        {children}
       </div>
-    </li>
+    </div>
   )
 }
 
 function CheckoutLineItemSkeleton() {
   return (
-    <li className='flex items-start gap-3 px-3.5 py-3'>
-      <Skeleton className='size-12 shrink-0 rounded-xl' />
+    <li className='flex items-start gap-3 py-3'>
+      <Skeleton className='size-16 shrink-0 rounded-xl' />
       <div className='min-w-0 flex-1 space-y-2'>
         <div className='flex items-start justify-between gap-3'>
           <Skeleton className='h-4 w-32 rounded-md' />
@@ -253,19 +411,62 @@ function SidebarRow({
   label,
   value,
   multiline,
-  loading
+  loading,
+  clamp
 }: {
   label: string
   value: string
   multiline?: boolean
   loading?: boolean
+  clamp?: boolean
 }) {
   return (
-    <div className={cn('flex items-start justify-between gap-3', multiline ? 'flex-col sm:flex-row' : '')}>
-      <dt className='text-muted-foreground'>{label}</dt>
-      <dd className={cn('font-medium text-right', multiline && 'sm:text-right sm:max-w-[60%]')}>
-        {loading ? <Skeleton className='h-4 w-20 rounded-md' /> : value}
+    <div className={cn('flex items-start justify-between gap-3', multiline && 'flex-col sm:flex-row')}>
+      <dt className='shrink-0 text-muted-foreground'>{label}</dt>
+      <dd className={cn('text-right font-medium tabular-nums', multiline && 'min-w-0 sm:max-w-[60%]')}>
+        {loading ? (
+          <Skeleton className='ml-auto h-4 w-20 rounded-md' />
+        ) : clamp ? (
+          <ClampedValue value={value} />
+        ) : (
+          value
+        )}
       </dd>
     </div>
+  )
+}
+
+function ClampedValue({ value }: { value: string }) {
+  const { t } = useTranslation()
+  const [element, setElement] = useState<HTMLParagraphElement | null>(null)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isOverflowing, setIsOverflowing] = useState(false)
+
+  useEffect(() => {
+    if (!element || isExpanded) return
+
+    const observer = new ResizeObserver(() => {
+      setIsOverflowing(element.scrollHeight > element.clientHeight + 1)
+    })
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [element, isExpanded])
+
+  return (
+    <>
+      <p ref={setElement} className={cn('wrap-break-words', !isExpanded && 'line-clamp-2')}>
+        {value}
+      </p>
+      {isOverflowing ? (
+        <button
+          type='button'
+          onClick={() => setIsExpanded((prev) => !prev)}
+          className='mt-0.5 text-xs font-normal text-primary underline-offset-2 hover:underline'
+        >
+          {isExpanded ? t('orders.checkout.sidebar.viewLess') : t('orders.checkout.sidebar.viewMore')}
+        </button>
+      ) : null}
+    </>
   )
 }

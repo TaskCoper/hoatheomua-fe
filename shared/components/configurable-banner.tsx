@@ -35,6 +35,10 @@ export default function ConfigurableBanner({
   if (state.status === 'hidden') return null
 
   const banner = state.status === 'banner' ? state.banner : undefined
+
+  const bannerHref = typeof banner?.href === 'string' ? banner.href.trim() : undefined
+  const openInNewTab = banner?.openInNewTab === true
+
   const alt = banner?.alt[locale] || fallbackAlt
 
   const stored = resolveBannerImage(banner?.image, locale)
@@ -64,22 +68,22 @@ export default function ConfigurableBanner({
     />
   )
 
-  const content = !banner?.href ? (
+  const content = !bannerHref ? (
     image
-  ) : banner.href.startsWith('/') ? (
+  ) : bannerHref.startsWith('/') ? (
     <Link
-      href={banner.href}
-      target={banner.openInNewTab ? '_blank' : undefined}
-      rel={banner.openInNewTab ? 'noopener noreferrer' : undefined}
+      href={bannerHref}
+      target={openInNewTab ? '_blank' : undefined}
+      rel={openInNewTab ? 'noopener noreferrer' : undefined}
       className='block'
     >
       {image}
     </Link>
   ) : (
     <a
-      href={banner.href}
-      target={banner.openInNewTab ? '_blank' : undefined}
-      rel={banner.openInNewTab ? 'noopener noreferrer' : undefined}
+      href={bannerHref}
+      target={openInNewTab ? '_blank' : undefined}
+      rel={openInNewTab ? 'noopener noreferrer' : undefined}
       className='block'
     >
       {image}

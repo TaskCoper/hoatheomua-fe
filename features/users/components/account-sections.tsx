@@ -1,31 +1,13 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider
-} from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AddressActionsMenu } from '@/features/addresses/components/address-actions-menu'
 import { AddressFormDialog } from '@/features/addresses/components/address-form-dialog'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { Add01Icon, Call02Icon, Home01Icon, LockPasswordIcon, Mail02Icon, User03Icon } from '@hugeicons/core-free-icons'
+import { Add01Icon, Call02Icon, Home01Icon, Mail02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -34,9 +16,7 @@ import { useGetUser } from '../hooks/use-get-user'
 import { ChangePasswordForm } from './change-password-form'
 import { PersonalInfoFormInner } from './personal-info-form'
 
-type Section = 'info' | 'address' | 'password'
-
-function AddressContent({ slug }: { slug?: string }) {
+export function AddressContent({ slug }: { slug?: string }) {
   const { t } = useTranslation()
   const { me, isGettingMe } = useGetMe()
   const canViewAddresses = !slug || !me?.slug || slug === me.slug
@@ -71,10 +51,7 @@ function AddressContent({ slug }: { slug?: string }) {
   return (
     <div className='space-y-4'>
       <div className='flex items-center justify-between gap-3'>
-        <div>
-          <h3 className='text-base font-medium'>{t('profile.addressListTitle')}</h3>
-          <p className='text-sm text-muted-foreground'>{t('profile.addressListDescription')}</p>
-        </div>
+        <p className='text-sm text-muted-foreground'>{t('profile.addressListDescription')}</p>
         <AddressFormDialog trigger={renderAddAddressTrigger()} />
       </div>
 
@@ -111,7 +88,7 @@ function AddressContent({ slug }: { slug?: string }) {
   )
 }
 
-function PersonalInfoContent({ slug }: { slug?: string }) {
+export function PersonalInfoContent({ slug }: { slug?: string }) {
   const { t } = useTranslation()
   const { me } = useGetMe()
   const { user, isLoading } = useGetUser(slug ?? me?.slug)
@@ -140,7 +117,7 @@ function PersonalInfoContent({ slug }: { slug?: string }) {
     return (
       <div className='space-y-4'>
         <div className='relative overflow-hidden rounded-2xl border bg-muted/20'>
-          <div className='relative h-28 w-full bg-linear-to-br from-slate-900 to-slate-700'>
+          <div className='relative h-28 w-full bg-linear-to-br from-primary to-secondary'>
             {user?.coverImageUrl && <Image src={user.coverImageUrl} alt='' fill className='object-cover' unoptimized />}
           </div>
           <div className='px-4 pb-4'>
@@ -150,13 +127,13 @@ function PersonalInfoContent({ slug }: { slug?: string }) {
                   {user?.avatar ? (
                     <Image src={user.avatar} alt={fullName} fill className='object-cover' unoptimized />
                   ) : (
-                    <span className='flex size-full items-center justify-center bg-green-100 text-xl font-semibold text-primary'>
+                    <span className='flex size-full items-center justify-center bg-secondary/60 text-xl font-semibold text-primary'>
                       {initials}
                     </span>
                   )}
                 </div>
-                <div className='translate-y-14 -ml-16 pb-1'>
-                  <h3 className='text-lg font-semibold leading-tight'>{fullName || t('profile.notProvided')}</h3>
+                <div className='-ml-16 translate-y-14 pb-1'>
+                  <h3 className='text-lg leading-tight font-semibold'>{fullName || t('profile.notProvided')}</h3>
                   <p className='text-sm text-muted-foreground'>{user?.role}</p>
                 </div>
               </div>
@@ -191,113 +168,19 @@ function PersonalInfoContent({ slug }: { slug?: string }) {
 
   return (
     <div className='space-y-4'>
-      <div>
-        <h3 className='text-base font-medium'>{t('profile.personalInfoTitle')}</h3>
-        <p className='text-sm text-muted-foreground'>{t('profile.personalInfoDescription')}</p>
-      </div>
+      <p className='text-sm text-muted-foreground'>{t('profile.personalInfoDescription')}</p>
       <PersonalInfoFormInner slug={slug} onSuccess={() => setIsEditing(false)} onCancel={() => setIsEditing(false)} />
     </div>
   )
 }
 
-function PasswordContent() {
+export function PasswordContent() {
   const { t } = useTranslation()
+
   return (
     <div className='space-y-4'>
-      <div>
-        <h3 className='text-base font-medium'>{t('profile.changePasswordTitle')}</h3>
-        <p className='text-sm text-muted-foreground'>{t('profile.changePasswordDescription')}</p>
-      </div>
+      <p className='text-sm text-muted-foreground'>{t('profile.changePasswordDescription')}</p>
       <ChangePasswordForm />
     </div>
-  )
-}
-
-export const profileDialogContentProps = {
-  position: 'top-center' as const,
-  className: 'h-fit max-w-none max-h-[calc(100vh-2rem)] overflow-hidden p-0 shadow-2xl',
-  style: {
-    width: 'min(56rem, calc(100vw - 2rem))',
-    maxWidth: 'none',
-    borderRadius: '1.5rem'
-  }
-}
-
-interface ProfileSheetProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  slug?: string
-}
-
-export function ProfileSheet({ open, onOpenChange, slug }: ProfileSheetProps) {
-  const { t } = useTranslation()
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent {...profileDialogContentProps} showCloseButton>
-        <DialogTitle className='sr-only'>{t('profile.title')}</DialogTitle>
-        <DialogDescription className='sr-only'>{t('profile.title')}</DialogDescription>
-        <ProfileSheetBody slug={slug} />
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-export function ProfileSheetBody({ slug }: { slug?: string }) {
-  const { t } = useTranslation()
-  const [activeSection, setActiveSection] = useState<Section>('info')
-
-  const sections = [
-    { key: 'info' as Section, label: t('profile.tabInfo'), icon: User03Icon },
-    { key: 'address' as Section, label: t('profile.tabAddress'), icon: Home01Icon },
-    { key: 'password' as Section, label: t('profile.tabPassword'), icon: LockPasswordIcon }
-  ]
-
-  const currentLabel = sections.find((s) => s.key === activeSection)?.label
-
-  return (
-    <SidebarProvider className='w-full items-start' style={{ minHeight: 0 }}>
-      <Sidebar collapsible='none' className='hidden md:flex'>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {sections.map((section) => (
-                  <SidebarMenuItem key={section.key}>
-                    <SidebarMenuButton
-                      isActive={activeSection === section.key}
-                      onClick={() => setActiveSection(section.key)}
-                    >
-                      <HugeiconsIcon icon={section.icon} strokeWidth={1.5} />
-                      <span>{section.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-      </Sidebar>
-      <main className='profile-scrollbar flex w-full min-w-0 flex-1 min-h-0 max-h-[calc(100vh-8rem)] flex-col overflow-y-auto'>
-        <header className='flex shrink-0 items-center gap-2 border-b px-4 py-3'>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className='hidden md:block'>
-                <span className='text-sm text-muted-foreground'>{t('profile.title')}</span>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className='hidden md:block' />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{currentLabel}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </header>
-        <div className='w-full p-4'>
-          {activeSection === 'info' && <PersonalInfoContent slug={slug} />}
-          {activeSection === 'address' && <AddressContent slug={slug} />}
-          {activeSection === 'password' && <PasswordContent />}
-        </div>
-      </main>
-    </SidebarProvider>
   )
 }

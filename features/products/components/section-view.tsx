@@ -11,6 +11,7 @@ import {
 } from '@/features/categories/utils'
 import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
 import ProductGrid from '@/features/products/components/product-grid'
+import { CUSTOMIZABLE_CATEGORY_ID } from '@/features/products/constants'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { motion, type Variants } from 'motion/react'
@@ -92,6 +93,7 @@ export default function SectionView({
 
   const grid = (
     <ProductGrid
+      isCustomizable={category.categoryId === CUSTOMIZABLE_CATEGORY_ID}
       className='w-full'
       columnsClassName={gridColumns.className}
       columnsStyle={gridColumns.style}

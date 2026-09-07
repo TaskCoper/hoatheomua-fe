@@ -91,7 +91,19 @@
     "account": "Account",
     "language": "Language",
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "title": "Your account",
+    "nav": {
+      "label": "Account navigation",
+      "orders": "My orders",
+      "studio": "AI creations",
+      "cards": "Card history",
+      "profile": "Personal information",
+      "addresses": "Your addresses",
+      "security": "Login & security",
+      "cart": "My cart",
+      "support": "Customer support"
+    }
   },
   "language": {
     "english": "English",
@@ -582,11 +594,11 @@
       "inactive": "This product is currently inactive.",
       "outOfStock": "This product is out of stock.",
       "materials": "Temporarily unavailable",
-      "materialsAction": "We can't prepare this many right now — please reduce the quantity.",
+      "materialsAction": "We can't prepare this many right now - please reduce the quantity.",
       "materialsNote": "We're short on materials for the highlighted items. Reduce the quantity, deselect or remove them to continue."
     },
     "overStock": "Only {stock} left in stock. Please reduce the quantity.",
-    "overStockAction": "Only {stock} left in stock — tap to reduce the quantity.",
+    "overStockAction": "Only {stock} left in stock - tap to reduce the quantity.",
     "inStock": "{stock} in stock",
     "lineSubtotal": "Subtotal",
     "unitLabel": "Variant: {unit}",
@@ -706,6 +718,7 @@
       "taxBusinessLookupError": "Unable to look up tax code information.",
       "subtotal": "Subtotal",
       "vat": "VAT 8%",
+      "cardsFee": "Cards",
       "shippingFee": "Shipping fee",
       "shippingFeeDiscount": "Discount (free-ship radius)",
       "total": "Total",
@@ -743,13 +756,17 @@
         "totalItems": "Total items",
         "itemsCount": "{count} item(s)",
         "address": "Delivery address",
+        "viewMore": "View more",
+        "viewLess": "View less",
         "goToPayment": "Continue to payment",
         "payForBooking": "Pay for my order",
         "viewOrders": "View my orders",
         "termsPrefix": "By clicking this, I agree to Hoa Theo Mùa",
         "termsLink": "Terms & Conditions",
         "termsAnd": "and",
-        "privacyLink": "Privacy Policy"
+        "privacyLink": "Privacy Policy",
+        "continueToCards": "Continue to cards",
+        "goToReview": "Review the order"
       },
       "paymentMethod": {
         "va": {
@@ -783,6 +800,162 @@
         "materials": "Temporarily unavailable",
         "materialsBlockedTitle": "Some items cannot be prepared right now",
         "materialsBlockedBody": "We're short on materials for the highlighted items. Go back to the cart to reduce the quantity, or remove them to continue."
+      },
+      "cards": {
+        "heading": "Cards",
+        "description": "Add a message for the order, or a dedicated card for a single product.",
+        "optional": "Optional",
+        "add": "Add a card",
+        "addAnother": "Add another card",
+        "cancel": "Cancel",
+        "addToOrder": "Add to order",
+        "saveChanges": "Save changes",
+        "addedTitle": "Cards added",
+        "edit": "Edit card",
+        "remove": "Remove card",
+        "showDetails": "Details",
+        "hideDetails": "Hide",
+        "tabs": {
+          "standard": "Standard card",
+          "ai": "AI custom card",
+          "history": "Card history"
+        },
+        "standardHint": "A card for the whole order - it is not tied to any single product.",
+        "aiHint": "An AI custom card is always attached to one product in this order.",
+        "historyHint": "Reuse a card you generated before and pick the product it goes with.",
+        "chooseType": "What kind of card?",
+        "changeType": "Other types",
+        "editing": "Editing",
+        "template": "Card design",
+        "templateName": "{name} design",
+        "size": "Size",
+        "sizes": {
+          "s": "Small (S)",
+          "m": "Medium (M)",
+          "l": "Large (L)"
+        },
+        "receiver": "To",
+        "receiverPlaceholder": "Who the card is for",
+        "sender": "From",
+        "senderPlaceholder": "Who the card is from",
+        "optionalField": "(optional)",
+        "toLine": "To {name}",
+        "fromLine": "From {name}",
+        "message": "Message",
+        "messagePlaceholder": "Write the message that goes with the flowers…",
+        "messageCount": "{count}/{max} characters",
+        "messageSurcharge": "Long message +{price}",
+        "messageRequired": "Please write a message for the card.",
+        "quantity": "Quantity",
+        "quantityValue": "Quantity: {count}",
+        "decrease": "Decrease card quantity",
+        "increase": "Increase card quantity",
+        "cardPrice": "Card price",
+        "unitPriceHint": "{price} each",
+        "subtotal": "Cards subtotal",
+        "priceNote": "Card fees are not part of the order total yet - we will confirm them with you.",
+        "attachTo": "Card for",
+        "attachedTo": "Attached to {name}",
+        "orderLevel": "Card for the order",
+        "productRequired": "Please pick the product this card goes with.",
+        "noEligibleProductsTitle": "No product available",
+        "noEligibleProducts": "None of the products in this order can carry an AI custom card.",
+        "writingMethod": "Writing",
+        "writing": {
+          "typed": "Typed",
+          "handwritten": "Handwritten"
+        },
+        "surcharge": "+{price}",
+        "previewAlt": "Card preview",
+        "historySelect": "Pick a card to reuse",
+        "historyRequired": "Please pick a card from your history.",
+        "historyEmptyTitle": "You have no AI custom cards yet.",
+        "historyEmptyBody": "Create your first one and you can reuse it on later orders.",
+        "historyEmptyAction": "Create an AI custom card",
+        "generatedAt": "Created on {date}",
+        "reusedTitle": "Reused card",
+        "aiPendingNote": "The setup and the words are yours. The card artwork is generated with AI from them once the order is confirmed.",
+        "aiPendingShort": "Artwork generated with AI after the order is placed.",
+        "reviewEmpty": "You have not added a card to this order.",
+        "stepDescription": "This step is optional - you can skip it and continue to payment."
+      },
+      "stepCards": "Cards",
+      "stepReview": "Review"
+    },
+    "cards": {
+      "heading": "AI custom cards",
+      "description": "These cards are printed with your flowers. Generate the artwork as often as you like - we print the version you keep.",
+      "cardCount": "{count} card(s)",
+      "forProduct": "For {name}",
+      "quantity": "{count} copies",
+      "design": "Design",
+      "designAriaLabel": "Design the card for {name}",
+      "selectedVersion": "Version {index} selected",
+      "noVersion": "No artwork yet",
+      "dialogTitle": "AI custom card",
+      "dialogDescription": "Rewrite the words and generate the artwork again. The version you keep is the one we print.",
+      "locked": {
+        "heading": "Fixed with your order",
+        "note": "The template and size were confirmed when the order was paid for and cannot be changed.",
+        "template": "Design",
+        "size": "Size",
+        "badge": "Locked"
+      },
+      "versions": {
+        "heading": "Versions",
+        "label": "Version {index}",
+        "counter": "{index} of {total}",
+        "select": "Show version {index}",
+        "printed": "In this order",
+        "createdAt": "Generated {date}",
+        "empty": "Your first artwork will appear here."
+      },
+      "generation": {
+        "badge": "Generating",
+        "title": "Painting version {index}…",
+        "stages": {
+          "reading": "Reading your words",
+          "sketching": "Sketching the layout",
+          "painting": "Painting the artwork",
+          "finishing": "Finishing the details"
+        }
+      },
+      "actions": {
+        "generate": "Generate new version",
+        "generateFirst": "Generate the artwork",
+        "regenerate": "Generate again",
+        "apply": "Use this version",
+        "applied": "Already in this order",
+        "applyHint": "Generate the artwork to apply your new words.",
+        "close": "Close"
+      },
+      "toast": {
+        "applied": "Version {index} will be printed with your order."
+      },
+      "price": {
+        "paid": "Paid at checkout",
+        "current": "Card price now",
+        "extra": "+{price} to confirm",
+        "refund": "-{price} to confirm",
+        "same": "No change",
+        "note": "Longer words or handwriting change the card price. We confirm the difference with you before printing - your order total stays as it is."
+      },
+      "previewAlt": "Card artwork, version {index}",
+      "history": {
+        "title": "Card history",
+        "loading": "Loading your cards…",
+        "count": "{count} cards",
+        "filterAll": "All",
+        "filterLabel": "Filter cards by writing style",
+        "to": "To",
+        "from": "From",
+        "previewAlt": "Card for {receiver}",
+        "emptyFilter": "No cards written this way yet.",
+        "empty": {
+          "title": "No cards yet",
+          "description": "Add an AI card at checkout and every one you generate is kept here, ready to be reused.",
+          "cta": "Go to cart"
+        }
       }
     },
     "list": {
@@ -861,7 +1034,15 @@
         "paymentMethod": "Payment method",
         "paidToast": "Payment confirmed",
         "paidToastDescription": "We've received your transfer. Your order is being prepared."
-      }
+      },
+      "tabs": {
+        "all": "All orders"
+      },
+      "deliveredTo": "Delivered to",
+      "moreItems": "View {count} more products",
+      "itemsUnavailable": "We couldn't load the products for this order.",
+      "loadMore": "Show more orders",
+      "emptyFilter": "No orders with this status yet."
     }
   },
   "news": {
@@ -1380,7 +1561,10 @@
       "addToFavorites": "Add {name} to favorites",
       "addToCart": "Add {name} to cart",
       "priceFrom": "From",
-      "outOfStock": "Out of stock"
+      "outOfStock": "Out of stock",
+      "madeToOrder": "Custom bouquet",
+      "ingredientCount": "{count} ingredients",
+      "aiPreview": "AI preview"
     },
     "summary": {
       "trustBadges": {
@@ -1488,6 +1672,211 @@
       "unavailable": "Some products are temporarily unavailable",
       "unavailableHint": "Please reduce the quantity, pick another product, or contact us for help.",
       "checking": "Checking availability…"
+    }
+  },
+  "studio": {
+    "stepOf": "Step {step} of 4",
+    "header": {
+      "homeAriaLabel": "Hoa Theo Mùa home",
+      "logoAlt": "Hoa Theo Mùa",
+      "title": "Flower Studio",
+      "progressAriaLabel": "Creation progress",
+      "stepAriaLabel": "Step {step}: {label}",
+      "saved": "Saved",
+      "save": "Save",
+      "exitAriaLabel": "Exit Flower Studio"
+    },
+    "steps": {
+      "ingredients": "Ingredients",
+      "mockup": "Mockup",
+      "preview": "Preview",
+      "result": "Result"
+    },
+    "generation": {
+      "stages": {
+        "preparing": "Preparing your flowers",
+        "lighting": "Setting the light",
+        "composing": "Composing the image",
+        "finishing": "Finishing the details"
+      },
+      "generating": "Generating",
+      "creating": "Creating “{name}”…"
+    },
+    "preview": {
+      "ariaLabel": "Creation preview",
+      "liveLabel": "Live preview",
+      "stage": {
+        "ingredients": "Your flower choice",
+        "mockup": "Mockup preview",
+        "review": "Selection preview",
+        "resultReady": "Your AI result",
+        "resultPending": "Ready to create"
+      },
+      "createdForYou": "Created for you",
+      "workTableAlt": "Florist worktable",
+      "mockupSceneAlt": "{product} in {mockup}"
+    },
+    "step1": {
+      "eyebrow": "01 - Meet your flowers",
+      "title": "See what makes {name} special.",
+      "body": "You chose this design from our collection. Explore every flower and finishing detail before moving on.",
+      "insideTitle": "Inside {name}",
+      "ingredientsCount": "{count} ingredients",
+      "nameLabel": "Name your creation",
+      "namePlaceholder": "Enter the name for this design...",
+      "nameError": "Use at least 2 characters.",
+      "nameHelp": "This name will appear with your finished creation.",
+      "detailsTitle": "Good to know",
+      "details": {
+        "size": {
+          "label": "Size",
+          "value": "About 40 × 55 cm, hand-tied by a florist."
+        },
+        "wrapping": {
+          "label": "Wrapping",
+          "value": "Kraft paper, matte cellophane and a satin ribbon."
+        },
+        "freshness": {
+          "label": "Freshness",
+          "value": "Stays beautiful 5 - 7 days with a daily water change."
+        },
+        "handover": {
+          "label": "Handover",
+          "value": "Delivered upright in a stabilised box with a care card."
+        }
+      },
+      "detailsNote": "Every stem is cut and conditioned on the morning of your delivery, so small natural differences in tone and size are part of the craft.",
+      "ingredientMeaningLabel": "Meaning",
+      "ingredientExpandAriaLabel": "Show meaning of {name}",
+      "ingredientCollapseAriaLabel": "Hide meaning of {name}"
+    },
+    "ingredients": {
+      "rose": {
+        "name": "Garden Rose",
+        "amount": "5 stems",
+        "color": "Blush pink",
+        "meaning": "Blush garden roses stand for graceful love and quiet devotion - the heart of every bouquet."
+      },
+      "tulip": {
+        "name": "French Tulip",
+        "amount": "3 stems",
+        "color": "Warm ivory",
+        "meaning": "Ivory tulips symbolize forgiveness and fresh beginnings, adding soft elegance to the mix."
+      },
+      "breath": {
+        "name": "Baby's Breath",
+        "amount": "2 sprays",
+        "color": "Cloud white",
+        "meaning": "Delicate baby's breath represents everlasting love, filling the gaps with airy romance."
+      },
+      "eucalyptus": {
+        "name": "Silver Eucalyptus",
+        "amount": "4 stems",
+        "color": "Silver green",
+        "meaning": "Eucalyptus stands for protection and renewal, framing the blooms with soft, silvery greenery."
+      },
+      "ribbon": {
+        "name": "Dusty Rose Satin",
+        "amount": "1 ribbon",
+        "color": "Dusty rose",
+        "meaning": "A dusty rose satin ribbon ties the story together, symbolizing gratitude and thoughtful care."
+      }
+    },
+    "step2": {
+      "eyebrowStart": "The setting",
+      "title": "Set the scene.",
+      "body": "Your flowers update in the live preview as soon as you select a scene.",
+      "chooseTitle": "Choose your scene",
+      "chooseNote": "{count} settings, each with its own light and mood",
+      "scenesAriaLabel": "Choose a scene",
+      "sceneLabel": "Scene 0{index}",
+      "selectedScene": "Selected scene",
+      "fullScene": "Full scene",
+      "sceneBrief": "Scene brief",
+      "sceneStoryLabel": "Story",
+      "sceneMoodLabel": "Mood",
+      "sceneNote": "Scenes are styled previews. Every bouquet is still arranged by hand on the day, so your finished flowers carry their own natural character.",
+      "communityExamplesAriaLabel": "Community examples for {name}",
+      "inThisScene": "In {name}",
+      "floristStudies": "Three studies shot in this setting",
+      "exampleBy": "By {creator}",
+      "exampleByAlt": "{title} by {creator}",
+      "emptyTitle": "Select a scene above",
+      "emptyBody": "We’ll show the atmosphere and florist studies here."
+    },
+    "step3": {
+      "eyebrow": "03 - Review selections",
+      "title": "Everything in one place.",
+      "body": "Check your flowers, mockup and name. AI generation starts only after your final confirmation.",
+      "yourFlowers": "Your flowers",
+      "yourMockup": "Your scene",
+      "creationName": "Creation name",
+      "price": "Price",
+      "flowersTitle": "The flowers",
+      "flowersNote": "{count} elements, hand-picked for {name}",
+      "sceneTitle": "The scene",
+      "sceneNote": "Where your bouquet is photographed, and the light it is given.",
+      "finishingTitle": "The finishing",
+      "finishingNote": "How it is wrapped, kept fresh and handed over.",
+      "finalNote": "This is your final preview. Select Generate when everything looks right; step back through the rail above to change any choice."
+    },
+    "step4": {
+      "eyebrow": "Your result",
+      "readyTitle": "Your creation is ready.",
+      "readyBody": "Review the full result in the preview.",
+      "flowers": "Flowers",
+      "mockup": "Mockup",
+      "price": "Price",
+      "status": "Status",
+      "ready": "Ready",
+      "generateAnother": "Generate another version",
+      "generateAnotherNote": "Pick a different scene. Every version you make stays in the preview.",
+      "pendingTitle": "Ready when you are.",
+      "pendingBody": "We’ll combine your flower design with {mockup}. Generation takes only a moment.",
+      "pendingNote": "AI will create one unique image from these selections. You’ll review the result here before adding it to your bag."
+    },
+    "versions": {
+      "ariaLabel": "Your generated versions",
+      "counter": "Version {index}/{total}",
+      "short": "V{index}",
+      "slideAriaLabel": "Version {index}: {name} in {mockup}",
+      "previous": "Previous version",
+      "next": "Next version"
+    },
+    "nav": {
+      "next": "Next",
+      "back": "Back",
+      "generate": "Generate",
+      "backToReview": "Back to review",
+      "backToIngredients": "Back to ingredients",
+      "backToMockups": "Back to mockups",
+      "addedToBag": "Added to Bag",
+      "addToBag": "Add to Bag",
+      "buyNow": "Buy Now"
+    },
+    "sceneDialog": {
+      "closeAriaLabel": "Close scene view",
+      "fullSceneAlt": "{name} full scene",
+      "mockupPreview": "Mockup preview",
+      "badge": "A place for your flowers",
+      "readyForLabel": "This mockup is ready for",
+      "newCreation": "Your new creation",
+      "otherArrangements": "Other arrangements in this setting"
+    },
+    "generations": {
+      "title": "AI creations",
+      "loading": "Loading your creations…",
+      "count": "{count} creations",
+      "filterAll": "All scenes",
+      "filterLabel": "Filter creations by scene",
+      "openInStudio": "Open “{name}” in the studio",
+      "previewAlt": "“{name}” in the {scene} scene",
+      "emptyFilter": "Nothing generated in this scene yet.",
+      "empty": {
+        "title": "No creations yet",
+        "description": "Design a bouquet in the studio and every version you generate is kept here.",
+        "cta": "Start designing"
+      }
     }
   },
   "b2b": {

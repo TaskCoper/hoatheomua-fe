@@ -5,6 +5,7 @@ import {
   createPhoneNumberSchema
 } from '@/shared/validations'
 import z from 'zod'
+import { createCheckoutCardSchema } from './cards/validations'
 import { InvoiceType } from './types'
 
 const createBaseCheckoutSchema = (t: TranslationFunction) => {
@@ -50,6 +51,7 @@ export const createCheckoutSchema = (t: TranslationFunction) => {
 
   return createBaseCheckoutSchema(t)
     .extend({
+      cards: z.array(createCheckoutCardSchema(t)),
       taxCode: z
         .string()
         .trim()

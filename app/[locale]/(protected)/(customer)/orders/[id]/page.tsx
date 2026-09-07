@@ -1,6 +1,5 @@
 'use client'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,6 +13,10 @@ import {
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
+import OrderAiCardsSection from '@/features/orders/components/order-cards/order-ai-cards-section'
+import { OrderLineItem } from '@/features/orders/components/order-line-item'
+import OrderSectionCard from '@/features/orders/components/order-section-card'
+import OrderStatusBadge from '@/features/orders/components/order-status-badge'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
 import { useGetOrder } from '@/features/orders/hooks/use-get-order'
 import { useGetOrderStatus } from '@/features/orders/hooks/use-get-order-status'
@@ -21,14 +24,12 @@ import {
   InvoiceType,
   InvoiceTypeLabel,
   OrderStatus,
-  OrderStatusLabel,
   PaymentMethod,
   PaymentMethodLabel,
   ShippingGatewayLabel,
-  type OrderDetail,
-  type OrderItem
+  type OrderDetail
 } from '@/features/orders/types'
-import { buildProductVariantHref } from '@/features/products/components/product-variant-context'
+import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { formatVnd } from '@/lib/currency'
@@ -42,10 +43,8 @@ import {
   ArrowLeft02Icon,
   BankIcon,
   CalendarCheckOut01Icon,
-  CancelCircleIcon,
   CheckmarkCircle02Icon,
   DeliveryTruck02Icon,
-  FlowerIcon,
   InvoiceIcon,
   MapPinpoint02Icon,
   NoteEditIcon,
@@ -54,12 +53,10 @@ import {
   ReceiptTextIcon,
   Rocket02Icon,
   SmartPhone01Icon,
-  TimeQuarterPassIcon,
   UserIcon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
-import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -101,6 +98,7 @@ export default function OrderDetailPage() {
   const { t } = useTranslation()
   const { formatDateTime } = useDateFormat()
   const queryClient = useQueryClient()
+  const ordersHref = useAccountHref('orders')
 
   const { order, isLoadingOrder } = useGetOrder({ orderId, enabled: !!orderId })
   const isPending = order?.status === OrderStatus.Pending
@@ -168,7 +166,7 @@ export default function OrderDetailPage() {
           </h2>
           <p className='text-sm leading-relaxed text-muted-foreground'>{t('orders.list.detail.notFoundDescription')}</p>
           <Button asChild size='lg' className='mt-2'>
-            <Link href='/orders'>
+            <Link href={ordersHref}>
               <HugeiconsIcon icon={ArrowLeft02Icon} className='size-4' />
               {t('orders.list.detail.backToOrdersCta')}
             </Link>
@@ -189,11 +187,9 @@ interface OrderDetailContentProps {
 
 function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProps) {
   const router = useRouter()
+  const ordersHref = useAccountHref('orders')
   const isPaid = order.status === OrderStatus.Paid
   const isPendingOrder = order.status === OrderStatus.Pending
-  const isCancelledOrder = order.status === OrderStatus.Cancelled
-  const statusLabel = t(OrderStatusLabel[order.status])
-  const statusIcon = isPaid ? CheckmarkCircle02Icon : isCancelledOrder ? CancelCircleIcon : TimeQuarterPassIcon
 
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false)
   const { cancelOrder, isCancellingOrder } = useCancelOrder()
@@ -216,7 +212,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
         onSuccess: () => {
           toast.success(t('orders.list.detail.cancelSuccess'))
           setIsCancelDialogOpen(false)
-          router.push('/orders')
+          router.push(ordersHref)
         },
         onError: () => {
           toast.error(t('orders.list.detail.cancelError'))
@@ -322,7 +318,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
         >
           <ol className='flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-muted-foreground'>
             <li>
-              <Link href='/orders' className='transition-colors hover:text-primary'>
+              <Link href={ordersHref} className='transition-colors hover:text-primary'>
                 {t('orders.list.detail.breadcrumbList')}
               </Link>
             </li>
@@ -333,27 +329,14 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
           </ol>
 
           <div className='flex shrink-0 items-center gap-2'>
-            <Badge
-              variant='outline'
-              className={cn(
-                'gap-1 rounded-full px-2 py-1 text-[0.7rem] font-semibold tracking-wider',
-                isPaid
-                  ? 'border-leaf/30 bg-leaf/10 text-leaf'
-                  : isCancelledOrder
-                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
-                    : 'border-warning/40 bg-warning/10 text-warning'
-              )}
-            >
-              <HugeiconsIcon icon={statusIcon} strokeWidth={2} className='size-3' />
-              {statusLabel}
-            </Badge>
+            <OrderStatusBadge status={order.status} className='px-2 py-1 text-[0.7rem] normal-case' />
           </div>
         </nav>
 
         <div className='grid gap-4 lg:grid-cols-3'>
           <div className='flex flex-col gap-4 lg:col-span-2'>
             {showSepayQr && order.sepayUrl && sepayDetails ? (
-              <SectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
+              <OrderSectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
                 <p className='mb-4 text-xs text-muted-foreground'>{t('orders.list.qr.description')}</p>
                 <div className='grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start'>
                   <div className='mx-auto sm:mx-0'>
@@ -394,30 +377,38 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 <p className='mt-3 border-t border-border/60 pt-3 text-xs text-muted-foreground'>
                   {t('orders.list.qr.waiting')}
                 </p>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {hasSepayQr && !canPay ? (
-              <SectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
+              <OrderSectionCard icon={QrCodeIcon} title={t('orders.list.qr.title')}>
                 <FeatureUnavailableNotice />
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {items.length > 0 ? (
-              <SectionCard
+              <OrderSectionCard
                 icon={PackageIcon}
                 title={t('orders.checkout.productsHeading')}
                 aside={t('orders.checkout.lineCount', { count: items.length })}
               >
                 <ul className='divide-y divide-border/60'>
                   {items.map((item) => (
-                    <OrderItemRow key={item.orderDetailsId} item={item} t={t} />
+                    <OrderLineItem
+                      key={item.orderDetailsId}
+                      item={item}
+                      size='md'
+                      showLineTotal
+                      className='py-3 first:pt-0 last:pb-0'
+                    />
                   ))}
                 </ul>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
-            <SectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
+            <OrderAiCardsSection items={items} />
+
+            <OrderSectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm'>
                 {/* <SummaryRow
                   label={t('orders.list.orderId')}
@@ -451,10 +442,10 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 <dt className='text-sm font-semibold'>{t('orders.checkout.total')}</dt>
                 <dd className='font-title text-2xl font-bold text-primary'>{formatVnd(order.totalFee)}</dd>
               </div>
-            </SectionCard>
+            </OrderSectionCard>
 
             {isPaid && order.transaction ? (
-              <SectionCard icon={BankIcon} title={t('orders.list.qr.detailsTitle')}>
+              <OrderSectionCard icon={BankIcon} title={t('orders.list.qr.detailsTitle')}>
                 <dl className='space-y-2 text-sm'>
                   {order.transaction.gateway ? (
                     <DetailRow label={t('orders.list.qr.bank')} value={order.transaction.gateway} />
@@ -476,17 +467,17 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     }
                   />
                 </dl>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {order.remark ? (
-              <SectionCard icon={NoteEditIcon} title={t('orders.list.detail.remarksHeading')}>
+              <OrderSectionCard icon={NoteEditIcon} title={t('orders.list.detail.remarksHeading')}>
                 <p className='text-sm leading-relaxed text-foreground/90'>{order.remark}</p>
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {hasTracking || hasTrackingIds ? (
-              <SectionCard icon={DeliveryTruck02Icon} title={t('orders.list.detail.trackingHeading')}>
+              <OrderSectionCard icon={DeliveryTruck02Icon} title={t('orders.list.detail.trackingHeading')}>
                 <dl className='space-y-2 text-sm'>
                   {order.trackNumber ? (
                     <DetailRow
@@ -514,24 +505,24 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                     </a>
                   </div>
                 ) : null}
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
           </div>
 
           <aside className='flex flex-col gap-4'>
             {customerRows.length > 0 ? (
-              <SectionCard icon={UserIcon} title={t('orders.list.detail.customerHeading')}>
+              <OrderSectionCard icon={UserIcon} title={t('orders.list.detail.customerHeading')}>
                 <IconRowList rows={customerRows} />
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
             {recipientRows.length > 0 ? (
-              <SectionCard icon={MapPinpoint02Icon} title={t('orders.list.detail.recipientHeading')}>
+              <OrderSectionCard icon={MapPinpoint02Icon} title={t('orders.list.detail.recipientHeading')}>
                 <IconRowList rows={recipientRows} />
-              </SectionCard>
+              </OrderSectionCard>
             ) : null}
 
-            <SectionCard icon={InvoiceIcon} title={t('orders.list.detail.invoiceHeading')}>
+            <OrderSectionCard icon={InvoiceIcon} title={t('orders.list.detail.invoiceHeading')}>
               {order.isExportInvoice && invoiceRows.length > 0 ? (
                 <dl className='space-y-2 text-sm'>
                   {invoiceRows.map((row) => (
@@ -541,9 +532,9 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               ) : (
                 <p className='text-sm text-muted-foreground'>{t('orders.list.detail.invoiceNotRequested')}</p>
               )}
-            </SectionCard>
+            </OrderSectionCard>
 
-            <SectionCard icon={CalendarCheckOut01Icon} title={t('orders.list.detail.timelineHeading')}>
+            <OrderSectionCard icon={CalendarCheckOut01Icon} title={t('orders.list.detail.timelineHeading')}>
               <ol className='flex flex-col'>
                 <TimelineItem
                   icon={Rocket02Icon}
@@ -571,8 +562,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                       order.orderTime > 0 ? (
                         <span className='inline-flex flex-wrap items-baseline gap-x-1'>
                           <span>{formatDateTime(order.orderTime * 1000, 'dateMedium')}</span>
-                          {/* No tag means no time slot was requested - say so
-                              instead of leaving the date to stand alone. */}
                           <span className='text-xs font-medium text-primary'>
                             ({deliveryTagLabel ?? t('orders.checkout.tagNone')})
                           </span>
@@ -585,7 +574,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                   />
                 ) : null}
               </ol>
-            </SectionCard>
+            </OrderSectionCard>
 
             <div className='space-y-2'>
               {isPendingOrder && order.paymentUrl ? (
@@ -639,30 +628,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
   )
 }
 
-interface SectionCardProps {
-  icon: typeof PackageIcon
-  title: string
-  aside?: React.ReactNode
-  children: React.ReactNode
-}
-
-function SectionCard({ icon, title, aside, children }: SectionCardProps) {
-  return (
-    <section className='rounded-3xl bg-card p-3 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 sm:p-4'>
-      <header className='mb-4 flex items-center justify-between gap-3 border-b border-border/70 pb-3'>
-        <div className='flex items-center gap-2'>
-          <span className='grid size-8 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
-            <HugeiconsIcon icon={icon} strokeWidth={1.75} className='size-4' />
-          </span>
-          <h2 className='font-title text-sm font-semibold sm:text-base'>{title}</h2>
-        </div>
-        {aside ? <div className='shrink-0 text-xs text-muted-foreground'>{aside}</div> : null}
-      </header>
-      {children}
-    </section>
-  )
-}
-
 interface IconRow {
   icon: typeof UserIcon
   label: string
@@ -686,76 +651,6 @@ function IconRowList({ rows }: { rows: IconRow[] }) {
         </li>
       ))}
     </ul>
-  )
-}
-
-interface OrderItemRowProps {
-  item: OrderItem
-  t: ReturnType<typeof useTranslation>['t']
-}
-
-function OrderItemRow({ item, t }: OrderItemRowProps) {
-  const parentName = item.parentProductName?.trim()
-  // A variant line points at its parent page with the variant preselected, so the
-  // customer lands on the same picker they bought from.
-  const href = item.parentProductId
-    ? buildProductVariantHref(item.parentProductId, item.productId)
-    : item.productId
-      ? `/products/${item.productId}`
-      : null
-
-  const headline = parentName || item.name
-  const variantName = parentName && item.name !== parentName ? item.name : null
-
-  return (
-    <li className='flex items-center gap-3 py-3 first:pt-0 last:pb-0'>
-      {href ? (
-        <Link
-          href={href}
-          className='relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-primary/10 sm:size-20'
-        >
-          {item.coverImage ? (
-            <Image src={item.coverImage} alt={item.name} fill sizes='80px' quality={65} className='object-cover' />
-          ) : (
-            <HugeiconsIcon icon={FlowerIcon} className='size-7 text-primary/40' />
-          )}
-        </Link>
-      ) : (
-        <div className='flex size-16 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 ring-1 ring-foreground/5 sm:size-20'>
-          <HugeiconsIcon icon={FlowerIcon} className='size-7 text-muted-foreground/50' />
-        </div>
-      )}
-
-      <div className='min-w-0 flex-1'>
-        {href ? (
-          <Link
-            href={href}
-            className='font-title line-clamp-2 text-sm font-bold leading-tight text-primary hover:text-primary/80'
-          >
-            {headline}
-          </Link>
-        ) : (
-          <p className='line-clamp-2 text-sm font-medium'>{headline}</p>
-        )}
-
-        {variantName ? (
-          <p className='mt-1.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5'>
-            <span className='text-[0.7rem] font-medium text-muted-foreground'>
-              {t('orders.list.detail.variantLabel')}
-            </span>
-            <span className='inline-flex rounded-full bg-secondary/40 px-2 py-0.5 text-[0.7rem] font-semibold text-secondary-foreground ring-1 ring-primary/10'>
-              {variantName}
-            </span>
-          </p>
-        ) : null}
-
-        <p className='mt-1 text-xs text-muted-foreground'>
-          {t('orders.checkout.lineQty', { qty: item.number, price: formatVnd(item.price) })}
-        </p>
-      </div>
-
-      <span className='shrink-0 text-sm font-semibold text-primary'>{formatVnd(item.price * item.number)}</span>
-    </li>
   )
 }
 

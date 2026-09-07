@@ -50,7 +50,7 @@ export const useCheckoutFlow = ({
   const { checkCoreProducts, isCheckingCoreProducts } = useCheckCoreProducts()
 
   const [step, setStep] = useState<CheckoutStep>(1)
-  // The carrier the quote in hand was priced by. Null means nothing is priced.
+
   const [estimatedGateway, setEstimatedGateway] = useState<ShippingGateway | null>(null)
   const [materialBlockedProductIds, setMaterialBlockedProductIds] = useState<ReadonlySet<string>>(() => new Set())
   const hasSubmittedRef = useRef(false)
@@ -67,16 +67,12 @@ export const useCheckoutFlow = ({
 
   const goBack = () => setStep((prev) => (prev - 1) as CheckoutStep)
 
-  // `fullName`/`phone` come from the signed-in account (`useGetUser`), never the
-  // form. Nothing on screen surfaces them, so a still-loading or incomplete
-  // profile would otherwise ship an order with both fields blank.
   const hasContact = () => {
     if (contact.fullName.trim() && contact.phone.trim()) return true
     toast.error(t('orders.checkout.contactMissing'))
     return false
   }
 
-  // Stock and materials are separate limits, and either can have moved since the cart.
   const isFulfillable = async () => {
     const wanted = items.map((item) => ({
       productId: item.productId,
@@ -86,14 +82,22 @@ export const useCheckoutFlow = ({
 
     const [stock, core] = await Promise.all([verifySellableQuantity(wanted), checkCoreProducts(wanted)])
 
-    // The toast is gone in a few seconds; the summary keeps the offending lines
-    // marked until a later check clears them.
     setMaterialBlockedProductIds(core.blockedProductIds)
 
     return stock.ok && core.ok
   }
 
-  const handleGoToPayment = async (shippingGateway: ShippingGateway | undefined) => {
+  const goNext = () => {
+    setStep((prev) => Math.min(prev + 1, 5) as CheckoutStep)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const goToStep = (next: CheckoutStep) => {
+    setStep(next)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleGoToCards = async (shippingGateway: ShippingGateway | undefined) => {
     if (!canQuoteShipping) {
       notifyUnavailable()
       return
@@ -131,8 +135,7 @@ export const useCheckoutFlow = ({
         shippingGateway
       })
       setEstimatedGateway(shippingGateway)
-      setStep(2)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      goToStep(2)
     } catch {}
   }
 
@@ -141,16 +144,13 @@ export const useCheckoutFlow = ({
     setEstimatedGateway(null)
   }
 
-  // Address changed during payment. Drop the stale shippingFee and rewind
-  // so the new address is shown before estimating again
   const invalidateEstimate = () => {
-    if (step !== 2) {
+    if (step === 1 || step === 5) {
       return false
     }
 
     clearEstimate()
-    setStep(1)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    goToStep(1)
     return true
   }
 
@@ -190,7 +190,10 @@ export const useCheckoutFlow = ({
           toast.error(t('orders.checkout.createError'), { description: message })
         }
       },
-      () => toast.error(t('common.validation.fixErrors'))
+      (errors) => {
+        toast.error(t('common.validation.fixErrors'))
+        goToStep(errors.cards ? 2 : 3)
+      }
     )()
   }
 
@@ -210,7 +213,9 @@ export const useCheckoutFlow = ({
     isVerifyingAvailability: isVerifyingSellableQuantity || isCheckingCoreProducts,
     materialBlockedProductIds,
     estimatedGateway,
-    handleGoToPayment,
+    goNext,
+    goToStep,
+    handleGoToCards,
     handleConfirmOrder,
     handleCancel,
     clearEstimate,
