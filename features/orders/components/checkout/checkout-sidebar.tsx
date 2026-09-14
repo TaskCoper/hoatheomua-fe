@@ -303,7 +303,8 @@ function CheckoutCardLine({
     card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
 
   const templateId = card.type === 'history' ? generated?.templateId : card.templateId
-  const sizeId = card.type === 'history' ? generated?.sizeId : card.sizeId
+  // The standard card is free, so it has no size to show.
+  const sizeId = card.type === 'standard' ? null : card.type === 'history' ? generated?.sizeId : card.sizeId
   const writingMethod = card.type === 'standard' ? null : card.writingMethod
   const template = templateId ? findCardTemplate(templateId) : null
 
@@ -337,7 +338,9 @@ function CheckoutCardLine({
       </div>
       <div className='shrink-0 text-right'>
         <p className='tabular-nums leading-5 text-muted-foreground'>
-          {formatVnd(getCheckoutCardPrice(card, generatedCards))}
+          {card.type === 'standard'
+            ? t('orders.checkout.cards.free')
+            : formatVnd(getCheckoutCardPrice(card, generatedCards))}
         </p>
         {card.quantity > 1 ? (
           <p className='tabular-nums text-muted-foreground/70'>

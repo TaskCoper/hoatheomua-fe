@@ -1,36 +1,36 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { GiftIcon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import {
   DEFAULT_CARD_QUANTITY,
-  DEFAULT_CARD_SIZE_ID,
   DEFAULT_CARD_TEMPLATE_ID,
   EMPTY_CARD_CONTENT,
-  getCardUnitPrice,
   trimCardContent
 } from '../../../cards/card-data'
-import type { CardContent, CardSizeId, StandardCheckoutCard } from '../../../cards/types'
+import type { CardContent, StandardCheckoutCard } from '../../../cards/types'
 import { createCheckoutCardSchema, EMPTY_ISSUE_PATHS, getCardIssuePaths } from '../../../cards/validations'
 import CardContentFields from './card-content-fields'
 import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
-import CardSizePicker from './card-size-picker'
 import CardTemplatePicker from './card-template-picker'
 
 interface StandardCardFormProps {
+  /** Free cards left in the order's allowance, this card's own quantity included. */
+  maxQuantity: number
   initial?: StandardCheckoutCard | null
   onSubmit: (draft: StandardCheckoutCard) => void
   onCancel: () => void
 }
 
-export default function StandardCardForm({ initial, onSubmit, onCancel }: StandardCardFormProps) {
+export default function StandardCardForm({ maxQuantity, initial, onSubmit, onCancel }: StandardCardFormProps) {
   const { t } = useTranslation()
 
   const [templateId, setTemplateId] = useState(initial?.templateId ?? DEFAULT_CARD_TEMPLATE_ID)
-  const [sizeId, setSizeId] = useState<CardSizeId>(initial?.sizeId ?? DEFAULT_CARD_SIZE_ID)
   const [content, setContent] = useState<CardContent>(initial?.content ?? EMPTY_CARD_CONTENT)
-  const [quantity, setQuantity] = useState(initial?.quantity ?? DEFAULT_CARD_QUANTITY)
+  const [quantity, setQuantity] = useState(Math.min(initial?.quantity ?? DEFAULT_CARD_QUANTITY, maxQuantity))
   const [showErrors, setShowErrors] = useState(false)
 
   const schema = useMemo(() => createCheckoutCardSchema(t), [t])
@@ -38,13 +38,11 @@ export default function StandardCardForm({ initial, onSubmit, onCancel }: Standa
   const draft: StandardCheckoutCard = {
     type: 'standard',
     templateId,
-    sizeId,
     content: trimCardContent(content),
     quantity
   }
   const draftIssues = getCardIssuePaths(schema, draft)
   const issues = showErrors ? draftIssues : EMPTY_ISSUE_PATHS
-  const unitPrice = getCardUnitPrice({ sizeId, messageLength: draft.content.message.length })
 
   const handleSubmit = () => {
     if (draftIssues.size > 0) {
@@ -61,9 +59,8 @@ export default function StandardCardForm({ initial, onSubmit, onCancel }: Standa
 
       <CardTemplatePicker value={templateId} onChange={setTemplateId} />
 
-      <CardSizePicker value={sizeId} onChange={setSizeId} />
-
       <CardContentFields
+        showSurcharge={false}
         value={content}
         onChange={(next) => {
           setContent(next)
@@ -72,7 +69,16 @@ export default function StandardCardForm({ initial, onSubmit, onCancel }: Standa
         messageInvalid={issues.has('content.message')}
       />
 
-      <CardFormSummary price={unitPrice * quantity} quantity={{ value: quantity, unitPrice, onChange: setQuantity }} />
+      <p className='flex items-start gap-2 text-xs text-muted-foreground'>
+        <HugeiconsIcon icon={GiftIcon} strokeWidth={1.75} className='mt-0.5 size-3.5 shrink-0 text-primary' />
+        {t('orders.checkout.cards.standardFreeNote', { max: maxQuantity })}
+      </p>
+
+      <CardFormSummary
+        free
+        price={0}
+        quantity={{ value: quantity, unitPrice: 0, max: maxQuantity, onChange: setQuantity }}
+      />
     </div>
   )
 }

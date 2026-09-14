@@ -12,6 +12,8 @@ interface CardQuantityStepperProps {
   value: number
   onChange: (quantity: number) => void
   unitPrice: number
+  /** How many units this card may cover - the order's allowance, or the line's quantity. */
+  max: number
   variant?: 'boxed' | 'inline'
 }
 
@@ -19,11 +21,20 @@ export default function CardQuantityStepper({
   value,
   onChange,
   unitPrice,
+  max,
   variant = 'boxed'
 }: CardQuantityStepperProps) {
   const { t } = useTranslation()
 
   const isInline = variant === 'inline'
+  const limit = Math.max(1, Math.min(max, CARD_MAX_QUANTITY))
+
+  const hint =
+    value >= limit
+      ? t('orders.checkout.cards.maxQuantity', { max: limit })
+      : unitPrice > 0 && value > 1
+        ? t('orders.checkout.cards.unitPriceHint', { price: formatVnd(unitPrice) })
+        : null
 
   return (
     <div
@@ -36,11 +47,7 @@ export default function CardQuantityStepper({
         <p className={cn('text-sm', isInline ? 'text-muted-foreground' : 'font-medium')}>
           {t('orders.checkout.cards.quantity')}
         </p>
-        {value > 1 && !isInline ? (
-          <p className='text-xs text-muted-foreground'>
-            {t('orders.checkout.cards.unitPriceHint', { price: formatVnd(unitPrice) })}
-          </p>
-        ) : null}
+        {hint && !isInline ? <p className='text-xs text-muted-foreground'>{hint}</p> : null}
       </div>
 
       <div className='inline-flex shrink-0 items-center divide-x divide-border/70 rounded-full border border-border/70'>
@@ -61,19 +68,15 @@ export default function CardQuantityStepper({
           size='icon-xs'
           variant='ghost'
           className='rounded-l-none rounded-r-full'
-          onClick={() => onChange(Math.min(CARD_MAX_QUANTITY, value + 1))}
-          disabled={value >= CARD_MAX_QUANTITY}
+          onClick={() => onChange(Math.min(limit, value + 1))}
+          disabled={value >= limit}
           aria-label={t('orders.checkout.cards.increase')}
         >
           <HugeiconsIcon icon={PlusSignIcon} className='size-3.5' />
         </Button>
       </div>
 
-      {value > 1 && isInline ? (
-        <span className='text-xs text-muted-foreground'>
-          {t('orders.checkout.cards.unitPriceHint', { price: formatVnd(unitPrice) })}
-        </span>
-      ) : null}
+      {hint && isInline ? <span className='text-xs text-muted-foreground'>{hint}</span> : null}
     </div>
   )
 }

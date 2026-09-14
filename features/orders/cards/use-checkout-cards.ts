@@ -1,30 +1,64 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useFieldArray, type Control } from 'react-hook-form'
 import { useGeneratedCards } from '../hooks/use-generated-cards'
 import type { CheckoutFormValues } from '../validations'
-import type { CheckoutCard } from './types'
+import { getCardAllowance } from './card-data'
+import type { CheckoutCard, CheckoutCardField } from './types'
 
 interface UseCheckoutCardsArgs {
   control: Control<CheckoutFormValues>
-  lineIds: string[]
+  /** The checkout lines cards hang off - both which ones exist and how many units each carries. */
+  lines: { lineId: string; quantity: number }[]
 }
 
-export const useCheckoutCards = ({ control, lineIds }: UseCheckoutCardsArgs) => {
+/** `fields` carries react-hook-form's own `id`, which must not leak back into the form value. */
+const withQuantity = (card: CheckoutCardField, quantity: number): CheckoutCard => {
+  const value = { ...card, quantity }
+  delete (value as Partial<CheckoutCardField>).id
+  return value
+}
+
+export const useCheckoutCards = ({ control, lines }: UseCheckoutCardsArgs) => {
   const { fields, append, update, remove } = useFieldArray({ control, name: 'cards' })
   const { generatedCards } = useGeneratedCards()
 
-  // Dropping a line from the cart has to drop its cards too
-  useEffect(() => {
-    const orphaned = fields.reduce<number[]>(
-      (indexes, card, index) =>
-        card.type !== 'standard' && !lineIds.includes(card.lineId) ? [...indexes, index] : indexes,
-      []
-    )
+  const quantityByLineId = useMemo(() => new Map(lines.map((line) => [line.lineId, line.quantity])), [lines])
+  const allowance = useMemo(() => getCardAllowance(lines), [lines])
 
-    if (orphaned.length > 0) remove(orphaned)
-  }, [fields, lineIds, remove])
+  // Dropping a line from the cart has to drop its cards too, and shrinking one has to pull its
+  // cards back under the new cap - a line prints one card per unit, never more.
+  useEffect(() => {
+    const orphaned: number[] = []
+    const clamped: { index: number; card: CheckoutCardField; quantity: number }[] = []
+
+    const left = new Map(quantityByLineId)
+    let standardLeft = allowance
+
+    fields.forEach((card, index) => {
+      const available = card.type === 'standard' ? standardLeft : left.get(card.lineId)
+
+      if (available === undefined || available < 1) {
+        orphaned.push(index)
+        return
+      }
+
+      const quantity = Math.min(card.quantity, available)
+      if (card.type === 'standard') standardLeft -= quantity
+      else left.set(card.lineId, available - quantity)
+
+      if (quantity !== card.quantity) clamped.push({ index, card, quantity })
+    })
+
+    // Removing shifts every later index, so a pass never mixes the two - the effect reruns.
+    if (orphaned.length > 0) {
+      remove(orphaned)
+      return
+    }
+
+    clamped.forEach(({ index, card, quantity }) => update(index, withQuantity(card, quantity)))
+  }, [fields, quantityByLineId, allowance, remove, update])
 
   const saveCard = useCallback(
     (card: CheckoutCard, editingIndex: number | null) => {

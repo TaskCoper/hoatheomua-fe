@@ -1,20 +1,10 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import z from 'zod'
-import { CARD_MAX_QUANTITY, CARD_MESSAGE_MAX_LENGTH, CARD_NAME_MAX_LENGTH } from './card-data'
+import { CARD_MAX_QUANTITY, CARD_MESSAGE_MAX_LENGTH } from './card-data'
 import type { CheckoutCard } from './types'
 
-const createCardContentSchema = (t: TranslationFunction) => {
-  const name = (label: string) =>
-    z
-      .string()
-      .trim()
-      .max(CARD_NAME_MAX_LENGTH, {
-        error: t('common.validation.maxLength', { field: label, max: CARD_NAME_MAX_LENGTH })
-      })
-
-  return z.object({
-    receiver: name(t('orders.checkout.cards.receiver')),
-    sender: name(t('orders.checkout.cards.sender')),
+const createCardContentSchema = (t: TranslationFunction) =>
+  z.object({
     message: z
       .string()
       .trim()
@@ -26,7 +16,6 @@ const createCardContentSchema = (t: TranslationFunction) => {
         })
       })
   })
-}
 
 export const createCheckoutCardSchema = (t: TranslationFunction) => {
   const content = createCardContentSchema(t)
@@ -37,7 +26,7 @@ export const createCheckoutCardSchema = (t: TranslationFunction) => {
   const lineId = z.string().min(1, { error: t('orders.checkout.cards.productRequired') })
 
   return z.discriminatedUnion('type', [
-    z.object({ type: z.literal('standard'), templateId, sizeId, content, quantity }),
+    z.object({ type: z.literal('standard'), templateId, content, quantity }),
     z.object({ type: z.literal('ai'), templateId, sizeId, writingMethod, lineId, content, quantity }),
     z.object({
       type: z.literal('history'),

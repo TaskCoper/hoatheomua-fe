@@ -32,13 +32,7 @@ export default function OrderCardArtwork({
       />
 
       {showWords && version ? (
-        <div className='pointer-events-none absolute inset-x-0 bottom-0 space-y-1 bg-gradient-to-t from-black/75 via-black/35 to-transparent p-3 text-white sm:p-4'>
-          {version.content.receiver ? (
-            <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-white/75'>
-              {t('orders.checkout.cards.toLine', { name: version.content.receiver })}
-            </p>
-          ) : null}
-
+        <div className='pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent p-3 text-white sm:p-4'>
           <p
             className={cn(
               'line-clamp-4 text-pretty text-sm leading-snug',
@@ -47,12 +41,6 @@ export default function OrderCardArtwork({
           >
             {version.content.message}
           </p>
-
-          {version.content.sender ? (
-            <p className='text-[0.6875rem] text-white/75'>
-              {t('orders.checkout.cards.fromLine', { name: version.content.sender })}
-            </p>
-          ) : null}
         </div>
       ) : null}
     </div>

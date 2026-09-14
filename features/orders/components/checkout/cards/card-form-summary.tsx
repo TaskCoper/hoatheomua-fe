@@ -6,14 +6,17 @@ import CardQuantityStepper from './card-quantity-stepper'
 
 interface CardFormSummaryProps {
   price: number
+  /** The standard card ships with the flowers, so it shows as free rather than 0đ. */
+  free?: boolean
   quantity?: {
     value: number
     unitPrice: number
+    max: number
     onChange: (quantity: number) => void
   } | null
 }
 
-export default function CardFormSummary({ price, quantity }: CardFormSummaryProps) {
+export default function CardFormSummary({ price, free, quantity }: CardFormSummaryProps) {
   const { t } = useTranslation()
 
   return (
@@ -23,6 +26,7 @@ export default function CardFormSummary({ price, quantity }: CardFormSummaryProp
           variant='inline'
           value={quantity.value}
           unitPrice={quantity.unitPrice}
+          max={quantity.max}
           onChange={quantity.onChange}
         />
       ) : (
@@ -31,7 +35,9 @@ export default function CardFormSummary({ price, quantity }: CardFormSummaryProp
 
       <p className='flex items-baseline gap-2'>
         <span className='text-sm text-muted-foreground'>{t('orders.checkout.cards.cardPrice')}</span>
-        <span className='font-title text-lg font-bold text-primary'>{formatVnd(price)}</span>
+        <span className='font-title text-lg font-bold text-primary'>
+          {free ? t('orders.checkout.cards.free') : formatVnd(price)}
+        </span>
       </p>
     </div>
   )

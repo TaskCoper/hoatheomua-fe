@@ -54,76 +54,121 @@ export const getOrderCardPriceDelta = ({
   writingMethod: CardWritingMethod
 }): number => (getOrderCardUnitPrice({ card, content, writingMethod }) - card.paidUnitPrice) * card.quantity
 
-const MOCK_CARD_SEEDS = [
-  {
-    templateId: 'floral',
-    sizeId: 'm',
-    writingMethod: 'handwritten',
-    quantity: 1,
-    versions: [
-      {
-        receiver: 'Minh Anh',
-        sender: 'Hà Vy',
-        message: 'Chúc mừng sinh nhật! Mong mọi điều dịu dàng nhất sẽ đến với cậu.',
-        createdAt: '2026-09-04T02:15:00.000Z'
-      },
-      {
-        receiver: 'Minh Anh',
-        sender: 'Hà Vy',
-        message: 'Chúc mừng sinh nhật cậu nhé! Một tuổi mới thật nhiều nắng và thật nhiều hoa.',
-        createdAt: '2026-09-04T02:24:00.000Z'
+export interface OrderItemCards {
+  orderDetailsId: string
+  productName: string
+  /** Units of this item bought, and how many of them a card is printed for. */
+  quantity: number
+  carded: number
+  cards: OrderAiCard[]
+}
+
+/** The cards of an order laid out under the item each one is printed for. */
+export const groupOrderAiCards = (items: OrderItem[], cards: OrderAiCard[]): OrderItemCards[] =>
+  items
+    .map((item) => {
+      const itemCards = cards.filter((card) => card.orderDetailsId === item.orderDetailsId)
+
+      return {
+        orderDetailsId: item.orderDetailsId,
+        productName: item.name,
+        quantity: item.number,
+        carded: itemCards.reduce((total, card) => total + card.quantity, 0),
+        cards: itemCards
       }
-    ]
-  },
-  {
-    templateId: 'golden',
-    sizeId: 's',
-    writingMethod: 'typed',
-    quantity: 2,
-    versions: [
-      {
-        receiver: 'Chị Lan',
-        sender: 'Nhóm Marketing',
-        message: 'Cảm ơn chị vì đã luôn ở đây. Chúc chị một ngày thật nhiều nắng.',
-        createdAt: '2026-09-04T03:05:00.000Z'
-      }
-    ]
-  }
+    })
+    .filter((group) => group.cards.length > 0)
+
+/** Seeds per item, so an item bought more than once shows more than one card. */
+const MOCK_ITEM_SEEDS = [
+  [
+    {
+      templateId: 'floral',
+      sizeId: 'm',
+      writingMethod: 'handwritten',
+      quantity: 1,
+      versions: [
+        {
+          message: 'Chúc mừng sinh nhật! Mong mọi điều dịu dàng nhất sẽ đến với cậu.',
+          createdAt: '2026-09-04T02:15:00.000Z'
+        },
+        {
+          message: 'Chúc mừng sinh nhật cậu nhé! Một tuổi mới thật nhiều nắng và thật nhiều hoa.',
+          createdAt: '2026-09-04T02:24:00.000Z'
+        }
+      ]
+    },
+    {
+      templateId: 'blush',
+      sizeId: 's',
+      writingMethod: 'typed',
+      quantity: 1,
+      versions: [
+        {
+          message: 'Gửi cậu một mùa hoa nữa, và thật nhiều điều dịu dàng phía trước.',
+          createdAt: '2026-09-04T02:31:00.000Z'
+        }
+      ]
+    }
+  ],
+  [
+    {
+      templateId: 'golden',
+      sizeId: 's',
+      writingMethod: 'typed',
+      quantity: 2,
+      versions: [
+        {
+          message: 'Cảm ơn chị vì đã luôn ở đây. Chúc chị một ngày thật nhiều nắng.',
+          createdAt: '2026-09-04T03:05:00.000Z'
+        }
+      ]
+    }
+  ]
 ] as const
 
 /**
- * TODO(backend): replace with the order's card list. The demo attaches a card to the first
- * lines of the order so the section always has something to show.
+ * TODO(backend): replace with the order's card list. The demo cards the first lines of the
+ * order so the section always has something to show, never printing more cards than the
+ * item has units.
  */
 export const buildMockOrderAiCards = (items: OrderItem[]): OrderAiCard[] =>
-  items.slice(0, MOCK_CARD_SEEDS.length).map((item, cardIndex) => {
-    const seed = MOCK_CARD_SEEDS[cardIndex]
+  items.slice(0, MOCK_ITEM_SEEDS.length).flatMap((item, itemIndex) => {
+    let unitsLeft = Math.max(0, item.number)
 
-    const versions: OrderCardVersion[] = seed.versions.map((version, versionIndex) => ({
-      id: `${item.orderDetailsId}-version-${versionIndex + 1}`,
-      label: versionIndex + 1,
-      imageUrl: getOrderCardArtwork(cardIndex + versionIndex),
-      content: { receiver: version.receiver, sender: version.sender, message: version.message },
-      createdAt: version.createdAt
-    }))
+    return MOCK_ITEM_SEEDS[itemIndex].flatMap((seed, cardIndex): OrderAiCard[] => {
+      const quantity = Math.min(seed.quantity, unitsLeft)
+      if (quantity < 1) return []
+      unitsLeft -= quantity
 
-    const selected = versions[versions.length - 1]
+      const versions: OrderCardVersion[] = seed.versions.map((version, versionIndex) => ({
+        id: `${item.orderDetailsId}-card-${cardIndex + 1}-version-${versionIndex + 1}`,
+        label: versionIndex + 1,
+        imageUrl: getOrderCardArtwork(itemIndex + cardIndex + versionIndex),
+        content: { message: version.message },
+        createdAt: version.createdAt
+      }))
 
-    return {
-      id: `${item.orderDetailsId}-card`,
-      orderDetailsId: item.orderDetailsId,
-      productName: item.name,
-      productImageUrl: item.coverImage,
-      templateId: seed.templateId,
-      sizeId: seed.sizeId,
-      quantity: seed.quantity,
-      paidUnitPrice: getCardUnitPrice({
-        sizeId: seed.sizeId,
-        messageLength: selected.content.message.length,
-        writingMethod: seed.writingMethod
-      }),
-      writingMethod: seed.writingMethod,
-      selectedVersionId: selected.id,
-      versions
-    }
+      const selected = versions[versions.length - 1]
+
+      return [
+        {
+          id: `${item.orderDetailsId}-card-${cardIndex + 1}`,
+          orderDetailsId: item.orderDetailsId,
+          productName: item.name,
+          productImageUrl: item.coverImage,
+          templateId: seed.templateId,
+          sizeId: seed.sizeId,
+          quantity,
+          paidUnitPrice: getCardUnitPrice({
+            sizeId: seed.sizeId,
+            messageLength: selected.content.message.length,
+            writingMethod: seed.writingMethod
+          }),
+          writingMethod: seed.writingMethod,
+          selectedVersionId: selected.id,
+          versions
+        }
+      ]
+    })
   })

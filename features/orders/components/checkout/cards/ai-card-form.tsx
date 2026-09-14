@@ -22,20 +22,26 @@ import CardFormSummary from './card-form-summary'
 import CardSizePicker from './card-size-picker'
 import CardTemplatePicker from './card-template-picker'
 import CardWritingPicker from './card-writing-picker'
-import CheckoutProductPicker, { isCardEligibleLine } from './checkout-product-picker'
+import CheckoutProductPicker, {
+  isCardEligibleLine,
+  isLineOpenForCard,
+  type LineCardCapacities
+} from './checkout-product-picker'
 
 interface AiCardFormProps {
   lines: CheckoutSummaryLine[]
+  /** How many more cards each line can take, and whether it is already holding history cards. */
+  capacities: LineCardCapacities
   initial?: AiCheckoutCard | null
   onSubmit: (draft: AiCheckoutCard) => void
   onCancel: () => void
 }
 
-export default function AiCardForm({ lines, initial, onSubmit, onCancel }: AiCardFormProps) {
+export default function AiCardForm({ lines, capacities, initial, onSubmit, onCancel }: AiCardFormProps) {
   const { t } = useTranslation()
 
-  const eligibleLines = lines.filter(isCardEligibleLine)
-  const [lineId, setLineId] = useState(initial?.lineId ?? (eligibleLines.length === 1 ? eligibleLines[0].lineId : ''))
+  const openLines = lines.filter((line) => isLineOpenForCard(line, capacities, 'ai'))
+  const [lineId, setLineId] = useState(initial?.lineId ?? (openLines.length === 1 ? openLines[0].lineId : ''))
   const [templateId, setTemplateId] = useState(initial?.templateId ?? DEFAULT_CARD_TEMPLATE_ID)
   const [sizeId, setSizeId] = useState<CardSizeId>(initial?.sizeId ?? DEFAULT_CARD_SIZE_ID)
   const [writingMethod, setWritingMethod] = useState<CardWritingMethod>(
@@ -47,6 +53,10 @@ export default function AiCardForm({ lines, initial, onSubmit, onCancel }: AiCar
 
   const schema = useMemo(() => createCheckoutCardSchema(t), [t])
 
+  // One card per unit of the product it is printed for, minus the units already carded.
+  const attachedLine = lines.find((line) => line.lineId === lineId) ?? null
+  const maxQuantity = Math.max(1, capacities.get(lineId)?.remaining ?? DEFAULT_CARD_QUANTITY)
+
   const draft: AiCheckoutCard = {
     type: 'ai',
     lineId,
@@ -54,11 +64,20 @@ export default function AiCardForm({ lines, initial, onSubmit, onCancel }: AiCar
     sizeId,
     writingMethod,
     content: trimCardContent(content),
-    quantity
+    quantity: Math.min(quantity, maxQuantity)
   }
   const draftIssues = getCardIssuePaths(schema, draft)
   const issues = showErrors ? draftIssues : EMPTY_ISSUE_PATHS
   const unitPrice = getCardUnitPrice({ sizeId, messageLength: draft.content.message.length, writingMethod })
+
+  // A product with fewer free units holds fewer cards, so moving the card pulls its quantity down.
+  const handleSelectLine = (next: string) => {
+    setLineId(next)
+    if (showErrors) setShowErrors(false)
+
+    const remaining = capacities.get(next)?.remaining
+    if (remaining !== undefined) setQuantity((current) => Math.max(1, Math.min(current, remaining)))
+  }
 
   const handleSubmit = () => {
     if (draftIssues.size > 0) {
@@ -69,14 +88,20 @@ export default function AiCardForm({ lines, initial, onSubmit, onCancel }: AiCar
     onSubmit(draft)
   }
 
-  if (eligibleLines.length === 0) {
+  if (openLines.length === 0 && !initial) {
+    const hasEligibleLine = lines.some(isCardEligibleLine)
+
     return (
       <div className='space-y-4'>
-        <CardFormHeader type='ai' isEditing={!!initial} disabled onSubmit={handleSubmit} onCancel={onCancel} />
+        <CardFormHeader type='ai' isEditing={false} disabled onSubmit={handleSubmit} onCancel={onCancel} />
 
         <div className='rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center'>
           <p className='text-sm font-medium'>{t('orders.checkout.cards.noEligibleProductsTitle')}</p>
-          <p className='mt-1 text-xs text-muted-foreground'>{t('orders.checkout.cards.noEligibleProducts')}</p>
+          <p className='mt-1 text-xs text-muted-foreground'>
+            {hasEligibleLine
+              ? t('orders.checkout.cards.allProductsTaken')
+              : t('orders.checkout.cards.noEligibleProducts')}
+          </p>
         </div>
       </div>
     )
@@ -89,11 +114,10 @@ export default function AiCardForm({ lines, initial, onSubmit, onCancel }: AiCar
       <CheckoutProductPicker
         lines={lines}
         value={lineId}
-        onChange={(next) => {
-          setLineId(next)
-          if (showErrors) setShowErrors(false)
-        }}
+        onChange={handleSelectLine}
         label={t('orders.checkout.cards.attachTo')}
+        capacities={capacities}
+        cardType='ai'
         invalid={issues.has('lineId')}
       />
 
@@ -117,7 +141,10 @@ export default function AiCardForm({ lines, initial, onSubmit, onCancel }: AiCar
         {t('orders.checkout.cards.aiPendingNote')}
       </p>
 
-      <CardFormSummary price={unitPrice * quantity} quantity={{ value: quantity, unitPrice, onChange: setQuantity }} />
+      <CardFormSummary
+        price={unitPrice * draft.quantity}
+        quantity={attachedLine ? { value: draft.quantity, unitPrice, max: maxQuantity, onChange: setQuantity } : null}
+      />
     </div>
   )
 }

@@ -113,26 +113,21 @@ function GeneratedCardRow({ card }: { card: GeneratedCard }) {
 
   const template = findCardTemplate(card.templateId)
 
-  const specs = [
-    template?.name,
-    t(CARD_SIZE_LABEL_KEYS[card.sizeId]),
-    t(CARD_WRITING_METHOD_LABEL_KEYS[card.writingMethod])
-  ].filter(Boolean) as string[]
+  const specs = [t(CARD_SIZE_LABEL_KEYS[card.sizeId]), t(CARD_WRITING_METHOD_LABEL_KEYS[card.writingMethod])]
 
   return (
     <article className='flex gap-3 rounded-3xl bg-card p-2 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow hover:shadow-[0_1rem_2.4rem_rgb(81_108_108/12%)]'>
       <PreviewImage
         src={card.imageUrl}
-        alt={t('orders.cards.history.previewAlt', { receiver: card.content.receiver })}
+        alt={t('orders.checkout.cards.previewAlt')}
         sizes='(min-width: 640px) 6rem, 5rem'
         className='aspect-3/4 w-20 shrink-0 rounded-2xl ring-1 ring-foreground/5 sm:w-24'
       />
 
       <div className='flex min-w-0 flex-1 flex-col gap-2'>
         <header className='flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5'>
-          <h3 className='min-w-0 font-title text-sm font-bold sm:text-base'>
-            <span className='text-muted-foreground'>{t('orders.cards.history.to')}</span>{' '}
-            <span className='wrap-break-word text-primary'>{card.content.receiver}</span>
+          <h3 className='min-w-0 wrap-break-word font-title text-sm font-bold text-primary sm:text-base'>
+            {template?.name ?? t('orders.checkout.cards.tabs.ai')}
           </h3>
           <span className='shrink-0 text-xs text-muted-foreground tabular-nums'>
             {formatDate(card.createdAt, 'dateMedium')}
@@ -143,11 +138,7 @@ function GeneratedCardRow({ card }: { card: GeneratedCard }) {
           {card.content.message}
         </p>
 
-        <footer className='flex flex-wrap items-center gap-x-3 gap-y-1.5'>
-          <p className='min-w-0 truncate text-xs text-muted-foreground'>
-            {t('orders.cards.history.from')} <span className='font-medium text-foreground'>{card.content.sender}</span>
-          </p>
-
+        <footer>
           <ul className='flex flex-wrap items-center gap-1'>
             {specs.map((spec) => (
               <li

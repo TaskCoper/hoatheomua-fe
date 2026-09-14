@@ -24,11 +24,13 @@ import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
 import CardHistoryGallery from './card-history-gallery'
 import CardWritingPicker from './card-writing-picker'
-import CheckoutProductPicker, { isCardEligibleLine } from './checkout-product-picker'
+import CheckoutProductPicker, { isLineOpenForCard, type LineCardCapacities } from './checkout-product-picker'
 
 interface HistoryCardFormProps {
   generatedCards: GeneratedCard[]
   lines: CheckoutSummaryLine[]
+  /** How many more cards each line can take, and whether it is already holding AI cards. */
+  capacities: LineCardCapacities
   initial?: HistoryCheckoutCard | null
   onSubmit: (draft: HistoryCheckoutCard) => void
   onCancel: () => void
@@ -38,6 +40,7 @@ interface HistoryCardFormProps {
 export default function HistoryCardForm({
   generatedCards,
   lines,
+  capacities,
   initial,
   onSubmit,
   onCancel,
@@ -46,9 +49,9 @@ export default function HistoryCardForm({
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
 
-  const eligibleLines = lines.filter(isCardEligibleLine)
+  const openLines = lines.filter((line) => isLineOpenForCard(line, capacities, 'history'))
   const [generatedCardId, setGeneratedCardId] = useState(initial?.generatedCardId ?? '')
-  const [lineId, setLineId] = useState(initial?.lineId ?? (eligibleLines.length === 1 ? eligibleLines[0].lineId : ''))
+  const [lineId, setLineId] = useState(initial?.lineId ?? (openLines.length === 1 ? openLines[0].lineId : ''))
   const [content, setContent] = useState<CardContent>(initial?.content ?? EMPTY_CARD_CONTENT)
   const [writingMethod, setWritingMethod] = useState<CardWritingMethod>(
     initial?.writingMethod ?? DEFAULT_CARD_WRITING_METHOD
@@ -59,13 +62,18 @@ export default function HistoryCardForm({
   const schema = useMemo(() => createCheckoutCardSchema(t), [t])
 
   const selected = generatedCards.find((card) => card.id === generatedCardId) ?? null
+
+  // One card per unit of the product it is printed for, minus the units already carded.
+  const attachedLine = lines.find((line) => line.lineId === lineId) ?? null
+  const maxQuantity = Math.max(1, capacities.get(lineId)?.remaining ?? DEFAULT_CARD_QUANTITY)
+
   const draft: HistoryCheckoutCard = {
     type: 'history',
     generatedCardId,
     lineId,
     content: trimCardContent(content),
     writingMethod,
-    quantity
+    quantity: Math.min(quantity, maxQuantity)
   }
   const draftIssues = getCardIssuePaths(schema, draft)
   const issues = showErrors ? draftIssues : EMPTY_ISSUE_PATHS
@@ -90,6 +98,15 @@ export default function HistoryCardForm({
 
     setContent(next.content)
     setWritingMethod(next.writingMethod)
+  }
+
+  // A product with fewer free units holds fewer cards, so moving the card pulls its quantity down.
+  const handleSelectLine = (next: string) => {
+    setLineId(next)
+    if (showErrors) setShowErrors(false)
+
+    const remaining = capacities.get(next)?.remaining
+    if (remaining !== undefined) setQuantity((current) => Math.max(1, Math.min(current, remaining)))
   }
 
   const handleSubmit = () => {
@@ -127,7 +144,7 @@ export default function HistoryCardForm({
       <CardFormHeader
         type='history'
         isEditing={!!initial}
-        disabled={eligibleLines.length === 0}
+        disabled={openLines.length === 0 && !initial}
         onSubmit={handleSubmit}
         onCancel={onCancel}
       />
@@ -171,17 +188,20 @@ export default function HistoryCardForm({
       <CheckoutProductPicker
         lines={lines}
         value={lineId}
-        onChange={(next) => {
-          setLineId(next)
-          if (showErrors) setShowErrors(false)
-        }}
+        onChange={handleSelectLine}
         label={t('orders.checkout.cards.attachTo')}
+        capacities={capacities}
+        cardType='history'
         invalid={issues.has('lineId')}
       />
 
       <CardFormSummary
-        price={unitPrice * quantity}
-        quantity={selected ? { value: quantity, unitPrice, onChange: setQuantity } : null}
+        price={unitPrice * draft.quantity}
+        quantity={
+          selected && attachedLine
+            ? { value: draft.quantity, unitPrice, max: maxQuantity, onChange: setQuantity }
+            : null
+        }
       />
     </div>
   )

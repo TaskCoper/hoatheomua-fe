@@ -174,8 +174,7 @@ export default function CheckoutClient() {
 
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 
-  const lineIds = useMemo(() => items.map((item) => item.lineId), [items])
-  const { cards, generatedCards, saveCard, removeCard } = useCheckoutCards({ control: methods.control, lineIds })
+  const { cards, generatedCards, saveCard, removeCard } = useCheckoutCards({ control: methods.control, lines: items })
   const cardsTotal = useMemo(() => getCardsTotal(cards, generatedCards), [cards, generatedCards])
 
   const { summaryLines, unavailableLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } =

@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { I18nKey } from '@/lib/i18n/types'
 import { cn } from '@/shared/utils'
 import { AiMagicIcon, ArrowRight02Icon, Mail01Icon, Time02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
@@ -13,20 +14,22 @@ export const CARD_TYPE_ICONS: Record<CheckoutCardType, IconSvgElement> = {
   history: Time02Icon
 }
 
-const CARD_TYPES: CheckoutCardType[] = ['standard', 'ai', 'history']
+export const CARD_TYPES: CheckoutCardType[] = ['standard', 'ai', 'history']
 
 interface CardTypePickerProps {
-  eligibleProductCount: number
+  /** Types that cannot be added right now, each mapped to the reason shown in its tile. */
+  unavailableTypes: Partial<Record<CheckoutCardType, I18nKey>>
   onPick: (type: CheckoutCardType) => void
 }
 
-export default function CardTypePicker({ eligibleProductCount, onPick }: CardTypePickerProps) {
+export default function CardTypePicker({ unavailableTypes, onPick }: CardTypePickerProps) {
   const { t } = useTranslation()
 
   return (
     <div className='grid gap-3 sm:grid-cols-3'>
       {CARD_TYPES.map((type) => {
-        const isDisabled = type === 'ai' && eligibleProductCount === 0
+        const unavailableReason = unavailableTypes[type]
+        const isDisabled = !!unavailableReason
 
         return (
           <button
@@ -53,7 +56,7 @@ export default function CardTypePicker({ eligibleProductCount, onPick }: CardTyp
             <span className='mt-3 min-w-0'>
               <span className='block text-sm font-semibold'>{t(CARD_TYPE_LABEL_KEYS[type])}</span>
               <span className='mt-1 block text-xs leading-relaxed text-muted-foreground'>
-                {isDisabled ? t('orders.checkout.cards.noEligibleProducts') : t(CARD_TYPE_HINT_KEYS[type])}
+                {t(unavailableReason ?? CARD_TYPE_HINT_KEYS[type])}
               </span>
             </span>
 

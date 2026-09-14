@@ -14,13 +14,22 @@ interface CardMessageFieldProps {
   label: string
   placeholder: string
   invalid?: boolean
+  /** Off for the free standard card, where a long message costs nothing. */
+  showSurcharge?: boolean
 }
 
-export default function CardMessageField({ value, onChange, label, placeholder, invalid }: CardMessageFieldProps) {
+export default function CardMessageField({
+  value,
+  onChange,
+  label,
+  placeholder,
+  invalid,
+  showSurcharge = true
+}: CardMessageFieldProps) {
   const { t } = useTranslation()
   const id = useId()
 
-  const surcharge = getCardMessageSurcharge(value.length)
+  const surcharge = showSurcharge ? getCardMessageSurcharge(value.length) : 0
 
   return (
     <Field data-invalid={invalid} className='gap-1.5'>

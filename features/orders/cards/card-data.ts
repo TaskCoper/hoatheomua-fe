@@ -5,7 +5,8 @@ import type {
   CardTemplate,
   CardWritingMethod,
   CheckoutCard,
-  GeneratedCard
+  GeneratedCard,
+  ProductCardType
 } from './types'
 
 export const CARD_TEMPLATES: CardTemplate[] = [
@@ -28,7 +29,6 @@ export const DEFAULT_CARD_SIZE_ID: CardSizeId = 'm'
 export const DEFAULT_CARD_WRITING_METHOD: CardWritingMethod = 'typed'
 
 export const CARD_MESSAGE_MAX_LENGTH = 200
-export const CARD_NAME_MAX_LENGTH = 60
 /** Characters included in the base price; beyond this it is priced in blocks. */
 export const CARD_MESSAGE_INCLUDED_LENGTH = 80
 export const CARD_MESSAGE_BLOCK_LENGTH = 40
@@ -38,16 +38,63 @@ export const CARD_HANDWRITING_PRICE = 20_000
 export const CARD_MAX_QUANTITY = 20
 export const DEFAULT_CARD_QUANTITY = 1
 
-export const EMPTY_CARD_CONTENT: CardContent = { receiver: '', sender: '', message: '' }
+export const EMPTY_CARD_CONTENT: CardContent = { message: '' }
 
-export const trimCardContent = (content: CardContent): CardContent => ({
-  receiver: content.receiver.trim(),
-  sender: content.sender.trim(),
-  message: content.message.trim()
-})
+export const trimCardContent = (content: CardContent): CardContent => ({ message: content.message.trim() })
 
-export const isSameCardContent = (a: CardContent, b: CardContent): boolean =>
-  a.receiver === b.receiver && a.sender === b.sender && a.message === b.message
+export const isSameCardContent = (a: CardContent, b: CardContent): boolean => a.message === b.message
+
+/**
+ * How many cards the order may carry: one per unit, so two products at three each allow six.
+ * Free standard cards draw from this pool; AI and history cards are capped by their own line.
+ */
+export const getCardAllowance = (lines: { quantity: number }[]): number =>
+  lines.reduce((total, line) => total + line.quantity, 0)
+
+/** Free cards still available for the order, ignoring the card currently being edited. */
+export const getStandardCardAllowance = (
+  lines: { quantity: number }[],
+  cards: CheckoutCard[],
+  ignoreIndex: number | null = null
+): number =>
+  cards.reduce(
+    (left, card, index) => (card.type === 'standard' && index !== ignoreIndex ? left - card.quantity : left),
+    getCardAllowance(lines)
+  )
+
+export interface LineCardCapacity {
+  /** Units on the line that do not carry a card yet. */
+  remaining: number
+  /** The kind of card already on the line - a line never mixes AI with history cards. */
+  lockedType: ProductCardType | null
+}
+
+/**
+ * What each line can still take. A line holds one card per unit, so a product bought three
+ * times can carry three separate cards, and its first card decides the kind for the rest.
+ * `ignoreIndex` leaves the card being edited out so it does not block its own line.
+ */
+export const getLineCardCapacities = (
+  lines: { lineId: string; quantity: number }[],
+  cards: CheckoutCard[],
+  ignoreIndex: number | null = null
+): Map<string, LineCardCapacity> => {
+  const capacities = new Map<string, LineCardCapacity>(
+    lines.map((line) => [line.lineId, { remaining: line.quantity, lockedType: null }])
+  )
+
+  cards.forEach((card, index) => {
+    if (card.type === 'standard' || index === ignoreIndex) return
+
+    const capacity = capacities.get(card.lineId)
+    if (!capacity) return
+
+    capacity.remaining -= card.quantity
+    capacity.lockedType = card.type
+  })
+
+  return capacities
+}
 
 export const findCardTemplate = (templateId: string): CardTemplate | null =>
   CARD_TEMPLATES.find((template) => template.id === templateId) ?? null
@@ -75,9 +122,8 @@ export const getCardUnitPrice = ({
   (writingMethod === 'handwritten' ? CARD_HANDWRITING_PRICE : 0)
 
 const getCheckoutCardUnitPrice = (card: CheckoutCard, generatedCards: GeneratedCard[]): number => {
-  if (card.type === 'standard') {
-    return getCardUnitPrice({ sizeId: card.sizeId, messageLength: card.content.message.length })
-  }
+  // The standard card comes with the flowers - no size, no message surcharge, no charge.
+  if (card.type === 'standard') return 0
 
   if (card.type === 'ai') {
     return getCardUnitPrice({
@@ -112,11 +158,7 @@ export const MOCK_GENERATED_CARDS: GeneratedCard[] = [
     templateId: 'floral',
     sizeId: 'm',
     writingMethod: 'handwritten',
-    content: {
-      receiver: 'Minh Anh',
-      sender: 'Hà Vy',
-      message: 'Chúc mừng sinh nhật! Mong mọi điều dịu dàng nhất sẽ đến với cậu.'
-    },
+    content: { message: 'Chúc mừng sinh nhật! Mong mọi điều dịu dàng nhất sẽ đến với cậu.' },
     imageUrl: '/images/custom/custom-flower.png',
     createdAt: '2026-09-03T09:15:00.000Z'
   },
@@ -125,11 +167,7 @@ export const MOCK_GENERATED_CARDS: GeneratedCard[] = [
     templateId: 'golden',
     sizeId: 's',
     writingMethod: 'typed',
-    content: {
-      receiver: 'Chị Lan',
-      sender: 'Nhóm Marketing',
-      message: 'Cảm ơn vì đã luôn ở đây. Chúc một ngày thật nhiều nắng.'
-    },
+    content: { message: 'Cảm ơn vì đã luôn ở đây. Chúc một ngày thật nhiều nắng.' },
     imageUrl: '/images/5.webp',
     createdAt: '2026-08-28T02:40:00.000Z'
   },
@@ -138,11 +176,7 @@ export const MOCK_GENERATED_CARDS: GeneratedCard[] = [
     templateId: 'garden',
     sizeId: 'l',
     writingMethod: 'handwritten',
-    content: {
-      receiver: 'Thu Trang & Quốc Huy',
-      sender: 'Gia đình Hoa Theo Mùa',
-      message: 'Chúc hai bạn trăm năm hạnh phúc, luôn giữ được sự dịu dàng của hôm nay.'
-    },
+    content: { message: 'Chúc hai bạn trăm năm hạnh phúc, luôn giữ được sự dịu dàng của hôm nay.' },
     imageUrl: '/images/ContactFlower.png',
     createdAt: '2026-08-21T11:05:00.000Z'
   }

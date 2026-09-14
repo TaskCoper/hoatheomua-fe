@@ -18,8 +18,6 @@ export interface CardSizeOption {
 }
 
 export interface CardContent {
-  receiver: string
-  sender: string
   message: string
 }
 
@@ -37,18 +35,20 @@ interface CheckoutCardBase {
   quantity: number
 }
 
+/**
+ * Order-level: the complimentary card that ships with the flowers. It is free, so there is
+ * no size to pick - the quantity is capped by how many units the order carries.
+ */
 export interface StandardCheckoutCard extends CheckoutCardBase {
   type: 'standard'
   templateId: string
-  sizeId: CardSizeId
   content: CardContent
 }
 
 /**
  * Product-level: an AI card for one checkout line. The artwork is generated after the
- * order is placed, hence no generation id here.
- * TODO(backend): unclear whether a card covers the whole line or a single unit of it,
- * so the association is kept at line level.
+ * order is placed, hence no generation id here. A line carries at most one AI or history
+ * card, never both.
  */
 export interface AiCheckoutCard extends CheckoutCardBase {
   type: 'ai'
@@ -107,5 +107,8 @@ export interface OrderAiCard {
 }
 
 export type CheckoutCardType = CheckoutCard['type']
+
+/** The kinds of card that hang off a single product rather than the whole order. */
+export type ProductCardType = Exclude<CheckoutCardType, 'standard'>
 
 export type CheckoutCardField = CheckoutCard & { id: string }

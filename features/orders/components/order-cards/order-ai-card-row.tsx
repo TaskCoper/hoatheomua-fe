@@ -13,18 +13,20 @@ import OrderCardStudio from './order-card-studio'
 
 interface OrderAiCardRowProps {
   card: OrderAiCard
+  /** Where this card sits among the ones printed for the same item. */
+  label: string
   onAddVersion: (cardId: string, version: OrderCardVersion) => void
   onApplyVersion: (cardId: string, args: { versionId: string; writingMethod: CardWritingMethod }) => void
 }
 
-export default function OrderAiCardRow({ card, onAddVersion, onApplyVersion }: OrderAiCardRowProps) {
+export default function OrderAiCardRow({ card, label, onAddVersion, onApplyVersion }: OrderAiCardRowProps) {
   const { t } = useTranslation()
   const [isStudioOpen, setIsStudioOpen] = useState(false)
 
   const selectedVersion = getSelectedOrderCardVersion(card)
 
   return (
-    <li className='py-4 first:pt-0 last:pb-0'>
+    <li className='py-3 first:pt-0 last:pb-0'>
       <div className='flex items-center gap-3'>
         <OrderCardArtwork
           version={selectedVersion}
@@ -34,7 +36,9 @@ export default function OrderAiCardRow({ card, onAddVersion, onApplyVersion }: O
         />
 
         <div className='min-w-0 flex-1'>
-          <p className='font-title text-sm leading-tight font-bold text-primary'>{card.productName}</p>
+          <p className='text-xs font-semibold text-muted-foreground'>
+            {card.quantity > 1 ? `${label} · ${t('orders.cards.quantity', { count: card.quantity })}` : label}
+          </p>
 
           {selectedVersion ? (
             <p className='mt-1 line-clamp-2 text-xs leading-relaxed text-foreground/75 italic'>
