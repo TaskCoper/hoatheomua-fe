@@ -1,8 +1,14 @@
 'use client'
 
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { STUDIO_DETAIL_KEYS } from '@/features/studio/studio-data'
-import type { StudioGenerationStatus, StudioIngredient, StudioMockup, StudioProduct } from '@/features/studio/types'
+import { formatStudioPrice } from '@/features/studio/studio-data'
+import type {
+  StudioBouquet,
+  StudioGenerationStatus,
+  StudioIngredient,
+  StudioMockup,
+  StudioProduct
+} from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { ArrowRight02Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -19,6 +25,7 @@ interface StudioResultProps {
   product: StudioProduct
   ingredients: StudioIngredient[]
   mockup?: StudioMockup
+  bouquet: StudioBouquet
   designName: string
   status: StudioGenerationStatus
   actions?: ReactNode
@@ -30,6 +37,7 @@ export default function StudioResult({
   product,
   ingredients,
   mockup,
+  bouquet,
   designName,
   status,
   actions,
@@ -37,7 +45,8 @@ export default function StudioResult({
   onCreateAnother
 }: StudioResultProps) {
   const t = useTranslations('studio')
-  const tStep2 = useTranslations('studio.step2')
+  const tScene = useTranslations('studio.scene')
+  const tCompose = useTranslations('studio.compose')
   const tIngredients = useTranslations('studio.ingredients')
   const complete = status === 'complete'
 
@@ -45,7 +54,7 @@ export default function StudioResult({
     <article className='animate-in fade-in slide-in-from-right-2 duration-500'>
       <header className='mt-7'>
         <p className={cn(microLabelClass, 'text-xs')}>
-          {t('step4.eyebrow')}
+          {t('result.eyebrow')}
           {versionLabel ? ` · ${t('versions.short', { index: versionLabel })}` : ''}
         </p>
         <h1 className='text-pretty font-title text-5xl font-bold leading-tight text-primary'>“{designName}”</h1>
@@ -56,28 +65,70 @@ export default function StudioResult({
 
       <section className='mt-14'>
         <StudioStepHeading
-          title={complete ? t('step4.readyTitle') : t('step4.pendingTitle')}
-          description={complete ? t('step4.readyBody') : t('step4.pendingBody', { mockup: mockup?.name ?? '' })}
+          title={complete ? t('result.readyTitle') : t('result.pendingTitle')}
+          description={complete ? t('result.readyBody') : t('result.pendingBody', { mockup: mockup?.name ?? '' })}
           actions={actions}
         />
 
         <div className='mt-6 rounded-3xl bg-card/40 p-6'>
           <dl className='flex flex-col divide-y divide-border'>
             <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('step4.flowers')}</dt>
-              <dd className={detailValueClass}>{product.name}</dd>
+              <dt className={detailTermClass}>{t('result.flowers')}</dt>
+              <dd className={detailValueClass}>{bouquet.products.map((item) => item.name).join(' + ')}</dd>
             </div>
             <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('step4.mockup')}</dt>
+              <dt className={detailTermClass}>{tCompose('size.label')}</dt>
+              <dd className={detailValueClass}>
+                {bouquet.size
+                  ? `${t(`sizes.${bouquet.size.id}.name`)} · ${tCompose('size.flowerCount', { count: bouquet.size.flowerCount })}`
+                  : null}
+              </dd>
+            </div>
+            <div className={detailRowClass}>
+              <dt className={detailTermClass}>{tCompose('style.label')}</dt>
+              <dd className={detailValueClass}>{bouquet.style ? t(`styles.${bouquet.style.id}.name`) : null}</dd>
+            </div>
+            <div className={detailRowClass}>
+              <dt className={detailTermClass}>{tCompose('ribbon.label')}</dt>
+              <dd className={cn('flex items-center gap-2', detailValueClass)}>
+                {bouquet.ribbon ? (
+                  <>
+                    <span
+                      aria-hidden='true'
+                      style={{ backgroundColor: bouquet.ribbon.color }}
+                      className='size-3.5 shrink-0 rounded-full ring-1 ring-inset ring-foreground/10'
+                    />
+                    {t(`ribbons.${bouquet.ribbon.id}`)}
+                  </>
+                ) : null}
+              </dd>
+            </div>
+            <div className={detailRowClass}>
+              <dt className={detailTermClass}>{tCompose('wrap.label')}</dt>
+              <dd className={cn('flex items-center gap-2', detailValueClass)}>
+                {bouquet.wrap ? (
+                  <>
+                    <span
+                      aria-hidden='true'
+                      style={{ backgroundColor: bouquet.wrap.color }}
+                      className='size-3.5 shrink-0 rounded-full ring-1 ring-inset ring-foreground/10'
+                    />
+                    {t(`wraps.${bouquet.wrap.id}`)}
+                  </>
+                ) : null}
+              </dd>
+            </div>
+            <div className={detailRowClass}>
+              <dt className={detailTermClass}>{t('result.mockup')}</dt>
               <dd className={detailValueClass}>{mockup?.name}</dd>
             </div>
             <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('step4.status')}</dt>
+              <dt className={detailTermClass}>{t('result.status')}</dt>
               <dd className={cn('flex items-center gap-1.5', detailValueClass)}>
                 {complete ? (
                   <>
                     <HugeiconsIcon icon={Tick02Icon} className='size-3.5 shrink-0 text-primary' strokeWidth={2.5} />
-                    {t('step4.ready')}
+                    {t('result.ready')}
                   </>
                 ) : (
                   t('preview.stage.resultPending')
@@ -85,8 +136,10 @@ export default function StudioResult({
               </dd>
             </div>
             <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('step4.price')}</dt>
-              <dd className='font-title text-lg font-bold leading-none text-primary'>{product.price}</dd>
+              <dt className={detailTermClass}>{t('result.price')}</dt>
+              <dd className='font-title text-lg font-bold leading-none text-primary'>
+                {formatStudioPrice(bouquet.totalAmount)}
+              </dd>
             </div>
           </dl>
         </div>
@@ -103,10 +156,10 @@ export default function StudioResult({
 
             <span className='min-w-0 flex-1'>
               <span className='block text-pretty font-title text-lg font-bold leading-snug text-primary'>
-                {t('step4.generateAnother')}
+                {t('result.generateAnother')}
               </span>
               <span className='block text-xs leading-relaxed text-muted-foreground'>
-                {t('step4.generateAnotherNote')}
+                {t('result.generateAnotherNote')}
               </span>
             </span>
 
@@ -120,8 +173,8 @@ export default function StudioResult({
 
       <section className='mt-14'>
         <StudioStepHeading
-          title={t('step3.flowersTitle')}
-          description={t('step3.flowersNote', { count: ingredients.length, name: product.name })}
+          title={t('review.flowersTitle')}
+          description={t('review.flowersNote', { count: ingredients.length, name: product.name })}
         />
 
         <div className='mt-6 flex flex-col gap-8'>
@@ -156,16 +209,16 @@ export default function StudioResult({
 
       {mockup ? (
         <section className='mt-14'>
-          <StudioStepHeading title={t('step3.sceneTitle')} description={mockup.description} />
+          <StudioStepHeading title={t('review.sceneTitle')} description={mockup.description} />
 
           <div className='mt-6 rounded-3xl bg-card/40 p-6'>
             <dl className='flex flex-col divide-y divide-border'>
               <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tStep2('sceneStoryLabel')}</dt>
+                <dt className={detailTermClass}>{tScene('sceneStoryLabel')}</dt>
                 <dd className={detailValueClass}>{mockup.story}</dd>
               </div>
               <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tStep2('sceneMoodLabel')}</dt>
+                <dt className={detailTermClass}>{tScene('sceneMoodLabel')}</dt>
                 <dd className='flex flex-wrap gap-2'>
                   {mockup.moods.map((mood) => (
                     <span
@@ -182,24 +235,9 @@ export default function StudioResult({
         </section>
       ) : null}
 
-      <section className='mt-14'>
-        <StudioStepHeading title={t('step3.finishingTitle')} description={t('step3.finishingNote')} />
-
-        <div className='mt-6 rounded-3xl bg-card/40 p-6'>
-          <dl className='flex flex-col divide-y divide-border'>
-            {STUDIO_DETAIL_KEYS.map((key) => (
-              <div key={key} className={detailRowClass}>
-                <dt className={detailTermClass}>{t(`step1.details.${key}.label`)}</dt>
-                <dd className={detailValueClass}>{t(`step1.details.${key}.value`)}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      <p className='mt-6 flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground'>
+      <p className='mt-14 flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground'>
         <HugeiconsIcon icon={SparklesIcon} className='mt-0.5 size-3.5 shrink-0 text-primary' />
-        {complete ? t('step1.detailsNote') : t('step4.pendingNote')}
+        {complete ? t('step1.detailsNote') : t('result.pendingNote')}
       </p>
     </article>
   )

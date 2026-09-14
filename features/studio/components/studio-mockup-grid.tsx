@@ -27,7 +27,7 @@ interface StudioMockupGridProps {
 }
 
 export default function StudioMockupGrid({ mockups, selectedId, onSelect, onExpand }: StudioMockupGridProps) {
-  const t = useTranslations('studio.step2')
+  const t = useTranslations('studio.scene')
 
   return (
     <div className='mt-6' role='group' aria-label={t('scenesAriaLabel')}>

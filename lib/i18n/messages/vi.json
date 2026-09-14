@@ -1675,7 +1675,7 @@
     }
   },
   "studio": {
-    "stepOf": "Bước {step}/4",
+    "stepOf": "Bước {step}/5",
     "header": {
       "homeAriaLabel": "Trang chủ Hoa Theo Mùa",
       "logoAlt": "Hoa Theo Mùa",
@@ -1688,6 +1688,7 @@
     },
     "steps": {
       "ingredients": "Nguyên liệu",
+      "compose": "Bó hoa",
       "mockup": "Bối cảnh",
       "preview": "Xem lại",
       "result": "Kết quả"
@@ -1707,6 +1708,7 @@
       "liveLabel": "Xem trước trực tiếp",
       "stage": {
         "ingredients": "Lựa chọn hoa của bạn",
+        "compose": "Xem trước bó hoa",
         "mockup": "Xem trước bối cảnh",
         "review": "Xem lại lựa chọn",
         "resultReady": "Kết quả AI của bạn",
@@ -1782,7 +1784,7 @@
         "meaning": "Ruy băng sa tanh hồng đất kết nối câu chuyện, tượng trưng cho lòng biết ơn và sự chăm chút tỉ mỉ."
       }
     },
-    "step2": {
+    "scene": {
       "eyebrowStart": "Không gian",
       "title": "Chọn bối cảnh.",
       "body": "Hoa của bạn sẽ được cập nhật trong bản xem trước ngay khi bạn chọn một bối cảnh.",
@@ -1804,7 +1806,7 @@
       "emptyTitle": "Chọn một bối cảnh ở trên",
       "emptyBody": "Không khí và các mẫu tham khảo sẽ hiển thị ở đây."
     },
-    "step3": {
+    "review": {
       "eyebrow": "03 - Xem lại lựa chọn",
       "title": "Tất cả trong một.",
       "body": "Kiểm tra hoa, bối cảnh và tên bạn đã chọn. Quá trình tạo bằng AI chỉ bắt đầu sau khi bạn xác nhận lần cuối.",
@@ -1816,11 +1818,9 @@
       "flowersNote": "{count} thành phần được chọn riêng cho {name}",
       "sceneTitle": "Bối cảnh",
       "sceneNote": "Nơi bó hoa của bạn được chụp và thứ ánh sáng dành cho nó.",
-      "finishingTitle": "Hoàn thiện",
-      "finishingNote": "Cách bó hoa được gói, giữ tươi và trao đến bạn.",
       "finalNote": "Đây là bản xem trước cuối cùng. Chọn Tạo mẫu khi mọi thứ đã ưng ý; quay lại thanh bước phía trên nếu muốn đổi bất kỳ lựa chọn nào."
     },
-    "step4": {
+    "result": {
       "eyebrow": "Kết quả của bạn",
       "readyTitle": "Tác phẩm của bạn đã sẵn sàng.",
       "readyBody": "Xem lại kết quả đầy đủ trong bản xem trước.",
@@ -1830,7 +1830,7 @@
       "status": "Trạng thái",
       "ready": "Sẵn sàng",
       "generateAnother": "Tạo phiên bản khác",
-      "generateAnotherNote": "Chọn một bối cảnh khác. Mọi phiên bản bạn tạo đều được giữ trong bản xem trước.",
+      "generateAnotherNote": "Quay lại bó hoa của bạn - đổi kích thước, loại hoa, kiểu bó hay bối cảnh. Mọi phiên bản bạn tạo đều được giữ trong bản xem trước.",
       "pendingTitle": "Sẵn sàng khi bạn muốn.",
       "pendingBody": "Chúng tôi sẽ kết hợp thiết kế hoa của bạn với {mockup}. Quá trình tạo mẫu chỉ mất một chút thời gian.",
       "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng."
@@ -1852,7 +1852,8 @@
       "backToMockups": "Quay lại bối cảnh",
       "addedToBag": "Đã thêm vào giỏ",
       "addToBag": "Thêm vào giỏ",
-      "buyNow": "Mua ngay"
+      "buyNow": "Mua ngay",
+      "backToCompose": "Quay lại bó hoa"
     },
     "sceneDialog": {
       "closeAriaLabel": "Đóng xem bối cảnh",
@@ -1877,6 +1878,96 @@
         "description": "Hãy thiết kế một bó hoa trong studio, mọi phiên bản bạn tạo ra sẽ được lưu ở đây.",
         "cta": "Bắt đầu thiết kế"
       }
+    },
+    "compose": {
+      "title": "Tạo bó hoa của bạn",
+      "note": "Kích thước, kiểu bó và màu hoàn thiện. Mọi lựa chọn đều hiện ngay trong bản xem trước.",
+      "reviewNote": "Kích thước, kiểu bó và màu sắc làm nên bó hoa của bạn.",
+      "size": {
+        "label": "Kích thước",
+        "note": "Kích thước lớn hơn đơn giản là chỗ cho nhiều hoa hơn.",
+        "flowerCount": "{count} loại hoa"
+      },
+      "bouquet": {
+        "label": "Hoa của bạn",
+        "note": "Đã chọn {filled}/{count}. Loại đầu tiên là thiết kế bạn mang theo.",
+        "slotBase": "Hoa nền",
+        "slotIndex": "Hoa {slot}",
+        "add": "Thêm một loại hoa",
+        "addNote": "Chọn từ danh mục của studio",
+        "change": "Đổi {name}",
+        "remove": "Bỏ {name}",
+        "incomplete": "Hãy chọn đủ {count} loại hoa cho kích thước này.",
+        "alreadyUsed": "Đã có trong bó",
+        "dialogTitle": "Chọn hoa {slot}",
+        "dialogNote": "Mọi loại hoa ở đây đều được cắt và dưỡng vào sáng ngày giao.",
+        "dialogFootnote": "Thêm một loại hoa sẽ thay đổi tổng tiền. Bạn có thể đổi hoặc bỏ bất cứ lúc nào trước khi tạo mẫu."
+      },
+      "style": {
+        "label": "Kiểu bó",
+        "note": "Cách người cắm tạo dáng bó hoa trên tay."
+      },
+      "ribbon": {
+        "label": "Ruy băng",
+        "note": "Dải sa tanh buộc giữ bó hoa."
+      },
+      "wrap": {
+        "label": "Giấy gói",
+        "note": "Lớp giấy bao quanh hoa khi đến tay bạn."
+      },
+      "summary": {
+        "label": "Lựa chọn của bạn",
+        "total": "Tổng cộng",
+        "note": "Những gì người cắm sẽ thực hiện, và chi phí tương ứng."
+      },
+      "finishing": {
+        "label": "Màu hoàn thiện",
+        "note": "Ruy băng và giấy gói khoác lên bó hoa của bạn."
+      },
+      "closingNote": "Kích thước và kiểu bó chỉ mang tính định hướng. Bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm luôn mang nét tự nhiên riêng."
+    },
+    "sizes": {
+      "small": {
+        "name": "Nhỏ"
+      },
+      "medium": {
+        "name": "Vừa"
+      },
+      "large": {
+        "name": "Lớn"
+      }
+    },
+    "styles": {
+      "round": {
+        "name": "Bó tròn",
+        "description": "Đều, vòm cao và cổ điển từ mọi góc nhìn."
+      },
+      "triangle": {
+        "name": "Bó tam giác",
+        "description": "Đỉnh cao ở giữa, thoải dần về hai bên."
+      },
+      "rectangle": {
+        "name": "Bó chữ nhật",
+        "description": "Mặt bó phẳng và rộng, hợp để trao tay."
+      },
+      "cascade": {
+        "name": "Bó thác đổ",
+        "description": "Cành hoa buông về phía trước như dòng nước."
+      }
+    },
+    "ribbons": {
+      "dustyRose": "Hồng phấn trầm",
+      "ivory": "Trắng ngà",
+      "sage": "Xanh rêu nhạt",
+      "burgundy": "Đỏ rượu",
+      "midnight": "Xanh đêm"
+    },
+    "wraps": {
+      "kraft": "Giấy kraft",
+      "cloud": "Trắng mây",
+      "blush": "Hồng phấn",
+      "forest": "Xanh rừng",
+      "charcoal": "Xám than"
     }
   },
   "b2b": {

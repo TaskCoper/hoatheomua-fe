@@ -42,9 +42,9 @@ export default function StudioMobileNav({
         </Button>
       ) : null}
 
-      {step === 2 ? (
+      {step === 2 || step === 3 ? (
         <div className='grid grid-cols-[auto_1fr] gap-2'>
-          {backButton(tNav('backToIngredients'))}
+          {backButton(step === 2 ? tNav('backToIngredients') : tNav('backToCompose'))}
           <Button type='button' size='lg' disabled={!canContinue} onClick={onNext}>
             {tNav('next')}
             <HugeiconsIcon icon={ArrowRight02Icon} />
@@ -52,7 +52,7 @@ export default function StudioMobileNav({
         </div>
       ) : null}
 
-      {step === 3 ? (
+      {step === 4 ? (
         <div className='grid grid-cols-[auto_1fr] gap-2'>
           {backButton(tNav('backToMockups'))}
           <Button type='submit' size='lg' disabled={status === 'generating'}>
@@ -62,7 +62,7 @@ export default function StudioMobileNav({
         </div>
       ) : null}
 
-      {step === 4 && status === 'complete' ? (
+      {step === 5 && status === 'complete' ? (
         <div className='grid grid-cols-[auto_1.35fr_1fr] gap-2'>
           {backButton(tNav('backToReview'))}
           <Button type='button' size='lg' onClick={onAddToBag}>

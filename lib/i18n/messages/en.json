@@ -1675,7 +1675,7 @@
     }
   },
   "studio": {
-    "stepOf": "Step {step} of 4",
+    "stepOf": "Step {step} of 5",
     "header": {
       "homeAriaLabel": "Hoa Theo Mùa home",
       "logoAlt": "Hoa Theo Mùa",
@@ -1688,6 +1688,7 @@
     },
     "steps": {
       "ingredients": "Ingredients",
+      "compose": "Compose",
       "mockup": "Mockup",
       "preview": "Preview",
       "result": "Result"
@@ -1707,6 +1708,7 @@
       "liveLabel": "Live preview",
       "stage": {
         "ingredients": "Your flower choice",
+        "compose": "Bouquet preview",
         "mockup": "Mockup preview",
         "review": "Selection preview",
         "resultReady": "Your AI result",
@@ -1782,7 +1784,7 @@
         "meaning": "A dusty rose satin ribbon ties the story together, symbolizing gratitude and thoughtful care."
       }
     },
-    "step2": {
+    "scene": {
       "eyebrowStart": "The setting",
       "title": "Set the scene.",
       "body": "Your flowers update in the live preview as soon as you select a scene.",
@@ -1804,7 +1806,7 @@
       "emptyTitle": "Select a scene above",
       "emptyBody": "We’ll show the atmosphere and florist studies here."
     },
-    "step3": {
+    "review": {
       "eyebrow": "03 - Review selections",
       "title": "Everything in one place.",
       "body": "Check your flowers, mockup and name. AI generation starts only after your final confirmation.",
@@ -1816,11 +1818,9 @@
       "flowersNote": "{count} elements, hand-picked for {name}",
       "sceneTitle": "The scene",
       "sceneNote": "Where your bouquet is photographed, and the light it is given.",
-      "finishingTitle": "The finishing",
-      "finishingNote": "How it is wrapped, kept fresh and handed over.",
       "finalNote": "This is your final preview. Select Generate when everything looks right; step back through the rail above to change any choice."
     },
-    "step4": {
+    "result": {
       "eyebrow": "Your result",
       "readyTitle": "Your creation is ready.",
       "readyBody": "Review the full result in the preview.",
@@ -1830,7 +1830,7 @@
       "status": "Status",
       "ready": "Ready",
       "generateAnother": "Generate another version",
-      "generateAnotherNote": "Pick a different scene. Every version you make stays in the preview.",
+      "generateAnotherNote": "Go back to your bouquet - change the size, flowers, style or scene. Every version you make stays in the preview.",
       "pendingTitle": "Ready when you are.",
       "pendingBody": "We’ll combine your flower design with {mockup}. Generation takes only a moment.",
       "pendingNote": "AI will create one unique image from these selections. You’ll review the result here before adding it to your bag."
@@ -1852,7 +1852,8 @@
       "backToMockups": "Back to mockups",
       "addedToBag": "Added to Bag",
       "addToBag": "Add to Bag",
-      "buyNow": "Buy Now"
+      "buyNow": "Buy Now",
+      "backToCompose": "Back to bouquet"
     },
     "sceneDialog": {
       "closeAriaLabel": "Close scene view",
@@ -1877,6 +1878,96 @@
         "description": "Design a bouquet in the studio and every version you generate is kept here.",
         "cta": "Start designing"
       }
+    },
+    "compose": {
+      "title": "Compose your bouquet",
+      "note": "Size, shape and finishing colours. Everything here is reflected in your live preview.",
+      "reviewNote": "The size, shape and colours your bouquet is built with.",
+      "size": {
+        "label": "Size",
+        "note": "A larger size simply makes room for more flowers.",
+        "flowerCount": "{count, plural, one {# flower} other {# flowers}}"
+      },
+      "bouquet": {
+        "label": "Your flowers",
+        "note": "{filled} of {count} chosen. The first is the design you came in with.",
+        "slotBase": "Base flower",
+        "slotIndex": "Flower {slot}",
+        "add": "Add a flower",
+        "addNote": "Pick one from the studio catalogue",
+        "change": "Change {name}",
+        "remove": "Remove {name}",
+        "incomplete": "Pick {count, plural, one {# flower} other {# flowers}} to fill this size.",
+        "alreadyUsed": "Already in the bouquet",
+        "dialogTitle": "Choose flower {slot}",
+        "dialogNote": "Everything here is cut and conditioned on the morning of your delivery.",
+        "dialogFootnote": "Adding a flower changes the total. You can swap or remove it at any time before you generate."
+      },
+      "style": {
+        "label": "Style",
+        "note": "How the florist shapes the bouquet in the hand."
+      },
+      "ribbon": {
+        "label": "Ribbon",
+        "note": "The satin tie holding it together."
+      },
+      "wrap": {
+        "label": "Wrapping paper",
+        "note": "The sheet your flowers arrive in."
+      },
+      "summary": {
+        "label": "Your selection",
+        "total": "Total",
+        "note": "What the florist will build, and what it comes to."
+      },
+      "finishing": {
+        "label": "Finishing colours",
+        "note": "The ribbon and paper your flowers are dressed in."
+      },
+      "closingNote": "Sizes and shapes are guides, not templates. Your florist arranges by hand on the day, so the finished bouquet carries its own natural character."
+    },
+    "sizes": {
+      "small": {
+        "name": "Small"
+      },
+      "medium": {
+        "name": "Medium"
+      },
+      "large": {
+        "name": "Large"
+      }
+    },
+    "styles": {
+      "round": {
+        "name": "Round bouquet",
+        "description": "Even, domed and classic from every angle."
+      },
+      "triangle": {
+        "name": "Triangle bouquet",
+        "description": "A tall centre tapering down to the sides."
+      },
+      "rectangle": {
+        "name": "Rectangle bouquet",
+        "description": "A flat, wide face made to be handed over."
+      },
+      "cascade": {
+        "name": "Cascade bouquet",
+        "description": "Stems falling forward in a soft waterfall."
+      }
+    },
+    "ribbons": {
+      "dustyRose": "Dusty rose",
+      "ivory": "Ivory",
+      "sage": "Sage",
+      "burgundy": "Burgundy",
+      "midnight": "Midnight"
+    },
+    "wraps": {
+      "kraft": "Kraft",
+      "cloud": "Cloud white",
+      "blush": "Blush",
+      "forest": "Forest",
+      "charcoal": "Charcoal"
     }
   },
   "b2b": {

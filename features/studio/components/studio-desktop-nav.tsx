@@ -35,7 +35,7 @@ export default function StudioDesktopNav({ step, status, canContinue, onNext, on
     return next
   }
 
-  if (step === 2)
+  if (step === 2 || step === 3)
     return (
       <>
         {back}
@@ -43,7 +43,7 @@ export default function StudioDesktopNav({ step, status, canContinue, onNext, on
       </>
     )
 
-  if (step === 3)
+  if (step === 4)
     return (
       <>
         {back}

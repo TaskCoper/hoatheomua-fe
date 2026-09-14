@@ -23,7 +23,7 @@ interface StudioSceneDialogProps {
 
 export default function StudioSceneDialog({ mockup, product, designName, open, onOpenChange }: StudioSceneDialogProps) {
   const t = useTranslations('studio.sceneDialog')
-  const tStep = useTranslations('studio.step2')
+  const tStep = useTranslations('studio.scene')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

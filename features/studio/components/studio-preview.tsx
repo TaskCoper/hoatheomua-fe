@@ -3,7 +3,9 @@
 import { Button } from '@/components/ui/button'
 import StudioGenerationOverlay from '@/features/studio/components/studio-generation-overlay'
 import StudioResultCarousel from '@/features/studio/components/studio-result-carousel'
+import { formatStudioPrice, STUDIO_LAST_STEP } from '@/features/studio/studio-data'
 import type {
+  StudioBouquet,
   StudioGenerationStatus,
   StudioMockup,
   StudioProduct,
@@ -22,6 +24,7 @@ interface StudioPreviewProps {
   status: StudioGenerationStatus
   stage: number
   mockup?: StudioMockup
+  bouquet: StudioBouquet
   designName: string
   versions: StudioVersion[]
   activeVersionId: string
@@ -36,6 +39,7 @@ export default function StudioPreview({
   status,
   stage,
   mockup,
+  bouquet,
   designName,
   versions,
   activeVersionId,
@@ -47,11 +51,12 @@ export default function StudioPreview({
   const tNav = useTranslations('studio.nav')
 
   // The preview turns into a version carousel once there is a result to browse.
-  const showVersions = step === 4 && status !== 'generating' && versions.length > 0
-  const complete = step === 4 && status === 'complete'
+  const showVersions = step === STUDIO_LAST_STEP && status !== 'generating' && versions.length > 0
+  const complete = step === STUDIO_LAST_STEP && status === 'complete'
 
   const hero = (() => {
-    if (step === 1)
+    // Steps 1 and 2 are still about the bouquet itself, so the scene stays out of it.
+    if (step <= 2)
       return {
         src: product.imageUrl,
         alt: product.name,
@@ -70,12 +75,14 @@ export default function StudioPreview({
     step === 1
       ? t('preview.stage.ingredients')
       : step === 2
-        ? t('preview.stage.mockup')
+        ? t('preview.stage.compose')
         : step === 3
-          ? t('preview.stage.review')
-          : status === 'complete'
-            ? t('preview.stage.resultReady')
-            : t('preview.stage.resultPending')
+          ? t('preview.stage.mockup')
+          : step === 4
+            ? t('preview.stage.review')
+            : status === 'complete'
+              ? t('preview.stage.resultReady')
+              : t('preview.stage.resultPending')
 
   return (
     <section
@@ -138,10 +145,31 @@ export default function StudioPreview({
           <p className='text-pretty font-title text-2xl font-bold leading-tight text-white sm:text-3xl'>
             {step === 1 ? product.name : designName ? `“${designName}”` : product.name}
           </p>
-          {step > 1 && mockup ? (
+          {step > 1 ? (
             <p className='mt-1.5 text-xs text-white/75'>
-              {product.name} · {mockup.name}
+              {[
+                bouquet.products.map((item) => item.name).join(' + '),
+                bouquet.size ? t(`sizes.${bouquet.size.id}.name`) : null,
+                bouquet.style ? t(`styles.${bouquet.style.id}.name`) : null,
+                mockup?.name
+              ]
+                .filter(Boolean)
+                .join(' · ')}
             </p>
+          ) : null}
+
+          {step > 1 && (bouquet.ribbon || bouquet.wrap) ? (
+            <ul aria-hidden='true' className='mt-2.5 flex items-center gap-1.5'>
+              {[bouquet.ribbon, bouquet.wrap].map((swatch) =>
+                swatch ? (
+                  <li
+                    key={swatch.id}
+                    style={{ backgroundColor: swatch.color }}
+                    className='size-3.5 rounded-full ring-1 ring-inset ring-white/60'
+                  />
+                ) : null
+              )}
+            </ul>
           ) : null}
         </div>
 
@@ -149,9 +177,11 @@ export default function StudioPreview({
           <div className='flex flex-col items-end gap-3'>
             <div className='text-right'>
               <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-white/75'>
-                {t('step4.price')}
+                {t('result.price')}
               </p>
-              <p className='font-title text-2xl font-bold leading-tight text-white'>{product.price}</p>
+              <p className='font-title text-2xl font-bold leading-tight text-white'>
+                {formatStudioPrice(bouquet.totalAmount)}
+              </p>
             </div>
 
             <div className='hidden flex-wrap items-center justify-end gap-2 lg:flex'>

@@ -1,5 +1,6 @@
 'use client'
 
+import StudioComposeStep from '@/features/studio/components/studio-compose-step'
 import StudioDesktopNav from '@/features/studio/components/studio-desktop-nav'
 import StudioHeader from '@/features/studio/components/studio-header'
 import StudioIngredientsStep from '@/features/studio/components/studio-ingredients-step'
@@ -32,6 +33,10 @@ export default function StudioClient() {
     productIngredients,
     trimmedName,
     nameValid,
+    bouquet,
+    bouquetComplete,
+    companionProductIds,
+    slotCount,
     setStep,
     setAdded,
     goTo,
@@ -39,11 +44,17 @@ export default function StudioClient() {
     goBack,
     markChanged,
     selectMockup,
+    selectSize,
+    selectStyle,
+    selectRibbon,
+    selectWrap,
+    setCompanion,
+    removeCompanion,
     selectVersion,
     startGeneration
   } = useStudioDesigner()
 
-  const canContinue = step === 1 ? nameValid : Boolean(selectedMockupId)
+  const canContinue = step === 1 ? nameValid : step === 2 ? bouquetComplete : Boolean(selectedMockupId)
   const addToBag = () => setAdded(true)
 
   const desktopNav = (
@@ -64,6 +75,7 @@ export default function StudioClient() {
           status={generationStatus}
           stage={generationStage}
           mockup={mockup}
+          bouquet={bouquet}
           designName={trimmedName}
           versions={versions}
           activeVersionId={activeVersionId}
@@ -86,10 +98,27 @@ export default function StudioClient() {
 
             {step === 2 ? (
               <div className='animate-in fade-in slide-in-from-right-2 duration-300'>
+                <StudioComposeStep
+                  bouquet={bouquet}
+                  companionProductIds={companionProductIds}
+                  slotCount={slotCount}
+                  actions={desktopNav}
+                  onSelectSize={selectSize}
+                  onSelectStyle={selectStyle}
+                  onSelectRibbon={selectRibbon}
+                  onSelectWrap={selectWrap}
+                  onSetCompanion={setCompanion}
+                  onRemoveCompanion={removeCompanion}
+                />
+              </div>
+            ) : null}
+
+            {step === 3 ? (
+              <div className='animate-in fade-in slide-in-from-right-2 duration-300'>
                 <section className='mt-7'>
                   <StudioStepHeading
-                    title={t('step2.chooseTitle')}
-                    description={t('step2.chooseNote', { count: studioMockups.length })}
+                    title={t('scene.chooseTitle')}
+                    description={t('scene.chooseNote', { count: studioMockups.length })}
                     actions={desktopNav}
                   />
 
@@ -103,21 +132,16 @@ export default function StudioClient() {
               </div>
             ) : null}
 
-            {step === 3 ? (
-              <StudioReview
-                product={product}
-                ingredients={productIngredients}
-                mockup={mockup}
-                designName={trimmedName}
-                actions={desktopNav}
-              />
+            {step === 4 ? (
+              <StudioReview mockup={mockup} bouquet={bouquet} designName={trimmedName} actions={desktopNav} />
             ) : null}
 
-            {step === 4 ? (
+            {step === 5 ? (
               <StudioResult
                 product={product}
                 ingredients={productIngredients}
                 mockup={mockup}
+                bouquet={bouquet}
                 designName={trimmedName}
                 status={generationStatus}
                 actions={desktopNav}

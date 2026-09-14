@@ -1,4 +1,12 @@
-import type { StudioIngredient, StudioMockup, StudioProduct } from '@/features/studio/types'
+import type {
+  StudioIngredient,
+  StudioMockup,
+  StudioProduct,
+  StudioSize,
+  StudioStep,
+  StudioStyle,
+  StudioSwatch
+} from '@/features/studio/types'
 
 export const studioIngredients: StudioIngredient[] = [
   { id: 'rose', imageUrl: '/images/custom/material-1.png' },
@@ -12,11 +20,106 @@ export const studioProduct: StudioProduct = {
   id: 'seasonal-blush',
   name: 'Seasonal Blush',
   note: 'Soft, layered and romantic',
-  price: '1,490,000₫',
+  priceAmount: 1490000,
   imageUrl: '/images/custom/custom-flower.png',
   ingredientIds: ['rose', 'tulip', 'breath', 'ribbon'],
   imageFit: 'cover'
 }
+
+/** Flowers that can join the base design once the size leaves room for them. */
+export const studioCompanionProducts: StudioProduct[] = [
+  {
+    id: 'ivory-tulip',
+    name: 'Ivory Tulip',
+    note: 'Clean, upright and quietly formal',
+    priceAmount: 890000,
+    imageUrl: '/images/custom/material-2.png',
+    ingredientIds: ['tulip', 'eucalyptus'],
+    imageFit: 'contain'
+  },
+  {
+    id: 'garden-rose',
+    name: 'Garden Rose',
+    note: 'Full petals with a deep blush centre',
+    priceAmount: 1150000,
+    imageUrl: '/images/custom/material-1.png',
+    ingredientIds: ['rose', 'breath'],
+    imageFit: 'contain'
+  },
+  {
+    id: 'cloud-breath',
+    name: "Cloud Baby's Breath",
+    note: 'Airy filler that softens every edge',
+    priceAmount: 540000,
+    imageUrl: '/images/custom/material-3.png',
+    ingredientIds: ['breath'],
+    imageFit: 'contain'
+  },
+  {
+    id: 'silver-eucalyptus',
+    name: 'Silver Eucalyptus',
+    note: 'Silvery greenery that frames the blooms',
+    priceAmount: 620000,
+    imageUrl: '/images/custom/material-4.png',
+    ingredientIds: ['eucalyptus'],
+    imageFit: 'contain'
+  },
+  {
+    id: 'evening-peony',
+    name: 'Evening Peony',
+    note: 'Heavy heads that open over three days',
+    priceAmount: 1680000,
+    imageUrl: '/images/8.webp',
+    ingredientIds: ['rose', 'eucalyptus', 'ribbon'],
+    imageFit: 'cover'
+  },
+  {
+    id: 'market-daisy',
+    name: 'Market Daisy',
+    note: 'Everyday cheer, picked the same morning',
+    priceAmount: 460000,
+    imageUrl: '/images/6.webp',
+    ingredientIds: ['breath', 'eucalyptus'],
+    imageFit: 'cover'
+  }
+]
+
+export const studioSizes: StudioSize[] = [
+  { id: 'small', label: 'S', flowerCount: 1, priceMultiplier: 1 },
+  { id: 'medium', label: 'M', flowerCount: 2, priceMultiplier: 1.08 },
+  { id: 'large', label: 'L', flowerCount: 3, priceMultiplier: 1.15 }
+]
+
+export const studioStyles: StudioStyle[] = [
+  { id: 'round', imageUrl: '/images/custom/custom-flower.png' },
+  { id: 'triangle', imageUrl: '/images/3.webp' },
+  { id: 'rectangle', imageUrl: '/images/6.webp' },
+  { id: 'cascade', imageUrl: '/images/9.webp' }
+]
+
+export const studioRibbons: StudioSwatch[] = [
+  { id: 'dustyRose', color: '#d3a29b' },
+  { id: 'ivory', color: '#efe3d4' },
+  { id: 'sage', color: '#97a88f' },
+  { id: 'burgundy', color: '#73303a' },
+  { id: 'midnight', color: '#2f3b4a' }
+]
+
+export const studioWraps: StudioSwatch[] = [
+  { id: 'kraft', color: '#c39c74' },
+  { id: 'cloud', color: '#f3efe8' },
+  { id: 'blush', color: '#eccfc9' },
+  { id: 'forest', color: '#3d5145' },
+  { id: 'charcoal', color: '#3b3b3b' }
+]
+
+export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
+  style: 'currency',
+  currency: 'VND',
+  maximumFractionDigits: 0
+})
+
+export const formatStudioPrice = (amount: number) => studioPriceFormatter.format(Math.round(amount))
 
 export const studioMockups: StudioMockup[] = [
   {
@@ -301,7 +404,10 @@ export const STUDIO_DETAIL_KEYS = ['size', 'wrapping', 'freshness', 'handover'] 
 
 export const STUDIO_STEP_KEYS = [
   { step: 1, key: 'ingredients' },
-  { step: 2, key: 'mockup' },
-  { step: 3, key: 'preview' },
-  { step: 4, key: 'result' }
+  { step: 2, key: 'compose' },
+  { step: 3, key: 'mockup' },
+  { step: 4, key: 'preview' },
+  { step: 5, key: 'result' }
 ] as const
+
+export const STUDIO_LAST_STEP: StudioStep = 5
