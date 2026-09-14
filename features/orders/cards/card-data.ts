@@ -46,21 +46,22 @@ export const isSameCardContent = (a: CardContent, b: CardContent): boolean => a.
 
 /**
  * How many cards the order may carry: one per unit, so two products at three each allow six.
- * Free standard cards draw from this pool; AI and history cards are capped by their own line.
+ * Free standard cards draw from this pool; AI and history cards are also capped by their own line.
  */
 export const getCardAllowance = (lines: { quantity: number }[]): number =>
   lines.reduce((total, line) => total + line.quantity, 0)
 
-/** Free cards still available for the order, ignoring the card currently being edited. */
+/**
+ * Free cards still available for the order, ignoring the card currently being edited.
+ * Every card spends a unit of the pool, paid ones included - a unit that already carries an
+ * AI or history card no longer entitles the order to a free card.
+ */
 export const getStandardCardAllowance = (
   lines: { quantity: number }[],
   cards: CheckoutCard[],
   ignoreIndex: number | null = null
 ): number =>
-  cards.reduce(
-    (left, card, index) => (card.type === 'standard' && index !== ignoreIndex ? left - card.quantity : left),
-    getCardAllowance(lines)
-  )
+  cards.reduce((left, card, index) => (index === ignoreIndex ? left : left - card.quantity), getCardAllowance(lines))
 
 export interface LineCardCapacity {
   /** Units on the line that do not carry a card yet. */

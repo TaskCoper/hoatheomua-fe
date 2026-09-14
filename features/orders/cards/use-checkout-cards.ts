@@ -34,26 +34,40 @@ export const useCheckoutCards = ({ control, lines }: UseCheckoutCardsArgs) => {
     const clamped: { index: number; card: CheckoutCardField; quantity: number }[] = []
 
     const left = new Map(quantityByLineId)
-    let standardLeft = allowance
+    let freeLeft = allowance
 
-    fields.forEach((card, index) => {
-      const available = card.type === 'standard' ? standardLeft : left.get(card.lineId)
-
+    /** Returns how many units the card keeps, queueing it for removal when none are left. */
+    const take = (index: number, card: CheckoutCardField, available: number | undefined): number => {
       if (available === undefined || available < 1) {
         orphaned.push(index)
-        return
+        return 0
       }
 
       const quantity = Math.min(card.quantity, available)
-      if (card.type === 'standard') standardLeft -= quantity
-      else left.set(card.lineId, available - quantity)
-
       if (quantity !== card.quantity) clamped.push({ index, card, quantity })
+      return quantity
+    }
+
+    // Paid cards are settled first: they are bound to a line the order already paid for, and the
+    // units they take stop being free - so the standard cards only share what the pool has left.
+    fields.forEach((card, index) => {
+      if (card.type === 'standard') return
+
+      const lineLeft = left.get(card.lineId)
+      const quantity = take(index, card, lineLeft)
+
+      left.set(card.lineId, (lineLeft ?? 0) - quantity)
+      freeLeft -= quantity
+    })
+
+    fields.forEach((card, index) => {
+      if (card.type !== 'standard') return
+      freeLeft -= take(index, card, freeLeft)
     })
 
     // Removing shifts every later index, so a pass never mixes the two - the effect reruns.
     if (orphaned.length > 0) {
-      remove(orphaned)
+      remove(orphaned.sort((a, b) => a - b))
       return
     }
 

@@ -846,7 +846,7 @@
         "maxQuantity": "Max {max}",
         "cardPrice": "Card price",
         "free": "Free",
-        "standardFreeNote": "Standard cards come with the flowers at no charge - one per item, so this order allows {max}.",
+        "standardFreeNote": "Standard cards come with the flowers at no charge - one per item, minus the items that already carry an AI card, so this order has {max} left.",
         "allCardsUsed": "Every free card in this order has been used.",
         "unitPriceHint": "{price} each",
         "subtotal": "Cards subtotal",

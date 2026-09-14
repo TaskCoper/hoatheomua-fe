@@ -846,7 +846,7 @@
         "maxQuantity": "Tối đa {max}",
         "cardPrice": "Giá thiệp",
         "free": "Miễn phí",
-        "standardFreeNote": "Thiệp thường được tặng kèm hoa - mỗi sản phẩm một tấm, đơn này được tối đa {max} tấm.",
+        "standardFreeNote": "Thiệp thường được tặng kèm hoa - mỗi sản phẩm một tấm, trừ những sản phẩm đã có thiệp AI, nên đơn này còn {max} tấm.",
         "allCardsUsed": "Bạn đã dùng hết số thiệp miễn phí của đơn này.",
         "unitPriceHint": "{price} / thiệp",
         "subtotal": "Tạm tính thiệp",
