@@ -17,7 +17,7 @@ export default function StudioGenerationOverlay({ name, stage }: StudioGeneratio
   return (
     <div className='absolute inset-0 z-20 flex items-end bg-primary/80 p-6 text-white backdrop-blur-sm sm:p-9 lg:p-12'>
       <div className='w-full max-w-md' aria-live='polite' aria-atomic='true'>
-        <span className='inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-widest text-white ring-1 ring-white/25 backdrop-blur-md'>
+        <span className='inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-xs font-semibold text-white ring-1 ring-white/25 backdrop-blur-md'>
           <HugeiconsIcon icon={SparklesIcon} className='size-3' />
           {t('generating')}
         </span>

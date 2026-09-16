@@ -52,6 +52,7 @@ export default function StudioPreview({
 
   // The preview turns into a version carousel once there is a result to browse.
   const showVersions = step === STUDIO_LAST_STEP && status !== 'generating' && versions.length > 0
+  const extraStems = bouquet.ingredients.reduce((total, item) => total + item.extraQuantity, 0)
   const complete = step === STUDIO_LAST_STEP && status === 'complete'
 
   const hero = (() => {
@@ -149,7 +150,7 @@ export default function StudioPreview({
             <p className='mt-1.5 text-xs text-white/75'>
               {[
                 bouquet.products.map((item) => item.name).join(' + '),
-                bouquet.size ? t(`sizes.${bouquet.size.id}.name`) : null,
+                extraStems > 0 ? t('compose.quantity.extra', { count: extraStems }) : null,
                 bouquet.style ? t(`styles.${bouquet.style.id}.name`) : null,
                 mockup?.name
               ]

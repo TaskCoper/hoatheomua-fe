@@ -1,19 +1,19 @@
 import type {
+  StudioBouquetIngredient,
   StudioIngredient,
   StudioMockup,
   StudioProduct,
-  StudioSize,
   StudioStep,
   StudioStyle,
   StudioSwatch
 } from '@/features/studio/types'
 
 export const studioIngredients: StudioIngredient[] = [
-  { id: 'rose', imageUrl: '/images/custom/material-1.png' },
-  { id: 'tulip', imageUrl: '/images/custom/material-2.png' },
-  { id: 'breath', imageUrl: '/images/custom/material-3.png' },
-  { id: 'eucalyptus', imageUrl: '/images/custom/material-4.png' },
-  { id: 'ribbon', imageUrl: '/images/custom/material-5.png' }
+  { id: 'rose', imageUrl: '/images/custom/material-1.png', baseQuantity: 5, extraPriceAmount: 120000 },
+  { id: 'tulip', imageUrl: '/images/custom/material-2.png', baseQuantity: 3, extraPriceAmount: 95000 },
+  { id: 'breath', imageUrl: '/images/custom/material-3.png', baseQuantity: 2, extraPriceAmount: 60000 },
+  { id: 'eucalyptus', imageUrl: '/images/custom/material-4.png', baseQuantity: 4, extraPriceAmount: 70000 },
+  { id: 'ribbon', imageUrl: '/images/custom/material-5.png', baseQuantity: 1, extraPriceAmount: 45000 }
 ]
 
 export const studioProduct: StudioProduct = {
@@ -25,70 +25,6 @@ export const studioProduct: StudioProduct = {
   ingredientIds: ['rose', 'tulip', 'breath', 'ribbon'],
   imageFit: 'cover'
 }
-
-/** Flowers that can join the base design once the size leaves room for them. */
-export const studioCompanionProducts: StudioProduct[] = [
-  {
-    id: 'ivory-tulip',
-    name: 'Ivory Tulip',
-    note: 'Clean, upright and quietly formal',
-    priceAmount: 890000,
-    imageUrl: '/images/custom/material-2.png',
-    ingredientIds: ['tulip', 'eucalyptus'],
-    imageFit: 'contain'
-  },
-  {
-    id: 'garden-rose',
-    name: 'Garden Rose',
-    note: 'Full petals with a deep blush centre',
-    priceAmount: 1150000,
-    imageUrl: '/images/custom/material-1.png',
-    ingredientIds: ['rose', 'breath'],
-    imageFit: 'contain'
-  },
-  {
-    id: 'cloud-breath',
-    name: "Cloud Baby's Breath",
-    note: 'Airy filler that softens every edge',
-    priceAmount: 540000,
-    imageUrl: '/images/custom/material-3.png',
-    ingredientIds: ['breath'],
-    imageFit: 'contain'
-  },
-  {
-    id: 'silver-eucalyptus',
-    name: 'Silver Eucalyptus',
-    note: 'Silvery greenery that frames the blooms',
-    priceAmount: 620000,
-    imageUrl: '/images/custom/material-4.png',
-    ingredientIds: ['eucalyptus'],
-    imageFit: 'contain'
-  },
-  {
-    id: 'evening-peony',
-    name: 'Evening Peony',
-    note: 'Heavy heads that open over three days',
-    priceAmount: 1680000,
-    imageUrl: '/images/8.webp',
-    ingredientIds: ['rose', 'eucalyptus', 'ribbon'],
-    imageFit: 'cover'
-  },
-  {
-    id: 'market-daisy',
-    name: 'Market Daisy',
-    note: 'Everyday cheer, picked the same morning',
-    priceAmount: 460000,
-    imageUrl: '/images/6.webp',
-    ingredientIds: ['breath', 'eucalyptus'],
-    imageFit: 'cover'
-  }
-]
-
-export const studioSizes: StudioSize[] = [
-  { id: 'small', label: 'S', flowerCount: 1, priceMultiplier: 1 },
-  { id: 'medium', label: 'M', flowerCount: 2, priceMultiplier: 1.08 },
-  { id: 'large', label: 'L', flowerCount: 3, priceMultiplier: 1.15 }
-]
 
 export const studioStyles: StudioStyle[] = [
   { id: 'round', imageUrl: '/images/custom/custom-flower.png' },
@@ -120,6 +56,10 @@ export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
 })
 
 export const formatStudioPrice = (amount: number) => studioPriceFormatter.format(Math.round(amount))
+
+/** "Garden Rose ×6 · French Tulip ×3" - the one-line summary of what goes into the bouquet. */
+export const formatStudioIngredientCounts = (ingredients: StudioBouquetIngredient[], nameOf: (id: string) => string) =>
+  ingredients.map((item) => `${nameOf(item.ingredient.id)} ×${item.quantity}`).join(' · ')
 
 export const studioMockups: StudioMockup[] = [
   {

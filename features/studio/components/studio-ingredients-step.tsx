@@ -4,7 +4,6 @@ import { Field } from '@/components/ui/field'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { STUDIO_DETAIL_KEYS } from '@/features/studio/studio-data'
 import type { StudioIngredient, StudioProduct } from '@/features/studio/types'
 import { STUDIO_NAME_MAX_LENGTH, type StudioFormValues } from '@/features/studio/validations'
 import { cn } from '@/shared/utils'
@@ -95,7 +94,7 @@ export default function StudioIngredientsStep({
         <div className='mt-6 flex flex-col gap-8'>
           {ingredients.map((ingredient, index) => {
             const name = tIngredients(`${ingredient.id}.name`)
-            const amount = tIngredients(`${ingredient.id}.amount`)
+            const amount = tIngredients(`${ingredient.id}.amount`, { count: ingredient.baseQuantity })
             const color = tIngredients(`${ingredient.id}.color`)
             const meaning = tIngredients(`${ingredient.id}.meaning`)
 
@@ -128,7 +127,7 @@ export default function StudioIngredientsStep({
         </div>
       </section>
 
-      <section className='bg-card/40 rounded-3xl p-6 mt-14 flex flex-col gap-4'>
+      {/* <section className='bg-card/40 rounded-3xl p-6 mt-14 flex flex-col gap-4'>
         <dl className='flex flex-col divide-y divide-border'>
           {STUDIO_DETAIL_KEYS.map((key) => (
             <div key={key} className='grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'>
@@ -137,7 +136,7 @@ export default function StudioIngredientsStep({
             </div>
           ))}
         </dl>
-      </section>
+      </section> */}
 
       <p className='flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground mt-6'>
         <HugeiconsIcon icon={SparklesIcon} className='mt-0.5 size-3.5 shrink-0 text-primary' />

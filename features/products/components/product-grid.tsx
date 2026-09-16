@@ -27,11 +27,6 @@ const cardStagger: Variants = {
   visible: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } }
 }
 
-/**
- * Windowed page list around the current page: always shows the first and last
- * page, the current page with its immediate neighbors, and an ellipsis where a
- * gap is collapsed (e.g. page 2 of 8 → [1, 2, 3, …, 8]).
- */
 function getPageNumbers(current: number, total: number): Array<number | 'ellipsis'> {
   if (total <= 1) return [1]
 
@@ -68,17 +63,8 @@ export default function ProductGrid({
   priceTo?: number
   page: number
   onPageChange: (page: number) => void
-  /**
-   * Builds a real URL for a given page so the links work as anchors
-   * (open-in-new-tab, crawlable) while `onClick` keeps the fast client transition.
-   */
   pageHref?: (page: number) => string
   pageSize?: number
-  /**
-   * Renders every card in this grid with `CustomizableProductCard` instead: a
-   * made-to-order bouquet is sold by the stems that go into it, so its card shows
-   * that ingredient list rather than one finished-arrangement photo.
-   */
   isCustomizable?: boolean
   className?: string
   columnsClassName?: string

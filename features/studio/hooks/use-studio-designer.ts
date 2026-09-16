@@ -3,11 +3,9 @@
 import {
   studioProduct as product,
   STUDIO_LAST_STEP,
-  studioCompanionProducts,
   studioIngredients,
   studioMockups,
   studioRibbons,
-  studioSizes,
   studioStyles,
   studioWraps
 } from '@/features/studio/studio-data'
@@ -17,6 +15,13 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
+
+/** Only the stems this design is built from - the rest of the catalogue never reaches the studio. */
+const productIngredients = studioIngredients.filter((item) => product.ingredientIds.includes(item.id))
+
+const baseIngredientQuantities = Object.fromEntries(
+  productIngredients.map((ingredient) => [ingredient.id, ingredient.baseQuantity])
+)
 
 export function useStudioDesigner() {
   const { t: tRoot } = useTranslation()
@@ -38,50 +43,44 @@ export function useStudioDesigner() {
       name: '',
       mockupId: '',
       productId: product.id,
-      sizeId: studioSizes[0].id,
+      ingredientQuantities: { ...baseIngredientQuantities },
       styleId: studioStyles[0].id,
       ribbonId: studioRibbons[0].id,
-      wrapId: studioWraps[0].id,
-      companionProductIds: []
+      wrapId: studioWraps[0].id
     }
   })
 
   const designName = useWatch({ control, name: 'name' })
   const selectedMockupId = useWatch({ control, name: 'mockupId' })
-  const selectedSizeId = useWatch({ control, name: 'sizeId' })
+  const ingredientQuantities = useWatch({ control, name: 'ingredientQuantities' })
   const selectedStyleId = useWatch({ control, name: 'styleId' })
   const selectedRibbonId = useWatch({ control, name: 'ribbonId' })
   const selectedWrapId = useWatch({ control, name: 'wrapId' })
-  const companionProductIds = useWatch({ control, name: 'companionProductIds' })
 
   const mockup = studioMockups.find((item) => item.id === selectedMockupId)
-  const productIngredients = studioIngredients.filter((item) => product.ingredientIds.includes(item.id))
   const trimmedName = designName.trim()
   const nameValid = trimmedName.length >= 2 && designName.length <= STUDIO_NAME_MAX_LENGTH
 
-  const size = studioSizes.find((item) => item.id === selectedSizeId)
-  const slotCount = size?.flowerCount ?? 1
-
   const bouquet = useMemo<StudioBouquet>(() => {
-    const selectedSize = studioSizes.find((item) => item.id === selectedSizeId)
-    const companions = companionProductIds
-      .map((id) => studioCompanionProducts.find((item) => item.id === id))
-      .filter((item) => item !== undefined)
-    const products = [product, ...companions]
-    const flowersAmount = products.reduce((total, item) => total + item.priceAmount, 0)
+    const ingredients = productIngredients.map((ingredient) => {
+      const quantity = ingredientQuantities[ingredient.id] ?? ingredient.baseQuantity
+
+      return { ingredient, quantity, extraQuantity: quantity - ingredient.baseQuantity }
+    })
 
     return {
-      size: selectedSize,
       style: studioStyles.find((item) => item.id === selectedStyleId),
       ribbon: studioRibbons.find((item) => item.id === selectedRibbonId),
       wrap: studioWraps.find((item) => item.id === selectedWrapId),
-      products,
-      totalAmount: flowersAmount * (selectedSize?.priceMultiplier ?? 1)
+      products: [product],
+      ingredients,
+      // The design's price already covers the base stems; only the added ones cost extra.
+      totalAmount: ingredients.reduce(
+        (total, item) => total + item.extraQuantity * item.ingredient.extraPriceAmount,
+        product.priceAmount
+      )
     }
-  }, [companionProductIds, selectedRibbonId, selectedSizeId, selectedStyleId, selectedWrapId])
-
-  /** Every empty slot must be filled before the bouquet is a valid thing to photograph. */
-  const bouquetComplete = companionProductIds.length === slotCount - 1
+  }, [ingredientQuantities, selectedRibbonId, selectedStyleId, selectedWrapId])
 
   const goTo = (nextStep: StudioStep) => {
     setStep(nextStep)
@@ -101,18 +100,21 @@ export function useStudioDesigner() {
     markChanged()
   }
 
-  const selectSize = (id: string) => {
-    const nextSize = studioSizes.find((item) => item.id === id)
-    setValue('sizeId', id, { shouldDirty: true, shouldValidate: true })
-    // A smaller bouquet has fewer slots, so drop the companions that no longer fit.
-    if (nextSize) {
-      setValue('companionProductIds', getValues('companionProductIds').slice(0, nextSize.flowerCount - 1), {
-        shouldDirty: true,
-        shouldValidate: true
-      })
-    }
+  /** The base stems belong to the design itself, so a quantity never drops below them. */
+  const adjustIngredient = (id: string, delta: number) => {
+    const ingredient = productIngredients.find((item) => item.id === id)
+    if (!ingredient) return
+
+    const current = getValues('ingredientQuantities')
+    const next = Math.max(ingredient.baseQuantity, (current[id] ?? ingredient.baseQuantity) + delta)
+    if (next === current[id]) return
+
+    setValue('ingredientQuantities', { ...current, [id]: next }, { shouldDirty: true, shouldValidate: true })
     markChanged()
   }
+
+  const increaseIngredient = (id: string) => adjustIngredient(id, 1)
+  const decreaseIngredient = (id: string) => adjustIngredient(id, -1)
 
   const selectStyle = (id: string) => {
     setValue('styleId', id, { shouldDirty: true, shouldValidate: true })
@@ -126,24 +128,6 @@ export function useStudioDesigner() {
 
   const selectWrap = (id: string) => {
     setValue('wrapId', id, { shouldDirty: true, shouldValidate: true })
-    markChanged()
-  }
-
-  /**
-   * `slot` is 1-based against the companion list: slot 0 is always the base product.
-   * The list stays dense - filling a later slot first simply appends, so no holes appear.
-   */
-  const setCompanion = (slot: number, id: string) => {
-    const next = [...getValues('companionProductIds')]
-    if (slot - 1 < next.length) next[slot - 1] = id
-    else next.push(id)
-    setValue('companionProductIds', next.slice(0, slotCount - 1), { shouldDirty: true, shouldValidate: true })
-    markChanged()
-  }
-
-  const removeCompanion = (slot: number) => {
-    const next = getValues('companionProductIds').filter((_, index) => index !== slot - 1)
-    setValue('companionProductIds', next, { shouldDirty: true, shouldValidate: true })
     markChanged()
   }
 
@@ -209,9 +193,6 @@ export function useStudioDesigner() {
     trimmedName,
     nameValid,
     bouquet,
-    bouquetComplete,
-    companionProductIds,
-    slotCount,
     setStep,
     setAdded,
     goTo,
@@ -219,12 +200,11 @@ export function useStudioDesigner() {
     goBack,
     markChanged,
     selectMockup,
-    selectSize,
+    increaseIngredient,
+    decreaseIngredient,
     selectStyle,
     selectRibbon,
     selectWrap,
-    setCompanion,
-    removeCompanion,
     selectVersion,
     startGeneration
   }

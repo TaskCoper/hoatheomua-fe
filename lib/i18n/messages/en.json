@@ -1755,31 +1755,31 @@
     "ingredients": {
       "rose": {
         "name": "Garden Rose",
-        "amount": "5 stems",
+        "amount": "{count, plural, one {# stem} other {# stems}}",
         "color": "Blush pink",
         "meaning": "Blush garden roses stand for graceful love and quiet devotion - the heart of every bouquet."
       },
       "tulip": {
         "name": "French Tulip",
-        "amount": "3 stems",
+        "amount": "{count, plural, one {# stem} other {# stems}}",
         "color": "Warm ivory",
         "meaning": "Ivory tulips symbolize forgiveness and fresh beginnings, adding soft elegance to the mix."
       },
       "breath": {
         "name": "Baby's Breath",
-        "amount": "2 sprays",
+        "amount": "{count, plural, one {# spray} other {# sprays}}",
         "color": "Cloud white",
         "meaning": "Delicate baby's breath represents everlasting love, filling the gaps with airy romance."
       },
       "eucalyptus": {
         "name": "Silver Eucalyptus",
-        "amount": "4 stems",
+        "amount": "{count, plural, one {# stem} other {# stems}}",
         "color": "Silver green",
         "meaning": "Eucalyptus stands for protection and renewal, framing the blooms with soft, silvery greenery."
       },
       "ribbon": {
         "name": "Dusty Rose Satin",
-        "amount": "1 ribbon",
+        "amount": "{count, plural, one {# ribbon} other {# ribbons}}",
         "color": "Dusty rose",
         "meaning": "A dusty rose satin ribbon ties the story together, symbolizing gratitude and thoughtful care."
       }
@@ -1830,7 +1830,7 @@
       "status": "Status",
       "ready": "Ready",
       "generateAnother": "Generate another version",
-      "generateAnotherNote": "Go back to your bouquet - change the size, flowers, style or scene. Every version you make stays in the preview.",
+      "generateAnotherNote": "Go back to your bouquet. Every version you make stays in the preview.",
       "pendingTitle": "Ready when you are.",
       "pendingBody": "We’ll combine your flower design with {mockup}. Generation takes only a moment.",
       "pendingNote": "AI will create one unique image from these selections. You’ll review the result here before adding it to your bag."
@@ -1881,27 +1881,19 @@
     },
     "compose": {
       "title": "Compose your bouquet",
-      "note": "Size, shape and finishing colours. Everything here is reflected in your live preview.",
-      "reviewNote": "The size, shape and colours your bouquet is built with.",
-      "size": {
-        "label": "Size",
-        "note": "A larger size simply makes room for more flowers.",
-        "flowerCount": "{count, plural, one {# flower} other {# flowers}}"
+      "note": "Quantity, shape and finishing colours. Everything here is reflected in your live preview.",
+      "reviewNote": "The quantity, shape and colours your bouquet is built with.",
+      "quantity": {
+        "label": "Quantity",
+        "increase": "Add one more {name}",
+        "decrease": "Remove one {name}",
+        "extraPrice": "Each extra adds {price}",
+        "added": "{count} added · {price}",
+        "extra": "{count, plural, one {# extra stem} other {# extra stems}}"
       },
       "bouquet": {
         "label": "Your flowers",
-        "note": "{filled} of {count} chosen. The first is the design you came in with.",
-        "slotBase": "Base flower",
-        "slotIndex": "Flower {slot}",
-        "add": "Add a flower",
-        "addNote": "Pick one from the studio catalogue",
-        "change": "Change {name}",
-        "remove": "Remove {name}",
-        "incomplete": "Pick {count, plural, one {# flower} other {# flowers}} to fill this size.",
-        "alreadyUsed": "Already in the bouquet",
-        "dialogTitle": "Choose flower {slot}",
-        "dialogNote": "Everything here is cut and conditioned on the morning of your delivery.",
-        "dialogFootnote": "Adding a flower changes the total. You can swap or remove it at any time before you generate."
+        "note": "Add more of any flower. Quantities only go up from what the design already includes."
       },
       "style": {
         "label": "Style",
@@ -1924,18 +1916,7 @@
         "label": "Finishing colours",
         "note": "The ribbon and paper your flowers are dressed in."
       },
-      "closingNote": "Sizes and shapes are guides, not templates. Your florist arranges by hand on the day, so the finished bouquet carries its own natural character."
-    },
-    "sizes": {
-      "small": {
-        "name": "Small"
-      },
-      "medium": {
-        "name": "Medium"
-      },
-      "large": {
-        "name": "Large"
-      }
+      "closingNote": "Shapes are guides, not templates. Your florist arranges by hand on the day, so the finished bouquet carries its own natural character."
     },
     "styles": {
       "round": {

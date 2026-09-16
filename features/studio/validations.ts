@@ -1,4 +1,3 @@
-import { studioSizes } from '@/features/studio/studio-data'
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import z from 'zod'
 
@@ -23,9 +22,16 @@ export const createStudioSchema = (t: TranslationFunction) =>
       productId: z.string().min(1, {
         error: t('common.validation.required', { field: t('studio.result.flowers') })
       }),
-      sizeId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.compose.size.label') })
-      }),
+      /** Keyed by ingredient id, and never below the quantity the design already includes. */
+      ingredientQuantities: z.record(
+        z.string(),
+        z
+          .number()
+          .int()
+          .min(1, {
+            error: t('common.validation.required', { field: t('studio.compose.quantity.label') })
+          })
+      ),
       styleId: z.string().min(1, {
         error: t('common.validation.required', { field: t('studio.compose.style.label') })
       }),
@@ -34,22 +40,8 @@ export const createStudioSchema = (t: TranslationFunction) =>
       }),
       wrapId: z.string().min(1, {
         error: t('common.validation.required', { field: t('studio.compose.wrap.label') })
-      }),
-      /** The base product fills the first slot, so this holds the remaining flowerCount - 1 picks. */
-      companionProductIds: z.array(z.string())
+      })
     })
     .strict()
-    .superRefine((values, ctx) => {
-      const size = studioSizes.find((item) => item.id === values.sizeId)
-      if (!size) return
-
-      if (values.companionProductIds.length !== size.flowerCount - 1) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['companionProductIds'],
-          message: t('studio.compose.bouquet.incomplete', { count: size.flowerCount })
-        })
-      }
-    })
 
 export type StudioFormValues = z.infer<ReturnType<typeof createStudioSchema>>

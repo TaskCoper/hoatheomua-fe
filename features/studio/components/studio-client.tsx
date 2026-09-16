@@ -34,9 +34,6 @@ export default function StudioClient() {
     trimmedName,
     nameValid,
     bouquet,
-    bouquetComplete,
-    companionProductIds,
-    slotCount,
     setStep,
     setAdded,
     goTo,
@@ -44,17 +41,16 @@ export default function StudioClient() {
     goBack,
     markChanged,
     selectMockup,
-    selectSize,
+    increaseIngredient,
+    decreaseIngredient,
     selectStyle,
     selectRibbon,
     selectWrap,
-    setCompanion,
-    removeCompanion,
     selectVersion,
     startGeneration
   } = useStudioDesigner()
 
-  const canContinue = step === 1 ? nameValid : step === 2 ? bouquetComplete : Boolean(selectedMockupId)
+  const canContinue = step === 1 ? nameValid : step === 2 ? true : Boolean(selectedMockupId)
   const addToBag = () => setAdded(true)
 
   const desktopNav = (
@@ -100,15 +96,12 @@ export default function StudioClient() {
               <div className='animate-in fade-in slide-in-from-right-2 duration-300'>
                 <StudioComposeStep
                   bouquet={bouquet}
-                  companionProductIds={companionProductIds}
-                  slotCount={slotCount}
                   actions={desktopNav}
-                  onSelectSize={selectSize}
+                  onIncreaseIngredient={increaseIngredient}
+                  onDecreaseIngredient={decreaseIngredient}
                   onSelectStyle={selectStyle}
                   onSelectRibbon={selectRibbon}
                   onSelectWrap={selectWrap}
-                  onSetCompanion={setCompanion}
-                  onRemoveCompanion={removeCompanion}
                 />
               </div>
             ) : null}
@@ -133,13 +126,19 @@ export default function StudioClient() {
             ) : null}
 
             {step === 4 ? (
-              <StudioReview mockup={mockup} bouquet={bouquet} designName={trimmedName} actions={desktopNav} />
+              <StudioReview
+                mockup={mockup}
+                bouquet={bouquet}
+                designName={trimmedName}
+                actions={desktopNav}
+                onIncreaseIngredient={increaseIngredient}
+                onDecreaseIngredient={decreaseIngredient}
+              />
             ) : null}
 
             {step === 5 ? (
               <StudioResult
                 product={product}
-                ingredients={productIngredients}
                 mockup={mockup}
                 bouquet={bouquet}
                 designName={trimmedName}

@@ -1,7 +1,9 @@
 import { getCachedCategories } from '@/features/categories/queries.server'
 import { CategoryProductPage, type SortableCategory } from '@/features/categories/types'
+import { resolveCategoriesByIds } from '@/features/categories/utils'
 import HomeContent from '@/features/home/components/home-content'
 import { buildHomeJsonLd, generateHomeMetadata } from '@/features/home/seo'
+import { CUSTOMIZABLE_CATEGORY_ID } from '@/features/products/constants'
 import { productsQueryKey } from '@/features/products/hooks/use-get-products'
 import { getCachedProducts } from '@/features/products/queries.server'
 import { getSectionDefaultParams } from '@/features/products/section-defaults'
@@ -36,12 +38,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
   const homeJsonLdPromise = buildHomeJsonLd(locale)
 
   let categories: SortableCategory[] = []
+  let customizableCategory: SortableCategory | null = null
 
   try {
-    categories = await getCachedCategories({ page: categoryPage })
+    const [homeCategories, allCategories] = await Promise.all([
+      getCachedCategories({ page: categoryPage }),
+      getCachedCategories()
+    ])
+
+    categories = homeCategories
+    customizableCategory = resolveCategoriesByIds(allCategories, [CUSTOMIZABLE_CATEGORY_ID])[0] ?? null
+
+    const sectionCategories = customizableCategory ? [...categories, customizableCategory] : categories
 
     await Promise.all(
-      categories.map(async (category) => {
+      sectionCategories.map(async (category) => {
         const params = getSectionDefaultParams(category)
 
         try {
@@ -63,7 +74,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: L
       <JsonLd data={homeJsonLd} />
 
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <HomeContent categories={categories} />
+        <HomeContent categories={categories} customizableCategory={customizableCategory} />
       </HydrationBoundary>
     </>
   )

@@ -1,14 +1,8 @@
 'use client'
 
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { formatStudioPrice } from '@/features/studio/studio-data'
-import type {
-  StudioBouquet,
-  StudioGenerationStatus,
-  StudioIngredient,
-  StudioMockup,
-  StudioProduct
-} from '@/features/studio/types'
+import { formatStudioIngredientCounts, formatStudioPrice } from '@/features/studio/studio-data'
+import type { StudioBouquet, StudioGenerationStatus, StudioMockup, StudioProduct } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { ArrowRight02Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -23,7 +17,6 @@ const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
 
 interface StudioResultProps {
   product: StudioProduct
-  ingredients: StudioIngredient[]
   mockup?: StudioMockup
   bouquet: StudioBouquet
   designName: string
@@ -35,7 +28,6 @@ interface StudioResultProps {
 
 export default function StudioResult({
   product,
-  ingredients,
   mockup,
   bouquet,
   designName,
@@ -77,11 +69,9 @@ export default function StudioResult({
               <dd className={detailValueClass}>{bouquet.products.map((item) => item.name).join(' + ')}</dd>
             </div>
             <div className={detailRowClass}>
-              <dt className={detailTermClass}>{tCompose('size.label')}</dt>
+              <dt className={detailTermClass}>{tCompose('quantity.label')}</dt>
               <dd className={detailValueClass}>
-                {bouquet.size
-                  ? `${t(`sizes.${bouquet.size.id}.name`)} · ${tCompose('size.flowerCount', { count: bouquet.size.flowerCount })}`
-                  : null}
+                {formatStudioIngredientCounts(bouquet.ingredients, (id) => tIngredients(`${id}.name`))}
               </dd>
             </div>
             <div className={detailRowClass}>
@@ -174,11 +164,11 @@ export default function StudioResult({
       <section className='mt-14'>
         <StudioStepHeading
           title={t('review.flowersTitle')}
-          description={t('review.flowersNote', { count: ingredients.length, name: product.name })}
+          description={t('review.flowersNote', { count: bouquet.ingredients.length, name: product.name })}
         />
 
         <div className='mt-6 flex flex-col gap-8'>
-          {ingredients.map((ingredient) => (
+          {bouquet.ingredients.map(({ ingredient, quantity }) => (
             <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
               <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
                 <Image
@@ -193,7 +183,8 @@ export default function StudioResult({
 
               <div className='min-w-0'>
                 <p className={microLabelClass}>
-                  {tIngredients(`${ingredient.id}.amount`)} · {tIngredients(`${ingredient.id}.color`)}
+                  {tIngredients(`${ingredient.id}.amount`, { count: quantity })} ·{' '}
+                  {tIngredients(`${ingredient.id}.color`)}
                 </p>
                 <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>
                   {tIngredients(`${ingredient.id}.name`)}
@@ -209,29 +200,23 @@ export default function StudioResult({
 
       {mockup ? (
         <section className='mt-14'>
-          <StudioStepHeading title={t('review.sceneTitle')} description={mockup.description} />
+          <StudioStepHeading title={t('review.sceneTitle')} description={t('review.sceneNote')} />
 
-          <div className='mt-6 rounded-3xl bg-card/40 p-6'>
-            <dl className='flex flex-col divide-y divide-border'>
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tScene('sceneStoryLabel')}</dt>
-                <dd className={detailValueClass}>{mockup.story}</dd>
-              </div>
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tScene('sceneMoodLabel')}</dt>
-                <dd className='flex flex-wrap gap-2'>
-                  {mockup.moods.map((mood) => (
-                    <span
-                      key={mood}
-                      className='rounded-full bg-secondary/60 px-3 py-1 text-xs font-medium text-secondary-foreground'
-                    >
-                      {mood}
-                    </span>
-                  ))}
-                </dd>
-              </div>
-            </dl>
-          </div>
+          <figure className='mt-6'>
+            <div className='relative aspect-[4/5] overflow-hidden rounded-3xl bg-secondary/40 ring-1 ring-foreground/5 sm:aspect-[4/3]'>
+              <Image
+                src={mockup.imageUrl}
+                alt={mockup.name}
+                fill
+                sizes='(min-width: 1024px) 42vw, 100vw'
+                className='object-cover'
+              />
+            </div>
+            <figcaption className='mt-4'>
+              <p className={microLabelClass}>{tScene('selectedScene')}</p>
+              <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>{mockup.name}</h3>
+            </figcaption>
+          </figure>
         </section>
       ) : null}
 

@@ -5,6 +5,10 @@ export type StudioGenerationStatus = 'idle' | 'generating' | 'complete'
 export interface StudioIngredient {
   id: string
   imageUrl: string
+  /** How many of this stem the design already carries - the floor the counter starts at. */
+  baseQuantity: number
+  /** What one stem beyond the base adds to the total. */
+  extraPriceAmount: number
 }
 
 export interface StudioProduct {
@@ -17,15 +21,6 @@ export interface StudioProduct {
   imageFit?: 'cover' | 'contain'
 }
 
-/** A size is really a flower count: S holds 1 bloom group, M holds 2, L holds 3. */
-export interface StudioSize {
-  id: string
-  label: string
-  flowerCount: number
-  /** Multiplies the combined flower price to cover the extra wrap and labour. */
-  priceMultiplier: number
-}
-
 export interface StudioStyle {
   id: string
   imageUrl: string
@@ -36,12 +31,20 @@ export interface StudioSwatch {
   color: string
 }
 
+export interface StudioBouquetIngredient {
+  ingredient: StudioIngredient
+  /** Never below `ingredient.baseQuantity` - stems can only be added at this step. */
+  quantity: number
+  /** Stems on top of what the design already includes. */
+  extraQuantity: number
+}
+
 export interface StudioBouquet {
-  size?: StudioSize
   style?: StudioStyle
   ribbon?: StudioSwatch
   wrap?: StudioSwatch
   products: StudioProduct[]
+  ingredients: StudioBouquetIngredient[]
   totalAmount: number
 }
 

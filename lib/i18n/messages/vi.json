@@ -1755,31 +1755,31 @@
     "ingredients": {
       "rose": {
         "name": "Hoa Hồng Vườn",
-        "amount": "5 cành",
+        "amount": "{count} cành",
         "color": "Hồng phấn",
         "meaning": "Hoa hồng phấn tượng trưng cho tình yêu dịu dàng và sự tận tâm thầm lặng - trái tim của mỗi bó hoa."
       },
       "tulip": {
         "name": "Tulip Pháp",
-        "amount": "3 cành",
+        "amount": "{count} cành",
         "color": "Ngà ấm",
         "meaning": "Tulip ngà tượng trưng cho sự tha thứ và khởi đầu mới, mang đến nét thanh lịch nhẹ nhàng cho bó hoa."
       },
       "breath": {
         "name": "Hoa Baby",
-        "amount": "2 nhánh",
+        "amount": "{count} nhánh",
         "color": "Trắng mây",
         "meaning": "Hoa baby mỏng manh tượng trưng cho tình yêu vĩnh cửu, lấp đầy khoảng trống bằng nét lãng mạn nhẹ nhàng."
       },
       "eucalyptus": {
         "name": "Bạch Đàn Bạc",
-        "amount": "4 cành",
+        "amount": "{count} cành",
         "color": "Xanh bạc",
         "meaning": "Bạch đàn tượng trưng cho sự bảo vệ và tái sinh, tô điểm cho các bông hoa bằng sắc xanh bạc mềm mại."
       },
       "ribbon": {
         "name": "Ruy Băng Sa Tanh Hồng Đất",
-        "amount": "1 ruy băng",
+        "amount": "{count} ruy băng",
         "color": "Hồng đất",
         "meaning": "Ruy băng sa tanh hồng đất kết nối câu chuyện, tượng trưng cho lòng biết ơn và sự chăm chút tỉ mỉ."
       }
@@ -1830,7 +1830,7 @@
       "status": "Trạng thái",
       "ready": "Sẵn sàng",
       "generateAnother": "Tạo phiên bản khác",
-      "generateAnotherNote": "Quay lại bó hoa của bạn - đổi kích thước, loại hoa, kiểu bó hay bối cảnh. Mọi phiên bản bạn tạo đều được giữ trong bản xem trước.",
+      "generateAnotherNote": "Quay lại bó hoa của bạn. Mọi phiên bản bạn tạo đều được giữ trong bản xem trước.",
       "pendingTitle": "Sẵn sàng khi bạn muốn.",
       "pendingBody": "Chúng tôi sẽ kết hợp thiết kế hoa của bạn với {mockup}. Quá trình tạo mẫu chỉ mất một chút thời gian.",
       "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng."
@@ -1881,27 +1881,19 @@
     },
     "compose": {
       "title": "Tạo bó hoa của bạn",
-      "note": "Kích thước, kiểu bó và màu hoàn thiện. Mọi lựa chọn đều hiện ngay trong bản xem trước.",
-      "reviewNote": "Kích thước, kiểu bó và màu sắc làm nên bó hoa của bạn.",
-      "size": {
-        "label": "Kích thước",
-        "note": "Kích thước lớn hơn đơn giản là chỗ cho nhiều hoa hơn.",
-        "flowerCount": "{count} loại hoa"
+      "note": "Số lượng, kiểu bó và màu hoàn thiện. Mọi lựa chọn đều hiện ngay trong bản xem trước.",
+      "reviewNote": "Số lượng, kiểu bó và màu sắc làm nên bó hoa của bạn.",
+      "quantity": {
+        "label": "Số lượng",
+        "increase": "Thêm một {name}",
+        "decrease": "Bớt một {name}",
+        "extraPrice": "Mỗi lần thêm cộng {price}",
+        "added": "Đã thêm {count} · {price}",
+        "extra": "Đã thêm {count}"
       },
       "bouquet": {
         "label": "Hoa của bạn",
-        "note": "Đã chọn {filled}/{count}. Loại đầu tiên là thiết kế bạn mang theo.",
-        "slotBase": "Hoa nền",
-        "slotIndex": "Hoa {slot}",
-        "add": "Thêm một loại hoa",
-        "addNote": "Chọn từ danh mục của studio",
-        "change": "Đổi {name}",
-        "remove": "Bỏ {name}",
-        "incomplete": "Hãy chọn đủ {count} loại hoa cho kích thước này.",
-        "alreadyUsed": "Đã có trong bó",
-        "dialogTitle": "Chọn hoa {slot}",
-        "dialogNote": "Mọi loại hoa ở đây đều được cắt và dưỡng vào sáng ngày giao.",
-        "dialogFootnote": "Thêm một loại hoa sẽ thay đổi tổng tiền. Bạn có thể đổi hoặc bỏ bất cứ lúc nào trước khi tạo mẫu."
+        "note": "Thêm bất kỳ loại hoa nào. Số lượng chỉ tăng so với thiết kế gốc."
       },
       "style": {
         "label": "Kiểu bó",
@@ -1924,18 +1916,7 @@
         "label": "Màu hoàn thiện",
         "note": "Ruy băng và giấy gói khoác lên bó hoa của bạn."
       },
-      "closingNote": "Kích thước và kiểu bó chỉ mang tính định hướng. Bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm luôn mang nét tự nhiên riêng."
-    },
-    "sizes": {
-      "small": {
-        "name": "Nhỏ"
-      },
-      "medium": {
-        "name": "Vừa"
-      },
-      "large": {
-        "name": "Lớn"
-      }
+      "closingNote": "Kiểu bó chỉ mang tính định hướng. Bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm luôn mang nét tự nhiên riêng."
     },
     "styles": {
       "round": {
