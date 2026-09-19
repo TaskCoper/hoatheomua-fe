@@ -1,5 +1,7 @@
-import { studioMockups, studioProduct } from '@/features/studio/studio-data'
+import { studioMockups } from '@/features/studio/studio-data'
 import type { StudioGeneration } from '@/features/studio/types'
+
+const SEED_PRODUCT = { id: 'seasonal-blush', name: 'Seasonal Blush' }
 
 /**
  * TODO(backend): there is no studio-generation service yet. The studio itself keeps
@@ -25,8 +27,8 @@ export const MOCK_STUDIO_GENERATIONS: StudioGeneration[] = SEEDS.flatMap((seed) 
     {
       id: seed.id,
       name: seed.name,
-      productId: studioProduct.id,
-      productName: studioProduct.name,
+      productId: SEED_PRODUCT.id,
+      productName: SEED_PRODUCT.name,
       mockupId: mockup.id,
       mockupName: mockup.name,
       imageUrl: mockup.imageUrl,

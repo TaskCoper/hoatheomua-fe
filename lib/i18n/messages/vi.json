@@ -1750,7 +1750,9 @@
       "detailsNote": "Mỗi cành hoa được cắt và dưỡng vào sáng ngày giao, nên đôi chút khác biệt tự nhiên về sắc độ và kích thước là điều làm nên nét thủ công.",
       "ingredientMeaningLabel": "Ý nghĩa",
       "ingredientExpandAriaLabel": "Xem ý nghĩa của {name}",
-      "ingredientCollapseAriaLabel": "Ẩn ý nghĩa của {name}"
+      "ingredientCollapseAriaLabel": "Ẩn ý nghĩa của {name}",
+      "insideNote": "{count} nguyên liệu tạo nên thiết kế này.",
+      "noMaterials": "Danh sách hoa của thiết kế này chưa được cập nhật. Nhân viên sẽ xác nhận cùng bạn trước khi thực hiện."
     },
     "ingredients": {
       "rose": {
@@ -1889,11 +1891,13 @@
         "decrease": "Bớt một {name}",
         "extraPrice": "Mỗi lần thêm cộng {price}",
         "added": "Đã thêm {count} · {price}",
-        "extra": "Đã thêm {count}"
+        "extra": "Đã thêm {count}",
+        "addedPlain": "Đã thêm {count}"
       },
       "bouquet": {
         "label": "Hoa của bạn",
-        "note": "Thêm bất kỳ loại hoa nào. Số lượng chỉ tăng so với thiết kế gốc."
+        "note": "Thêm bất kỳ loại hoa nào. Số lượng chỉ tăng so với thiết kế gốc.",
+        "emptyNote": "Thiết kế này chưa có danh sách nguyên liệu nên không có gì để điều chỉnh ở đây. Bạn vẫn chọn được dáng bó và màu hoàn thiện."
       },
       "style": {
         "label": "Kiểu bó",
@@ -1949,7 +1953,12 @@
       "blush": "Hồng phấn",
       "forest": "Xanh rừng",
       "charcoal": "Xám than"
-    }
+    },
+    "imagePending": "Ảnh sẽ được cập nhật",
+    "loading": "Đang mở xưởng thiết kế...",
+    "unavailable": "Không mở được thiết kế này.",
+    "unavailableNote": "Sản phẩm có thể đã được gỡ hoặc kết nối bị gián đoạn. Hãy chọn một thiết kế trong bộ sưu tập và thử lại.",
+    "backToProducts": "Về bộ sưu tập"
   },
   "b2b": {
     "hero": {

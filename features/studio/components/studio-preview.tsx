@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import StudioGenerationOverlay from '@/features/studio/components/studio-generation-overlay'
+import StudioImage from '@/features/studio/components/studio-image'
 import StudioResultCarousel from '@/features/studio/components/studio-result-carousel'
 import { formatStudioPrice, STUDIO_LAST_STEP } from '@/features/studio/studio-data'
 import type {
@@ -72,6 +73,8 @@ export default function StudioPreview({
     return { src: '/images/about/studio-flatlay.png', alt: t('preview.workTableAlt'), object: 'object-cover' }
   })()
 
+  const overlayProduct = !showVersions && step > 1 && mockup && mockup.imageUrl !== product.imageUrl
+
   const stageLabel =
     step === 1
       ? t('preview.stage.ingredients')
@@ -98,7 +101,7 @@ export default function StudioPreview({
           onSelect={onSelectVersion}
         />
       ) : (
-        <Image
+        <StudioImage
           key={`${hero.src}-${step}`}
           src={hero.src}
           alt={hero.alt}
@@ -106,6 +109,8 @@ export default function StudioPreview({
           priority
           sizes='(min-width: 1024px) 60vw, 100vw'
           className={cn('animate-in fade-in zoom-in-[0.98] duration-700', hero.object, step > 1 && 'brightness-[0.88]')}
+          pendingLabel={t('imagePending')}
+          pendingIconClassName='size-12'
         />
       )}
       <div
@@ -124,7 +129,7 @@ export default function StudioPreview({
         </span>
       </div>
 
-      {!showVersions && step > 1 && mockup && mockup.imageUrl !== product.imageUrl ? (
+      {overlayProduct && product.imageUrl ? (
         <div className='absolute inset-0 flex items-center justify-center px-8 pb-14 pt-8'>
           <div className='relative h-full w-full max-w-[28rem] drop-shadow-[0_1.5rem_2.5rem_rgb(28_43_43/30%)]'>
             <Image

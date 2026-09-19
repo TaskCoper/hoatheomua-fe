@@ -1,5 +1,6 @@
 'use client'
 
+import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { formatStudioIngredientCounts, formatStudioPrice } from '@/features/studio/studio-data'
 import type { StudioBouquet, StudioGenerationStatus, StudioMockup, StudioProduct } from '@/features/studio/types'
@@ -39,7 +40,6 @@ export default function StudioResult({
   const t = useTranslations('studio')
   const tScene = useTranslations('studio.scene')
   const tCompose = useTranslations('studio.compose')
-  const tIngredients = useTranslations('studio.ingredients')
   const complete = status === 'complete'
 
   return (
@@ -68,12 +68,12 @@ export default function StudioResult({
               <dt className={detailTermClass}>{t('result.flowers')}</dt>
               <dd className={detailValueClass}>{bouquet.products.map((item) => item.name).join(' + ')}</dd>
             </div>
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{tCompose('quantity.label')}</dt>
-              <dd className={detailValueClass}>
-                {formatStudioIngredientCounts(bouquet.ingredients, (id) => tIngredients(`${id}.name`))}
-              </dd>
-            </div>
+            {bouquet.ingredients.length > 0 ? (
+              <div className={detailRowClass}>
+                <dt className={detailTermClass}>{tCompose('quantity.label')}</dt>
+                <dd className={detailValueClass}>{formatStudioIngredientCounts(bouquet.ingredients)}</dd>
+              </div>
+            ) : null}
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('style.label')}</dt>
               <dd className={detailValueClass}>{bouquet.style ? t(`styles.${bouquet.style.id}.name`) : null}</dd>
@@ -161,42 +161,38 @@ export default function StudioResult({
         ) : null}
       </section>
 
-      <section className='mt-14'>
-        <StudioStepHeading
-          title={t('review.flowersTitle')}
-          description={t('review.flowersNote', { count: bouquet.ingredients.length, name: product.name })}
-        />
+      {bouquet.ingredients.length > 0 ? (
+        <section className='mt-14'>
+          <StudioStepHeading
+            title={t('review.flowersTitle')}
+            description={t('review.flowersNote', { count: bouquet.ingredients.length, name: product.name })}
+          />
 
-        <div className='mt-6 flex flex-col gap-8'>
-          {bouquet.ingredients.map(({ ingredient, quantity }) => (
-            <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
-              <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
-                <Image
-                  src={ingredient.imageUrl}
-                  alt={tIngredients(`${ingredient.id}.name`)}
-                  fill
-                  sizes='(min-width: 1024px) 11rem, (min-width: 640px) 30vw, 100vw'
-                  loading='lazy'
-                  className='object-cover'
-                />
-              </div>
+          <div className='mt-6 flex flex-col gap-8'>
+            {bouquet.ingredients.map(({ ingredient }) => (
+              <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
+                <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
+                  <StudioImage
+                    src={ingredient.imageUrl}
+                    alt={ingredient.name}
+                    fill
+                    sizes='(min-width: 1024px) 11rem, (min-width: 640px) 30vw, 100vw'
+                    loading='lazy'
+                    className='object-cover'
+                    pendingIconClassName='size-6'
+                  />
+                </div>
 
-              <div className='min-w-0'>
-                <p className={microLabelClass}>
-                  {tIngredients(`${ingredient.id}.amount`, { count: quantity })} ·{' '}
-                  {tIngredients(`${ingredient.id}.color`)}
-                </p>
-                <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>
-                  {tIngredients(`${ingredient.id}.name`)}
-                </h3>
-                <p className='text-xs leading-relaxed text-muted-foreground'>
-                  {tIngredients(`${ingredient.id}.meaning`)}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+                <div className='flex min-w-0 items-center'>
+                  <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>
+                    {ingredient.name}
+                  </h3>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {mockup ? (
         <section className='mt-14'>

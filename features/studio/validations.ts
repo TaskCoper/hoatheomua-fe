@@ -22,13 +22,12 @@ export const createStudioSchema = (t: TranslationFunction) =>
       productId: z.string().min(1, {
         error: t('common.validation.required', { field: t('studio.result.flowers') })
       }),
-      /** Keyed by ingredient id, and never below the quantity the design already includes. */
       ingredientQuantities: z.record(
         z.string(),
         z
           .number()
           .int()
-          .min(1, {
+          .min(0, {
             error: t('common.validation.required', { field: t('studio.compose.quantity.label') })
           })
       ),

@@ -1,30 +1,10 @@
 import type {
   StudioBouquetIngredient,
-  StudioIngredient,
   StudioMockup,
-  StudioProduct,
   StudioStep,
   StudioStyle,
   StudioSwatch
 } from '@/features/studio/types'
-
-export const studioIngredients: StudioIngredient[] = [
-  { id: 'rose', imageUrl: '/images/custom/material-1.png', baseQuantity: 5, extraPriceAmount: 120000 },
-  { id: 'tulip', imageUrl: '/images/custom/material-2.png', baseQuantity: 3, extraPriceAmount: 95000 },
-  { id: 'breath', imageUrl: '/images/custom/material-3.png', baseQuantity: 2, extraPriceAmount: 60000 },
-  { id: 'eucalyptus', imageUrl: '/images/custom/material-4.png', baseQuantity: 4, extraPriceAmount: 70000 },
-  { id: 'ribbon', imageUrl: '/images/custom/material-5.png', baseQuantity: 1, extraPriceAmount: 45000 }
-]
-
-export const studioProduct: StudioProduct = {
-  id: 'seasonal-blush',
-  name: 'Seasonal Blush',
-  note: 'Soft, layered and romantic',
-  priceAmount: 1490000,
-  imageUrl: '/images/custom/custom-flower.png',
-  ingredientIds: ['rose', 'tulip', 'breath', 'ribbon'],
-  imageFit: 'cover'
-}
 
 export const studioStyles: StudioStyle[] = [
   { id: 'round', imageUrl: '/images/custom/custom-flower.png' },
@@ -57,9 +37,10 @@ export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
 
 export const formatStudioPrice = (amount: number) => studioPriceFormatter.format(Math.round(amount))
 
-/** "Garden Rose ×6 · French Tulip ×3" - the one-line summary of what goes into the bouquet. */
-export const formatStudioIngredientCounts = (ingredients: StudioBouquetIngredient[], nameOf: (id: string) => string) =>
-  ingredients.map((item) => `${nameOf(item.ingredient.id)} ×${item.quantity}`).join(' · ')
+export const formatStudioIngredientCounts = (ingredients: StudioBouquetIngredient[]) =>
+  ingredients
+    .map((item) => (item.extraQuantity > 0 ? `${item.ingredient.name} +${item.extraQuantity}` : item.ingredient.name))
+    .join(' · ')
 
 export const studioMockups: StudioMockup[] = [
   {

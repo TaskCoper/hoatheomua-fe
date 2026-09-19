@@ -1750,7 +1750,9 @@
       "detailsNote": "Every stem is cut and conditioned on the morning of your delivery, so small natural differences in tone and size are part of the craft.",
       "ingredientMeaningLabel": "Meaning",
       "ingredientExpandAriaLabel": "Show meaning of {name}",
-      "ingredientCollapseAriaLabel": "Hide meaning of {name}"
+      "ingredientCollapseAriaLabel": "Hide meaning of {name}",
+      "insideNote": "{count, plural, one {# element} other {# elements}} that make up this design.",
+      "noMaterials": "The flowers in this design are not listed yet. Your florist confirms them with you before it is made."
     },
     "ingredients": {
       "rose": {
@@ -1889,11 +1891,13 @@
         "decrease": "Remove one {name}",
         "extraPrice": "Each extra adds {price}",
         "added": "{count} added · {price}",
-        "extra": "{count, plural, one {# extra stem} other {# extra stems}}"
+        "extra": "{count, plural, one {# extra stem} other {# extra stems}}",
+        "addedPlain": "{count, plural, one {# added} other {# added}}"
       },
       "bouquet": {
         "label": "Your flowers",
-        "note": "Add more of any flower. Quantities only go up from what the design already includes."
+        "note": "Add more of any flower. Quantities only go up from what the design already includes.",
+        "emptyNote": "This design has no material list yet, so there is nothing to count here. The shape and finishing colours are still yours to choose."
       },
       "style": {
         "label": "Style",
@@ -1949,7 +1953,12 @@
       "blush": "Blush",
       "forest": "Forest",
       "charcoal": "Charcoal"
-    }
+    },
+    "imagePending": "Photograph coming soon",
+    "loading": "Opening the studio...",
+    "unavailable": "We could not open this design.",
+    "unavailableNote": "The product may have been removed, or the connection dropped. Pick a design from the collection and try again.",
+    "backToProducts": "Back to the collection"
   },
   "b2b": {
     "hero": {

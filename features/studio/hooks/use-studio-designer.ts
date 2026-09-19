@@ -1,14 +1,14 @@
 'use client'
 
+import type { ProductDetail } from '@/features/products/types'
 import {
-  studioProduct as product,
   STUDIO_LAST_STEP,
-  studioIngredients,
   studioMockups,
   studioRibbons,
   studioStyles,
   studioWraps
 } from '@/features/studio/studio-data'
+import { toStudioIngredients, toStudioProduct } from '@/features/studio/studio-mappers'
 import type { StudioBouquet, StudioGenerationStatus, StudioStep, StudioVersion } from '@/features/studio/types'
 import { createStudioSchema, STUDIO_NAME_MAX_LENGTH, type StudioFormValues } from '@/features/studio/validations'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -16,15 +16,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-/** Only the stems this design is built from - the rest of the catalogue never reaches the studio. */
-const productIngredients = studioIngredients.filter((item) => product.ingredientIds.includes(item.id))
-
-const baseIngredientQuantities = Object.fromEntries(
-  productIngredients.map((ingredient) => [ingredient.id, ingredient.baseQuantity])
-)
-
-export function useStudioDesigner() {
+/**
+ * The studio is always opened from a product page, so the design and the stems
+ * it is built from both come from `GET /v1/products/{id}`. A product with no
+ * materials still designs fine - the stem list is simply empty.
+ */
+export function useStudioDesigner(detail: ProductDetail) {
   const { t: tRoot } = useTranslation()
+
+  const product = useMemo(() => toStudioProduct(detail), [detail])
+  const productIngredients = useMemo(() => toStudioIngredients(detail.materials), [detail.materials])
+  const baseIngredientQuantities = useMemo(
+    () => Object.fromEntries(productIngredients.map((ingredient) => [ingredient.id, ingredient.baseQuantity])),
+    [productIngredients]
+  )
   const [step, setStep] = useState<StudioStep>(1)
   const [maxStep, setMaxStep] = useState<StudioStep>(1)
   const [generationStatus, setGenerationStatus] = useState<StudioGenerationStatus>('idle')
@@ -74,13 +79,12 @@ export function useStudioDesigner() {
       wrap: studioWraps.find((item) => item.id === selectedWrapId),
       products: [product],
       ingredients,
-      // The design's price already covers the base stems; only the added ones cost extra.
       totalAmount: ingredients.reduce(
-        (total, item) => total + item.extraQuantity * item.ingredient.extraPriceAmount,
+        (total, item) => total + item.extraQuantity * (item.ingredient.extraPriceAmount ?? 0),
         product.priceAmount
       )
     }
-  }, [ingredientQuantities, selectedRibbonId, selectedStyleId, selectedWrapId])
+  }, [ingredientQuantities, productIngredients, product, selectedRibbonId, selectedStyleId, selectedWrapId])
 
   const goTo = (nextStep: StudioStep) => {
     setStep(nextStep)
@@ -175,10 +179,11 @@ export function useStudioDesigner() {
       window.clearInterval(interval)
       window.clearTimeout(timeout)
     }
-  }, [generationStatus, getValues])
+  }, [generationStatus, getValues, product.imageUrl])
 
   return {
     control,
+    product,
     step,
     maxStep,
     generationStatus,

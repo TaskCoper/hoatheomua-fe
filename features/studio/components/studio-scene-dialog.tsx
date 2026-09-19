@@ -56,7 +56,7 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
             </span>
           </div>
 
-          {mockup.imageUrl !== product.imageUrl ? (
+          {product.imageUrl && mockup.imageUrl !== product.imageUrl ? (
             <div className='absolute inset-x-[12%] bottom-[14%] top-[16%] drop-shadow-[0_1.5rem_2.5rem_rgb(28_43_43/35%)]'>
               <Image src={product.imageUrl} alt='' fill sizes='38rem' className='object-contain' />
             </div>

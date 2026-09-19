@@ -1,5 +1,6 @@
 'use client'
 
+import StudioImage from '@/features/studio/components/studio-image'
 import type { StudioProduct, StudioVersion } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { ArrowLeft02Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons'
@@ -20,9 +21,9 @@ interface StudioResultCarouselProps {
   onSelect: (version: StudioVersion) => void
 }
 
-/** The step 4 preview: one slide per generated version, swipeable in place of the static hero image. */
 export default function StudioResultCarousel({ versions, activeId, product, onSelect }: StudioResultCarouselProps) {
   const t = useTranslations('studio.versions')
+  const tStudio = useTranslations('studio')
   const tPreview = useTranslations('studio.preview')
   const multiple = versions.length > 1
   const activeIndex = Math.max(
@@ -80,16 +81,18 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
               aria-label={t('slideAriaLabel', { index: version.label, name: version.name, mockup: version.mockupName })}
               className='relative h-full min-w-0 flex-[0_0_100%]'
             >
-              <Image
+              <StudioImage
                 src={version.imageUrl}
                 alt={tPreview('mockupSceneAlt', { product: product.name, mockup: version.mockupName })}
                 fill
                 sizes='(min-width: 1024px) 60vw, 100vw'
                 loading={index === activeIndex ? 'eager' : 'lazy'}
                 className='object-cover brightness-[0.88]'
+                pendingLabel={tStudio('imagePending')}
+                pendingIconClassName='size-12'
               />
 
-              {version.imageUrl === product.imageUrl ? null : (
+              {product.imageUrl && version.imageUrl !== product.imageUrl ? (
                 <div className='absolute inset-0 flex items-center justify-center px-8 pb-14 pt-8'>
                   <div className='relative h-full w-full max-w-[28rem] drop-shadow-[0_1.5rem_2.5rem_rgb(28_43_43/30%)]'>
                     <Image
@@ -104,7 +107,7 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
                     />
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           ))}
         </div>

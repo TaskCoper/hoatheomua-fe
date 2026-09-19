@@ -4,20 +4,18 @@ export type StudioGenerationStatus = 'idle' | 'generating' | 'complete'
 
 export interface StudioIngredient {
   id: string
-  imageUrl: string
-  /** How many of this stem the design already carries - the floor the counter starts at. */
+  name: string
+  imageUrl: string | null
   baseQuantity: number
-  /** What one stem beyond the base adds to the total. */
-  extraPriceAmount: number
+  extraPriceAmount: number | null
 }
 
 export interface StudioProduct {
   id: string
   name: string
-  note: string
+  note: string | null
   priceAmount: number
-  imageUrl: string
-  ingredientIds: string[]
+  imageUrl: string | null
   imageFit?: 'cover' | 'contain'
 }
 
@@ -71,7 +69,7 @@ export interface StudioVersion {
   name: string
   mockupId: string
   mockupName: string
-  imageUrl: string
+  imageUrl: string | null
 }
 
 export interface StudioGeneration {
