@@ -6,7 +6,7 @@ import type {
   CardWritingMethod,
   CheckoutCard,
   GeneratedCard,
-  ProductCardType
+  GeneratedCardType
 } from './types'
 
 export const CARD_TEMPLATES: CardTemplate[] = [
@@ -44,35 +44,17 @@ export const trimCardContent = (content: CardContent): CardContent => ({ message
 
 export const isSameCardContent = (a: CardContent, b: CardContent): boolean => a.message === b.message
 
-/**
- * How many cards the order may carry: one per unit, so two products at three each allow six.
- * Free standard cards draw from this pool; AI and history cards are also capped by their own line.
- */
-export const getCardAllowance = (lines: { quantity: number }[]): number =>
-  lines.reduce((total, line) => total + line.quantity, 0)
-
-/**
- * Free cards still available for the order, ignoring the card currently being edited.
- * Every card spends a unit of the pool, paid ones included - a unit that already carries an
- * AI or history card no longer entitles the order to a free card.
- */
-export const getStandardCardAllowance = (
-  lines: { quantity: number }[],
-  cards: CheckoutCard[],
-  ignoreIndex: number | null = null
-): number =>
-  cards.reduce((left, card, index) => (index === ignoreIndex ? left : left - card.quantity), getCardAllowance(lines))
-
 export interface LineCardCapacity {
   /** Units on the line that do not carry a card yet. */
   remaining: number
-  /** The kind of card already on the line - a line never mixes AI with history cards. */
-  lockedType: ProductCardType | null
+  /** The designed kind already on the line - a line never mixes AI with history cards. */
+  lockedType: GeneratedCardType | null
 }
 
 /**
  * What each line can still take. A line holds one card per unit, so a product bought three
- * times can carry three separate cards, and its first card decides the kind for the rest.
+ * times can carry three separate cards - free ones included, since a unit that already ships
+ * with a card cannot carry a second. The first designed card decides the kind for the rest.
  * `ignoreIndex` leaves the card being edited out so it does not block its own line.
  */
 export const getLineCardCapacities = (
@@ -85,13 +67,14 @@ export const getLineCardCapacities = (
   )
 
   cards.forEach((card, index) => {
-    if (card.type === 'standard' || index === ignoreIndex) return
+    if (index === ignoreIndex) return
 
     const capacity = capacities.get(card.lineId)
     if (!capacity) return
 
     capacity.remaining -= card.quantity
-    capacity.lockedType = card.type
+    // A free card leaves the product open to either design; only a designed one locks it.
+    if (card.type !== 'standard') capacity.lockedType = card.type
   })
 
   return capacities

@@ -26,7 +26,7 @@ export const createCheckoutCardSchema = (t: TranslationFunction) => {
   const lineId = z.string().min(1, { error: t('orders.checkout.cards.productRequired') })
 
   return z.discriminatedUnion('type', [
-    z.object({ type: z.literal('standard'), templateId, content, quantity }),
+    z.object({ type: z.literal('standard'), templateId, lineId, content, quantity }),
     z.object({ type: z.literal('ai'), templateId, sizeId, writingMethod, lineId, content, quantity }),
     z.object({
       type: z.literal('history'),

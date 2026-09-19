@@ -13,8 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
-import OrderAiCardsSection from '@/features/orders/components/order-cards/order-ai-cards-section'
-import { OrderLineItem } from '@/features/orders/components/order-line-item'
+import OrderItemsSection from '@/features/orders/components/order-items-section'
 import OrderSectionCard from '@/features/orders/components/order-section-card'
 import OrderStatusBadge from '@/features/orders/components/order-status-badge'
 import { useCancelOrder } from '@/features/orders/hooks/use-cancel-order'
@@ -386,27 +385,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               </OrderSectionCard>
             ) : null}
 
-            {items.length > 0 ? (
-              <OrderSectionCard
-                icon={PackageIcon}
-                title={t('orders.checkout.productsHeading')}
-                aside={t('orders.checkout.lineCount', { count: items.length })}
-              >
-                <ul className='divide-y divide-border/60'>
-                  {items.map((item) => (
-                    <OrderLineItem
-                      key={item.orderDetailsId}
-                      item={item}
-                      size='md'
-                      showLineTotal
-                      className='py-3 first:pt-0 last:pb-0'
-                    />
-                  ))}
-                </ul>
-              </OrderSectionCard>
-            ) : null}
-
-            <OrderAiCardsSection items={items} />
+            <OrderItemsSection items={items} />
 
             <OrderSectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm'>

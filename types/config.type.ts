@@ -305,7 +305,6 @@ export interface FeedbackItem {
   postDate: string
   rating: number
   featured: boolean
-  isPlaceholder: boolean
   source: FeedbackSource
   sourceUrl: string
 }

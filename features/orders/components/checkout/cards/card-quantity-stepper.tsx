@@ -12,7 +12,7 @@ interface CardQuantityStepperProps {
   value: number
   onChange: (quantity: number) => void
   unitPrice: number
-  /** How many units this card may cover - the order's allowance, or the line's quantity. */
+  /** How many units this card may cover - what its product has left without a card. */
   max: number
   variant?: 'boxed' | 'inline'
 }

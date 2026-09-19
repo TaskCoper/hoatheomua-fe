@@ -72,7 +72,7 @@ function CheckoutCardListItem({
   const content = card.content
 
   const template = templateId ? findCardTemplate(templateId) : null
-  const attachedLine = card.type === 'standard' ? null : (lines.find((line) => line.lineId === card.lineId) ?? null)
+  const attachedLine = lines.find((line) => line.lineId === card.lineId) ?? null
 
   const title =
     card.type === 'standard'
@@ -89,12 +89,9 @@ function CheckoutCardListItem({
     .filter(Boolean)
     .join(' · ')
 
-  const attachment =
-    card.type === 'standard'
-      ? t('orders.checkout.cards.orderLevel')
-      : t('orders.checkout.cards.attachedTo', {
-          name: attachedLine?.name || t('orders.checkout.sidebar.unknownProduct')
-        })
+  const attachment = t('orders.checkout.cards.attachedTo', {
+    name: attachedLine?.name || t('orders.checkout.sidebar.unknownProduct')
+  })
 
   return (
     <li className='flex items-start gap-3 p-3'>
@@ -125,7 +122,16 @@ function CheckoutCardListItem({
           </div>
         </div>
 
-        <p className='mt-1 truncate text-xs text-muted-foreground'>{attachment}</p>
+        {/* The product this card is printed for, shown with its photo so the pairing is unmistakable. */}
+        <div className='mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground'>
+          <PreviewImage
+            src={attachedLine?.image ?? null}
+            alt=''
+            sizes='20px'
+            className='size-5 shrink-0 rounded-md border border-border'
+          />
+          <span className='truncate'>{attachment}</span>
+        </div>
 
         {content.message ? (
           <p className='truncate text-xs italic text-muted-foreground'>“{content.message}”</p>

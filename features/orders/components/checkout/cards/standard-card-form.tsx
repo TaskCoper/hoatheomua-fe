@@ -12,37 +12,60 @@ import {
 } from '../../../cards/card-data'
 import type { CardContent, StandardCheckoutCard } from '../../../cards/types'
 import { createCheckoutCardSchema, EMPTY_ISSUE_PATHS, getCardIssuePaths } from '../../../cards/validations'
+import type { CheckoutSummaryLine } from '../checkout-sidebar'
 import CardContentFields from './card-content-fields'
 import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
 import CardTemplatePicker from './card-template-picker'
+import CheckoutProductPicker, {
+  isCardEligibleLine,
+  isLineOpenForCard,
+  type LineCardCapacities
+} from './checkout-product-picker'
 
 interface StandardCardFormProps {
-  /** Free cards left in the order's allowance, this card's own quantity included. */
-  maxQuantity: number
+  lines: CheckoutSummaryLine[]
+  /** How many more cards each line can take - a free card still occupies one of its units. */
+  capacities: LineCardCapacities
   initial?: StandardCheckoutCard | null
   onSubmit: (draft: StandardCheckoutCard) => void
   onCancel: () => void
 }
 
-export default function StandardCardForm({ maxQuantity, initial, onSubmit, onCancel }: StandardCardFormProps) {
+export default function StandardCardForm({ lines, capacities, initial, onSubmit, onCancel }: StandardCardFormProps) {
   const { t } = useTranslation()
 
+  const openLines = lines.filter((line) => isLineOpenForCard(line, capacities, 'standard'))
+  const [lineId, setLineId] = useState(initial?.lineId ?? (openLines.length === 1 ? openLines[0].lineId : ''))
   const [templateId, setTemplateId] = useState(initial?.templateId ?? DEFAULT_CARD_TEMPLATE_ID)
   const [content, setContent] = useState<CardContent>(initial?.content ?? EMPTY_CARD_CONTENT)
-  const [quantity, setQuantity] = useState(Math.min(initial?.quantity ?? DEFAULT_CARD_QUANTITY, maxQuantity))
+  const [quantity, setQuantity] = useState(initial?.quantity ?? DEFAULT_CARD_QUANTITY)
   const [showErrors, setShowErrors] = useState(false)
 
   const schema = useMemo(() => createCheckoutCardSchema(t), [t])
 
+  // One free card per unit of the product it ships with, minus the units already carded.
+  const attachedLine = lines.find((line) => line.lineId === lineId) ?? null
+  const maxQuantity = Math.max(1, capacities.get(lineId)?.remaining ?? DEFAULT_CARD_QUANTITY)
+
   const draft: StandardCheckoutCard = {
     type: 'standard',
+    lineId,
     templateId,
     content: trimCardContent(content),
-    quantity
+    quantity: Math.min(quantity, maxQuantity)
   }
   const draftIssues = getCardIssuePaths(schema, draft)
   const issues = showErrors ? draftIssues : EMPTY_ISSUE_PATHS
+
+  // A product with fewer free units holds fewer cards, so moving the card pulls its quantity down.
+  const handleSelectLine = (next: string) => {
+    setLineId(next)
+    if (showErrors) setShowErrors(false)
+
+    const remaining = capacities.get(next)?.remaining
+    if (remaining !== undefined) setQuantity((current) => Math.max(1, Math.min(current, remaining)))
+  }
 
   const handleSubmit = () => {
     if (draftIssues.size > 0) {
@@ -53,9 +76,38 @@ export default function StandardCardForm({ maxQuantity, initial, onSubmit, onCan
     onSubmit(draft)
   }
 
+  if (openLines.length === 0 && !initial) {
+    const hasEligibleLine = lines.some(isCardEligibleLine)
+
+    return (
+      <div className='space-y-4'>
+        <CardFormHeader type='standard' isEditing={false} disabled onSubmit={handleSubmit} onCancel={onCancel} />
+
+        <div className='rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center'>
+          <p className='text-sm font-medium'>{t('orders.checkout.cards.noEligibleProductsTitle')}</p>
+          <p className='mt-1 text-xs text-muted-foreground'>
+            {hasEligibleLine
+              ? t('orders.checkout.cards.allProductsTaken')
+              : t('orders.checkout.cards.noEligibleProducts')}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className='space-y-4'>
       <CardFormHeader type='standard' isEditing={!!initial} onSubmit={handleSubmit} onCancel={onCancel} />
+
+      <CheckoutProductPicker
+        lines={lines}
+        value={lineId}
+        onChange={handleSelectLine}
+        label={t('orders.checkout.cards.attachTo')}
+        capacities={capacities}
+        cardType='standard'
+        invalid={issues.has('lineId')}
+      />
 
       <CardTemplatePicker value={templateId} onChange={setTemplateId} />
 
@@ -71,13 +123,20 @@ export default function StandardCardForm({ maxQuantity, initial, onSubmit, onCan
 
       <p className='flex items-start gap-2 text-xs text-muted-foreground'>
         <HugeiconsIcon icon={GiftIcon} strokeWidth={1.75} className='mt-0.5 size-3.5 shrink-0 text-primary' />
-        {t('orders.checkout.cards.standardFreeNote', { max: maxQuantity })}
+        {attachedLine
+          ? t('orders.checkout.cards.standardFreeNote', {
+              name: attachedLine.name || t('orders.checkout.sidebar.unknownProduct'),
+              max: maxQuantity
+            })
+          : t('orders.checkout.cards.standardFreeHint')}
       </p>
 
       <CardFormSummary
         free
         price={0}
-        quantity={{ value: quantity, unitPrice: 0, max: maxQuantity, onChange: setQuantity }}
+        quantity={
+          attachedLine ? { value: draft.quantity, unitPrice: 0, max: maxQuantity, onChange: setQuantity } : null
+        }
       />
     </div>
   )

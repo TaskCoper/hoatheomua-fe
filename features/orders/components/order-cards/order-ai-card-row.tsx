@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { PenIcon } from '@hugeicons/core-free-icons'
@@ -26,51 +25,57 @@ export default function OrderAiCardRow({ card, label, onAddVersion, onApplyVersi
   const selectedVersion = getSelectedOrderCardVersion(card)
 
   return (
-    <li className='py-3 first:pt-0 last:pb-0'>
-      <div className='flex items-center gap-3'>
-        <OrderCardArtwork
-          version={selectedVersion}
-          writingMethod={card.writingMethod}
-          sizes='64px'
-          className='aspect-3/4 w-14 shrink-0 rounded-xl ring-1 ring-primary/10 sm:w-16'
-        />
-
-        <div className='min-w-0 flex-1'>
-          <p className='text-xs font-semibold text-muted-foreground'>
-            {card.quantity > 1 ? `${label} · ${t('orders.cards.quantity', { count: card.quantity })}` : label}
-          </p>
-
-          {selectedVersion ? (
-            <p className='mt-1 line-clamp-2 text-xs leading-relaxed text-foreground/75 italic'>
-              “{selectedVersion.content.message}”
-            </p>
-          ) : (
-            <p className='mt-1 text-xs text-muted-foreground'>{t('orders.cards.noVersion')}</p>
-          )}
-        </div>
-
-        <Dialog open={isStudioOpen} onOpenChange={setIsStudioOpen}>
-          <DialogTrigger asChild>
-            <Button
-              type='button'
-              variant='ghost'
-              size='icon-sm'
-              aria-label={t('orders.cards.designAriaLabel', { name: card.productName })}
-            >
-              <HugeiconsIcon icon={PenIcon} strokeWidth={2} className='size-4' />
-            </Button>
-          </DialogTrigger>
-
-          <DialogContent className='flex w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-6xl' position='top-center'>
-            <OrderCardStudio
-              card={card}
-              onAddVersion={onAddVersion}
-              onApplyVersion={onApplyVersion}
-              onDone={() => setIsStudioOpen(false)}
+    <li>
+      <Dialog open={isStudioOpen} onOpenChange={setIsStudioOpen}>
+        {/* The whole row opens the studio - the pen is the hint, not the only target. */}
+        <DialogTrigger asChild>
+          <button
+            type='button'
+            className='group flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition-colors hover:bg-secondary/25 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none'
+            aria-label={t('orders.cards.designAriaLabel', { name: card.productName })}
+          >
+            <OrderCardArtwork
+              version={selectedVersion}
+              writingMethod={card.writingMethod}
+              sizes='56px'
+              className='aspect-3/4 w-12 shrink-0 rounded-lg ring-1 ring-primary/15'
             />
-          </DialogContent>
-        </Dialog>
-      </div>
+
+            <span className='min-w-0 flex-1'>
+              <span className='flex items-center gap-1.5 text-xs font-semibold text-foreground'>
+                {label}
+                {card.quantity > 1 ? (
+                  <span className='rounded-full bg-secondary/40 px-1.5 py-px text-[0.65rem] font-semibold text-secondary-foreground'>
+                    {t('orders.cards.quantity', { count: card.quantity })}
+                  </span>
+                ) : null}
+              </span>
+
+              {selectedVersion ? (
+                <span className='mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground italic'>
+                  “{selectedVersion.content.message}”
+                </span>
+              ) : (
+                <span className='mt-0.5 block text-xs text-muted-foreground'>{t('orders.cards.noVersion')}</span>
+              )}
+            </span>
+
+            <span className='inline-flex shrink-0 items-center gap-1.5 rounded-full bg-secondary/40 px-2.5 py-1 text-[0.7rem] font-semibold text-secondary-foreground transition-colors group-hover:bg-secondary/70'>
+              <HugeiconsIcon icon={PenIcon} strokeWidth={2} className='size-3.5 shrink-0' />
+              <span className='hidden sm:inline'>{t('orders.cards.design')}</span>
+            </span>
+          </button>
+        </DialogTrigger>
+
+        <DialogContent className='flex w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-6xl' position='top-center'>
+          <OrderCardStudio
+            card={card}
+            onAddVersion={onAddVersion}
+            onApplyVersion={onApplyVersion}
+            onDone={() => setIsStudioOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </li>
   )
 }

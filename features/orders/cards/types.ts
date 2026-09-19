@@ -32,12 +32,13 @@ export interface GeneratedCard {
 }
 
 interface CheckoutCardBase {
+  lineId: string
   quantity: number
 }
 
 /**
- * Order-level: the complimentary card that ships with the flowers. It is free, so there is
- * no size to pick - the quantity is capped by how many units the order carries.
+ * The complimentary card that ships with its product. It is free, so there is no size to
+ * pick - the quantity is capped by how many units of that product the order carries.
  */
 export interface StandardCheckoutCard extends CheckoutCardBase {
   type: 'standard'
@@ -46,24 +47,20 @@ export interface StandardCheckoutCard extends CheckoutCardBase {
 }
 
 /**
- * Product-level: an AI card for one checkout line. The artwork is generated after the
- * order is placed, hence no generation id here. A line carries at most one AI or history
- * card, never both.
+ * An AI card for one checkout line. The artwork is generated after the order is placed,
+ * hence no generation id here. A line carries at most one AI or history card, never both.
  */
 export interface AiCheckoutCard extends CheckoutCardBase {
   type: 'ai'
   templateId: string
   sizeId: CardSizeId
   writingMethod: CardWritingMethod
-  lineId: string
   content: CardContent
 }
 
-/** Product-level: reuses a past generation's design and size; the words stay editable. */
 export interface HistoryCheckoutCard extends CheckoutCardBase {
   type: 'history'
   generatedCardId: string
-  lineId: string
   content: CardContent
   writingMethod: CardWritingMethod
 }
@@ -108,7 +105,10 @@ export interface OrderAiCard {
 
 export type CheckoutCardType = CheckoutCard['type']
 
-/** The kinds of card that hang off a single product rather than the whole order. */
-export type ProductCardType = Exclude<CheckoutCardType, 'standard'>
+/**
+ * The kinds whose artwork is designed rather than picked from a template. A product carries
+ * only one of the two, so its cards never mix an AI design with a reused one.
+ */
+export type GeneratedCardType = Exclude<CheckoutCardType, 'standard'>
 
 export type CheckoutCardField = CheckoutCard & { id: string }

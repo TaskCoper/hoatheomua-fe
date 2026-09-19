@@ -6,23 +6,28 @@ import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import { useId } from 'react'
 import type { LineCardCapacity } from '../../../cards/card-data'
-import type { ProductCardType } from '../../../cards/types'
+import type { CheckoutCardType } from '../../../cards/types'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 
 export type LineCardCapacities = ReadonlyMap<string, LineCardCapacity>
 
 export const isCardEligibleLine = (line: CheckoutSummaryLine): boolean => !line.isResolving && !line.issue
 
-/** A line takes another card while it has a free unit and is not already holding the other kind. */
+/**
+ * A line takes another card while it has a free unit. A designed card also has to match the
+ * design the line already carries; the free card fits alongside either.
+ */
 export const isLineOpenForCard = (
   line: CheckoutSummaryLine,
   capacities: LineCardCapacities,
-  cardType: ProductCardType
+  cardType: CheckoutCardType
 ): boolean => {
   if (!isCardEligibleLine(line)) return false
 
   const capacity = capacities.get(line.lineId)
   if (!capacity || capacity.remaining < 1) return false
+
+  if (cardType === 'standard') return true
 
   return capacity.lockedType === null || capacity.lockedType === cardType
 }
@@ -33,7 +38,7 @@ interface CheckoutProductPickerProps {
   onChange: (lineId: string) => void
   label: string
   capacities: LineCardCapacities
-  cardType: ProductCardType
+  cardType: CheckoutCardType
   invalid?: boolean
 }
 
@@ -72,16 +77,18 @@ export default function CheckoutProductPicker({
             const isActive = line.lineId === value && isSelectable
             const id = `${groupId}-${line.lineId}`
 
-            const meta =
-              capacity && capacity.lockedType && capacity.lockedType !== cardType
-                ? t('orders.checkout.cards.productHasOtherCard')
-                : capacity && capacity.remaining < 1
+            // A blocked line says why; an open one says how many of its units are still free.
+            const meta = !isCardEligibleLine(line)
+              ? t('orders.checkout.cards.productNotEligible')
+              : !isSelectable
+                ? capacity && capacity.remaining < 1
                   ? t('orders.checkout.cards.productTaken')
-                  : capacity && capacity.remaining < line.quantity
-                    ? t('orders.checkout.cards.productRemaining', { count: capacity.remaining })
-                    : [line.variantName, t('orders.checkout.lineQtyOnly', { qty: line.quantity })]
-                        .filter(Boolean)
-                        .join(' · ')
+                  : t('orders.checkout.cards.productHasOtherCard')
+                : capacity && capacity.remaining < line.quantity
+                  ? t('orders.checkout.cards.productRemaining', { count: capacity.remaining })
+                  : [line.variantName, t('orders.checkout.lineQtyOnly', { qty: line.quantity })]
+                      .filter(Boolean)
+                      .join(' · ')
 
             return (
               <label

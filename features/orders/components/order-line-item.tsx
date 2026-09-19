@@ -19,10 +19,18 @@ interface OrderLineItemProps {
   item: OrderLineSource
   size?: keyof typeof THUMBNAIL
   showLineTotal?: boolean
+  /** `div` when the row is not a direct child of a list - e.g. above its own nested list. */
+  as?: 'li' | 'div'
   className?: string
 }
 
-export function OrderLineItem({ item: source, size = 'sm', showLineTotal = false, className }: OrderLineItemProps) {
+export function OrderLineItem({
+  item: source,
+  size = 'sm',
+  showLineTotal = false,
+  as: Row = 'li',
+  className
+}: OrderLineItemProps) {
   const { t } = useTranslation()
   const thumbnailSize = THUMBNAIL[size]
   const item = normalizeOrderLine(source)
@@ -68,7 +76,7 @@ export function OrderLineItem({ item: source, size = 'sm', showLineTotal = false
   )
 
   return (
-    <li className={cn('flex items-center gap-3', className)}>
+    <Row className={cn('flex items-center gap-3', className)}>
       {/* The thumbnail duplicates the title's link, so it is hidden from the tab
           order and the accessibility tree rather than announced twice. */}
       {href ? (
@@ -105,11 +113,18 @@ export function OrderLineItem({ item: source, size = 'sm', showLineTotal = false
         <p className='mt-0.5 text-xs text-muted-foreground'>
           {t('orders.checkout.lineQty', { qty: item.quantity, price: formatVnd(item.price) })}
         </p>
+
+        {/* A narrow row has no width for a total column, so it sits under the line instead. */}
+        {showLineTotal ? (
+          <p className='mt-0.5 text-sm font-semibold text-primary sm:hidden'>{formatVnd(item.price * item.quantity)}</p>
+        ) : null}
       </div>
 
       {showLineTotal ? (
-        <span className='shrink-0 text-sm font-semibold text-primary'>{formatVnd(item.price * item.quantity)}</span>
+        <span className='hidden shrink-0 text-sm font-semibold text-primary sm:block'>
+          {formatVnd(item.price * item.quantity)}
+        </span>
       ) : null}
-    </li>
+    </Row>
   )
 }

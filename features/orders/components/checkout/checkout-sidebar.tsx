@@ -107,7 +107,6 @@ export default function CheckoutSidebar({
   const { t } = useTranslation()
   const [termsAccepted, setTermsAccepted] = useState(true)
   const isActionDisabled = action.disabled || action.loading || (showTerms && !termsAccepted)
-  const orderLevelCards = cards.filter((card) => card.type === 'standard')
 
   const isPricingLoading = lines.some((line) => line.isResolving)
 
@@ -127,19 +126,10 @@ export default function CheckoutSidebar({
               <CheckoutLineItem
                 key={line.lineId}
                 line={line}
-                cards={cards.filter((card) => card.type !== 'standard' && card.lineId === line.lineId)}
+                cards={cards.filter((card) => card.lineId === line.lineId)}
                 generatedCards={generatedCards}
               />
             ))}
-
-            {orderLevelCards.length > 0 ? (
-              <li className='space-y-1.5 py-3'>
-                {/* <p className='text-xs font-medium text-muted-foreground'>{t('orders.checkout.cards.orderLevel')}</p> */}
-                {orderLevelCards.map((card) => (
-                  <CheckoutCardLine key={card.id} card={card} generatedCards={generatedCards} />
-                ))}
-              </li>
-            ) : null}
           </ul>
         ) : null}
 
@@ -279,7 +269,7 @@ function CheckoutLineItem({
         {cards.length > 0 ? (
           <div className='mt-2 space-y-1.5'>
             {cards.map((card) => (
-              <CheckoutCardLine key={card.id} card={card} generatedCards={generatedCards} attached />
+              <CheckoutCardLine key={card.id} card={card} generatedCards={generatedCards} />
             ))}
           </div>
         ) : null}
@@ -288,15 +278,8 @@ function CheckoutLineItem({
   )
 }
 
-function CheckoutCardLine({
-  card,
-  generatedCards,
-  attached = false
-}: {
-  card: CheckoutCardField
-  generatedCards: GeneratedCard[]
-  attached?: boolean
-}) {
+/** Always rendered under the product line the card is printed for, hence the leading `+`. */
+function CheckoutCardLine({ card, generatedCards }: { card: CheckoutCardField; generatedCards: GeneratedCard[] }) {
   const { t } = useTranslation()
 
   const generated =
@@ -326,11 +309,9 @@ function CheckoutCardLine({
   return (
     <div className='flex items-start justify-between gap-3 text-xs'>
       <div className='flex min-w-0 gap-1.5'>
-        {attached ? (
-          <span aria-hidden className='shrink-0 text-muted-foreground/70'>
-            +
-          </span>
-        ) : null}
+        <span aria-hidden className='shrink-0 text-muted-foreground/70'>
+          +
+        </span>
         <div className='min-w-0'>
           <p className='truncate leading-5'>{title}</p>
           {meta ? <p className='text-muted-foreground'>{meta}</p> : null}
