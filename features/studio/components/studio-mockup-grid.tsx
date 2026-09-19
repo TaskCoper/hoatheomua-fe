@@ -1,11 +1,11 @@
 'use client'
 
-import type { StudioMockup } from '@/features/studio/types'
+import StudioImage from '@/features/studio/components/studio-image'
+import type { StudioScene } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { ArrowExpandDiagonal01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
 
 const TILE_RATIOS = [
   'aspect-[4/5]',
@@ -20,7 +20,7 @@ const TILE_RATIOS = [
 const EAGER_TILE_COUNT = 6
 
 interface StudioMockupGridProps {
-  mockups: StudioMockup[]
+  mockups: StudioScene[]
   selectedId: string
   onSelect: (id: string) => void
   onExpand: (id: string) => void
@@ -51,7 +51,7 @@ export default function StudioMockupGrid({ mockups, selectedId, onSelect, onExpa
               )}
             >
               <span className='absolute inset-0 block overflow-hidden bg-secondary/50'>
-                <Image
+                <StudioImage
                   src={item.imageUrl}
                   alt=''
                   fill

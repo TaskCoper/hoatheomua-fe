@@ -3,12 +3,11 @@
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { formatStudioIngredientCounts, formatStudioPrice } from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioGenerationStatus, StudioMockup, StudioProduct } from '@/features/studio/types'
+import type { StudioBouquet, StudioGenerationStatus, StudioProduct, StudioScene } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { ArrowRight02Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
 import type { ReactNode } from 'react'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
@@ -18,7 +17,7 @@ const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
 
 interface StudioResultProps {
   product: StudioProduct
-  mockup?: StudioMockup
+  mockup?: StudioScene
   bouquet: StudioBouquet
   designName: string
   status: StudioGenerationStatus
@@ -178,7 +177,7 @@ export default function StudioResult({
 
           <figure className='mt-6'>
             <div className='relative aspect-[4/5] overflow-hidden rounded-3xl bg-secondary/40 ring-1 ring-foreground/5 sm:aspect-[4/3]'>
-              <Image
+              <StudioImage
                 src={mockup.imageUrl}
                 alt={mockup.name}
                 fill

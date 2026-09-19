@@ -7,13 +7,13 @@ import StudioHeader from '@/features/studio/components/studio-header'
 import StudioIngredientsStep from '@/features/studio/components/studio-ingredients-step'
 import StudioMobileNav from '@/features/studio/components/studio-mobile-nav'
 import StudioMockupGrid from '@/features/studio/components/studio-mockup-grid'
+import StudioOptionsFooter from '@/features/studio/components/studio-options-footer'
 import StudioPreview from '@/features/studio/components/studio-preview'
 import StudioResult from '@/features/studio/components/studio-result'
 import StudioReview from '@/features/studio/components/studio-review'
 import StudioSceneDialog from '@/features/studio/components/studio-scene-dialog'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { useStudioDesigner } from '@/features/studio/hooks/use-studio-designer'
-import { studioMockups } from '@/features/studio/studio-data'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
@@ -38,18 +38,23 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
     styleOptions,
     ribbonOptions,
     wrapOptions,
+    sceneOptions,
     isGettingStyleOptions,
     isGettingRibbonOptions,
     isGettingWrapOptions,
+    isGettingSceneOptions,
     isGettingMoreStyleOptions,
     isGettingMoreRibbonOptions,
     isGettingMoreWrapOptions,
+    isGettingMoreSceneOptions,
     hasMoreStyleOptions,
     hasMoreRibbonOptions,
     hasMoreWrapOptions,
+    hasMoreSceneOptions,
     loadMoreStyleOptions,
     loadMoreRibbonOptions,
     loadMoreWrapOptions,
+    loadMoreSceneOptions,
     trimmedName,
     nameValid,
     bouquet,
@@ -149,16 +154,26 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
                 <section className='mt-7'>
                   <StudioStepHeading
                     title={t('scene.chooseTitle')}
-                    description={t('scene.chooseNote', { count: studioMockups.length })}
+                    description={t('scene.chooseNote', { count: sceneOptions.length })}
                     actions={desktopNav}
                   />
 
                   <StudioMockupGrid
-                    mockups={studioMockups}
+                    mockups={sceneOptions}
                     selectedId={selectedMockupId}
                     onSelect={selectMockup}
                     onExpand={() => setSceneOpen(true)}
                   />
+
+                  <div className='mt-4 flex justify-center'>
+                    <StudioOptionsFooter
+                      count={sceneOptions.length}
+                      loading={isGettingSceneOptions}
+                      loadingMore={isGettingMoreSceneOptions}
+                      hasMore={hasMoreSceneOptions}
+                      onLoadMore={() => loadMoreSceneOptions()}
+                    />
+                  </div>
                 </section>
               </div>
             ) : null}

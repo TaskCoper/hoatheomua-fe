@@ -8,8 +8,8 @@ import { formatStudioPrice, roundStudioQuantity, STUDIO_LAST_STEP } from '@/feat
 import type {
   StudioBouquet,
   StudioGenerationStatus,
-  StudioMockup,
   StudioProduct,
+  StudioScene,
   StudioStep,
   StudioVersion
 } from '@/features/studio/types'
@@ -24,7 +24,7 @@ interface StudioPreviewProps {
   step: StudioStep
   status: StudioGenerationStatus
   stage: number
-  mockup?: StudioMockup
+  mockup?: StudioScene
   bouquet: StudioBouquet
   designName: string
   versions: StudioVersion[]

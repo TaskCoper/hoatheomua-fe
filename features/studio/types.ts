@@ -63,6 +63,12 @@ export interface StudioMockup {
   examples: StudioMockupExample[]
 }
 
+export interface StudioScene extends StudioOption {
+  story?: string | null
+  moods?: string[]
+  examples?: StudioMockupExample[]
+}
+
 export interface StudioVersion {
   id: string
   label: number

@@ -1881,6 +1881,11 @@
         "cta": "Start designing"
       }
     },
+    "options": {
+      "empty": "No options yet",
+      "loadMore": "Show more",
+      "loadingMore": "Loading…"
+    },
     "compose": {
       "title": "Compose your bouquet",
       "note": "Quantity, shape and finishing colours. Everything here is reflected in your live preview.",
@@ -1893,11 +1898,6 @@
         "added": "{count} added · {price}",
         "extra": "{count, plural, one {# extra stem} other {# extra stems}}",
         "addedPlain": "{count, plural, one {# added} other {# added}}"
-      },
-      "options": {
-        "empty": "No options yet",
-        "loadMore": "Show more",
-        "loadingMore": "Loading…"
       },
       "bouquet": {
         "label": "Your flowers",

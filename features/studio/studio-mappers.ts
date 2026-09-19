@@ -47,8 +47,8 @@ export const toStudioProductOptions = (products: ProductDetail[] | null | undefi
     toStudioOption(product.id, product.productName, product.description, product.coverImage)
   )
 
-export const toStudioBundleOptions = (bundles: ReferenceFlower[] | null | undefined): StudioOption[] =>
-  (bundles ?? []).flatMap((bundle) => toStudioOption(bundle.id, bundle.name, bundle.description, bundle.imageUrl))
+export const toStudioReferenceOptions = (flowers: ReferenceFlower[] | null | undefined): StudioOption[] =>
+  (flowers ?? []).flatMap((flower) => toStudioOption(flower.id, flower.name, flower.description, flower.imageUrl))
 
 export const toStudioVariantOptions = (variants: ProductDetail[]): StudioVariant[] =>
   variants.map((variant) => {

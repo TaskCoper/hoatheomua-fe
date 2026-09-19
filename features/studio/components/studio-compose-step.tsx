@@ -1,7 +1,7 @@
 'use client'
 
-import { Spinner } from '@/components/ui/spinner'
 import StudioImage from '@/features/studio/components/studio-image'
+import StudioOptionsFooter from '@/features/studio/components/studio-options-footer'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { formatStudioIngredientCounts, formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
 import type { StudioBouquet, StudioOption, StudioVariant } from '@/features/studio/types'
@@ -18,9 +18,6 @@ const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minma
 const panelClass = 'mt-4 rounded-3xl bg-card/40 p-5 sm:p-6'
 const quantityButtonClass =
   'flex size-8 cursor-pointer items-center justify-center rounded-full bg-secondary/60 text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
-const loadMoreButtonClass =
-  'cursor-pointer rounded-full bg-secondary/60 px-4 py-2 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50'
-
 const tileClass = (selected: boolean) =>
   cn(
     'group relative isolate block cursor-pointer overflow-hidden rounded-2xl text-left transition-[transform,box-shadow] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
@@ -86,25 +83,6 @@ export default function StudioComposeStep({
 }: StudioComposeStepProps) {
   const t = useTranslations('studio.compose')
 
-  /** Loading, empty and “load more” read the same under every picker. */
-  const optionsFooter = (
-    options: StudioOption[],
-    loading: boolean,
-    loadingMore: boolean,
-    hasMore: boolean,
-    onLoadMore: () => void
-  ) => {
-    if (loading) return <Spinner className='size-4 text-muted-foreground' />
-    if (options.length === 0) return <p className={microLabelClass}>{t('options.empty')}</p>
-    if (!hasMore) return null
-
-    return (
-      <button type='button' onClick={onLoadMore} disabled={loadingMore} className={loadMoreButtonClass}>
-        {loadingMore ? t('options.loadingMore') : t('options.loadMore')}
-      </button>
-    )
-  }
-
   const swatchRow = (
     label: string,
     options: StudioOption[],
@@ -116,7 +94,6 @@ export default function StudioComposeStep({
     onLoadMore: () => void
   ) => {
     const selected = options.find((option) => option.id === selectedId)
-    const footer = optionsFooter(options, loading, loadingMore, hasMore, onLoadMore)
 
     return (
       <div className={cn(detailRowClass, 'items-center py-5')}>
@@ -168,7 +145,13 @@ export default function StudioComposeStep({
             })}
           </div>
 
-          {footer}
+          <StudioOptionsFooter
+            count={options.length}
+            loading={loading}
+            loadingMore={loadingMore}
+            hasMore={hasMore}
+            onLoadMore={onLoadMore}
+          />
         </div>
       </div>
     )
@@ -370,13 +353,13 @@ export default function StudioComposeStep({
         </div>
 
         <div className='mt-4 flex justify-center'>
-          {optionsFooter(
-            styleOptions,
-            isGettingStyleOptions,
-            isGettingMoreStyleOptions,
-            hasMoreStyleOptions,
-            onLoadMoreStyleOptions
-          )}
+          <StudioOptionsFooter
+            count={styleOptions.length}
+            loading={isGettingStyleOptions}
+            loadingMore={isGettingMoreStyleOptions}
+            hasMore={hasMoreStyleOptions}
+            onLoadMore={onLoadMoreStyleOptions}
+          />
         </div>
       </section>
 

@@ -3,12 +3,11 @@
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioMockup } from '@/features/studio/types'
+import type { StudioBouquet, StudioScene } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { Add01Icon, MinusSignIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
 import type { ReactNode } from 'react'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
@@ -31,7 +30,7 @@ function DetailRow({ term, valueClass, children }: { term: string; valueClass?: 
 }
 
 interface StudioReviewProps {
-  mockup?: StudioMockup
+  mockup?: StudioScene
   bouquet: StudioBouquet
   designName: string
   actions?: ReactNode
@@ -154,7 +153,7 @@ export default function StudioReview({
           {/* Just the scene itself - the story and mood notes live in the scene dialog on step 3. */}
           <figure className='mt-6'>
             <div className='relative aspect-[4/5] overflow-hidden rounded-3xl bg-secondary/40 ring-1 ring-foreground/5 sm:aspect-[4/3]'>
-              <Image
+              <StudioImage
                 src={mockup.imageUrl}
                 alt={mockup.name}
                 fill

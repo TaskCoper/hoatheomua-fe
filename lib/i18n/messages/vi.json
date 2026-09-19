@@ -1881,6 +1881,11 @@
         "cta": "Bắt đầu thiết kế"
       }
     },
+    "options": {
+      "empty": "Chưa có lựa chọn nào",
+      "loadMore": "Xem thêm",
+      "loadingMore": "Đang tải…"
+    },
     "compose": {
       "title": "Tạo bó hoa của bạn",
       "note": "Số lượng, kiểu bó và màu hoàn thiện. Mọi lựa chọn đều hiện ngay trong bản xem trước.",
@@ -1893,11 +1898,6 @@
         "added": "Đã thêm {count} · {price}",
         "extra": "Đã thêm {count}",
         "addedPlain": "Đã thêm {count}"
-      },
-      "options": {
-        "empty": "Chưa có lựa chọn nào",
-        "loadMore": "Xem thêm",
-        "loadingMore": "Đang tải…"
       },
       "bouquet": {
         "label": "Hoa của bạn",

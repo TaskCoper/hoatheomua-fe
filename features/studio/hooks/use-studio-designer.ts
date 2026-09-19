@@ -6,14 +6,13 @@ import {
   roundStudioQuantity,
   STUDIO_LAST_STEP,
   STUDIO_RIBBON_LABELS,
-  STUDIO_WRAP_LABELS,
-  studioMockups
+  STUDIO_WRAP_LABELS
 } from '@/features/studio/studio-data'
 import {
-  toStudioBundleOptions,
   toStudioIngredients,
   toStudioProduct,
   toStudioProductOptions,
+  toStudioReferenceOptions,
   toStudioVariantOptions
 } from '@/features/studio/studio-mappers'
 import type { StudioBouquet, StudioGenerationStatus, StudioStep, StudioVersion } from '@/features/studio/types'
@@ -42,12 +41,19 @@ export function useStudioDesigner(detail: ProductDetail) {
   )
 
   const {
-    referenceFlowers,
-    isGettingReferenceFlowers,
-    isGettingMoreReferenceFlowers,
-    hasMoreReferenceFlowers,
-    loadMoreReferenceFlowers
+    referenceFlowers: bundles,
+    isGettingReferenceFlowers: isGettingBundles,
+    isGettingMoreReferenceFlowers: isGettingMoreBundles,
+    hasMoreReferenceFlowers: hasMoreBundles,
+    loadMoreReferenceFlowers: loadMoreBundles
   } = useGetInfiniteReferenceFlowers({ type: 'bundle' })
+  const {
+    referenceFlowers: sceneFlowers,
+    isGettingReferenceFlowers: isGettingScenes,
+    isGettingMoreReferenceFlowers: isGettingMoreScenes,
+    hasMoreReferenceFlowers: hasMoreScenes,
+    loadMoreReferenceFlowers: loadMoreScenes
+  } = useGetInfiniteReferenceFlowers({ type: 'flower' })
   const {
     products: ribbonProducts,
     isGettingProducts: isGettingRibbons,
@@ -63,7 +69,8 @@ export function useStudioDesigner(detail: ProductDetail) {
     loadMoreProducts: loadMoreWraps
   } = useGetInfiniteProducts({ labels: STUDIO_WRAP_LABELS })
 
-  const styleOptions = useMemo(() => toStudioBundleOptions(referenceFlowers), [referenceFlowers])
+  const styleOptions = useMemo(() => toStudioReferenceOptions(bundles), [bundles])
+  const sceneOptions = useMemo(() => toStudioReferenceOptions(sceneFlowers), [sceneFlowers])
   const ribbonOptions = useMemo(() => toStudioProductOptions(ribbonProducts), [ribbonProducts])
   const wrapOptions = useMemo(() => toStudioProductOptions(wrapProducts), [wrapProducts])
 
@@ -107,7 +114,7 @@ export function useStudioDesigner(detail: ProductDetail) {
   const product = useMemo(() => toStudioProduct(selectedDetail, detail), [detail, selectedDetail])
   const productIngredients = useMemo(() => toStudioIngredients(selectedDetail.materials), [selectedDetail.materials])
 
-  const mockup = studioMockups.find((item) => item.id === selectedMockupId)
+  const mockup = sceneOptions.find((item) => item.id === selectedMockupId)
   const trimmedName = designName.trim()
   const nameValid = trimmedName.length >= 2 && designName.length <= STUDIO_NAME_MAX_LENGTH
 
@@ -247,7 +254,7 @@ export function useStudioDesigner(detail: ProductDetail) {
 
     const timeout = window.setTimeout(() => {
       const values = getValues()
-      const scene = studioMockups.find((item) => item.id === values.mockupId)
+      const scene = sceneOptions.find((item) => item.id === values.mockupId)
       versionCount.current += 1
       const version: StudioVersion = {
         id: `version-${versionCount.current}`,
@@ -267,7 +274,7 @@ export function useStudioDesigner(detail: ProductDetail) {
       window.clearInterval(interval)
       window.clearTimeout(timeout)
     }
-  }, [generationStatus, getValues, product.imageUrl])
+  }, [generationStatus, getValues, product.imageUrl, sceneOptions])
 
   return {
     control,
@@ -288,18 +295,23 @@ export function useStudioDesigner(detail: ProductDetail) {
     styleOptions,
     ribbonOptions,
     wrapOptions,
-    isGettingStyleOptions: isGettingReferenceFlowers,
+    sceneOptions,
+    isGettingStyleOptions: isGettingBundles,
     isGettingRibbonOptions: isGettingRibbons,
     isGettingWrapOptions: isGettingWraps,
-    isGettingMoreStyleOptions: isGettingMoreReferenceFlowers,
+    isGettingSceneOptions: isGettingScenes,
+    isGettingMoreStyleOptions: isGettingMoreBundles,
     isGettingMoreRibbonOptions: isGettingMoreRibbons,
     isGettingMoreWrapOptions: isGettingMoreWraps,
-    hasMoreStyleOptions: hasMoreReferenceFlowers,
+    isGettingMoreSceneOptions: isGettingMoreScenes,
+    hasMoreStyleOptions: hasMoreBundles,
     hasMoreRibbonOptions: hasMoreRibbons,
     hasMoreWrapOptions: hasMoreWraps,
-    loadMoreStyleOptions: loadMoreReferenceFlowers,
+    hasMoreSceneOptions: hasMoreScenes,
+    loadMoreStyleOptions: loadMoreBundles,
     loadMoreRibbonOptions: loadMoreRibbons,
     loadMoreWrapOptions: loadMoreWraps,
+    loadMoreSceneOptions: loadMoreScenes,
     trimmedName,
     nameValid,
     bouquet,
