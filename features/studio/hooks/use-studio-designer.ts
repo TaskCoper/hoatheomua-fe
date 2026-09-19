@@ -1,35 +1,72 @@
 'use client'
 
+import { useGetInfiniteProducts } from '@/features/products/hooks/use-get-infinite-products'
 import type { ProductDetail } from '@/features/products/types'
 import {
+  roundStudioQuantity,
   STUDIO_LAST_STEP,
-  studioMockups,
-  studioRibbons,
-  studioStyles,
-  studioWraps
+  STUDIO_RIBBON_LABELS,
+  STUDIO_WRAP_LABELS,
+  studioMockups
 } from '@/features/studio/studio-data'
-import { toStudioIngredients, toStudioProduct } from '@/features/studio/studio-mappers'
+import {
+  toStudioBundleOptions,
+  toStudioIngredients,
+  toStudioProduct,
+  toStudioProductOptions,
+  toStudioVariantOptions
+} from '@/features/studio/studio-mappers'
 import type { StudioBouquet, StudioGenerationStatus, StudioStep, StudioVersion } from '@/features/studio/types'
 import { createStudioSchema, STUDIO_NAME_MAX_LENGTH, type StudioFormValues } from '@/features/studio/validations'
+import { useGetInfiniteReferenceFlowers } from '@/hooks/use-get-infinite-reference-flowers'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
-/**
- * The studio is always opened from a product page, so the design and the stems
- * it is built from both come from `GET /v1/products/{id}`. A product with no
- * materials still designs fine - the stem list is simply empty.
- */
 export function useStudioDesigner(detail: ProductDetail) {
   const { t: tRoot } = useTranslation()
 
-  const product = useMemo(() => toStudioProduct(detail), [detail])
-  const productIngredients = useMemo(() => toStudioIngredients(detail.materials), [detail.materials])
-  const baseIngredientQuantities = useMemo(
-    () => Object.fromEntries(productIngredients.map((ingredient) => [ingredient.id, ingredient.baseQuantity])),
-    [productIngredients]
+  const variants = useMemo(
+    () => (detail.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id)),
+    [detail.children]
   )
+  const variantOptions = useMemo(() => toStudioVariantOptions(variants), [variants])
+  const defaultDetail = variants[0] ?? detail
+  const defaultQuantities = useMemo(
+    () =>
+      Object.fromEntries(
+        toStudioIngredients(defaultDetail.materials).map((ingredient) => [ingredient.id, ingredient.baseQuantity])
+      ),
+    [defaultDetail]
+  )
+
+  const {
+    referenceFlowers,
+    isGettingReferenceFlowers,
+    isGettingMoreReferenceFlowers,
+    hasMoreReferenceFlowers,
+    loadMoreReferenceFlowers
+  } = useGetInfiniteReferenceFlowers({ type: 'bundle' })
+  const {
+    products: ribbonProducts,
+    isGettingProducts: isGettingRibbons,
+    isGettingMoreProducts: isGettingMoreRibbons,
+    hasMoreProducts: hasMoreRibbons,
+    loadMoreProducts: loadMoreRibbons
+  } = useGetInfiniteProducts({ labels: STUDIO_RIBBON_LABELS })
+  const {
+    products: wrapProducts,
+    isGettingProducts: isGettingWraps,
+    isGettingMoreProducts: isGettingMoreWraps,
+    hasMoreProducts: hasMoreWraps,
+    loadMoreProducts: loadMoreWraps
+  } = useGetInfiniteProducts({ labels: STUDIO_WRAP_LABELS })
+
+  const styleOptions = useMemo(() => toStudioBundleOptions(referenceFlowers), [referenceFlowers])
+  const ribbonOptions = useMemo(() => toStudioProductOptions(ribbonProducts), [ribbonProducts])
+  const wrapOptions = useMemo(() => toStudioProductOptions(wrapProducts), [wrapProducts])
+
   const [step, setStep] = useState<StudioStep>(1)
   const [maxStep, setMaxStep] = useState<StudioStep>(1)
   const [generationStatus, setGenerationStatus] = useState<StudioGenerationStatus>('idle')
@@ -47,20 +84,28 @@ export function useStudioDesigner(detail: ProductDetail) {
     defaultValues: {
       name: '',
       mockupId: '',
-      productId: product.id,
-      ingredientQuantities: { ...baseIngredientQuantities },
-      styleId: studioStyles[0].id,
-      ribbonId: studioRibbons[0].id,
-      wrapId: studioWraps[0].id
+      productId: defaultDetail.id,
+      ingredientQuantities: { ...defaultQuantities },
+      styleId: '',
+      ribbonId: '',
+      wrapId: ''
     }
   })
 
   const designName = useWatch({ control, name: 'name' })
+  const selectedProductId = useWatch({ control, name: 'productId' })
   const selectedMockupId = useWatch({ control, name: 'mockupId' })
   const ingredientQuantities = useWatch({ control, name: 'ingredientQuantities' })
   const selectedStyleId = useWatch({ control, name: 'styleId' })
   const selectedRibbonId = useWatch({ control, name: 'ribbonId' })
   const selectedWrapId = useWatch({ control, name: 'wrapId' })
+
+  const selectedDetail = useMemo(
+    () => variants.find((variant) => variant.id === selectedProductId) ?? detail,
+    [detail, selectedProductId, variants]
+  )
+  const product = useMemo(() => toStudioProduct(selectedDetail, detail), [detail, selectedDetail])
+  const productIngredients = useMemo(() => toStudioIngredients(selectedDetail.materials), [selectedDetail.materials])
 
   const mockup = studioMockups.find((item) => item.id === selectedMockupId)
   const trimmedName = designName.trim()
@@ -70,13 +115,13 @@ export function useStudioDesigner(detail: ProductDetail) {
     const ingredients = productIngredients.map((ingredient) => {
       const quantity = ingredientQuantities[ingredient.id] ?? ingredient.baseQuantity
 
-      return { ingredient, quantity, extraQuantity: quantity - ingredient.baseQuantity }
+      return { ingredient, quantity, extraQuantity: roundStudioQuantity(quantity - ingredient.baseQuantity) }
     })
 
     return {
-      style: studioStyles.find((item) => item.id === selectedStyleId),
-      ribbon: studioRibbons.find((item) => item.id === selectedRibbonId),
-      wrap: studioWraps.find((item) => item.id === selectedWrapId),
+      style: styleOptions.find((item) => item.id === selectedStyleId),
+      ribbon: ribbonOptions.find((item) => item.id === selectedRibbonId),
+      wrap: wrapOptions.find((item) => item.id === selectedWrapId),
       products: [product],
       ingredients,
       totalAmount: ingredients.reduce(
@@ -84,7 +129,34 @@ export function useStudioDesigner(detail: ProductDetail) {
         product.priceAmount
       )
     }
-  }, [ingredientQuantities, productIngredients, product, selectedRibbonId, selectedStyleId, selectedWrapId])
+  }, [
+    ingredientQuantities,
+    productIngredients,
+    product,
+    ribbonOptions,
+    selectedRibbonId,
+    selectedStyleId,
+    selectedWrapId,
+    styleOptions,
+    wrapOptions
+  ])
+
+  useEffect(() => {
+    const pickers = [
+      ['styleId', styleOptions],
+      ['ribbonId', ribbonOptions],
+      ['wrapId', wrapOptions]
+    ] as const
+
+    pickers.forEach(([field, options]) => {
+      if (options.length === 0) return
+
+      const current = getValues(field)
+      if (current && options.some((option) => option.id === current)) return
+
+      setValue(field, options[0].id, { shouldValidate: true })
+    })
+  }, [getValues, ribbonOptions, setValue, styleOptions, wrapOptions])
 
   const goTo = (nextStep: StudioStep) => {
     setStep(nextStep)
@@ -104,13 +176,13 @@ export function useStudioDesigner(detail: ProductDetail) {
     markChanged()
   }
 
-  /** The base stems belong to the design itself, so a quantity never drops below them. */
-  const adjustIngredient = (id: string, delta: number) => {
+  const adjustIngredient = (id: string, direction: number) => {
     const ingredient = productIngredients.find((item) => item.id === id)
     if (!ingredient) return
 
     const current = getValues('ingredientQuantities')
-    const next = Math.max(ingredient.baseQuantity, (current[id] ?? ingredient.baseQuantity) + delta)
+    const quantity = current[id] ?? ingredient.baseQuantity
+    const next = Math.max(ingredient.baseQuantity, roundStudioQuantity(quantity + direction * ingredient.step))
     if (next === current[id]) return
 
     setValue('ingredientQuantities', { ...current, [id]: next }, { shouldDirty: true, shouldValidate: true })
@@ -119,6 +191,22 @@ export function useStudioDesigner(detail: ProductDetail) {
 
   const increaseIngredient = (id: string) => adjustIngredient(id, 1)
   const decreaseIngredient = (id: string) => adjustIngredient(id, -1)
+
+  const selectVariant = (id: string) => {
+    if (id === selectedProductId) return
+
+    const variant = variants.find((item) => item.id === id)
+    if (!variant) return
+
+    const ingredients = toStudioIngredients(variant.materials)
+    setValue('productId', id, { shouldDirty: true, shouldValidate: true })
+    setValue(
+      'ingredientQuantities',
+      Object.fromEntries(ingredients.map((ingredient) => [ingredient.id, ingredient.baseQuantity])),
+      { shouldDirty: true, shouldValidate: true }
+    )
+    markChanged()
+  }
 
   const selectStyle = (id: string) => {
     setValue('styleId', id, { shouldDirty: true, shouldValidate: true })
@@ -195,6 +283,23 @@ export function useStudioDesigner(detail: ProductDetail) {
     mockup,
     selectedMockupId,
     productIngredients,
+    variantOptions,
+    selectedProductId,
+    styleOptions,
+    ribbonOptions,
+    wrapOptions,
+    isGettingStyleOptions: isGettingReferenceFlowers,
+    isGettingRibbonOptions: isGettingRibbons,
+    isGettingWrapOptions: isGettingWraps,
+    isGettingMoreStyleOptions: isGettingMoreReferenceFlowers,
+    isGettingMoreRibbonOptions: isGettingMoreRibbons,
+    isGettingMoreWrapOptions: isGettingMoreWraps,
+    hasMoreStyleOptions: hasMoreReferenceFlowers,
+    hasMoreRibbonOptions: hasMoreRibbons,
+    hasMoreWrapOptions: hasMoreWraps,
+    loadMoreStyleOptions: loadMoreReferenceFlowers,
+    loadMoreRibbonOptions: loadMoreRibbons,
+    loadMoreWrapOptions: loadMoreWraps,
     trimmedName,
     nameValid,
     bouquet,
@@ -205,6 +310,7 @@ export function useStudioDesigner(detail: ProductDetail) {
     goBack,
     markChanged,
     selectMockup,
+    selectVariant,
     increaseIngredient,
     decreaseIngredient,
     selectStyle,

@@ -10,7 +10,16 @@ export interface CoreProductCheckItem {
 class ProductService {
   private readonly baseUrl = 'products'
 
-  getProducts = async ({ pageIndex, pageSize, categoryIds, priceFrom, priceTo, search, sortBy }: GetProductsParams) => {
+  getProducts = async ({
+    pageIndex,
+    pageSize,
+    categoryIds,
+    priceFrom,
+    priceTo,
+    search,
+    sortBy,
+    labels
+  }: GetProductsParams) => {
     const { data } = await api.get<BasePaginationResponse<ProductDetail>>(`/v1/${this.baseUrl}`, {
       params: {
         pageIndex,
@@ -19,7 +28,8 @@ class ProductService {
         priceFrom,
         priceTo,
         search,
-        sortBy
+        sortBy,
+        labels
       }
     })
 

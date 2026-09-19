@@ -1,32 +1,26 @@
 'use client'
 
+import { Spinner } from '@/components/ui/spinner'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import {
-  formatStudioIngredientCounts,
-  formatStudioPrice,
-  studioRibbons,
-  studioStyles,
-  studioWraps
-} from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioSwatch } from '@/features/studio/types'
+import { formatStudioIngredientCounts, formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
+import type { StudioBouquet, StudioOption, StudioVariant } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { Add01Icon, MinusSignIcon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
 import type { ReactNode } from 'react'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
 const detailTermClass = 'text-sm font-semibold text-primary'
 const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
 const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
-// Every block on this step sits in the same shell so the four sections read as one stack.
 const panelClass = 'mt-4 rounded-3xl bg-card/40 p-5 sm:p-6'
 const quantityButtonClass =
   'flex size-8 cursor-pointer items-center justify-center rounded-full bg-secondary/60 text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+const loadMoreButtonClass =
+  'cursor-pointer rounded-full bg-secondary/60 px-4 py-2 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-50'
 
-// Shared with the mockup grid so a selected tile reads the same wherever it appears.
 const tileClass = (selected: boolean) =>
   cn(
     'group relative isolate block cursor-pointer overflow-hidden rounded-2xl text-left transition-[transform,box-shadow] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
@@ -36,11 +30,28 @@ const tileClass = (selected: boolean) =>
   )
 
 interface StudioComposeStepProps {
-  /** `bouquet.products[0]` is always the design the user arrived with. */
   bouquet: StudioBouquet
+  variantOptions: StudioVariant[]
+  selectedVariantId: string
+  styleOptions: StudioOption[]
+  ribbonOptions: StudioOption[]
+  wrapOptions: StudioOption[]
+  isGettingStyleOptions: boolean
+  isGettingRibbonOptions: boolean
+  isGettingWrapOptions: boolean
+  isGettingMoreStyleOptions: boolean
+  isGettingMoreRibbonOptions: boolean
+  isGettingMoreWrapOptions: boolean
+  hasMoreStyleOptions: boolean
+  hasMoreRibbonOptions: boolean
+  hasMoreWrapOptions: boolean
+  onLoadMoreStyleOptions: () => void
+  onLoadMoreRibbonOptions: () => void
+  onLoadMoreWrapOptions: () => void
   actions?: ReactNode
   onIncreaseIngredient: (id: string) => void
   onDecreaseIngredient: (id: string) => void
+  onSelectVariant: (id: string) => void
   onSelectStyle: (id: string) => void
   onSelectRibbon: (id: string) => void
   onSelectWrap: (id: string) => void
@@ -48,82 +59,197 @@ interface StudioComposeStepProps {
 
 export default function StudioComposeStep({
   bouquet,
+  variantOptions,
+  selectedVariantId,
+  styleOptions,
+  ribbonOptions,
+  wrapOptions,
+  isGettingStyleOptions,
+  isGettingRibbonOptions,
+  isGettingWrapOptions,
+  isGettingMoreStyleOptions,
+  isGettingMoreRibbonOptions,
+  isGettingMoreWrapOptions,
+  hasMoreStyleOptions,
+  hasMoreRibbonOptions,
+  hasMoreWrapOptions,
+  onLoadMoreStyleOptions,
+  onLoadMoreRibbonOptions,
+  onLoadMoreWrapOptions,
   actions,
   onIncreaseIngredient,
   onDecreaseIngredient,
+  onSelectVariant,
   onSelectStyle,
   onSelectRibbon,
   onSelectWrap
 }: StudioComposeStepProps) {
   const t = useTranslations('studio.compose')
-  const tStyles = useTranslations('studio.styles')
-  const tRibbons = useTranslations('studio.ribbons')
-  const tWraps = useTranslations('studio.wraps')
+
+  /** Loading, empty and “load more” read the same under every picker. */
+  const optionsFooter = (
+    options: StudioOption[],
+    loading: boolean,
+    loadingMore: boolean,
+    hasMore: boolean,
+    onLoadMore: () => void
+  ) => {
+    if (loading) return <Spinner className='size-4 text-muted-foreground' />
+    if (options.length === 0) return <p className={microLabelClass}>{t('options.empty')}</p>
+    if (!hasMore) return null
+
+    return (
+      <button type='button' onClick={onLoadMore} disabled={loadingMore} className={loadMoreButtonClass}>
+        {loadingMore ? t('options.loadingMore') : t('options.loadMore')}
+      </button>
+    )
+  }
 
   const swatchRow = (
     label: string,
-    swatches: StudioSwatch[],
+    options: StudioOption[],
     selectedId: string | undefined,
-    nameOf: (id: string) => string,
-    onSelect: (id: string) => void
-  ) => (
-    <div className={cn(detailRowClass, 'items-center py-5')}>
-      <div className='min-w-0'>
-        <p className={detailTermClass}>{label}</p>
-        <p className={cn(microLabelClass, 'truncate')}>{selectedId ? nameOf(selectedId) : null}</p>
-      </div>
+    loading: boolean,
+    loadingMore: boolean,
+    hasMore: boolean,
+    onSelect: (id: string) => void,
+    onLoadMore: () => void
+  ) => {
+    const selected = options.find((option) => option.id === selectedId)
+    const footer = optionsFooter(options, loading, loadingMore, hasMore, onLoadMore)
 
-      <div role='radiogroup' aria-label={label} className='flex flex-wrap gap-4'>
-        {swatches.map((swatch) => {
-          const selected = swatch.id === selectedId
-          const name = nameOf(swatch.id)
+    return (
+      <div className={cn(detailRowClass, 'items-center py-5')}>
+        <div className='min-w-0'>
+          <p className={detailTermClass}>{label}</p>
+          <p className={cn(microLabelClass, 'truncate')}>{selected?.name}</p>
+        </div>
 
-          return (
-            <button
-              key={swatch.id}
-              type='button'
-              role='radio'
-              aria-checked={selected}
-              aria-label={name}
-              title={name}
-              onClick={() => onSelect(swatch.id)}
-              style={{ backgroundColor: swatch.color }}
-              className={cn(
-                'flex size-10 cursor-pointer items-center justify-center rounded-full outline-2 outline-offset-2 ring-1 ring-inset ring-foreground/10 transition-[outline-color] duration-200',
-                selected ? 'outline-primary' : 'outline-transparent hover:outline-primary/35',
-                'focus-visible:outline-primary'
-              )}
-            >
-              <HugeiconsIcon
-                icon={Tick02Icon}
-                strokeWidth={3}
-                className={cn(
-                  'size-4 text-white drop-shadow-[0_0.0625rem_0.125rem_rgb(0_0_0/45%)] transition-opacity duration-200',
-                  selected ? 'opacity-100' : 'opacity-0'
-                )}
-              />
-            </button>
-          )
-        })}
+        <div className='flex flex-wrap items-center gap-4'>
+          <div role='radiogroup' aria-label={label} className='flex flex-wrap items-center gap-4'>
+            {options.map((option) => {
+              const isSelected = option.id === selectedId
+
+              return (
+                <button
+                  key={option.id}
+                  type='button'
+                  role='radio'
+                  aria-checked={isSelected}
+                  aria-label={option.name}
+                  title={option.name}
+                  onClick={() => onSelect(option.id)}
+                  className={cn(
+                    'relative isolate size-10 cursor-pointer overflow-hidden rounded-full bg-secondary/40 outline-2 outline-offset-2 ring-1 ring-inset ring-foreground/10 transition-[outline-color] duration-200',
+                    isSelected ? 'outline-primary' : 'outline-transparent hover:outline-primary/35',
+                    'focus-visible:outline-primary'
+                  )}
+                >
+                  <StudioImage
+                    src={option.imageUrl}
+                    alt=''
+                    fill
+                    sizes='2.5rem'
+                    loading='lazy'
+                    className='object-cover'
+                    pendingIconClassName='size-4'
+                  />
+                  <span
+                    aria-hidden='true'
+                    className={cn(
+                      'absolute inset-0 flex items-center justify-center bg-primary/45 text-white transition-opacity duration-200',
+                      isSelected ? 'opacity-100' : 'opacity-0'
+                    )}
+                  >
+                    <HugeiconsIcon icon={Tick02Icon} strokeWidth={3} className='size-4' />
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+
+          {footer}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   const hasIngredients = bouquet.ingredients.length > 0
+  const hasVariants = variantOptions.length > 0
 
   return (
     <div>
-      {/* Nothing to count when the catalogue lists no materials - the step then
-          starts straight at the shape and the finishing colours. */}
-      <section className='mt-7'>
+      {hasVariants ? (
+        <section className='mt-7'>
+          <StudioStepHeading title={t('variant.label')} description={t('variant.note')} actions={actions} />
+
+          <div role='radiogroup' aria-label={t('variant.label')} className='mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3'>
+            {variantOptions.map((variant, index) => {
+              const selected = variant.id === selectedVariantId
+
+              return (
+                <button
+                  key={variant.id}
+                  type='button'
+                  role='radio'
+                  aria-checked={selected}
+                  onClick={() => onSelectVariant(variant.id)}
+                  className={cn(tileClass(selected), 'aspect-[4/5] w-full')}
+                >
+                  <span className='absolute inset-0 block overflow-hidden bg-secondary/50'>
+                    <StudioImage
+                      src={variant.imageUrl}
+                      alt=''
+                      fill
+                      sizes='(min-width: 1024px) 16vw, (min-width: 640px) 30vw, 45vw'
+                      loading={index < 3 ? 'eager' : 'lazy'}
+                      className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045]'
+                    />
+                    <span
+                      aria-hidden='true'
+                      className='absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/25 to-transparent'
+                    />
+                  </span>
+
+                  <span className='relative z-10 flex h-full min-w-0 flex-col justify-end p-3 text-white'>
+                    <span className='mb-auto flex justify-end'>
+                      <span
+                        className={cn(
+                          'flex size-6 items-center justify-center rounded-full border transition-colors',
+                          selected
+                            ? 'border-white bg-white text-primary'
+                            : 'border-white/50 bg-black/10 text-transparent backdrop-blur-sm'
+                        )}
+                      >
+                        <HugeiconsIcon icon={Tick02Icon} className='size-3' strokeWidth={2.5} />
+                      </span>
+                    </span>
+
+                    <span className='line-clamp-2 block text-pretty font-title text-sm font-bold leading-tight text-white'>
+                      {variant.name}
+                    </span>
+                    {variant.priceAmount === null ? null : (
+                      <span className='mt-0.5 block text-[0.6875rem] font-semibold leading-snug text-white/80'>
+                        {formatStudioPrice(variant.priceAmount)}
+                      </span>
+                    )}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      <section className={hasVariants ? 'mt-14' : 'mt-7'}>
         <StudioStepHeading
           title={t('bouquet.label')}
           description={hasIngredients ? t('bouquet.note') : t('bouquet.emptyNote')}
-          actions={actions}
+          actions={hasVariants ? undefined : actions}
         />
 
         <div className='mt-8 flex flex-col gap-8'>
-          {bouquet.ingredients.map(({ ingredient, extraQuantity }, index) => {
+          {bouquet.ingredients.map(({ ingredient, quantity, extraQuantity }, index) => {
             const name = ingredient.name
             const extraNote =
               ingredient.extraPriceAmount === null
@@ -135,7 +261,10 @@ export default function StudioComposeStep({
                       count: extraQuantity,
                       price: formatStudioPrice(extraQuantity * ingredient.extraPriceAmount)
                     })
-                  : t('quantity.extraPrice', { price: formatStudioPrice(ingredient.extraPriceAmount) })
+                  : // One press adds a step, not a single unit, so the price quotes the step.
+                    t('quantity.extraPrice', {
+                      price: formatStudioPrice(ingredient.step * ingredient.extraPriceAmount)
+                    })
 
             return (
               <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
@@ -151,13 +280,12 @@ export default function StudioComposeStep({
                   />
                 </div>
 
-                <div className='flex min-w-0 items-start justify-between gap-4'>
+                <div className='flex min-w-0 items-center justify-between gap-4'>
                   <div className='min-w-0'>
                     <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>{name}</h3>
                     {extraNote ? <p className='text-xs leading-relaxed text-muted-foreground'>{extraNote}</p> : null}
                   </div>
 
-                  {/* Extra stems can be taken back out, but the design's own base stems stay. */}
                   <div className='flex shrink-0 items-center gap-2.5'>
                     <button
                       type='button'
@@ -168,10 +296,8 @@ export default function StudioComposeStep({
                     >
                       <HugeiconsIcon icon={MinusSignIcon} className='size-3.5' />
                     </button>
-                    {/* The design's own stem count is not published, so the
-                        counter reads as what is being added to it. */}
                     <span className='font-title text-lg font-bold leading-none tabular-nums text-primary'>
-                      +{extraQuantity}
+                      {formatStudioQuantity(quantity)}
                     </span>
                     <button
                       type='button'
@@ -193,7 +319,7 @@ export default function StudioComposeStep({
         <StudioStepHeading title={t('style.label')} description={t('style.note')} />
 
         <div role='radiogroup' aria-label={t('style.label')} className='mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4'>
-          {studioStyles.map((style, index) => {
+          {styleOptions.map((style, index) => {
             const selected = style.id === bouquet.style?.id
 
             return (
@@ -206,7 +332,7 @@ export default function StudioComposeStep({
                 className={cn(tileClass(selected), 'aspect-[3/4] w-full')}
               >
                 <span className='absolute inset-0 block overflow-hidden bg-secondary/50'>
-                  <Image
+                  <StudioImage
                     src={style.imageUrl}
                     alt=''
                     fill
@@ -235,15 +361,22 @@ export default function StudioComposeStep({
                   </span>
 
                   <span className='block text-pretty font-title text-sm font-bold leading-tight text-white'>
-                    {tStyles(`${style.id}.name`)}
-                  </span>
-                  <span className='mt-0.5 line-clamp-2 block text-[0.6875rem] leading-snug text-white/75'>
-                    {tStyles(`${style.id}.description`)}
+                    {style.name}
                   </span>
                 </span>
               </button>
             )
           })}
+        </div>
+
+        <div className='mt-4 flex justify-center'>
+          {optionsFooter(
+            styleOptions,
+            isGettingStyleOptions,
+            isGettingMoreStyleOptions,
+            hasMoreStyleOptions,
+            onLoadMoreStyleOptions
+          )}
         </div>
       </section>
 
@@ -251,8 +384,26 @@ export default function StudioComposeStep({
         <StudioStepHeading title={t('finishing.label')} description={t('finishing.note')} />
 
         <div className={cn(panelClass, 'flex flex-col')}>
-          {swatchRow(t('ribbon.label'), studioRibbons, bouquet.ribbon?.id, (id) => tRibbons(id), onSelectRibbon)}
-          {swatchRow(t('wrap.label'), studioWraps, bouquet.wrap?.id, (id) => tWraps(id), onSelectWrap)}
+          {swatchRow(
+            t('ribbon.label'),
+            ribbonOptions,
+            bouquet.ribbon?.id,
+            isGettingRibbonOptions,
+            isGettingMoreRibbonOptions,
+            hasMoreRibbonOptions,
+            onSelectRibbon,
+            onLoadMoreRibbonOptions
+          )}
+          {swatchRow(
+            t('wrap.label'),
+            wrapOptions,
+            bouquet.wrap?.id,
+            isGettingWrapOptions,
+            isGettingMoreWrapOptions,
+            hasMoreWrapOptions,
+            onSelectWrap,
+            onLoadMoreWrapOptions
+          )}
         </div>
       </section>
 
@@ -273,23 +424,12 @@ export default function StudioComposeStep({
             ) : null}
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('style.label')}</dt>
-              <dd className={detailValueClass}>{bouquet.style ? tStyles(`${bouquet.style.id}.name`) : null}</dd>
+              <dd className={detailValueClass}>{bouquet.style?.name}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('finishing.label')}</dt>
-              <dd className={cn('flex flex-wrap items-center gap-x-2 gap-y-1', detailValueClass)}>
-                {[bouquet.ribbon, bouquet.wrap].map((swatch, index) =>
-                  swatch ? (
-                    <span key={swatch.id} className='flex items-center gap-1.5'>
-                      <span
-                        aria-hidden='true'
-                        style={{ backgroundColor: swatch.color }}
-                        className='size-3.5 shrink-0 rounded-full ring-1 ring-inset ring-foreground/10'
-                      />
-                      {index === 0 ? tRibbons(swatch.id) : tWraps(swatch.id)}
-                    </span>
-                  ) : null
-                )}
+              <dd className={detailValueClass}>
+                {[bouquet.ribbon?.name, bouquet.wrap?.name].filter(Boolean).join(' · ')}
               </dd>
             </div>
             <div className={detailRowClass}>

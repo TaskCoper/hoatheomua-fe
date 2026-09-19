@@ -1,33 +1,7 @@
-import type {
-  StudioBouquetIngredient,
-  StudioMockup,
-  StudioStep,
-  StudioStyle,
-  StudioSwatch
-} from '@/features/studio/types'
+import type { StudioBouquetIngredient, StudioMockup, StudioStep } from '@/features/studio/types'
 
-export const studioStyles: StudioStyle[] = [
-  { id: 'round', imageUrl: '/images/custom/custom-flower.png' },
-  { id: 'triangle', imageUrl: '/images/3.webp' },
-  { id: 'rectangle', imageUrl: '/images/6.webp' },
-  { id: 'cascade', imageUrl: '/images/9.webp' }
-]
-
-export const studioRibbons: StudioSwatch[] = [
-  { id: 'dustyRose', color: '#d3a29b' },
-  { id: 'ivory', color: '#efe3d4' },
-  { id: 'sage', color: '#97a88f' },
-  { id: 'burgundy', color: '#73303a' },
-  { id: 'midnight', color: '#2f3b4a' }
-]
-
-export const studioWraps: StudioSwatch[] = [
-  { id: 'kraft', color: '#c39c74' },
-  { id: 'cloud', color: '#f3efe8' },
-  { id: 'blush', color: '#eccfc9' },
-  { id: 'forest', color: '#3d5145' },
-  { id: 'charcoal', color: '#3b3b3b' }
-]
+export const STUDIO_RIBBON_LABELS = ['RUY BĂNG']
+export const STUDIO_WRAP_LABELS = ['GIẤY']
 
 export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
   style: 'currency',
@@ -37,9 +11,22 @@ export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
 
 export const formatStudioPrice = (amount: number) => studioPriceFormatter.format(Math.round(amount))
 
+export const STUDIO_WHOLE_QUANTITY_STEP = 1
+export const STUDIO_DECIMAL_QUANTITY_STEP = 0.1
+
+export const studioQuantityFormatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 3 })
+
+export const roundStudioQuantity = (value: number) => Math.round(value * 1000) / 1000
+
+export const formatStudioQuantity = (value: number) => studioQuantityFormatter.format(roundStudioQuantity(value))
+
 export const formatStudioIngredientCounts = (ingredients: StudioBouquetIngredient[]) =>
   ingredients
-    .map((item) => (item.extraQuantity > 0 ? `${item.ingredient.name} +${item.extraQuantity}` : item.ingredient.name))
+    .map((item) =>
+      item.extraQuantity > 0
+        ? `${item.ingredient.name} +${formatStudioQuantity(item.extraQuantity)}`
+        : item.ingredient.name
+    )
     .join(' · ')
 
 export const studioMockups: StudioMockup[] = [

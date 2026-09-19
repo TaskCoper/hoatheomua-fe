@@ -2,8 +2,8 @@
 
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { formatStudioPrice } from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioMockup, StudioSwatch } from '@/features/studio/types'
+import { formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
+import type { StudioBouquet, StudioMockup } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { Add01Icon, MinusSignIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -17,7 +17,6 @@ const detailTermClass = 'text-xs font-semibold text-primary'
 const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
 const panelClass = 'rounded-3xl bg-card/40 p-6'
 const headingClass = 'text-pretty font-title text-lg font-bold leading-snug text-primary'
-const swatchDotClass = 'size-3.5 shrink-0 rounded-full ring-1 ring-inset ring-foreground/10'
 // Matches the stepper on step 2 so stems adjust the same way wherever they are listed.
 const quantityButtonClass =
   'flex size-8 cursor-pointer items-center justify-center rounded-full bg-secondary/60 text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
@@ -51,17 +50,6 @@ export default function StudioReview({
   const t = useTranslations('studio')
   const tCompose = useTranslations('studio.compose')
 
-  const swatchRow = (term: string, swatch: StudioSwatch | undefined, nameOf: (id: string) => string) => (
-    <DetailRow term={term} valueClass='flex items-center gap-2'>
-      {swatch ? (
-        <>
-          <span aria-hidden='true' style={{ backgroundColor: swatch.color }} className={swatchDotClass} />
-          {nameOf(swatch.id)}
-        </>
-      ) : null}
-    </DetailRow>
-  )
-
   return (
     <article className='animate-in fade-in slide-in-from-right-2 duration-300'>
       <header className='mt-7'>
@@ -78,7 +66,7 @@ export default function StudioReview({
         />
 
         <div className='mt-8 flex flex-col gap-8'>
-          {bouquet.ingredients.map(({ ingredient, extraQuantity }, index) => {
+          {bouquet.ingredients.map(({ ingredient, quantity, extraQuantity }, index) => {
             const name = ingredient.name
             // Only materials the catalogue prices carry an extra-stem line.
             const extraNote =
@@ -91,7 +79,9 @@ export default function StudioReview({
                       count: extraQuantity,
                       price: formatStudioPrice(extraQuantity * ingredient.extraPriceAmount)
                     })
-                  : tCompose('quantity.extraPrice', { price: formatStudioPrice(ingredient.extraPriceAmount) })
+                  : tCompose('quantity.extraPrice', {
+                      price: formatStudioPrice(ingredient.step * ingredient.extraPriceAmount)
+                    })
 
             return (
               <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
@@ -125,7 +115,7 @@ export default function StudioReview({
                       <HugeiconsIcon icon={MinusSignIcon} className='size-3.5' />
                     </button>
                     <span className='font-title text-lg font-bold leading-none tabular-nums text-primary'>
-                      +{extraQuantity}
+                      {formatStudioQuantity(quantity)}
                     </span>
                     <button
                       type='button'
@@ -144,11 +134,9 @@ export default function StudioReview({
 
         <div className={cn('mt-8', panelClass)}>
           <dl className='flex flex-col divide-y divide-border'>
-            <DetailRow term={tCompose('style.label')}>
-              {bouquet.style ? t(`styles.${bouquet.style.id}.name`) : null}
-            </DetailRow>
-            {swatchRow(tCompose('ribbon.label'), bouquet.ribbon, (id) => t(`ribbons.${id}`))}
-            {swatchRow(tCompose('wrap.label'), bouquet.wrap, (id) => t(`wraps.${id}`))}
+            <DetailRow term={tCompose('style.label')}>{bouquet.style?.name}</DetailRow>
+            <DetailRow term={tCompose('ribbon.label')}>{bouquet.ribbon?.name}</DetailRow>
+            <DetailRow term={tCompose('wrap.label')}>{bouquet.wrap?.name}</DetailRow>
             <DetailRow
               term={tCompose('summary.total')}
               valueClass='font-title text-lg font-bold leading-none text-primary'

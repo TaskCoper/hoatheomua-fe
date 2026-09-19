@@ -1894,10 +1894,19 @@
         "extra": "Đã thêm {count}",
         "addedPlain": "Đã thêm {count}"
       },
+      "options": {
+        "empty": "Chưa có lựa chọn nào",
+        "loadMore": "Xem thêm",
+        "loadingMore": "Đang tải…"
+      },
       "bouquet": {
         "label": "Hoa của bạn",
         "note": "Thêm bất kỳ loại hoa nào. Số lượng chỉ tăng so với thiết kế gốc.",
         "emptyNote": "Thiết kế này chưa có danh sách nguyên liệu nên không có gì để điều chỉnh ở đây. Bạn vẫn chọn được dáng bó và màu hoàn thiện."
+      },
+      "variant": {
+        "label": "Phân loại",
+        "note": "Mỗi phân loại là một bó riêng, với hoa và mức giá của chính nó."
       },
       "style": {
         "label": "Kiểu bó",
@@ -1921,38 +1930,6 @@
         "note": "Ruy băng và giấy gói khoác lên bó hoa của bạn."
       },
       "closingNote": "Kiểu bó chỉ mang tính định hướng. Bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm luôn mang nét tự nhiên riêng."
-    },
-    "styles": {
-      "round": {
-        "name": "Bó tròn",
-        "description": "Đều, vòm cao và cổ điển từ mọi góc nhìn."
-      },
-      "triangle": {
-        "name": "Bó tam giác",
-        "description": "Đỉnh cao ở giữa, thoải dần về hai bên."
-      },
-      "rectangle": {
-        "name": "Bó chữ nhật",
-        "description": "Mặt bó phẳng và rộng, hợp để trao tay."
-      },
-      "cascade": {
-        "name": "Bó thác đổ",
-        "description": "Cành hoa buông về phía trước như dòng nước."
-      }
-    },
-    "ribbons": {
-      "dustyRose": "Hồng phấn trầm",
-      "ivory": "Trắng ngà",
-      "sage": "Xanh rêu nhạt",
-      "burgundy": "Đỏ rượu",
-      "midnight": "Xanh đêm"
-    },
-    "wraps": {
-      "kraft": "Giấy kraft",
-      "cloud": "Trắng mây",
-      "blush": "Hồng phấn",
-      "forest": "Xanh rừng",
-      "charcoal": "Xám than"
     },
     "imagePending": "Ảnh sẽ được cập nhật",
     "loading": "Đang mở xưởng thiết kế...",

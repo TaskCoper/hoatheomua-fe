@@ -1894,10 +1894,19 @@
         "extra": "{count, plural, one {# extra stem} other {# extra stems}}",
         "addedPlain": "{count, plural, one {# added} other {# added}}"
       },
+      "options": {
+        "empty": "No options yet",
+        "loadMore": "Show more",
+        "loadingMore": "Loading…"
+      },
       "bouquet": {
         "label": "Your flowers",
         "note": "Add more of any flower. Quantities only go up from what the design already includes.",
         "emptyNote": "This design has no material list yet, so there is nothing to count here. The shape and finishing colours are still yours to choose."
+      },
+      "variant": {
+        "label": "Variant",
+        "note": "Each variant is its own bouquet, with its own flowers and price."
       },
       "style": {
         "label": "Style",
@@ -1921,38 +1930,6 @@
         "note": "The ribbon and paper your flowers are dressed in."
       },
       "closingNote": "Shapes are guides, not templates. Your florist arranges by hand on the day, so the finished bouquet carries its own natural character."
-    },
-    "styles": {
-      "round": {
-        "name": "Round bouquet",
-        "description": "Even, domed and classic from every angle."
-      },
-      "triangle": {
-        "name": "Triangle bouquet",
-        "description": "A tall centre tapering down to the sides."
-      },
-      "rectangle": {
-        "name": "Rectangle bouquet",
-        "description": "A flat, wide face made to be handed over."
-      },
-      "cascade": {
-        "name": "Cascade bouquet",
-        "description": "Stems falling forward in a soft waterfall."
-      }
-    },
-    "ribbons": {
-      "dustyRose": "Dusty rose",
-      "ivory": "Ivory",
-      "sage": "Sage",
-      "burgundy": "Burgundy",
-      "midnight": "Midnight"
-    },
-    "wraps": {
-      "kraft": "Kraft",
-      "cloud": "Cloud white",
-      "blush": "Blush",
-      "forest": "Forest",
-      "charcoal": "Charcoal"
     },
     "imagePending": "Photograph coming soon",
     "loading": "Opening the studio...",

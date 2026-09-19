@@ -11,6 +11,7 @@ export interface GetProductsParams {
   priceFrom?: number
   priceTo?: number
   sortBy?: string[]
+  labels?: string[]
 }
 
 export const productsQueryKey = ({
@@ -20,8 +21,10 @@ export const productsQueryKey = ({
   categoryIds,
   priceFrom,
   priceTo,
-  sortBy
-}: GetProductsParams) => ['products', pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy] as const
+  sortBy,
+  labels
+}: GetProductsParams) =>
+  ['products', pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy, labels] as const
 
 export const useGetProducts = ({
   pageIndex = DEFAULT_PAGE_INDEX,
@@ -30,15 +33,17 @@ export const useGetProducts = ({
   categoryIds,
   priceFrom,
   priceTo,
-  sortBy = ['-sellablequantity']
+  sortBy = ['-sellablequantity'],
+  labels
 }: GetProductsParams) => {
   const {
     data: products,
     isLoading: isGettingProducts,
     isFetching: isFetchingProducts
   } = useQuery({
-    queryKey: productsQueryKey({ pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy }),
-    queryFn: () => productService.getProducts({ pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy }),
+    queryKey: productsQueryKey({ pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy, labels }),
+    queryFn: () =>
+      productService.getProducts({ pageIndex, pageSize, search, categoryIds, priceFrom, priceTo, sortBy, labels }),
     placeholderData: keepPreviousData
   })
 

@@ -76,37 +76,15 @@ export default function StudioResult({
             ) : null}
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('style.label')}</dt>
-              <dd className={detailValueClass}>{bouquet.style ? t(`styles.${bouquet.style.id}.name`) : null}</dd>
+              <dd className={detailValueClass}>{bouquet.style?.name}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('ribbon.label')}</dt>
-              <dd className={cn('flex items-center gap-2', detailValueClass)}>
-                {bouquet.ribbon ? (
-                  <>
-                    <span
-                      aria-hidden='true'
-                      style={{ backgroundColor: bouquet.ribbon.color }}
-                      className='size-3.5 shrink-0 rounded-full ring-1 ring-inset ring-foreground/10'
-                    />
-                    {t(`ribbons.${bouquet.ribbon.id}`)}
-                  </>
-                ) : null}
-              </dd>
+              <dd className={detailValueClass}>{bouquet.ribbon?.name}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('wrap.label')}</dt>
-              <dd className={cn('flex items-center gap-2', detailValueClass)}>
-                {bouquet.wrap ? (
-                  <>
-                    <span
-                      aria-hidden='true'
-                      style={{ backgroundColor: bouquet.wrap.color }}
-                      className='size-3.5 shrink-0 rounded-full ring-1 ring-inset ring-foreground/10'
-                    />
-                    {t(`wraps.${bouquet.wrap.id}`)}
-                  </>
-                ) : null}
-              </dd>
+              <dd className={detailValueClass}>{bouquet.wrap?.name}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('result.mockup')}</dt>

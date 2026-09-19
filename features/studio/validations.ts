@@ -24,22 +24,13 @@ export const createStudioSchema = (t: TranslationFunction) =>
       }),
       ingredientQuantities: z.record(
         z.string(),
-        z
-          .number()
-          .int()
-          .min(0, {
-            error: t('common.validation.required', { field: t('studio.compose.quantity.label') })
-          })
+        z.number().min(0, {
+          error: t('common.validation.required', { field: t('studio.compose.quantity.label') })
+        })
       ),
-      styleId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.compose.style.label') })
-      }),
-      ribbonId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.compose.ribbon.label') })
-      }),
-      wrapId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.compose.wrap.label') })
-      })
+      styleId: z.string(),
+      ribbonId: z.string(),
+      wrapId: z.string()
     })
     .strict()
 

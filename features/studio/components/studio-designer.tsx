@@ -33,6 +33,23 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
     mockup,
     selectedMockupId,
     productIngredients,
+    variantOptions,
+    selectedProductId,
+    styleOptions,
+    ribbonOptions,
+    wrapOptions,
+    isGettingStyleOptions,
+    isGettingRibbonOptions,
+    isGettingWrapOptions,
+    isGettingMoreStyleOptions,
+    isGettingMoreRibbonOptions,
+    isGettingMoreWrapOptions,
+    hasMoreStyleOptions,
+    hasMoreRibbonOptions,
+    hasMoreWrapOptions,
+    loadMoreStyleOptions,
+    loadMoreRibbonOptions,
+    loadMoreWrapOptions,
     trimmedName,
     nameValid,
     bouquet,
@@ -43,6 +60,7 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
     goBack,
     markChanged,
     selectMockup,
+    selectVariant,
     increaseIngredient,
     decreaseIngredient,
     selectStyle,
@@ -98,9 +116,27 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
               <div className='animate-in fade-in slide-in-from-right-2 duration-300'>
                 <StudioComposeStep
                   bouquet={bouquet}
+                  variantOptions={variantOptions}
+                  selectedVariantId={selectedProductId}
+                  styleOptions={styleOptions}
+                  ribbonOptions={ribbonOptions}
+                  wrapOptions={wrapOptions}
+                  isGettingStyleOptions={isGettingStyleOptions}
+                  isGettingRibbonOptions={isGettingRibbonOptions}
+                  isGettingWrapOptions={isGettingWrapOptions}
+                  isGettingMoreStyleOptions={isGettingMoreStyleOptions}
+                  isGettingMoreRibbonOptions={isGettingMoreRibbonOptions}
+                  isGettingMoreWrapOptions={isGettingMoreWrapOptions}
+                  hasMoreStyleOptions={hasMoreStyleOptions}
+                  hasMoreRibbonOptions={hasMoreRibbonOptions}
+                  hasMoreWrapOptions={hasMoreWrapOptions}
+                  onLoadMoreStyleOptions={() => loadMoreStyleOptions()}
+                  onLoadMoreRibbonOptions={() => loadMoreRibbonOptions()}
+                  onLoadMoreWrapOptions={() => loadMoreWrapOptions()}
                   actions={desktopNav}
                   onIncreaseIngredient={increaseIngredient}
                   onDecreaseIngredient={decreaseIngredient}
+                  onSelectVariant={selectVariant}
                   onSelectStyle={selectStyle}
                   onSelectRibbon={selectRibbon}
                   onSelectWrap={selectWrap}

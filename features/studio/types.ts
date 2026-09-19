@@ -7,6 +7,7 @@ export interface StudioIngredient {
   name: string
   imageUrl: string | null
   baseQuantity: number
+  step: number
   extraPriceAmount: number | null
 }
 
@@ -19,28 +20,27 @@ export interface StudioProduct {
   imageFit?: 'cover' | 'contain'
 }
 
-export interface StudioStyle {
+export interface StudioOption {
   id: string
-  imageUrl: string
+  name: string
+  description: string | null
+  imageUrl: string | null
 }
 
-export interface StudioSwatch {
-  id: string
-  color: string
+export interface StudioVariant extends StudioOption {
+  priceAmount: number | null
 }
 
 export interface StudioBouquetIngredient {
   ingredient: StudioIngredient
-  /** Never below `ingredient.baseQuantity` - stems can only be added at this step. */
   quantity: number
-  /** Stems on top of what the design already includes. */
   extraQuantity: number
 }
 
 export interface StudioBouquet {
-  style?: StudioStyle
-  ribbon?: StudioSwatch
-  wrap?: StudioSwatch
+  style?: StudioOption
+  ribbon?: StudioOption
+  wrap?: StudioOption
   products: StudioProduct[]
   ingredients: StudioBouquetIngredient[]
   totalAmount: number
