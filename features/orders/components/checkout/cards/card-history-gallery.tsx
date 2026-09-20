@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDateFormat } from '@/lib/date'
@@ -9,7 +8,7 @@ import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import { Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useEffect, useId, useRef, type ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import type { GeneratedCard } from '../../../cards/types'
 
 const GRID = 'grid grid-cols-3 gap-2 sm:grid-cols-6'
@@ -20,9 +19,6 @@ interface CardHistoryGalleryProps {
   onChange: (generatedCardId: string) => void
   invalid?: boolean
   isLoading?: boolean
-  isLoadingMore?: boolean
-  hasMore?: boolean
-  onLoadMore?: () => void
   /** Shown in place of the grid when there is nothing to pick from. */
   emptyState?: ReactNode
 }
@@ -33,33 +29,11 @@ export default function CardHistoryGallery({
   onChange,
   invalid,
   isLoading,
-  isLoadingMore,
-  hasMore,
-  onLoadMore,
   emptyState
 }: CardHistoryGalleryProps) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
   const groupId = useId()
-
-  const sentinelRef = useRef<HTMLDivElement>(null)
-  const canLoadMore = !!hasMore && !isLoadingMore && !!onLoadMore
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel || !canLoadMore) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) onLoadMore?.()
-      },
-      { rootMargin: '240px 0px' }
-    )
-
-    observer.observe(sentinel)
-
-    return () => observer.disconnect()
-  }, [canLoadMore, onLoadMore])
 
   return (
     <div className='space-y-1.5'>
@@ -124,24 +98,6 @@ export default function CardHistoryGallery({
           })}
         </RadioGroup>
       )}
-
-      {!isLoading && generatedCards.length > 0 ? (
-        <div ref={sentinelRef}>
-          {isLoadingMore ? (
-            <div className={GRID}>
-              {Array.from({ length: 3 }).map((_, index) => (
-                <Skeleton key={index} className='aspect-3/4 w-full rounded-2xl' />
-              ))}
-            </div>
-          ) : hasMore ? (
-            <div className='flex justify-center pt-1'>
-              <Button type='button' variant='outline' size='sm' onClick={onLoadMore}>
-                {t('orders.checkout.cards.historyLoadMore')}
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
 
       {invalid ? <p className='text-xs text-destructive'>{t('orders.checkout.cards.historyRequired')}</p> : null}
     </div>

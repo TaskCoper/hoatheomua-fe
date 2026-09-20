@@ -399,7 +399,7 @@ export interface OrderCardPayload {
 }
 
 export interface OrderBouquetPayload {
-  /** Only set for a bouquet designed in the studio. TODO(backend): no studio-to-cart path yet. */
+  /** Only set for a bouquet designed in the studio - the version the cart line was bought from. */
   generatedFlowerId?: string
   card: OrderCardPayload
 }

@@ -30,6 +30,10 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
     generationStatus,
     generationStage,
     added,
+    addToBag,
+    buyNow,
+    isAddToBagDisabled,
+    isBuyNowDisabled,
     versions,
     activeVersionId,
     mockup,
@@ -60,7 +64,6 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
     nameValid,
     bouquet,
     setStep,
-    setAdded,
     goTo,
     goNext,
     goBack,
@@ -77,7 +80,6 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
   } = useStudioDesigner(family)
 
   const canContinue = step === 1 ? nameValid : step === 2 ? true : Boolean(selectedMockupId)
-  const addToBag = () => setAdded(true)
 
   const desktopNav = (
     <StudioDesktopNav step={step} status={generationStatus} canContinue={canContinue} onNext={goNext} onBack={goBack} />
@@ -102,8 +104,11 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
           versions={versions}
           activeVersionId={activeVersionId}
           added={added}
+          isAddToBagDisabled={isAddToBagDisabled}
+          isBuyNowDisabled={isBuyNowDisabled}
           onSelectVersion={selectVersion}
           onAddToBag={addToBag}
+          onBuyNow={buyNow}
         />
 
         <section className='relative bg-background lg:order-1 lg:h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:border-r lg:border-secondary/40'>
@@ -211,9 +216,12 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
         status={generationStatus}
         canContinue={canContinue}
         added={added}
+        isAddToBagDisabled={isAddToBagDisabled}
+        isBuyNowDisabled={isBuyNowDisabled}
         onNext={goNext}
         onBack={goBack}
         onAddToBag={addToBag}
+        onBuyNow={buyNow}
       />
 
       {mockup ? (

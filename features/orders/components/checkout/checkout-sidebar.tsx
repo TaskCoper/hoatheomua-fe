@@ -7,10 +7,10 @@ import { Spinner } from '@/components/ui/spinner'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { ThumbnailImage } from '@/shared/components/thumbnail-image'
 import { cn } from '@/shared/utils'
 import { Alert02Icon, Tag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import Image from 'next/image'
 import { useEffect, useState, type ReactNode } from 'react'
 import { getCheckoutCardPrice } from '../../cards/card-data'
 import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
@@ -359,7 +359,7 @@ function SummaryItemRow({
   return (
     <div className={cn('flex items-start gap-3 py-3', muted && 'opacity-50')}>
       <div className='relative size-16 shrink-0 overflow-hidden rounded-xl border border-border bg-secondary/40'>
-        {imageUrl ? <Image src={imageUrl} alt={imageAlt} fill className='object-cover' sizes='64px' /> : null}
+        <ThumbnailImage src={imageUrl} alt={imageAlt} fill className='object-cover' sizes='64px' fallback={null} />
       </div>
 
       <div className='min-w-0 flex-1'>

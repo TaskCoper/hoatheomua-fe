@@ -1,6 +1,6 @@
 import type { CardTemplate } from '@/types/card-template.type'
-import type { GeneratedCardItem } from '@/types/generated-card.type'
-import { OrderCardFormType } from '../types'
+import type { GeneratedCardByProductItem, GeneratedCardHistoryItem } from '@/types/generated-card.type'
+import { OrderSnapshotCardType, OrderSnapshotFormType } from '../types'
 import { countWords, getCardUnitPrice, type CardConfig } from './card-config'
 import type {
   CardContent,
@@ -8,6 +8,7 @@ import type {
   CheckoutCard,
   CheckoutCardTemplate,
   GeneratedCard,
+  GeneratedCardHistoryEntry,
   GeneratedCardType
 } from './types'
 
@@ -21,25 +22,37 @@ export const toCheckoutCardTemplate = (template: CardTemplate): CheckoutCardTemp
   templateImageUrl: template.imageUrl
 })
 
-const WRITING_METHOD_BY_FORM_TYPE: Record<OrderCardFormType, CardWritingMethod> = {
-  [OrderCardFormType.GoMay]: 'typed',
-  [OrderCardFormType.Calligraphy]: 'handwritten'
-}
-
-const isOrderCardFormType = (value: number): value is OrderCardFormType => value in WRITING_METHOD_BY_FORM_TYPE
-
-/** One row of the generated-card API, as the checkout draws it. */
-export const toGeneratedCard = (item: GeneratedCardItem): GeneratedCard => ({
+/** One row of `POST v1/generated-cards/by-products`, as the checkout's reuse gallery draws it. */
+export const toGeneratedCard = (item: GeneratedCardByProductItem): GeneratedCard => ({
   id: item.id,
-  templateId: item.cardTemplateId ?? '',
-  templateName: item.cardTemplateName ?? '',
+  templateId: '',
+  templateName: '',
+  sizeName: item.sizeName,
+  writingMethod: item.formType === OrderSnapshotFormType.Calligraphy ? 'handwritten' : DEFAULT_CARD_WRITING_METHOD,
+  content: { message: item.messageContent },
+  imageUrl: item.imageUrl,
+  createdAt: item.createdAt
+})
+
+/** Centimetres the card prints at; anything the API leaves at zero is nothing to print. */
+const toPrintedSize = (value: number): number | null => (value > 0 ? value : null)
+
+/**
+ * One row of the account's card history. `GET v1/generated-cards` spells `formType` and
+ * `cardType` as strings, not as the numbers the create payload sends.
+ */
+export const toGeneratedCardHistoryEntry = (item: GeneratedCardHistoryItem): GeneratedCardHistoryEntry => ({
+  id: item.id,
+  kind: item.cardType === OrderSnapshotCardType.Handmade ? 'handmade' : 'ai',
   sizeName: item.sizeName ?? '',
-  writingMethod:
-    typeof item.formType === 'number' && isOrderCardFormType(item.formType)
-      ? WRITING_METHOD_BY_FORM_TYPE[item.formType]
-      : DEFAULT_CARD_WRITING_METHOD,
+  sizeWidth: toPrintedSize(item.sizeWidth ?? 0),
+  sizeHeight: toPrintedSize(item.sizeHeight ?? 0),
+  writingMethod: item.formType === OrderSnapshotFormType.Calligraphy ? 'handwritten' : DEFAULT_CARD_WRITING_METHOD,
   content: { message: item.messageContent ?? '' },
   imageUrl: item.imageUrl ?? '',
+  rawImageUrl: item.rawImage ?? '',
+  attachedImageUrl: item.attachedImageUrl ?? '',
+  totalPrice: item.totalPrice ?? 0,
   createdAt: item.createdAt ?? ''
 })
 

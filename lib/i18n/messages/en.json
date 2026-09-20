@@ -601,13 +601,18 @@
       "outOfStock": "This product is out of stock.",
       "materials": "Temporarily unavailable",
       "materialsAction": "We can't prepare this many right now - please reduce the quantity.",
-      "materialsNote": "We're short on materials for the highlighted items. Reduce the quantity, deselect or remove them to continue."
+      "materialsNote": "We're short on materials for the highlighted items. Reduce the quantity, deselect or remove them to continue.",
+      "missingDesign": "This design is no longer available."
     },
     "overStock": "Only {stock} left in stock. Please reduce the quantity.",
     "overStockAction": "Only {stock} left in stock - tap to reduce the quantity.",
     "inStock": "{stock} in stock",
     "lineSubtotal": "Subtotal",
     "unitLabel": "Variant: {unit}",
+    "aiLine": {
+      "badge": "AI design",
+      "materials": "Flowers: {materials}"
+    },
     "summary": {
       "title": "Order summary",
       "selected": "{count} selected of {total}",
@@ -894,7 +899,6 @@
         "historyProductEmptyTitle": "No card to reuse for this product",
         "historyProductEmptyBody": "You have not generated a card for this product yet. Make one and it will be here next time.",
         "historyError": "We could not load your cards for this product. Please try again in a moment.",
-        "historyLoadMore": "Load more cards",
         "generatedAt": "Created on {date}",
         "reusedTitle": "Reused card",
         "aiPendingNote": "The setup and the words are yours. The card artwork is generated with AI from them once the order is confirmed.",
@@ -979,6 +983,14 @@
         "filterAll": "All",
         "filterLabel": "Filter cards by writing style",
         "emptyFilter": "No cards written this way yet.",
+        "error": "We could not load your cards. Please try again.",
+        "loadMore": "Show more",
+        "size": "{width}×{height} cm",
+        "attachedImage": "Photo attached",
+        "type": {
+          "ai": "AI card",
+          "handmade": "Handwritten card"
+        },
         "empty": {
           "title": "No cards yet",
           "description": "Add an AI card at checkout and every one you generate is kept here, ready to be reused.",

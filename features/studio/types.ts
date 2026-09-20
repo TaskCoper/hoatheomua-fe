@@ -199,3 +199,22 @@ export interface GetGeneratedFlowersParams {
   pageIndex?: number
   pageSize?: number
 }
+
+export interface GeneratedFlowerCompositionMaterial {
+  id: string
+  name: string
+  coverImage: string | null
+}
+
+/**
+ * `GET v1/ai-flowers/{generatedFlowerId}/composition` - what a finished design is made
+ * of. It is the only read a cart line has: the generated name and artwork, the flowers
+ * that went in, and `subId`, the orderable product the design was built on.
+ */
+export interface GeneratedFlowerComposition {
+  id: string
+  name: string
+  coverImage: string
+  subId: string
+  materials: GeneratedFlowerCompositionMaterial[]
+}

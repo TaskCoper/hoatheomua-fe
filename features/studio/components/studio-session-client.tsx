@@ -15,13 +15,16 @@ import {
   STUDIO_GENERATION_DONE_STAGE,
   STUDIO_LAST_STEP,
   STUDIO_SESSION_LAST_STEP,
-  STUDIO_SESSION_STEP_KEYS
+  STUDIO_SESSION_STEP_KEYS,
+  STUDIO_VERSION_QUERY_KEY
 } from '@/features/studio/studio-data'
+import type { StudioVersion } from '@/features/studio/types'
 import { Link } from '@/lib/i18n/navigation'
 import { AiMagicIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useRef, useState } from 'react'
 
 interface StudioSessionClientProps {
   productId: string
@@ -45,6 +48,9 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
     activeVersionId,
     added,
     addToBag,
+    buyNow,
+    isAddToBagDisabled,
+    isBuyNowDisabled,
     selectVersion,
     isGettingSession,
     isSessionError
@@ -136,6 +142,11 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
         onStep={(next) => goTo(next)}
       />
 
+      {/* A cart line points at the version it was bought from, not the newest one. */}
+      <Suspense fallback={null}>
+        <StudioVersionQuerySync versions={versions} onSelect={selectVersion} />
+      </Suspense>
+
       <main className='grid flex-1 lg:min-h-[calc(100dvh-5rem)] lg:grid-cols-[minmax(30rem,5fr)_minmax(0,6fr)]'>
         <StudioPreview
           product={product}
@@ -148,9 +159,12 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
           versions={versions}
           activeVersionId={activeVersionId}
           added={added}
+          isAddToBagDisabled={isAddToBagDisabled}
+          isBuyNowDisabled={isBuyNowDisabled}
           productOverlay={false}
           onSelectVersion={selectVersion}
           onAddToBag={addToBag}
+          onBuyNow={buyNow}
         />
 
         <section className='relative bg-background lg:order-1 lg:h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:border-r lg:border-secondary/40'>
@@ -202,9 +216,12 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
           status='complete'
           canContinue={false}
           added={added}
+          isAddToBagDisabled={isAddToBagDisabled}
+          isBuyNowDisabled={isBuyNowDisabled}
           onNext={openRegenerate}
           onBack={goBack}
           onAddToBag={addToBag}
+          onBuyNow={buyNow}
         />
       ) : (
         <div className='fixed inset-x-0 bottom-0 z-50 border-t border-secondary/40 bg-background/85 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden'>
@@ -223,4 +240,29 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
       ) : null}
     </form>
   )
+}
+
+function StudioVersionQuerySync({
+  versions,
+  onSelect
+}: {
+  versions: StudioVersion[]
+  onSelect: (version: { id: string }) => void
+}) {
+  const searchParams = useSearchParams()
+  const requestedId = searchParams.get(STUDIO_VERSION_QUERY_KEY)
+  const exists = versions.some((version) => version.id === requestedId)
+
+  // Once only: the carousel owns the choice from here, so arriving on a link must not
+  // keep snapping the screen back to it.
+  const appliedRef = useRef(false)
+
+  useEffect(() => {
+    if (appliedRef.current || !requestedId || !exists) return
+
+    appliedRef.current = true
+    onSelect({ id: requestedId })
+  }, [requestedId, exists, onSelect])
+
+  return null
 }

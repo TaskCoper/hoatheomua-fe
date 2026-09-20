@@ -3,6 +3,7 @@
 import { useGetInfiniteProducts } from '@/features/products/hooks/use-get-infinite-products'
 import type { ProductFamily, ProductFamilyMember } from '@/features/products/types'
 import { useCreateAiFlower } from '@/features/studio/hooks/use-create-ai-flower'
+import { useStudioPurchase } from '@/features/studio/hooks/use-studio-purchase'
 import {
   roundStudioQuantity,
   STUDIO_LAST_STEP,
@@ -87,7 +88,7 @@ export function useStudioDesigner(family: ProductFamily) {
   const [maxStep, setMaxStep] = useState<StudioStep>(1)
   const [generated, setGenerated] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [added, setAdded] = useState(false)
+  const [sessionId, setSessionId] = useState('')
   const [versions, setVersions] = useState<StudioVersion[]>([])
   const [activeVersionId, setActiveVersionId] = useState('')
 
@@ -115,7 +116,7 @@ export function useStudioDesigner(family: ProductFamily) {
 
     setVersions((current) => [...current, version])
     setActiveVersionId(version.id)
-    setAdded(false)
+    setSessionId(flower.sessionId)
     setGenerated(true)
     setStep(STUDIO_LAST_STEP)
     setMaxStep(STUDIO_LAST_STEP)
@@ -198,6 +199,19 @@ export function useStudioDesigner(family: ProductFamily) {
     wrapOptions
   ])
 
+  const activeVersion = versions.find((item) => item.id === activeVersionId)
+
+  const { added, addToBag, buyNow, canBuyNow, isPhoneMissing, isAddToBagDisabled, isBuyNowDisabled, resetAdded } =
+    useStudioPurchase({
+      productId: activeVersion?.productId ?? product.id,
+      productName: product.name,
+      designName: trimmedName,
+      rootProductId: detail.id,
+      sessionId,
+      flowerId: activeVersionId,
+      unitPrice: bouquet.totalAmount
+    })
+
   useEffect(() => {
     const pickers = [
       ['styleId', styleOptions],
@@ -226,6 +240,7 @@ export function useStudioDesigner(family: ProductFamily) {
     setSaved(false)
     setGenerated(false)
     setActiveVersionId('')
+    resetAdded()
     resetGeneration()
   }
 
@@ -286,7 +301,7 @@ export function useStudioDesigner(family: ProductFamily) {
     setValue('name', version.name, { shouldValidate: true })
     setValue('mockupId', version.mockupId, { shouldValidate: true })
     setSaved(false)
-    setAdded(false)
+    resetAdded()
     setGenerated(true)
     setStep(STUDIO_LAST_STEP)
     setMaxStep(STUDIO_LAST_STEP)
@@ -333,8 +348,13 @@ export function useStudioDesigner(family: ProductFamily) {
     trimmedName,
     nameValid,
     bouquet,
+    addToBag,
+    buyNow,
+    canBuyNow,
+    isPhoneMissing,
+    isAddToBagDisabled,
+    isBuyNowDisabled,
     setStep,
-    setAdded,
     goTo,
     goNext,
     goBack,

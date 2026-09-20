@@ -388,7 +388,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
             <OrderItemsSection items={items} />
 
             <OrderSectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
-              <dl className='space-y-2 text-sm'>
+              <dl className='space-y-2 text-sm pt-4'>
                 {/* <SummaryRow
                   label={t('orders.list.orderId')}
                   value={<span className='font-mono text-xs break-all'>{order.orderId}</span>}

@@ -30,6 +30,36 @@ export interface GeneratedCard {
   createdAt: string
 }
 
+/**
+ * The two kinds `GET v1/generated-cards` spells - an AI card is designed here, a handmade one
+ * is written by our florist.
+ */
+export type GeneratedCardKind = 'ai' | 'handmade'
+
+/**
+ * One row of the account's card history, as `GET v1/generated-cards` returns it. Unlike
+ * `GeneratedCard` - the reuse gallery's shape - it carries no template, and brings the
+ * printed size and the price the generation was charged at.
+ */
+export interface GeneratedCardHistoryEntry {
+  id: string
+  kind: GeneratedCardKind
+  /** `CardSize.name` from `card_config.sizes`. */
+  sizeName: string
+  /** Printed size in centimetres; `null` when the API sends nothing to print at. */
+  sizeWidth: number | null
+  sizeHeight: number | null
+  writingMethod: CardWritingMethod
+  content: CardContent
+  imageUrl: string
+  /** The artwork before the words were laid over it; `''` when the API kept none. */
+  rawImageUrl: string
+  /** The photo the customer attached to the generation; `''` when there was none. */
+  attachedImageUrl: string
+  totalPrice: number
+  createdAt: string
+}
+
 interface CheckoutCardBase {
   lineId: string
   quantity: number

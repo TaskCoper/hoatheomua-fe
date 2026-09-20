@@ -32,6 +32,10 @@ export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
   // toggle is there to tidy them away, not to go looking for them.
   const openByDefault = useMemo(() => Array.from(cardsByItem.keys()), [cardsByItem])
 
+  // An order with no cards anywhere has no toggle column to line up against, so
+  // nothing holds its place either - the totals sit at the edge like every other card.
+  const hasCards = cardsByItem.size > 0
+
   if (items.length === 0) return null
 
   return (
@@ -55,7 +59,7 @@ export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
               >
                 {line}
                 {/* Holds the toggle's place so every line total stays on one column. */}
-                <span aria-hidden='true' className='min-w-[4.5rem] shrink-0 sm:min-w-[7rem]' />
+                {hasCards ? <span aria-hidden='true' className='min-w-[4.5rem] shrink-0 sm:min-w-[7rem]' /> : null}
               </div>
             )
           }

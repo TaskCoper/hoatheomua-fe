@@ -3,6 +3,7 @@
 import { productFamilyQuery } from '@/features/products/queries'
 import type { ProductFamilyMember } from '@/features/products/types'
 import { generatedFlowersQuery } from '@/features/studio/hooks/use-get-generated-flowers'
+import { useStudioPurchase } from '@/features/studio/hooks/use-studio-purchase'
 import {
   toStudioIngredients,
   toStudioProduct,
@@ -28,7 +29,6 @@ export const useStudioSession = ({ productId, sessionId }: { productId: string; 
   const versions = useMemo(() => toStudioSessionVersions(session?.flowers), [session])
 
   const [selectedVersionId, setSelectedVersionId] = useState('')
-  const [added, setAdded] = useState(false)
 
   // The session opens on the image it finished on; the carousel walks back from there.
   const activeVersion = versions.find((item) => item.id === selectedVersionId) ?? versions[versions.length - 1]
@@ -50,21 +50,40 @@ export const useStudioSession = ({ productId, sessionId }: { productId: string; 
     [activeVersion, ingredients, product]
   )
 
+  const designName = activeVersion?.name ?? ''
+
+  const { added, addToBag, buyNow, canBuyNow, isPhoneMissing, isAddToBagDisabled, isBuyNowDisabled, resetAdded } =
+    useStudioPurchase({
+      productId: product?.id ?? '',
+      productName: product?.name ?? '',
+      designName,
+      rootProductId: productId,
+      sessionId,
+      flowerId: activeVersion?.id ?? '',
+      unitPrice: bouquet?.totalAmount ?? 0
+    })
+
+  // Every version is its own bouquet, so the bag confirmation belongs to the one on screen.
   const selectVersion = (version: { id: string }) => {
     setSelectedVersionId(version.id)
-    setAdded(false)
+    resetAdded()
   }
 
   return {
     product,
     mockup: toStudioSessionScene(session?.flowers.find((item) => item.id === activeVersion?.id)?.mockup),
     bouquet,
-    designName: activeVersion?.name ?? '',
+    designName,
     versions,
     activeVersion,
     activeVersionId: activeVersion?.id ?? '',
     added,
-    addToBag: () => setAdded(true),
+    addToBag,
+    buyNow,
+    canBuyNow,
+    isPhoneMissing,
+    isAddToBagDisabled,
+    isBuyNowDisabled,
     selectVersion,
     isGettingSession: isGettingProduct || isGettingSession,
     isSessionError: isProductError || isSessionError

@@ -114,10 +114,18 @@ export const buildCheckoutPayload = (
   const bouquetsByLineId = buildBouquetsByLineId(values.cards)
 
   // `buildEstimatePayload` maps `items` in order, so index `i` is still line `items[i]`.
-  const checkoutItems: CheckoutItemPayload[] = estimate.items.map((item, index) => ({
-    ...item,
-    bouquets: bouquetsByLineId.get(items[index].lineId) ?? []
-  }))
+  const checkoutItems: CheckoutItemPayload[] = estimate.items.map((item, index) => {
+    const line = items[index]
+    const bouquets = bouquetsByLineId.get(line.lineId) ?? []
+    const generatedFlowerId = line.aiFlower?.generatedFlowerId
+
+    // A bouquet designed in the studio says which design it is. TODO(backend): a design
+    // ordered without a card sends no bouquet at all, so the id has nowhere to ride.
+    return {
+      ...item,
+      bouquets: generatedFlowerId ? bouquets.map((bouquet) => ({ ...bouquet, generatedFlowerId })) : bouquets
+    }
+  })
 
   const base = {
     ...estimate,

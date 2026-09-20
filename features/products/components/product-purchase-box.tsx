@@ -133,6 +133,7 @@ export default function ProductPurchaseBox() {
       variantId: null,
       quantity: effectiveQuantity,
       selectedOptions,
+      aiFlower: null,
       addedAt: now,
       updatedAt: now
     }

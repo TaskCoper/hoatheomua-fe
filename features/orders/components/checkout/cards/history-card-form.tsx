@@ -80,14 +80,7 @@ export default function HistoryCardForm({
   const productId = attachedLine?.productId ?? ''
   const generatedCardId = productId && pick.productId === productId ? pick.generatedCardId : ''
   const productIds = useMemo(() => (productId ? [productId] : []), [productId])
-  const {
-    generatedCards,
-    isGettingGeneratedCards,
-    isGeneratedCardsError,
-    isGettingMoreGeneratedCards,
-    hasMoreGeneratedCards,
-    loadMoreGeneratedCards
-  } = useGeneratedCardsByProducts(productIds)
+  const { generatedCards, isGettingGeneratedCards, isGeneratedCardsError } = useGeneratedCardsByProducts(productIds)
 
   const listed = generatedCards.find((card) => card.id === generatedCardId) ?? null
   // An edited card keeps the artwork it was saved with, even before its page of the gallery loads.
@@ -212,9 +205,6 @@ export default function HistoryCardForm({
         onChange={handleSelectGenerated}
         invalid={issues.has('generatedCardId')}
         isLoading={isGettingGeneratedCards}
-        isLoadingMore={isGettingMoreGeneratedCards}
-        hasMore={hasMoreGeneratedCards}
-        onLoadMore={() => loadMoreGeneratedCards()}
         emptyState={galleryEmptyState}
       />
 

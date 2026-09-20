@@ -4,10 +4,10 @@ import { buildProductVariantHref } from '@/features/products/components/product-
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { ThumbnailImage } from '@/shared/components/thumbnail-image'
 import { cn } from '@/shared/utils'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import Image from 'next/image'
 import { normalizeOrderLine, type OrderLineSource } from '../utils/normalize-order-line'
 
 const THUMBNAIL = {
@@ -57,21 +57,20 @@ export function OrderLineItem({
         href ? 'ring-primary/10' : 'ring-foreground/5'
       )}
     >
-      {item.coverImage ? (
-        <Image
-          src={item.coverImage}
-          alt={item.name}
-          fill
-          sizes={thumbnailSize.sizes}
-          quality={thumbnailSize.quality}
-          className='object-cover'
-        />
-      ) : (
-        <HugeiconsIcon
-          icon={FlowerIcon}
-          className={cn(thumbnailSize.icon, href ? 'text-primary/40' : 'text-muted-foreground/50')}
-        />
-      )}
+      <ThumbnailImage
+        src={item.coverImage}
+        alt={item.name}
+        fill
+        sizes={thumbnailSize.sizes}
+        quality={thumbnailSize.quality}
+        className='object-cover'
+        fallback={
+          <HugeiconsIcon
+            icon={FlowerIcon}
+            className={cn(thumbnailSize.icon, href ? 'text-primary/40' : 'text-muted-foreground/50')}
+          />
+        }
+      />
     </span>
   )
 

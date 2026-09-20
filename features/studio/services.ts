@@ -2,6 +2,7 @@ import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import type {
   AiFlower,
   CreateAiFlowerPayload,
+  GeneratedFlowerComposition,
   GeneratedFlowerSession,
   GetGeneratedFlowersParams,
   RegenerateAiFlowerPayload
@@ -27,6 +28,12 @@ class AiFlowerService {
     const { data } = await api.get<BasePaginationResponse<GeneratedFlowerSession>>(`${this.generatedUrl}`, {
       params: { sessionId, pageIndex, pageSize }
     })
+
+    return data.value
+  }
+
+  getGeneratedFlowerComposition = async ({ flowerId }: { flowerId: string }) => {
+    const { data } = await api.get<BaseResponse<GeneratedFlowerComposition>>(`${this.baseUrl}/${flowerId}/composition`)
 
     return data.value
   }

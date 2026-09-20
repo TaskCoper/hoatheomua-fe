@@ -30,9 +30,12 @@ interface StudioPreviewProps {
   versions: StudioVersion[]
   activeVersionId: string
   added: boolean
+  isAddToBagDisabled?: boolean
+  isBuyNowDisabled?: boolean
   productOverlay?: boolean
   onSelectVersion: (version: StudioVersion) => void
   onAddToBag: () => void
+  onBuyNow: () => void
 }
 
 export default function StudioPreview({
@@ -46,9 +49,12 @@ export default function StudioPreview({
   versions,
   activeVersionId,
   added,
+  isAddToBagDisabled = false,
+  isBuyNowDisabled = false,
   productOverlay = true,
   onSelectVersion,
-  onAddToBag
+  onAddToBag,
+  onBuyNow
 }: StudioPreviewProps) {
   const t = useTranslations('studio')
   const tNav = useTranslations('studio.nav')
@@ -178,7 +184,13 @@ export default function StudioPreview({
             </div>
 
             <div className='hidden flex-wrap items-center justify-end gap-2 lg:flex'>
-              <Button type='button' size='lg' onClick={onAddToBag} className='bg-white text-primary hover:bg-white/90'>
+              <Button
+                type='button'
+                size='lg'
+                onClick={onAddToBag}
+                disabled={isAddToBagDisabled}
+                className='bg-white text-primary hover:bg-white/90'
+              >
                 {added ? (
                   <>
                     <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
@@ -192,6 +204,8 @@ export default function StudioPreview({
                 type='button'
                 size='lg'
                 variant='outline'
+                onClick={onBuyNow}
+                disabled={isBuyNowDisabled}
                 className='border-white/40 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:text-white'
               >
                 {tNav('buyNow')}

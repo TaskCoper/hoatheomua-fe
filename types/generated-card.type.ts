@@ -1,31 +1,53 @@
 /**
- * A card artwork the customer has already generated, as the generated-card API returns it.
- * `formType` carries the same two codes as `OrderCardFormType` in `features/orders/types.ts`;
- * `features/orders/cards/card-data.ts` maps a row onto the `GeneratedCard` the checkout draws.
- *
- * TODO(backend): the row shape is unverified - only `id`, `imageUrl` and `messageContent` are
- * read as required; the rest is normalised defensively by `toGeneratedCard`.
+ * A row of `GET v1/generated-cards` - every card this customer has generated, newest first.
+ * Confirmed against the backend DTO. There is no template on it: `cardType`/`formType` come
+ * back as the strings `OrderSnapshotCardType` and `OrderSnapshotFormType` spell, and it carries
+ * the printed size and the price paid.
  */
-export interface GeneratedCardItem {
+export interface GeneratedCardHistoryItem {
   id: string
-  cardTemplateId?: string | null
-  cardTemplateName?: string | null
-  /** `CardSize.name` from `card_config.sizes`. */
-  sizeName?: string | null
-  formType?: number | null
-  messageContent?: string | null
-  imageUrl?: string | null
-  createdAt?: string | null
+  /** `'ai' | 'handmade'` - see `OrderSnapshotCardType`. */
+  cardType: string
+  /** `'go_may' | 'calligraphy'` - see `OrderSnapshotFormType`. */
+  formType: string
+  imageUrl: string
+  /** The artwork before the words were laid over it. */
+  rawImage: string | null
+  messageContent: string
+  /** The photo the customer attached to the generation. */
+  attachedImageUrl: string | null
+  /** `CardSize.name` from `card_config.sizes`, and the centimetres it prints at. */
+  sizeName: string
+  sizeWidth: number
+  sizeHeight: number
+  totalPrice: number
+  createdAt: string
+}
+
+/** Query of `GET v1/generated-cards` - the whole history, a page at a time. */
+export interface GetGeneratedCardsParams {
+  pageIndex?: number
+  pageSize?: number
+}
+
+/** Body of `POST v1/generated-cards/by-products` - just the products whose cards are wanted; the endpoint returns everything, no paging. */
+export interface GetGeneratedCardsByProductsPayload {
+  productIds: string[]
 }
 
 /**
- * Body of `POST v1/generated-cards/by-products` - the card-template list params, plus the
- * products whose cards are wanted. The endpoint takes them in the body rather than the query
- * because `productIds` is a list.
+ * A card row inside `POST v1/generated-cards/by-products`'s response. Confirmed against the
+ * backend DTO (`CardItemResponse`) - same shape as `GeneratedCardHistoryItem` plus `operation`,
+ * `regeneratedFromCardId` and `isSelected`.
  */
-export interface GetGeneratedCardsByProductsPayload {
-  pageIndex?: number
-  pageSize?: number
-  search?: string
-  productIds: string[]
+export interface GeneratedCardByProductItem extends GeneratedCardHistoryItem {
+  operation: string
+  regeneratedFromCardId: string | null
+  isSelected: boolean
+}
+
+/** One product's row of `POST v1/generated-cards/by-products` - the cards generated for it. */
+export interface ProductGeneratedCards {
+  productId: string
+  generatedCards: GeneratedCardByProductItem[]
 }

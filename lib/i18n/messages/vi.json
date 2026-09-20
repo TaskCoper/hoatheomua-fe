@@ -601,13 +601,18 @@
       "outOfStock": "Sản phẩm này đã hết hàng.",
       "materials": "Tạm thời không thể chuẩn bị",
       "materialsAction": "Tạm thời không thể chuẩn bị số lượng này, vui lòng giảm số lượng.",
-      "materialsNote": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng giảm số lượng, bỏ chọn hoặc xoá để tiếp tục."
+      "materialsNote": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng giảm số lượng, bỏ chọn hoặc xoá để tiếp tục.",
+      "missingDesign": "Thiết kế này không còn khả dụng."
     },
     "overStock": "Chỉ còn {stock} trong kho. Vui lòng giảm số lượng.",
     "overStockAction": "Chỉ còn {stock} trong kho, nhấn để giảm số lượng.",
     "inStock": "Còn {stock} trong kho",
     "lineSubtotal": "Tạm tính",
     "unitLabel": "Phân loại: {unit}",
+    "aiLine": {
+      "badge": "Thiết kế AI",
+      "materials": "Hoa: {materials}"
+    },
     "summary": {
       "title": "Tóm tắt đơn hàng",
       "selected": "Đã chọn {count} / {total}",
@@ -894,7 +899,6 @@
         "historyProductEmptyTitle": "Chưa có thiệp nào để dùng lại cho sản phẩm này",
         "historyProductEmptyBody": "Bạn chưa tạo thiệp nào cho sản phẩm này. Tạo một tấm và lần sau sẽ thấy ở đây.",
         "historyError": "Không tải được danh sách thiệp của sản phẩm này. Vui lòng thử lại sau giây lát.",
-        "historyLoadMore": "Xem thêm thiệp",
         "generatedAt": "Tạo ngày {date}",
         "reusedTitle": "Thiệp dùng lại",
         "aiPendingNote": "Bạn chọn cấu hình và viết lời nhắn ở bước này. Hình thiệp sẽ được AI tạo ra từ đó sau khi đơn hàng được xác nhận.",
@@ -979,6 +983,14 @@
         "filterAll": "Tất cả",
         "filterLabel": "Lọc thiệp theo kiểu chữ",
         "emptyFilter": "Chưa có tấm thiệp nào viết theo kiểu này.",
+        "error": "Không tải được thiệp của bạn. Vui lòng thử lại.",
+        "loadMore": "Xem thêm",
+        "size": "{width}×{height} cm",
+        "attachedImage": "Có ảnh đính kèm",
+        "type": {
+          "ai": "Thiệp Custom AI",
+          "handmade": "Thiệp viết tay"
+        },
         "empty": {
           "title": "Chưa có tấm thiệp nào",
           "description": "Thêm thiệp AI khi thanh toán, mọi tấm bạn tạo ra sẽ được lưu ở đây để dùng lại.",

@@ -11,6 +11,22 @@ export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
 
 export const formatStudioPrice = (amount: number) => studioPriceFormatter.format(Math.round(amount))
 
+/** Which generated version a studio session opens on - see `StudioVersionQuerySync`. */
+export const STUDIO_VERSION_QUERY_KEY = 'version'
+
+/**
+ * Where a finished design lives. A cart line points at the exact version it was bought
+ * from, not simply the newest one the sitting went on to produce.
+ */
+export const buildStudioSessionHref = (rootProductId: string, sessionId: string, flowerId?: string | null) => {
+  const base = `/products/${rootProductId}/studio`
+  if (!sessionId) return base
+
+  return flowerId
+    ? `${base}/${sessionId}?${STUDIO_VERSION_QUERY_KEY}=${encodeURIComponent(flowerId)}`
+    : `${base}/${sessionId}`
+}
+
 export const STUDIO_WHOLE_QUANTITY_STEP = 1
 export const STUDIO_DECIMAL_QUANTITY_STEP = 0.1
 
