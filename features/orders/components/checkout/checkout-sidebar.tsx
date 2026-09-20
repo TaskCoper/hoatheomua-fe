@@ -12,9 +12,10 @@ import { Alert02Icon, Tag01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import { useEffect, useState, type ReactNode } from 'react'
-import { findCardTemplate, getCheckoutCardPrice } from '../../cards/card-data'
-import { CARD_SIZE_LABEL_KEYS, CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
+import { getCheckoutCardPrice } from '../../cards/card-data'
+import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
 import type { CheckoutCardField, GeneratedCard } from '../../cards/types'
+import { useCardConfig } from '../../hooks/use-card-config'
 
 const EMPTY_CARDS: CheckoutCardField[] = []
 const EMPTY_GENERATED_CARDS: GeneratedCard[] = []
@@ -281,15 +282,15 @@ function CheckoutLineItem({
 /** Always rendered under the product line the card is printed for, hence the leading `+`. */
 function CheckoutCardLine({ card, generatedCards }: { card: CheckoutCardField; generatedCards: GeneratedCard[] }) {
   const { t } = useTranslation()
+  const { cardConfig } = useCardConfig()
 
   const generated =
     card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
 
-  const templateId = card.type === 'history' ? generated?.templateId : card.templateId
+  const templateName = card.type === 'history' ? generated?.templateName : card.templateName
   // The standard card is free, so it has no size to show.
-  const sizeId = card.type === 'standard' ? null : card.type === 'history' ? generated?.sizeId : card.sizeId
+  const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod
-  const template = templateId ? findCardTemplate(templateId) : null
 
   const title =
     card.type === 'standard'
@@ -299,8 +300,8 @@ function CheckoutCardLine({ card, generatedCards }: { card: CheckoutCardField; g
         : t('orders.checkout.cards.reusedTitle')
 
   const meta = [
-    template ? t('orders.checkout.cards.templateName', { name: template.name }) : null,
-    sizeId ? t(CARD_SIZE_LABEL_KEYS[sizeId]) : null,
+    templateName ? t('orders.checkout.cards.templateName', { name: templateName }) : null,
+    sizeName || null,
     writingMethod ? t(CARD_WRITING_METHOD_LABEL_KEYS[writingMethod]) : null
   ]
     .filter(Boolean)
@@ -321,7 +322,7 @@ function CheckoutCardLine({ card, generatedCards }: { card: CheckoutCardField; g
         <p className='tabular-nums leading-5 text-muted-foreground'>
           {card.type === 'standard'
             ? t('orders.checkout.cards.free')
-            : formatVnd(getCheckoutCardPrice(card, generatedCards))}
+            : formatVnd(getCheckoutCardPrice(card, cardConfig))}
         </p>
         {card.quantity > 1 ? (
           <p className='tabular-nums text-muted-foreground/70'>

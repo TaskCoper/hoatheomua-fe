@@ -6,9 +6,11 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import PreviewImage from '@/shared/components/preview-image'
 import { Delete02Icon, Edit02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { findCardTemplate, getCheckoutCardPrice } from '../../../cards/card-data'
-import { CARD_SIZE_LABEL_KEYS, CARD_WRITING_METHOD_LABEL_KEYS } from '../../../cards/card-labels'
+import { getCheckoutCardPrice } from '../../../cards/card-data'
+import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../../cards/card-labels'
 import type { CheckoutCardField, GeneratedCard } from '../../../cards/types'
+import { useCardConfig } from '../../../hooks/use-card-config'
+import { useObjectUrl } from '../../../hooks/use-object-url'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 
 interface CheckoutCardListProps {
@@ -61,17 +63,18 @@ function CheckoutCardListItem({
   readOnly?: boolean
 }) {
   const { t } = useTranslation()
+  const { cardConfig } = useCardConfig()
 
   const generated =
     card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
 
-  const templateId = card.type === 'history' ? generated?.templateId : card.templateId
+  const templateName = card.type === 'history' ? generated?.templateName : card.templateName
+  const artwork = card.type === 'history' ? generated?.imageUrl : card.templateImageUrl
   // The standard card is free, so it has no size to show.
-  const sizeId = card.type === 'standard' ? null : card.type === 'history' ? generated?.sizeId : card.sizeId
+  const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod
   const content = card.content
 
-  const template = templateId ? findCardTemplate(templateId) : null
   const attachedLine = lines.find((line) => line.lineId === card.lineId) ?? null
 
   const title =
@@ -82,8 +85,8 @@ function CheckoutCardListItem({
         : t('orders.checkout.cards.reusedTitle')
 
   const meta = [
-    template ? t('orders.checkout.cards.templateName', { name: template.name }) : null,
-    sizeId ? t(CARD_SIZE_LABEL_KEYS[sizeId]) : null,
+    templateName ? t('orders.checkout.cards.templateName', { name: templateName }) : null,
+    sizeName || null,
     writingMethod ? t(CARD_WRITING_METHOD_LABEL_KEYS[writingMethod]) : null
   ]
     .filter(Boolean)
@@ -96,7 +99,7 @@ function CheckoutCardListItem({
   return (
     <li className='flex items-start gap-3 p-3'>
       <PreviewImage
-        src={generated?.imageUrl ?? template?.imageUrl ?? null}
+        src={artwork || null}
         alt={title}
         sizes='64px'
         className='aspect-3/4 w-14 shrink-0 rounded-xl border border-border'
@@ -112,7 +115,7 @@ function CheckoutCardListItem({
             <p className='text-sm font-semibold leading-5 tabular-nums text-primary'>
               {card.type === 'standard'
                 ? t('orders.checkout.cards.free')
-                : formatVnd(getCheckoutCardPrice(card, generatedCards))}
+                : formatVnd(getCheckoutCardPrice(card, cardConfig))}
             </p>
             {card.quantity > 1 ? (
               <p className='text-xs tabular-nums text-muted-foreground'>
@@ -138,6 +141,8 @@ function CheckoutCardListItem({
         ) : card.type === 'ai' ? (
           <p className='truncate text-xs text-muted-foreground'>{t('orders.checkout.cards.aiPendingShort')}</p>
         ) : null}
+
+        {card.type === 'ai' && card.attachedImage ? <CardAttachmentPreview file={card.attachedImage} /> : null}
       </div>
 
       {!readOnly ? (
@@ -165,5 +170,23 @@ function CheckoutCardListItem({
         </div>
       ) : null}
     </li>
+  )
+}
+
+function CardAttachmentPreview({ file }: { file: File }) {
+  const { t } = useTranslation()
+  const previewUrl = useObjectUrl(file)
+
+  return (
+    <div className='mt-1 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground'>
+      <PreviewImage
+        src={previewUrl}
+        alt={t('orders.checkout.cards.attachment')}
+        sizes='20px'
+        unoptimized
+        className='size-5 shrink-0 rounded-md border border-border'
+      />
+      <span className='truncate'>{file.name}</span>
+    </div>
   )
 }

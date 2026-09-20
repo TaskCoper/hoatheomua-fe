@@ -1,5 +1,5 @@
 import type { OrderItem } from '../types'
-import { getCardUnitPrice } from './card-data'
+import { countWords, getCardUnitPrice, type CardConfig } from './card-config'
 import type { CardContent, CardWritingMethod, OrderAiCard, OrderCardVersion } from './types'
 
 /**
@@ -28,15 +28,18 @@ export const getSelectedOrderCardVersion = (card: OrderAiCard): OrderCardVersion
 export const getOrderCardUnitPrice = ({
   card,
   content,
-  writingMethod
+  writingMethod,
+  config
 }: {
   card: OrderAiCard
   content: CardContent
   writingMethod: CardWritingMethod
+  config: CardConfig
 }): number =>
   getCardUnitPrice({
-    sizeId: card.sizeId,
-    messageLength: content.message.trim().length,
+    config,
+    sizeName: card.sizeName,
+    wordCount: countWords(content.message),
     writingMethod
   })
 
@@ -47,12 +50,14 @@ export const getOrderCardUnitPrice = ({
 export const getOrderCardPriceDelta = ({
   card,
   content,
-  writingMethod
+  writingMethod,
+  config
 }: {
   card: OrderAiCard
   content: CardContent
   writingMethod: CardWritingMethod
-}): number => (getOrderCardUnitPrice({ card, content, writingMethod }) - card.paidUnitPrice) * card.quantity
+  config: CardConfig
+}): number => (getOrderCardUnitPrice({ card, content, writingMethod, config }) - card.paidUnitPrice) * card.quantity
 
 export interface OrderItemCards {
   orderDetailsId: string
@@ -84,7 +89,9 @@ const MOCK_ITEM_SEEDS = [
   [
     {
       templateId: 'floral',
-      sizeId: 'm',
+      templateName: 'Floral',
+      templateImageUrl: '/images/custom/custom-flower.png',
+      sizeName: 'M',
       writingMethod: 'handwritten',
       quantity: 1,
       versions: [
@@ -100,7 +107,9 @@ const MOCK_ITEM_SEEDS = [
     },
     {
       templateId: 'blush',
-      sizeId: 's',
+      templateName: 'Blush',
+      templateImageUrl: '/images/2.webp',
+      sizeName: 'S',
       writingMethod: 'typed',
       quantity: 1,
       versions: [
@@ -114,7 +123,9 @@ const MOCK_ITEM_SEEDS = [
   [
     {
       templateId: 'golden',
-      sizeId: 's',
+      templateName: 'Golden Hour',
+      templateImageUrl: '/images/5.webp',
+      sizeName: 'S',
       writingMethod: 'typed',
       quantity: 2,
       versions: [
@@ -132,7 +143,7 @@ const MOCK_ITEM_SEEDS = [
  * order so the section always has something to show, never printing more cards than the
  * item has units.
  */
-export const buildMockOrderAiCards = (items: OrderItem[]): OrderAiCard[] =>
+export const buildMockOrderAiCards = (items: OrderItem[], config: CardConfig): OrderAiCard[] =>
   items.slice(0, MOCK_ITEM_SEEDS.length).flatMap((item, itemIndex) => {
     let unitsLeft = Math.max(0, item.number)
 
@@ -158,11 +169,14 @@ export const buildMockOrderAiCards = (items: OrderItem[]): OrderAiCard[] =>
           productName: item.name,
           productImageUrl: item.coverImage,
           templateId: seed.templateId,
-          sizeId: seed.sizeId,
+          templateName: seed.templateName,
+          templateImageUrl: seed.templateImageUrl,
+          sizeName: seed.sizeName,
           quantity,
           paidUnitPrice: getCardUnitPrice({
-            sizeId: seed.sizeId,
-            messageLength: selected.content.message.length,
+            config,
+            sizeName: seed.sizeName,
+            wordCount: countWords(selected.content.message),
             writingMethod: seed.writingMethod
           }),
           writingMethod: seed.writingMethod,

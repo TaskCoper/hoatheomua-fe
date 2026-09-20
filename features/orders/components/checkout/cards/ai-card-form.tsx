@@ -5,17 +5,28 @@ import { AiMagicIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import {
+  countWords,
+  findCardSize,
+  getCardHandwritingPrice,
+  getCardMaxWords,
+  getCardUnitPrice,
+  getDefaultCardSizeName
+} from '../../../cards/card-config'
+import {
   DEFAULT_CARD_QUANTITY,
-  DEFAULT_CARD_SIZE_ID,
-  DEFAULT_CARD_TEMPLATE_ID,
   DEFAULT_CARD_WRITING_METHOD,
   EMPTY_CARD_CONTENT,
-  getCardUnitPrice,
+  EMPTY_CARD_TEMPLATE,
+  readCheckoutCardTemplate,
+  toCheckoutCardTemplate,
   trimCardContent
 } from '../../../cards/card-data'
-import type { AiCheckoutCard, CardContent, CardSizeId, CardWritingMethod } from '../../../cards/types'
+import type { AiCheckoutCard, CardContent, CardWritingMethod, CheckoutCardTemplate } from '../../../cards/types'
 import { createCheckoutCardSchema, EMPTY_ISSUE_PATHS, getCardIssuePaths } from '../../../cards/validations'
+import { useCardConfig } from '../../../hooks/use-card-config'
+import { CARD_TEMPLATE_TYPE_BY_CARD_TYPE, useCardTemplates } from '../../../hooks/use-card-templates'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
+import CardAttachmentField from './card-attachment-field'
 import CardContentFields from './card-content-fields'
 import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
@@ -39,19 +50,35 @@ interface AiCardFormProps {
 
 export default function AiCardForm({ lines, capacities, initial, onSubmit, onCancel }: AiCardFormProps) {
   const { t } = useTranslation()
+  const { cardConfig } = useCardConfig()
+  const { templates, isGettingCardTemplates, isGettingMoreCardTemplates, hasMoreCardTemplates, loadMoreCardTemplates } =
+    useCardTemplates(CARD_TEMPLATE_TYPE_BY_CARD_TYPE.ai)
 
   const openLines = lines.filter((line) => isLineOpenForCard(line, capacities, 'ai'))
   const [lineId, setLineId] = useState(initial?.lineId ?? (openLines.length === 1 ? openLines[0].lineId : ''))
-  const [templateId, setTemplateId] = useState(initial?.templateId ?? DEFAULT_CARD_TEMPLATE_ID)
-  const [sizeId, setSizeId] = useState<CardSizeId>(initial?.sizeId ?? DEFAULT_CARD_SIZE_ID)
+  const [templateId, setTemplateId] = useState(initial?.templateId ?? '')
+  const [sizeName, setSizeName] = useState(initial?.sizeName ?? '')
   const [writingMethod, setWritingMethod] = useState<CardWritingMethod>(
     initial?.writingMethod ?? DEFAULT_CARD_WRITING_METHOD
   )
   const [content, setContent] = useState<CardContent>(initial?.content ?? EMPTY_CARD_CONTENT)
+  const [attachedImage, setAttachedImage] = useState<File | null>(initial?.attachedImage ?? null)
   const [quantity, setQuantity] = useState(initial?.quantity ?? DEFAULT_CARD_QUANTITY)
   const [showErrors, setShowErrors] = useState(false)
 
-  const schema = useMemo(() => createCheckoutCardSchema(t), [t])
+  const schema = useMemo(() => createCheckoutCardSchema(t, cardConfig), [t, cardConfig])
+
+  // Both lists arrive from the API, so a pick that is no longer in them falls back to the first.
+  const selectedSizeName = findCardSize(cardConfig, sizeName) ? sizeName : getDefaultCardSizeName(cardConfig)
+  // An edited card keeps its own template even when that page of the list is not loaded.
+  const picked = templates.find((template) => template.id === templateId)
+  const selectedTemplate: CheckoutCardTemplate = picked
+    ? toCheckoutCardTemplate(picked)
+    : initial?.templateId === templateId
+      ? readCheckoutCardTemplate(initial)
+      : templates[0]
+        ? toCheckoutCardTemplate(templates[0])
+        : EMPTY_CARD_TEMPLATE
 
   // One card per unit of the product it is printed for, minus the units already carded.
   const attachedLine = lines.find((line) => line.lineId === lineId) ?? null
@@ -60,15 +87,20 @@ export default function AiCardForm({ lines, capacities, initial, onSubmit, onCan
   const draft: AiCheckoutCard = {
     type: 'ai',
     lineId,
-    templateId,
-    sizeId,
+    ...selectedTemplate,
+    sizeName: selectedSizeName,
     writingMethod,
     content: trimCardContent(content),
+    attachedImage,
+    attachedImageUrl: '',
     quantity: Math.min(quantity, maxQuantity)
   }
   const draftIssues = getCardIssuePaths(schema, draft)
   const issues = showErrors ? draftIssues : EMPTY_ISSUE_PATHS
-  const unitPrice = getCardUnitPrice({ sizeId, messageLength: draft.content.message.length, writingMethod })
+  const wordCount = countWords(draft.content.message)
+  const maxWords = getCardMaxWords(cardConfig, selectedSizeName)
+  const handwritingPrice = getCardHandwritingPrice(cardConfig, wordCount)
+  const unitPrice = getCardUnitPrice({ config: cardConfig, sizeName: selectedSizeName, wordCount, writingMethod })
 
   // A product with fewer free units holds fewer cards, so moving the card pulls its quantity down.
   const handleSelectLine = (next: string) => {
@@ -121,9 +153,17 @@ export default function AiCardForm({ lines, capacities, initial, onSubmit, onCan
         invalid={issues.has('lineId')}
       />
 
-      <CardTemplatePicker value={templateId} onChange={setTemplateId} />
+      <CardTemplatePicker
+        templates={templates}
+        isLoading={isGettingCardTemplates}
+        isLoadingMore={isGettingMoreCardTemplates}
+        hasMore={hasMoreCardTemplates}
+        onLoadMore={() => loadMoreCardTemplates()}
+        value={selectedTemplate.templateId}
+        onChange={(template) => setTemplateId(template.id)}
+      />
 
-      <CardSizePicker value={sizeId} onChange={setSizeId} />
+      <CardSizePicker sizes={cardConfig.sizes} value={selectedSizeName} onChange={setSizeName} />
 
       <CardContentFields
         value={content}
@@ -132,9 +172,13 @@ export default function AiCardForm({ lines, capacities, initial, onSubmit, onCan
           if (showErrors) setShowErrors(false)
         }}
         messageInvalid={issues.has('content.message')}
+        maxWords={maxWords}
+        surcharge={writingMethod === 'handwritten' ? handwritingPrice : 0}
       />
 
-      <CardWritingPicker value={writingMethod} onChange={setWritingMethod} />
+      <CardWritingPicker value={writingMethod} onChange={setWritingMethod} handwritingPrice={handwritingPrice} />
+
+      <CardAttachmentField value={attachedImage} onChange={setAttachedImage} />
 
       <p className='flex items-start gap-2 text-xs text-muted-foreground'>
         <HugeiconsIcon icon={AiMagicIcon} strokeWidth={1.75} className='mt-0.5 size-3.5 shrink-0 text-primary' />

@@ -1,30 +1,29 @@
 // TODO(backend): there is no card service yet, so these shapes describe only what the
 // checkout UI needs. Replace with the API types once the card endpoints exist.
 
-export type CardSizeId = 's' | 'm' | 'l'
-
 export type CardWritingMethod = 'typed' | 'handwritten'
-
-export interface CardTemplate {
-  id: string
-  name: string
-  imageUrl: string
-}
-
-export interface CardSizeOption {
-  id: CardSizeId
-  /** TODO(backend): should come from the card service. */
-  price: number
-}
 
 export interface CardContent {
   message: string
 }
 
+/**
+ * Snapshot of the picked template. Only the id is sent; the name and artwork are kept so the
+ * summary never fetches the template back, and still shows what was picked after the CMS
+ * deactivates it.
+ */
+export interface CheckoutCardTemplate {
+  templateId: string
+  templateName: string
+  templateImageUrl: string
+}
+
 export interface GeneratedCard {
   id: string
   templateId: string
-  sizeId: CardSizeId
+  templateName: string
+  /** `CardSize.name` from `card_config.sizes`. */
+  sizeName: string
   writingMethod: CardWritingMethod
   content: CardContent
   imageUrl: string
@@ -40,9 +39,8 @@ interface CheckoutCardBase {
  * The complimentary card that ships with its product. It is free, so there is no size to
  * pick - the quantity is capped by how many units of that product the order carries.
  */
-export interface StandardCheckoutCard extends CheckoutCardBase {
+export interface StandardCheckoutCard extends CheckoutCardBase, CheckoutCardTemplate {
   type: 'standard'
-  templateId: string
   content: CardContent
 }
 
@@ -50,17 +48,23 @@ export interface StandardCheckoutCard extends CheckoutCardBase {
  * An AI card for one checkout line. The artwork is generated after the order is placed,
  * hence no generation id here. A line carries at most one AI or history card, never both.
  */
-export interface AiCheckoutCard extends CheckoutCardBase {
+export interface AiCheckoutCard extends CheckoutCardBase, CheckoutCardTemplate {
   type: 'ai'
-  templateId: string
-  sizeId: CardSizeId
+  /** `CardSize.name` from `card_config.sizes`. */
+  sizeName: string
   writingMethod: CardWritingMethod
   content: CardContent
+  /** Uploaded only once the order is placed, so an abandoned checkout uploads nothing. */
+  attachedImage: File | null
+  /** Filled in from `attachedImage` on the way to the payload; `''` in form state. */
+  attachedImageUrl: string
 }
 
 export interface HistoryCheckoutCard extends CheckoutCardBase {
   type: 'history'
   generatedCardId: string
+  /** Copied from the generation being reused. */
+  sizeName: string
   content: CardContent
   writingMethod: CardWritingMethod
 }
@@ -93,8 +97,10 @@ export interface OrderAiCard {
   productImageUrl: string | null
   /** Frozen at checkout. */
   templateId: string
+  templateName: string
+  templateImageUrl: string
   /** Frozen at checkout. */
-  sizeId: CardSizeId
+  sizeName: string
   quantity: number
   /** Unit price charged at checkout, used to show the difference an edit makes. */
   paidUnitPrice: number

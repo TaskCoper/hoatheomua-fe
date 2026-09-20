@@ -1,6 +1,7 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import z from 'zod'
-import { CARD_MAX_QUANTITY, CARD_MESSAGE_MAX_LENGTH } from './card-data'
+import { countWords, getCardMaxWords, type CardConfig } from './card-config'
+import { CARD_MAX_QUANTITY } from './card-data'
 import type { CheckoutCard } from './types'
 
 const createCardContentSchema = (t: TranslationFunction) =>
@@ -9,34 +10,68 @@ const createCardContentSchema = (t: TranslationFunction) =>
       .string()
       .trim()
       .min(1, { error: t('orders.checkout.cards.messageRequired') })
-      .max(CARD_MESSAGE_MAX_LENGTH, {
-        error: t('common.validation.maxLength', {
-          field: t('orders.checkout.cards.message'),
-          max: CARD_MESSAGE_MAX_LENGTH
-        })
-      })
   })
 
-export const createCheckoutCardSchema = (t: TranslationFunction) => {
+export const createCheckoutCardSchema = (t: TranslationFunction, config: CardConfig) => {
   const content = createCardContentSchema(t)
   const quantity = z.number().int().min(1).max(CARD_MAX_QUANTITY)
-  const sizeId = z.enum(['s', 'm', 'l'])
+  const sizeName = z.string().min(1)
   const writingMethod = z.enum(['typed', 'handwritten'])
   const templateId = z.string().min(1)
+  // Display-only, so never a reason to fail a submit.
+  const templateName = z.string()
+  const templateImageUrl = z.string()
+  const attachedImage = z.custom<File | null>((value) => value === null || value instanceof File)
+  const attachedImageUrl = z.string()
   const lineId = z.string().min(1, { error: t('orders.checkout.cards.productRequired') })
 
-  return z.discriminatedUnion('type', [
-    z.object({ type: z.literal('standard'), templateId, lineId, content, quantity }),
-    z.object({ type: z.literal('ai'), templateId, sizeId, writingMethod, lineId, content, quantity }),
-    z.object({
-      type: z.literal('history'),
-      generatedCardId: z.string().min(1, { error: t('orders.checkout.cards.historyRequired') }),
-      lineId,
-      content,
-      writingMethod,
-      quantity
+  return z
+    .discriminatedUnion('type', [
+      z.object({
+        type: z.literal('standard'),
+        templateId,
+        templateName,
+        templateImageUrl,
+        lineId,
+        content,
+        quantity
+      }),
+      z.object({
+        type: z.literal('ai'),
+        templateId,
+        templateName,
+        templateImageUrl,
+        sizeName,
+        writingMethod,
+        attachedImage,
+        attachedImageUrl,
+        lineId,
+        content,
+        quantity
+      }),
+      z.object({
+        type: z.literal('history'),
+        generatedCardId: z.string().min(1, { error: t('orders.checkout.cards.historyRequired') }),
+        sizeName,
+        lineId,
+        content,
+        writingMethod,
+        quantity
+      })
+    ])
+    .superRefine((card, ctx) => {
+      // The free card has no size, so it is held to the most generous budget.
+      const maxWords = getCardMaxWords(config, card.type === 'standard' ? null : card.sizeName)
+      if (maxWords <= 0) return
+
+      if (countWords(card.content.message) > maxWords) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['content', 'message'],
+          message: t('orders.checkout.cards.messageMaxWords', { max: maxWords })
+        })
+      }
     })
-  ])
 }
 
 export type CheckoutCardSchema = ReturnType<typeof createCheckoutCardSchema>

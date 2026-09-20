@@ -8,10 +8,17 @@ interface CardContentFieldsProps {
   value: CardContent
   onChange: (content: CardContent) => void
   messageInvalid?: boolean
-  showSurcharge?: boolean
+  maxWords: number
+  surcharge?: number
 }
 
-export default function CardContentFields({ value, onChange, messageInvalid, showSurcharge }: CardContentFieldsProps) {
+export default function CardContentFields({
+  value,
+  onChange,
+  messageInvalid,
+  maxWords,
+  surcharge
+}: CardContentFieldsProps) {
   const { t } = useTranslation()
 
   return (
@@ -21,7 +28,8 @@ export default function CardContentFields({ value, onChange, messageInvalid, sho
       label={t('orders.checkout.cards.message')}
       placeholder={t('orders.checkout.cards.messagePlaceholder')}
       invalid={messageInvalid}
-      showSurcharge={showSurcharge}
+      maxWords={maxWords}
+      surcharge={surcharge}
     />
   )
 }

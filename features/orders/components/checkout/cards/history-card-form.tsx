@@ -7,17 +7,17 @@ import PreviewImage from '@/shared/components/preview-image'
 import { SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
+import { countWords, getCardHandwritingPrice, getCardMaxWords, getCardUnitPrice } from '../../../cards/card-config'
 import {
   DEFAULT_CARD_QUANTITY,
   DEFAULT_CARD_WRITING_METHOD,
   EMPTY_CARD_CONTENT,
-  getCardUnitPrice,
   isSameCardContent,
   trimCardContent
 } from '../../../cards/card-data'
-import { CARD_SIZE_LABEL_KEYS } from '../../../cards/card-labels'
 import type { CardContent, CardWritingMethod, GeneratedCard, HistoryCheckoutCard } from '../../../cards/types'
 import { createCheckoutCardSchema, EMPTY_ISSUE_PATHS, getCardIssuePaths } from '../../../cards/validations'
+import { useCardConfig } from '../../../hooks/use-card-config'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 import CardContentFields from './card-content-fields'
 import CardFormHeader from './card-form-header'
@@ -48,6 +48,7 @@ export default function HistoryCardForm({
 }: HistoryCardFormProps) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
+  const { cardConfig } = useCardConfig()
 
   const openLines = lines.filter((line) => isLineOpenForCard(line, capacities, 'history'))
   const [generatedCardId, setGeneratedCardId] = useState(initial?.generatedCardId ?? '')
@@ -59,7 +60,7 @@ export default function HistoryCardForm({
   const [quantity, setQuantity] = useState(initial?.quantity ?? DEFAULT_CARD_QUANTITY)
   const [showErrors, setShowErrors] = useState(false)
 
-  const schema = useMemo(() => createCheckoutCardSchema(t), [t])
+  const schema = useMemo(() => createCheckoutCardSchema(t, cardConfig), [t, cardConfig])
 
   const selected = generatedCards.find((card) => card.id === generatedCardId) ?? null
 
@@ -70,6 +71,7 @@ export default function HistoryCardForm({
   const draft: HistoryCheckoutCard = {
     type: 'history',
     generatedCardId,
+    sizeName: selected?.sizeName ?? '',
     lineId,
     content: trimCardContent(content),
     writingMethod,
@@ -77,12 +79,11 @@ export default function HistoryCardForm({
   }
   const draftIssues = getCardIssuePaths(schema, draft)
   const issues = showErrors ? draftIssues : EMPTY_ISSUE_PATHS
+  const wordCount = countWords(draft.content.message)
+  const maxWords = getCardMaxWords(cardConfig, selected?.sizeName ?? null)
+  const handwritingPrice = getCardHandwritingPrice(cardConfig, wordCount)
   const unitPrice = selected
-    ? getCardUnitPrice({
-        sizeId: selected.sizeId,
-        messageLength: draft.content.message.length,
-        writingMethod
-      })
+    ? getCardUnitPrice({ config: cardConfig, sizeName: selected.sizeName, wordCount, writingMethod })
     : 0
 
   // A pick only overwrites content copied from another card - anything typed survives.
@@ -166,7 +167,7 @@ export default function HistoryCardForm({
             className='aspect-[3/4] w-12 shrink-0 rounded-xl border border-border'
           />
           <div className='min-w-0 flex-1'>
-            <p className='text-sm font-medium'>{t(CARD_SIZE_LABEL_KEYS[selected.sizeId])}</p>
+            <p className='text-sm font-medium'>{selected.sizeName}</p>
             <p className='text-xs text-muted-foreground'>
               {t('orders.checkout.cards.generatedAt', { date: formatDate(selected.createdAt, 'dateShort') })}
             </p>
@@ -181,9 +182,11 @@ export default function HistoryCardForm({
           if (showErrors) setShowErrors(false)
         }}
         messageInvalid={issues.has('content.message')}
+        maxWords={maxWords}
+        surcharge={writingMethod === 'handwritten' ? handwritingPrice : 0}
       />
 
-      <CardWritingPicker value={writingMethod} onChange={setWritingMethod} />
+      <CardWritingPicker value={writingMethod} onChange={setWritingMethod} handwritingPrice={handwritingPrice} />
 
       <CheckoutProductPicker
         lines={lines}

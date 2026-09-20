@@ -1,11 +1,5 @@
 import type { I18nKey } from '@/lib/i18n/types'
-import type { CardSizeId, CardWritingMethod, CheckoutCardType } from './types'
-
-export const CARD_SIZE_LABEL_KEYS: Record<CardSizeId, I18nKey> = {
-  s: 'orders.checkout.cards.sizes.s',
-  m: 'orders.checkout.cards.sizes.m',
-  l: 'orders.checkout.cards.sizes.l'
-}
+import type { CardWritingMethod, CheckoutCardType } from './types'
 
 export const CARD_WRITING_METHOD_LABEL_KEYS: Record<CardWritingMethod, I18nKey> = {
   typed: 'orders.checkout.cards.writing.typed',

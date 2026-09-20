@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import orderService from '../services'
 import { CheckoutFormValues, createCheckoutSchema } from '../validations'
+import { useCardConfig } from './use-card-config'
 
 const defaultValues: CheckoutFormValues = {
   fullNameReceiver: '',
@@ -34,8 +35,9 @@ const defaultValues: CheckoutFormValues = {
 
 export const useEstimateOrder = () => {
   const { t } = useTranslation()
+  const { cardConfig } = useCardConfig()
 
-  const schema = useMemo(() => createCheckoutSchema(t), [t])
+  const schema = useMemo(() => createCheckoutSchema(t, cardConfig), [t, cardConfig])
   const methods = useForm<CheckoutFormValues>({
     resolver: zodResolver(schema),
     defaultValues

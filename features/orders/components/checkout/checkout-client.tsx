@@ -23,6 +23,7 @@ import { useCheckoutAddressSelection } from '../../hooks/use-checkout-address-se
 import { useCheckoutDeliveryMethods } from '../../hooks/use-checkout-delivery-methods'
 import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
 import { useCheckoutPaymentMethods } from '../../hooks/use-checkout-payment-methods'
+import { useCardConfig } from '../../hooks/use-card-config'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
@@ -78,6 +79,7 @@ export default function CheckoutClient() {
     canPlaceOrder,
     canQuoteShipping,
     isVerifyingAvailability,
+    isUploadingAttachments,
     materialBlockedProductIds,
     estimatedGateway,
     handleGoToCards,
@@ -174,8 +176,9 @@ export default function CheckoutClient() {
 
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 
+  const { cardConfig } = useCardConfig()
   const { cards, generatedCards, saveCard, removeCard } = useCheckoutCards({ control: methods.control, lines: items })
-  const cardsTotal = useMemo(() => getCardsTotal(cards, generatedCards), [cards, generatedCards])
+  const cardsTotal = useMemo(() => getCardsTotal(cards, cardConfig), [cards, cardConfig])
 
   const { summaryLines, unavailableLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } =
     useCheckoutSummary({
@@ -192,6 +195,7 @@ export default function CheckoutClient() {
     isLoadingAddresses ||
     isLoadingShippingLocations ||
     isVerifyingAvailability ||
+    isUploadingAttachments ||
     isGettingPaymentMethods ||
     isGettingDeliveryMethods
 
@@ -246,7 +250,7 @@ export default function CheckoutClient() {
                   isLoading ||
                   isBlockedByStock ||
                   isStepBlockedByFlag,
-                loading: isCreatingOrder || isVerifyingAvailability
+                loading: isCreatingOrder || isVerifyingAvailability || isUploadingAttachments
               }
             : {
                 label: t('orders.checkout.sidebar.viewOrders'),

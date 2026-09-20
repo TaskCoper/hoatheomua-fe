@@ -12,8 +12,7 @@ import { Mail01Icon, ShoppingCart01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import { useMemo, useState } from 'react'
-import { findCardTemplate } from '../cards/card-data'
-import { CARD_SIZE_LABEL_KEYS, CARD_WRITING_METHOD_LABEL_KEYS } from '../cards/card-labels'
+import { CARD_WRITING_METHOD_LABEL_KEYS } from '../cards/card-labels'
 import type { CardWritingMethod, GeneratedCard } from '../cards/types'
 import { useGeneratedCards } from '../hooks/use-generated-cards'
 
@@ -111,9 +110,7 @@ function GeneratedCardRow({ card }: { card: GeneratedCard }) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
 
-  const template = findCardTemplate(card.templateId)
-
-  const specs = [t(CARD_SIZE_LABEL_KEYS[card.sizeId]), t(CARD_WRITING_METHOD_LABEL_KEYS[card.writingMethod])]
+  const specs = [card.sizeName, t(CARD_WRITING_METHOD_LABEL_KEYS[card.writingMethod])].filter(Boolean)
 
   return (
     <article className='flex gap-3 rounded-3xl bg-card p-2 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow hover:shadow-[0_1rem_2.4rem_rgb(81_108_108/12%)]'>
@@ -127,7 +124,7 @@ function GeneratedCardRow({ card }: { card: GeneratedCard }) {
       <div className='flex min-w-0 flex-1 flex-col gap-2'>
         <header className='flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5'>
           <h3 className='min-w-0 wrap-break-word font-title text-sm font-bold text-primary sm:text-base'>
-            {template?.name ?? t('orders.checkout.cards.tabs.ai')}
+            {card.templateName || t('orders.checkout.cards.tabs.ai')}
           </h3>
           <span className='shrink-0 text-xs text-muted-foreground tabular-nums'>
             {formatDate(card.createdAt, 'dateMedium')}

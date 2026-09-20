@@ -9,8 +9,10 @@ import { cn } from '@/shared/utils'
 import { AiMagicIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { toast } from 'sonner'
+import { countWords, getCardHandwritingPrice, getCardMaxWords } from '../../cards/card-config'
 import { getOrderCardPriceDelta, getOrderCardUnitPrice } from '../../cards/order-card-data'
 import type { CardWritingMethod, OrderAiCard, OrderCardVersion } from '../../cards/types'
+import { useCardConfig } from '../../hooks/use-card-config'
 import { useOrderCardDesigner } from '../../hooks/use-order-card-designer'
 import CardContentFields from '../checkout/cards/card-content-fields'
 import CardWritingPicker from '../checkout/cards/card-writing-picker'
@@ -35,6 +37,7 @@ export default function OrderCardStudio({
   onDone
 }: OrderCardStudioProps) {
   const { t } = useTranslation()
+  const { cardConfig } = useCardConfig()
 
   const {
     activeVersion,
@@ -56,9 +59,11 @@ export default function OrderCardStudio({
   } = useOrderCardDesigner({ card, autoGenerate, onAddVersion })
 
   const isGenerating = status === 'generating'
-  const currentPrice = getOrderCardUnitPrice({ card, content: draft, writingMethod }) * card.quantity
+  const currentPrice =
+    getOrderCardUnitPrice({ card, content: draft, writingMethod, config: cardConfig }) * card.quantity
   const paidPrice = card.paidUnitPrice * card.quantity
-  const priceDelta = getOrderCardPriceDelta({ card, content: draft, writingMethod })
+  const priceDelta = getOrderCardPriceDelta({ card, content: draft, writingMethod, config: cardConfig })
+  const handwritingPrice = getCardHandwritingPrice(cardConfig, countWords(draft.message))
 
   const generateLabel =
     card.versions.length === 0
@@ -144,11 +149,21 @@ export default function OrderCardStudio({
             </div>
           </DialogHeader>
 
-          <OrderCardLockedSpecs templateId={card.templateId} sizeId={card.sizeId} />
+          <OrderCardLockedSpecs
+            templateName={card.templateName}
+            templateImageUrl={card.templateImageUrl}
+            sizeName={card.sizeName}
+          />
 
-          <CardContentFields value={content} onChange={editContent} messageInvalid={showMessageError} />
+          <CardContentFields
+            value={content}
+            onChange={editContent}
+            messageInvalid={showMessageError}
+            maxWords={getCardMaxWords(cardConfig, card.sizeName)}
+            surcharge={writingMethod === 'handwritten' ? handwritingPrice : 0}
+          />
 
-          <CardWritingPicker value={writingMethod} onChange={setWritingMethod} />
+          <CardWritingPicker value={writingMethod} onChange={setWritingMethod} handwritingPrice={handwritingPrice} />
 
           <div className='space-y-2 rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
             <div className='flex items-baseline justify-between gap-3'>

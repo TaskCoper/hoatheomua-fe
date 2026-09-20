@@ -4,24 +4,21 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import PreviewImage from '@/shared/components/preview-image'
 import { SquareLock02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { findCardTemplate } from '../../cards/card-data'
-import { CARD_SIZE_LABEL_KEYS } from '../../cards/card-labels'
-import type { CardSizeId } from '../../cards/types'
 
 interface OrderCardLockedSpecsProps {
-  templateId: string
-  sizeId: CardSizeId
+  templateName: string
+  templateImageUrl: string
+  sizeName: string
 }
 
-export default function OrderCardLockedSpecs({ templateId, sizeId }: OrderCardLockedSpecsProps) {
+export default function OrderCardLockedSpecs({ templateName, templateImageUrl, sizeName }: OrderCardLockedSpecsProps) {
   const { t } = useTranslation()
-  const template = findCardTemplate(templateId)
 
   return (
     <div className='flex items-start gap-3 rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
       <PreviewImage
-        src={template?.imageUrl ?? null}
-        alt={template?.name ?? t('orders.cards.locked.template')}
+        src={templateImageUrl || null}
+        alt={templateName || t('orders.cards.locked.template')}
         sizes='48px'
         className='aspect-3/4 w-11 shrink-0 rounded-xl ring-1 ring-primary/10'
       />
@@ -33,10 +30,7 @@ export default function OrderCardLockedSpecs({ templateId, sizeId }: OrderCardLo
         </p>
 
         <p className='mt-1 text-sm font-semibold text-foreground'>
-          {[
-            template ? t('orders.checkout.cards.templateName', { name: template.name }) : null,
-            t(CARD_SIZE_LABEL_KEYS[sizeId])
-          ]
+          {[templateName ? t('orders.checkout.cards.templateName', { name: templateName }) : null, sizeName || null]
             .filter(Boolean)
             .join(' · ')}
         </p>

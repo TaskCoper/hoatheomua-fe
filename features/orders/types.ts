@@ -218,6 +218,12 @@ export const InvoiceTypeLabel: Record<InvoiceType, I18nKey> = {
 
 export type InvoiceTypeLabel = (typeof InvoiceTypeLabel)[keyof typeof InvoiceTypeLabel]
 
+export interface EstimateItemPayload {
+  itemId: string
+  productId: string
+  number: number
+}
+
 export interface EstimatePayload {
   latitude: number
   longitude: number
@@ -227,8 +233,50 @@ export interface EstimatePayload {
   phone: string
   remarks: string
   orderTime: number
-  items: { itemId: string; productId: string; number: number }[]
+  items: EstimateItemPayload[]
   tagIds: number[]
+}
+
+/**
+ * `GeneratedCardType` on the API - the kinds the card-template endpoint spells `'ai'` and
+ * `'handmade'`. A reused card is an AI card; `sourceGeneratedCardId` is what marks it reused.
+ */
+export const OrderCardType = {
+  Ai: 0,
+  Handmade: 1
+} as const
+
+export type OrderCardType = (typeof OrderCardType)[keyof typeof OrderCardType]
+
+/** `CardFormType` on the API. The UI calls these two `typed` and `handwritten`. */
+export const OrderCardFormType = {
+  GoMay: 0,
+  Calligraphy: 1
+} as const
+
+export type OrderCardFormType = (typeof OrderCardFormType)[keyof typeof OrderCardFormType]
+
+export interface OrderCardPayload {
+  cardType: OrderCardType
+  /** Empty for a reused card - it brings its own artwork. */
+  cardTemplateId: string | null
+  /** `CardSize.name` from `card_config.sizes` - empty for the free standard card. */
+  sizeName: string
+  formType: OrderCardFormType
+  messageContent: string
+  attachedImageUrl: string | null
+  /** TODO(backend): the reused generation's id comes from the card API; not wired yet. */
+  sourceGeneratedCardId: string | null
+}
+
+export interface OrderBouquetPayload {
+  /** Only set for a bouquet designed in the studio. TODO(backend): no studio-to-cart path yet. */
+  generatedFlowerId?: string
+  card: OrderCardPayload
+}
+
+export interface CheckoutItemPayload extends EstimateItemPayload {
+  bouquets: OrderBouquetPayload[]
 }
 
 export interface EstimateResult {
@@ -236,7 +284,8 @@ export interface EstimateResult {
   products: EstimateProduct[]
 }
 
-export interface CheckoutPayload extends EstimatePayload {
+export interface CheckoutPayload extends Omit<EstimatePayload, 'items'> {
+  items: CheckoutItemPayload[]
   fullNameReceiver: string
   phoneReceiver: string
   taxCode: string | null

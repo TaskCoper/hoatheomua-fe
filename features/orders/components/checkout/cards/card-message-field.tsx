@@ -6,7 +6,8 @@ import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { useId } from 'react'
-import { CARD_MESSAGE_MAX_LENGTH, getCardMessageSurcharge } from '../../../cards/card-data'
+import { countWords } from '../../../cards/card-config'
+import { CARD_MESSAGE_MAX_LENGTH } from '../../../cards/card-data'
 
 interface CardMessageFieldProps {
   value: string
@@ -14,8 +15,9 @@ interface CardMessageFieldProps {
   label: string
   placeholder: string
   invalid?: boolean
-  /** Off for the free standard card, where a long message costs nothing. */
-  showSurcharge?: boolean
+  /** The word budget of the chosen size; messages are counted in words, not characters. */
+  maxWords: number
+  surcharge?: number
 }
 
 export default function CardMessageField({
@@ -24,12 +26,14 @@ export default function CardMessageField({
   label,
   placeholder,
   invalid,
-  showSurcharge = true
+  maxWords,
+  surcharge = 0
 }: CardMessageFieldProps) {
   const { t } = useTranslation()
   const id = useId()
 
-  const surcharge = showSurcharge ? getCardMessageSurcharge(value.length) : 0
+  const wordCount = countWords(value)
+  const isOverBudget = maxWords > 0 && wordCount > maxWords
 
   return (
     <Field data-invalid={invalid} className='gap-1.5'>
@@ -46,12 +50,18 @@ export default function CardMessageField({
       <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1'>
         <span className={cn('text-xs', invalid ? 'text-destructive' : 'text-muted-foreground')}>
           {invalid
-            ? t('orders.checkout.cards.messageRequired')
-            : t('orders.checkout.cards.messageCount', { count: value.length, max: CARD_MESSAGE_MAX_LENGTH })}
+            ? wordCount === 0
+              ? t('orders.checkout.cards.messageRequired')
+              : t('orders.checkout.cards.messageMaxWords', { max: maxWords })
+            : t('orders.checkout.cards.messageWordCount', { count: wordCount, max: maxWords })}
         </span>
-        {surcharge > 0 ? (
+        {!invalid && isOverBudget ? (
+          <span className='text-xs font-medium text-destructive'>
+            {t('orders.checkout.cards.messageMaxWords', { max: maxWords })}
+          </span>
+        ) : surcharge > 0 ? (
           <span className='text-xs font-medium text-primary'>
-            {t('orders.checkout.cards.messageSurcharge', { price: formatVnd(surcharge) })}
+            {t('orders.checkout.cards.handwritingSurcharge', { price: formatVnd(surcharge) })}
           </span>
         ) : null}
       </div>
