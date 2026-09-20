@@ -68,8 +68,9 @@ function CheckoutCardListItem({
   const generated =
     card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
 
-  const templateName = card.type === 'history' ? generated?.templateName : card.templateName
-  const artwork = card.type === 'history' ? generated?.imageUrl : card.templateImageUrl
+  // A reused card carries its own snapshot; the generations list is only a fallback for older drafts.
+  const templateName = card.type === 'history' ? card.templateName || generated?.templateName : card.templateName
+  const artwork = card.type === 'history' ? card.imageUrl || generated?.imageUrl : card.templateImageUrl
   // The standard card is free, so it has no size to show.
   const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod

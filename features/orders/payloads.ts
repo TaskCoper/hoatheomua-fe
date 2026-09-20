@@ -80,8 +80,7 @@ const toOrderCardPayload = (card: CheckoutCard): OrderCardPayload => ({
   formType: card.type === 'standard' ? OrderCardFormType.Calligraphy : CARD_FORM_TYPE_CODE[card.writingMethod],
   messageContent: card.content.message,
   attachedImageUrl: card.type === 'ai' ? card.attachedImageUrl || null : null,
-  // TODO(backend): the reused generation's id comes from the card API; not wired yet.
-  sourceGeneratedCardId: null
+  sourceGeneratedCardId: card.type === 'history' ? card.generatedCardId : null
 })
 
 /** One bouquet per carded unit; a line with no cards sends none. */

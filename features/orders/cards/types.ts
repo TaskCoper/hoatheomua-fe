@@ -65,6 +65,13 @@ export interface HistoryCheckoutCard extends CheckoutCardBase {
   generatedCardId: string
   /** Copied from the generation being reused. */
   sizeName: string
+  /**
+   * Snapshot of that generation's artwork. The gallery only holds the cards of the product
+   * being carded, so the summary would otherwise lose the preview as soon as the composer
+   * closes - and it still shows what was picked if the generation is later removed.
+   */
+  templateName: string
+  imageUrl: string
   content: CardContent
   writingMethod: CardWritingMethod
 }
@@ -72,41 +79,57 @@ export interface HistoryCheckoutCard extends CheckoutCardBase {
 export type CheckoutCard = StandardCheckoutCard | AiCheckoutCard | HistoryCheckoutCard
 
 /**
- * Post-checkout: one AI artwork generated for a card of a placed order. The words are
- * part of the version because the artwork is painted from them - editing the words means
- * generating again.
+ * Post-checkout: one artwork generated for a card of a placed order, as
+ * `GET v1/order-details/{id}/cards` returns it. The endpoint gives an id, a name and the
+ * image - the words a version was painted from do not come back with it.
  */
 export interface OrderCardVersion {
   id: string
+  /** Position in the list, for the "Version n" labels the API does not provide. */
   label: number
+  name: string
   imageUrl: string
-  content: CardContent
-  createdAt: string
 }
 
 /**
- * An AI card that travels with a line of a placed order. Design and size were paid for at
- * checkout, so they are frozen; the words, the writing method and the chosen version are not.
- * TODO(backend): no order-card endpoint yet - see `buildMockOrderAiCards`.
+ * A card that travels with a line of a placed order, read off the line's checkout snapshot.
+ * Design and size were paid for at checkout, so they are frozen; the words, the writing
+ * method and the chosen version are not.
  */
 export interface OrderAiCard {
+  /** `snapShotCard.virtualId` - the card's identity in both card endpoints. */
   id: string
   /** The `OrderItem.orderDetailsId` this card is printed for. */
   orderDetailsId: string
+  /** `snapShotCard.cardId`, sent back as `sourceCardId` when regenerating. */
+  sourceCardId: string | null
+  /** Only an `'ai'` card is designed here - a handmade one is written by our florist. */
+  type: 'ai' | 'handmade'
   productName: string
   productImageUrl: string | null
-  /** Frozen at checkout. */
+  /** The design ordered - the one thing about the artwork the customer may still change. */
   templateId: string
   templateName: string
   templateImageUrl: string
   /** Frozen at checkout. */
   sizeName: string
-  quantity: number
-  /** Unit price charged at checkout, used to show the difference an edit makes. */
+  /**
+   * Width over height of the size ordered - what the card is actually printed at, and the
+   * shape to hold a preview in until the artwork itself has been measured.
+   */
+  sizeRatio: number | null
+  /** Which unit of the line this card belongs to, counting from 1. */
+  unit: number
+  /** The words ordered, and the budget they have to stay inside to keep the paid price. */
+  content: CardContent
+  minWords: number
+  maxWords: number
+  /** Unit price charged at checkout. */
   paidUnitPrice: number
+  /** Frozen at checkout - printed or handwritten is not part of the redesign. */
   writingMethod: CardWritingMethod
+  /** `snapShotCard.finalGeneratedCardId` - the version that goes to print, once one is chosen. */
   selectedVersionId: string
-  versions: OrderCardVersion[]
 }
 
 export type CheckoutCardType = CheckoutCard['type']

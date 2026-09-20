@@ -294,6 +294,7 @@ export interface ProductFamilyMember {
   description: string | null
   price: number | null
   materials: ProductMaterial[] | null
+  sellableQuantity: number
 }
 
 export interface ProductFamily {

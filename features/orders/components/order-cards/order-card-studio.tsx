@@ -2,95 +2,135 @@
 
 import { Button } from '@/components/ui/button'
 import { DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { cn } from '@/shared/utils'
+import { useConfirmStore } from '@/stores/confirm.store'
+import { CardTemplateType } from '@/types/card-template.type'
 import { AiMagicIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { useState } from 'react'
 import { toast } from 'sonner'
-import { countWords, getCardHandwritingPrice, getCardMaxWords } from '../../cards/card-config'
-import { getOrderCardPriceDelta, getOrderCardUnitPrice } from '../../cards/order-card-data'
-import type { CardWritingMethod, OrderAiCard, OrderCardVersion } from '../../cards/types'
-import { useCardConfig } from '../../hooks/use-card-config'
+import type { OrderAiCard } from '../../cards/types'
+import { useCardTemplates } from '../../hooks/use-card-templates'
 import { useOrderCardDesigner } from '../../hooks/use-order-card-designer'
 import CardContentFields from '../checkout/cards/card-content-fields'
-import CardWritingPicker from '../checkout/cards/card-writing-picker'
+import CardTemplatePicker from '../checkout/cards/card-template-picker'
 import OrderCardArtwork from './order-card-artwork'
 import OrderCardGenerationOverlay from './order-card-generation-overlay'
 import OrderCardLockedSpecs from './order-card-locked-specs'
 import OrderCardVersionStrip from './order-card-version-strip'
 
+/** Only reached before anything has been measured and with no size on the card. */
+const DEFAULT_CARD_RATIO = 3 / 4
+
 interface OrderCardStudioProps {
   card: OrderAiCard
-  autoGenerate?: boolean
-  onAddVersion: (cardId: string, version: OrderCardVersion) => void
-  onApplyVersion: (cardId: string, args: { versionId: string; writingMethod: CardWritingMethod }) => void
+  /** The dialog is what asks for the card's generations, so the query follows it open. */
+  isOpen: boolean
   onDone: () => void
 }
 
-export default function OrderCardStudio({
-  card,
-  autoGenerate,
-  onAddVersion,
-  onApplyVersion,
-  onDone
-}: OrderCardStudioProps) {
+export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudioProps) {
   const { t } = useTranslation()
-  const { cardConfig } = useCardConfig()
 
   const {
+    versions,
+    isLoadingVersions,
+    isVersionsError,
     activeVersion,
     activeVersionId,
+    selectedVersionId,
+    template,
     content,
     draft,
-    writingMethod,
+    isBelowBudget,
+    isOverBudget,
     status,
     stage,
+    isApplying,
     showMessageError,
-    hasUnpaintedWords,
-    isSelectedVersion,
+    hasChanges,
     canGenerate,
-    canApply,
+    isSelectedVersion,
     editContent,
-    setWritingMethod,
+    editTemplate,
     selectVersion,
+    applyVersion,
     generate
-  } = useOrderCardDesigner({ card, autoGenerate, onAddVersion })
+  } = useOrderCardDesigner({ card, enabled: isOpen })
+
+  const { templates, isGettingCardTemplates, isGettingMoreCardTemplates, hasMoreCardTemplates, loadMoreCardTemplates } =
+    useCardTemplates(CardTemplateType.Ai)
 
   const isGenerating = status === 'generating'
-  const currentPrice =
-    getOrderCardUnitPrice({ card, content: draft, writingMethod, config: cardConfig }) * card.quantity
-  const paidPrice = card.paidUnitPrice * card.quantity
-  const priceDelta = getOrderCardPriceDelta({ card, content: draft, writingMethod, config: cardConfig })
-  const handwritingPrice = getCardHandwritingPrice(cardConfig, countWords(draft.message))
+  const confirm = useConfirmStore((state) => state.confirm)
 
-  const generateLabel =
-    card.versions.length === 0
-      ? t('orders.cards.actions.generateFirst')
-      : hasUnpaintedWords
-        ? t('orders.cards.actions.generate')
-        : t('orders.cards.actions.regenerate')
+  // Nothing generated yet means the design itself is the best preview there is.
+  const previewImageUrl = activeVersion?.imageUrl || template.templateImageUrl
 
-  const isAlreadyApplied = isSelectedVersion && !hasUnpaintedWords && writingMethod === card.writingMethod
+  // The artwork is laid out at its own shape, measured as it paints - the same way the
+  // template picker sizes its tiles. Until it has painted, the card's printed size is the
+  // closest guess there is, so the frame does not jump from a default 3:4.
+  const [artworkRatios, setArtworkRatios] = useState<ReadonlyMap<string, number>>(new Map())
+  const previewRatio = artworkRatios.get(previewImageUrl) ?? card.sizeRatio ?? DEFAULT_CARD_RATIO
 
-  const handleApply = () => {
+  const measureArtwork = ({ naturalWidth, naturalHeight }: { naturalWidth: number; naturalHeight: number }) => {
+    if (!previewImageUrl || !naturalWidth || !naturalHeight) return
+
+    setArtworkRatios((current) =>
+      current.has(previewImageUrl) ? current : new Map(current).set(previewImageUrl, naturalWidth / naturalHeight)
+    )
+  }
+
+  // The choice is what the florist prints, so it is confirmed before it is sent.
+  const handleApply = async () => {
     if (!activeVersion) return
 
-    onApplyVersion(card.id, { versionId: activeVersion.id, writingMethod })
-    toast.success(t('orders.cards.toast.applied', { index: activeVersion.label }))
-    onDone()
+    const confirmed = await confirm({
+      title: t('orders.cards.confirmApply.title'),
+      description: t('orders.cards.confirmApply.description', { index: activeVersion.label }),
+      confirmText: t('orders.cards.actions.apply')
+    })
+
+    if (!confirmed) return
+
+    applyVersion(activeVersion.id, {
+      onSuccess: () => {
+        toast.success(t('orders.cards.toast.applied', { index: activeVersion.label }))
+        onDone()
+      },
+      onError: () => toast.error(t('orders.cards.toast.applyError'))
+    })
+  }
+
+  const handleGenerate = () => {
+    generate({
+      onSuccess: () => toast.success(t('orders.cards.toast.generated')),
+      onError: () => toast.error(t('orders.cards.toast.generateError'))
+    })
   }
 
   return (
     <div className='flex min-h-0 flex-1 flex-col overflow-y-auto md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:overflow-hidden'>
       <section className='flex flex-col bg-secondary/25 md:min-h-0 md:overflow-hidden'>
         <div className='relative flex min-h-0 flex-1 items-center justify-center p-5 sm:p-7'>
-          <div className='relative aspect-3/4 w-[min(14rem,55vw)] md:h-full md:max-h-[24rem] md:w-auto'>
+          <div
+            style={{ aspectRatio: previewRatio }}
+            className='relative w-[min(14rem,55vw)] max-w-full md:h-full md:max-h-[24rem] md:w-auto'
+          >
             <OrderCardArtwork
               showWords
-              version={activeVersion}
-              writingMethod={writingMethod}
+              onReady={measureArtwork}
+              imageUrl={previewImageUrl}
+              alt={
+                activeVersion
+                  ? t('orders.cards.previewAlt', { index: activeVersion.label })
+                  : t('orders.cards.noVersion')
+              }
+              message={draft.message}
+              writingMethod={card.writingMethod}
               sizes='(min-width: 768px) 20rem, 60vw'
               className='size-full rounded-3xl shadow-[0_0.8rem_2rem_rgb(81_108_108/20%)] ring-1 ring-foreground/10'
             />
@@ -102,7 +142,7 @@ export default function OrderCardStudio({
             ) : null}
           </div>
 
-          {isGenerating ? <OrderCardGenerationOverlay versionLabel={card.versions.length + 1} stage={stage} /> : null}
+          {isGenerating ? <OrderCardGenerationOverlay versionLabel={versions.length + 1} stage={stage} /> : null}
         </div>
 
         <div className='shrink-0 border-t border-border/60 bg-card/60 p-3 sm:p-4'>
@@ -110,24 +150,36 @@ export default function OrderCardStudio({
             <span className='text-[0.7rem] font-medium text-muted-foreground'>
               {t('orders.cards.versions.heading')}
             </span>
-            {card.versions.length > 0 ? (
+            {versions.length > 0 ? (
               <span className='text-[0.7rem] font-semibold tabular-nums text-foreground/70'>
                 {t('orders.cards.versions.counter', {
-                  index: activeVersion?.label ?? card.versions.length,
-                  total: card.versions.length
+                  index: activeVersion?.label ?? versions.length,
+                  total: versions.length
                 })}
               </span>
             ) : null}
           </p>
 
-          <OrderCardVersionStrip
-            versions={card.versions}
-            activeVersionId={activeVersionId}
-            selectedVersionId={card.selectedVersionId}
-            writingMethod={writingMethod}
-            disabled={isGenerating}
-            onSelect={selectVersion}
-          />
+          {isLoadingVersions ? (
+            <div className='flex gap-2'>
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton key={index} style={{ aspectRatio: previewRatio }} className='w-14 rounded-2xl sm:w-16' />
+              ))}
+            </div>
+          ) : isVersionsError ? (
+            <p className='rounded-2xl bg-secondary/20 px-3 py-4 text-center text-xs text-muted-foreground ring-1 ring-foreground/5'>
+              {t('orders.cards.versions.error')}
+            </p>
+          ) : (
+            <OrderCardVersionStrip
+              versions={versions}
+              activeVersionId={activeVersionId}
+              selectedVersionId={selectedVersionId}
+              ratio={previewRatio}
+              disabled={isGenerating}
+              onSelect={selectVersion}
+            />
+          )}
         </div>
       </section>
 
@@ -150,53 +202,40 @@ export default function OrderCardStudio({
           </DialogHeader>
 
           <OrderCardLockedSpecs
-            templateName={card.templateName}
-            templateImageUrl={card.templateImageUrl}
             sizeName={card.sizeName}
+            writingMethod={card.writingMethod}
+            minWords={card.minWords}
+            maxWords={card.maxWords}
+          />
+
+          <CardTemplatePicker
+            templates={templates}
+            isLoading={isGettingCardTemplates}
+            isLoadingMore={isGettingMoreCardTemplates}
+            hasMore={hasMoreCardTemplates}
+            onLoadMore={loadMoreCardTemplates}
+            value={template.templateId}
+            onChange={editTemplate}
           />
 
           <CardContentFields
             value={content}
             onChange={editContent}
-            messageInvalid={showMessageError}
-            maxWords={getCardMaxWords(cardConfig, card.sizeName)}
-            surcharge={writingMethod === 'handwritten' ? handwritingPrice : 0}
+            messageInvalid={showMessageError || isOverBudget || isBelowBudget}
+            maxWords={card.maxWords}
           />
 
-          <CardWritingPicker value={writingMethod} onChange={setWritingMethod} handwritingPrice={handwritingPrice} />
+          {isBelowBudget ? (
+            <p className='text-xs font-medium text-destructive'>
+              {t('orders.cards.messageMinWords', { min: card.minWords })}
+            </p>
+          ) : null}
 
           <div className='space-y-2 rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
             <div className='flex items-baseline justify-between gap-3'>
               <span className='text-[0.7rem] font-medium text-muted-foreground'>{t('orders.cards.price.paid')}</span>
-              <span className='text-sm font-medium tabular-nums'>{formatVnd(paidPrice)}</span>
-            </div>
-
-            <div className='flex items-baseline justify-between gap-3'>
-              <span className='text-[0.7rem] font-medium text-muted-foreground'>
-                {t('orders.cards.price.current')}
-                {card.quantity > 1 ? (
-                  <span className='ml-1'>({t('orders.cards.quantity', { count: card.quantity })})</span>
-                ) : null}
-              </span>
               <span className='font-title text-base font-bold tabular-nums text-primary'>
-                {formatVnd(currentPrice)}
-              </span>
-            </div>
-
-            <div className='flex justify-end'>
-              <span
-                className={cn(
-                  'rounded-full px-2 py-0.5 text-[0.7rem] font-semibold tabular-nums',
-                  priceDelta === 0
-                    ? 'text-muted-foreground'
-                    : 'bg-secondary/50 text-secondary-foreground ring-1 ring-primary/10'
-                )}
-              >
-                {priceDelta === 0
-                  ? t('orders.cards.price.same')
-                  : priceDelta > 0
-                    ? t('orders.cards.price.extra', { price: formatVnd(priceDelta) })
-                    : t('orders.cards.price.refund', { price: formatVnd(Math.abs(priceDelta)) })}
+                {formatVnd(card.paidUnitPrice)}
               </span>
             </div>
 
@@ -207,15 +246,15 @@ export default function OrderCardStudio({
         </div>
 
         <div className='sticky bottom-0 mt-auto space-y-2 border-t border-border/60 bg-popover p-4 sm:p-5'>
-          {hasUnpaintedWords && card.versions.length > 0 ? (
+          {hasChanges && versions.length > 0 ? (
             <p className='text-xs text-muted-foreground'>{t('orders.cards.actions.applyHint')}</p>
           ) : null}
 
           <div className='grid gap-2 sm:grid-cols-2'>
             <Button
               type='button'
-              variant={hasUnpaintedWords ? 'default' : 'outline'}
-              onClick={generate}
+              variant={hasChanges ? 'default' : 'outline'}
+              onClick={handleGenerate}
               disabled={!canGenerate}
             >
               {isGenerating ? (
@@ -223,16 +262,17 @@ export default function OrderCardStudio({
               ) : (
                 <HugeiconsIcon icon={AiMagicIcon} strokeWidth={2} className='size-4' />
               )}
-              {generateLabel}
+              {versions.length === 0 ? t('orders.cards.actions.generateFirst') : t('orders.cards.actions.regenerate')}
             </Button>
 
             <Button
               type='button'
-              variant={hasUnpaintedWords ? 'outline' : 'default'}
+              variant={hasChanges ? 'outline' : 'default'}
               onClick={handleApply}
-              disabled={!canApply}
+              disabled={isGenerating || isApplying || !activeVersion || isSelectedVersion}
             >
-              {isAlreadyApplied ? (
+              {isApplying ? <Spinner className='size-4' /> : null}
+              {isSelectedVersion ? (
                 <>
                   <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-4' />
                   {t('orders.cards.actions.applied')}

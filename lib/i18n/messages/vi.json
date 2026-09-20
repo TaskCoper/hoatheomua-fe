@@ -191,7 +191,13 @@
         "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {direction}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
       }
     },
-    "loading": "Đang tải..."
+    "loading": "Đang tải...",
+    "confirm": {
+      "title": "Bạn chắc chứ?",
+      "description": "Vui lòng xác nhận để tiếp tục.",
+      "confirm": "Xác nhận",
+      "cancel": "Huỷ"
+    }
   },
   "richTextEditor": {
     "placeholder": "Nhập nội dung...",
@@ -884,6 +890,11 @@
         "historyEmptyTitle": "Bạn chưa có thiệp Custom AI nào.",
         "historyEmptyBody": "Tạo thiệp đầu tiên để có thể sử dụng lại ở những đơn hàng sau.",
         "historyEmptyAction": "Tạo thiệp Custom AI",
+        "historyPickProduct": "Chọn sản phẩm trước - chúng tôi sẽ hiện những thiệp bạn đã tạo cho sản phẩm đó.",
+        "historyProductEmptyTitle": "Chưa có thiệp nào để dùng lại cho sản phẩm này",
+        "historyProductEmptyBody": "Bạn chưa tạo thiệp nào cho sản phẩm này. Tạo một tấm và lần sau sẽ thấy ở đây.",
+        "historyError": "Không tải được danh sách thiệp của sản phẩm này. Vui lòng thử lại sau giây lát.",
+        "historyLoadMore": "Xem thêm thiệp",
         "generatedAt": "Tạo ngày {date}",
         "reusedTitle": "Thiệp dùng lại",
         "aiPendingNote": "Bạn chọn cấu hình và viết lời nhắn ở bước này. Hình thiệp sẽ được AI tạo ra từ đó sau khi đơn hàng được xác nhận.",
@@ -910,10 +921,12 @@
       "dialogDescription": "Viết lại lời nhắn và tạo hình thiệp mới. Phiên bản bạn giữ lại là phiên bản chúng tôi in.",
       "locked": {
         "heading": "Đã chốt cùng đơn hàng",
-        "note": "Mẫu thiệp và kích thước đã được xác nhận khi thanh toán và không thể thay đổi.",
+        "note": "Bạn vẫn có thể đổi mẫu thiệp và lời nhắn.",
         "template": "Mẫu thiệp",
         "size": "Kích thước",
-        "badge": "Đã khoá"
+        "badge": "Đã khoá",
+        "words": "Tối đa {max} từ",
+        "wordsRange": "{min}-{max} từ"
       },
       "versions": {
         "heading": "Phiên bản",
@@ -922,7 +935,8 @@
         "select": "Xem phiên bản {index}",
         "printed": "Đang dùng cho đơn",
         "createdAt": "Tạo lúc {date}",
-        "empty": "Hình thiệp đầu tiên của bạn sẽ xuất hiện ở đây."
+        "empty": "Hình thiệp đầu tiên của bạn sẽ xuất hiện ở đây.",
+        "error": "Không tải được các mẫu thiệp đã tạo cho thiệp này."
       },
       "generation": {
         "badge": "Đang tạo",
@@ -944,7 +958,10 @@
         "close": "Đóng"
       },
       "toast": {
-        "applied": "Phiên bản {index} sẽ được in cùng đơn hàng của bạn."
+        "applied": "Phiên bản {index} sẽ được in cùng đơn hàng của bạn.",
+        "generated": "Thiệp mới đang được tạo - thiệp sẽ hiện ở đây khi xong.",
+        "generateError": "Không tạo được thiệp. Vui lòng thử lại.",
+        "applyError": "Không lưu được lựa chọn của bạn. Vui lòng thử lại."
       },
       "price": {
         "paid": "Đã thanh toán",
@@ -952,7 +969,7 @@
         "extra": "+{price} cần xác nhận",
         "refund": "-{price} cần xác nhận",
         "same": "Không đổi",
-        "note": "Lời nhắn dài hơn hoặc chữ viết tay sẽ làm thay đổi giá thiệp. Chúng tôi sẽ xác nhận phần chênh lệch với bạn trước khi in - tổng đơn hàng vẫn giữ nguyên."
+        "note": "Thiệp này đã được thanh toán. Viết lại trong giới hạn số từ sẽ giữ nguyên giá đã trả."
       },
       "previewAlt": "Hình thiệp, phiên bản {index}",
       "history": {
@@ -967,6 +984,11 @@
           "description": "Thêm thiệp AI khi thanh toán, mọi tấm bạn tạo ra sẽ được lưu ở đây để dùng lại.",
           "cta": "Đến giỏ hàng"
         }
+      },
+      "messageMinWords": "Lời nhắn cần ít nhất {min} từ.",
+      "confirmApply": {
+        "title": "In mẫu thiệp này?",
+        "description": "Mẫu {index} sẽ là thiệp được in kèm hoa. Bạn vẫn có thể chọn mẫu khác cho đến khi đơn hàng được chuẩn bị."
       }
     },
     "list": {

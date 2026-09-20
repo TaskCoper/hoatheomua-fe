@@ -109,7 +109,6 @@ export default function CheckoutCards({
       ) : (
         <HistoryCardForm
           key={editingCard?.id ?? 'new'}
-          generatedCards={generatedCards}
           lines={lines}
           capacities={capacities}
           initial={editingCard?.type === 'history' ? editingCard : null}

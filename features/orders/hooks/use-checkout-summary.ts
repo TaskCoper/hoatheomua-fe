@@ -65,6 +65,7 @@ export const useCheckoutSummary = ({
 
         return {
           lineId: item.lineId,
+          productId: item.productId,
           name: product?.parent?.productName ?? product?.productName ?? '',
           variantName: product?.parent ? product.productName : null,
           image: product?.coverImage ?? null,

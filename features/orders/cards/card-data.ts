@@ -1,4 +1,6 @@
 import type { CardTemplate } from '@/types/card-template.type'
+import type { GeneratedCardItem } from '@/types/generated-card.type'
+import { OrderCardFormType } from '../types'
 import { countWords, getCardUnitPrice, type CardConfig } from './card-config'
 import type {
   CardContent,
@@ -17,6 +19,37 @@ export const toCheckoutCardTemplate = (template: CardTemplate): CheckoutCardTemp
   templateId: template.id,
   templateName: template.name,
   templateImageUrl: template.imageUrl
+})
+
+const WRITING_METHOD_BY_FORM_TYPE: Record<OrderCardFormType, CardWritingMethod> = {
+  [OrderCardFormType.GoMay]: 'typed',
+  [OrderCardFormType.Calligraphy]: 'handwritten'
+}
+
+const isOrderCardFormType = (value: number): value is OrderCardFormType => value in WRITING_METHOD_BY_FORM_TYPE
+
+/** One row of the generated-card API, as the checkout draws it. */
+export const toGeneratedCard = (item: GeneratedCardItem): GeneratedCard => ({
+  id: item.id,
+  templateId: item.cardTemplateId ?? '',
+  templateName: item.cardTemplateName ?? '',
+  sizeName: item.sizeName ?? '',
+  writingMethod:
+    typeof item.formType === 'number' && isOrderCardFormType(item.formType)
+      ? WRITING_METHOD_BY_FORM_TYPE[item.formType]
+      : DEFAULT_CARD_WRITING_METHOD,
+  content: { message: item.messageContent ?? '' },
+  imageUrl: item.imageUrl ?? '',
+  createdAt: item.createdAt ?? ''
+})
+
+/** Snapshot of the generation a reused card is printed from - see `HistoryCheckoutCard`. */
+export const readGeneratedCardSnapshot = (
+  card: GeneratedCard | null
+): Pick<GeneratedCard, 'templateName' | 'imageUrl' | 'sizeName'> => ({
+  templateName: card?.templateName ?? '',
+  imageUrl: card?.imageUrl ?? '',
+  sizeName: card?.sizeName ?? ''
 })
 
 export const readCheckoutCardTemplate = ({

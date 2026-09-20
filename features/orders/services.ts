@@ -10,13 +10,18 @@ import type {
   GeocodeResponse,
   GeocodeReverseResponse,
   GeoResponse,
+  GetOrderDetailCardsParams,
   GetOrdersParams,
   Order,
   OrderDetail,
+  OrderDetailCardItem,
   OrderStatus,
+  RegenerateAiCardPayload,
+  SetFinalGeneratedCardPayload,
   ShippingLocation,
   ShippingLocationType
 } from './types'
+import { toOrderDetailCardItems } from './utils/normalize-order-card'
 import { ShippingGateway } from './types'
 import { toAhamoveQuotes, toXanhSmQuotes } from './utils/normalize-shipping-quotes'
 import { normalizeTaxBusinessInfo } from './utils/normalize-tax-business-info'
@@ -104,6 +109,34 @@ class OrderService {
 
   getOrder = async ({ orderId }: { orderId: string }) => {
     const { data } = await api.get<BaseResponse<OrderDetail>>(`${this.baseUrl}/${orderId}`)
+
+    return data.value
+  }
+
+  /** The artworks generated so far for one card of a line. */
+  getOrderDetailCards = async ({ orderDetailsId, virtualId }: GetOrderDetailCardsParams) => {
+    const { data } = await api.get<BaseResponse<unknown>>(`v1/order-details/${orderDetailsId}/cards`, {
+      params: { virtualId }
+    })
+
+    return toOrderDetailCardItems(data.value)
+  }
+
+  // Painting a card again is our own AI run, not a third-party side effect, so it is not
+  // behind the business flags - the same as the flower studio's generations.
+  regenerateAiCard = async (body: RegenerateAiCardPayload) => {
+    const { data } = await api.post<BaseResponse<OrderDetailCardItem | null>>('v1/ai-cards', body)
+
+    return data.value
+  }
+
+  /**
+   * Marks which generation goes to print.
+   * TODO(backend): the path is assumed to sit under the ai-cards resource - only
+   * `final-generated-card` was given.
+   */
+  setFinalGeneratedCard = async (body: SetFinalGeneratedCardPayload) => {
+    const { data } = await api.put<BaseResponse<unknown>>('v1/ai-cards/final-generated-card', body)
 
     return data.value
   }

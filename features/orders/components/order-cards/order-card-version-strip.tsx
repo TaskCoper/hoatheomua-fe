@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import type { CardWritingMethod, OrderCardVersion } from '../../cards/types'
+import type { OrderCardVersion } from '../../cards/types'
 import OrderCardArtwork from './order-card-artwork'
 
 interface OrderCardVersionStripProps {
@@ -13,7 +13,8 @@ interface OrderCardVersionStripProps {
   activeVersionId: string
   /** The version that goes to print, marked with a tick. */
   selectedVersionId: string
-  writingMethod: CardWritingMethod
+  /** The shape of the card these were painted for. */
+  ratio: number
   disabled?: boolean
   onSelect: (versionId: string) => void
   className?: string
@@ -23,7 +24,7 @@ export default function OrderCardVersionStrip({
   versions,
   activeVersionId,
   selectedVersionId,
-  writingMethod,
+  ratio,
   disabled,
   onSelect,
   className
@@ -60,10 +61,11 @@ export default function OrderCardVersionStrip({
             >
               <span className='relative block'>
                 <OrderCardArtwork
-                  version={version}
-                  writingMethod={writingMethod}
+                  imageUrl={version.imageUrl}
+                  alt={version.name || t('orders.cards.versions.label', { index: version.label })}
                   sizes='64px'
-                  className='aspect-3/4 w-full rounded-xl ring-1 ring-foreground/5'
+                  style={{ aspectRatio: ratio }}
+                  className='w-full rounded-xl ring-1 ring-foreground/5'
                 />
 
                 {isPrinted ? (

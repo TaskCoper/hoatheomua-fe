@@ -24,6 +24,8 @@ export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stoc
 
 export interface CheckoutSummaryLine {
   lineId: string
+  /** The product behind the line - what the card endpoints are asked about. */
+  productId: string
   name: string
   variantName?: string | null
   image: string | null
@@ -287,7 +289,8 @@ function CheckoutCardLine({ card, generatedCards }: { card: CheckoutCardField; g
   const generated =
     card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
 
-  const templateName = card.type === 'history' ? generated?.templateName : card.templateName
+  // A reused card carries its own snapshot; the generations list is only a fallback for older drafts.
+  const templateName = card.type === 'history' ? card.templateName || generated?.templateName : card.templateName
   // The standard card is free, so it has no size to show.
   const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod

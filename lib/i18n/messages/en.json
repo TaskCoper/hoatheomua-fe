@@ -191,7 +191,13 @@
         "draggable": "Press space to pick up the item, then move it {direction}. Press space again to drop it, or escape to cancel."
       }
     },
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "confirm": {
+      "title": "Are you sure?",
+      "description": "Please confirm you want to continue.",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    }
   },
   "richTextEditor": {
     "placeholder": "Write something...",
@@ -884,6 +890,11 @@
         "historyEmptyTitle": "You have no AI custom cards yet.",
         "historyEmptyBody": "Create your first one and you can reuse it on later orders.",
         "historyEmptyAction": "Create an AI custom card",
+        "historyPickProduct": "Pick the product first - we will show the cards you already made for it.",
+        "historyProductEmptyTitle": "No card to reuse for this product",
+        "historyProductEmptyBody": "You have not generated a card for this product yet. Make one and it will be here next time.",
+        "historyError": "We could not load your cards for this product. Please try again in a moment.",
+        "historyLoadMore": "Load more cards",
         "generatedAt": "Created on {date}",
         "reusedTitle": "Reused card",
         "aiPendingNote": "The setup and the words are yours. The card artwork is generated with AI from them once the order is confirmed.",
@@ -910,10 +921,12 @@
       "dialogDescription": "Rewrite the words and generate the artwork again. The version you keep is the one we print.",
       "locked": {
         "heading": "Fixed with your order",
-        "note": "The template and size were confirmed when the order was paid for and cannot be changed.",
+        "note": "The design and the words are still yours to change.",
         "template": "Design",
         "size": "Size",
-        "badge": "Locked"
+        "badge": "Locked",
+        "words": "Up to {max} words",
+        "wordsRange": "{min}-{max} words"
       },
       "versions": {
         "heading": "Versions",
@@ -922,7 +935,8 @@
         "select": "Show version {index}",
         "printed": "In this order",
         "createdAt": "Generated {date}",
-        "empty": "Your first artwork will appear here."
+        "empty": "Your first artwork will appear here.",
+        "error": "We could not load the cards generated for this one."
       },
       "generation": {
         "badge": "Generating",
@@ -944,7 +958,10 @@
         "close": "Close"
       },
       "toast": {
-        "applied": "Version {index} will be printed with your order."
+        "applied": "Version {index} will be printed with your order.",
+        "generated": "Your new card is being painted - it appears here when it is ready.",
+        "generateError": "The card could not be generated. Please try again.",
+        "applyError": "We could not save your choice. Please try again."
       },
       "price": {
         "paid": "Paid at checkout",
@@ -952,7 +969,7 @@
         "extra": "+{price} to confirm",
         "refund": "-{price} to confirm",
         "same": "No change",
-        "note": "Longer words or handwriting change the card price. We confirm the difference with you before printing - your order total stays as it is."
+        "note": "This card is already paid for. Rewriting it inside its word budget keeps the price exactly as it is."
       },
       "previewAlt": "Card artwork, version {index}",
       "history": {
@@ -967,6 +984,11 @@
           "description": "Add an AI card at checkout and every one you generate is kept here, ready to be reused.",
           "cta": "Go to cart"
         }
+      },
+      "messageMinWords": "The message needs at least {min} words.",
+      "confirmApply": {
+        "title": "Print this version?",
+        "description": "Version {index} becomes the card printed with your flowers. You can pick another one until we start preparing your order."
       }
     },
     "list": {
