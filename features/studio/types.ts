@@ -84,6 +84,18 @@ export interface StudioVersion {
   wrap: StudioOption | null
 }
 
+export interface StudioGenerationSession {
+  sessionId: string
+  productId: string
+  name: string
+  mockupId: string
+  mockupName: string
+  imageUrl: string | null
+  createdAt: string
+  versionCount: number
+  isFinished: boolean
+}
+
 export interface StudioGeneration {
   id: string
   name: string

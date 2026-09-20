@@ -339,3 +339,6 @@ export const STUDIO_SESSION_SCENE_STEP: StudioStep = 2
 export const STUDIO_SESSION_LAST_STEP: StudioStep = 3
 
 export type StudioStepKey = (typeof STUDIO_STEP_KEYS)[number]['key'] | (typeof STUDIO_SESSION_STEP_KEYS)[number]['key']
+
+export const STUDIO_SESSION_FINISHED_COUNT = 3
+export const STUDIO_SESSIONS_PAGE_SIZE = 10

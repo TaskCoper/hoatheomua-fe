@@ -2,6 +2,7 @@ import type { ProductDetail, ProductMaterial } from '@/features/products/types'
 import {
   roundStudioQuantity,
   STUDIO_DECIMAL_QUANTITY_STEP,
+  STUDIO_SESSION_FINISHED_COUNT,
   STUDIO_WHOLE_QUANTITY_STEP
 } from '@/features/studio/studio-data'
 import type {
@@ -9,7 +10,9 @@ import type {
   CreateAiFlowerPayload,
   GeneratedFlower,
   GeneratedFlowerRef,
+  GeneratedFlowerSession,
   StudioBouquet,
+  StudioGenerationSession,
   StudioIngredient,
   StudioOption,
   StudioProduct,
@@ -129,6 +132,31 @@ export const toStudioSessionVersions = (flowers: GeneratedFlower[] | null | unde
       wrap:
         toStudioAiFlowerOption(flower.metadata?.wrappingPaper ?? null) ?? toGeneratedFlowerOption(flower.wrappingPaper)
     }))
+
+export const toStudioGenerationSessions = (
+  sessions: GeneratedFlowerSession[] | null | undefined
+): StudioGenerationSession[] =>
+  (sessions ?? []).flatMap((session) => {
+    const flowers = [...session.flowers].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+    const latest = flowers[flowers.length - 1]
+    if (!latest) return []
+
+    const cover = [...flowers].reverse().find((flower) => flower.imageUrl) ?? latest
+
+    return [
+      {
+        sessionId: session.sessionId,
+        productId: latest.rootProductId || latest.productId,
+        name: latest.name?.trim() || latest.product?.name?.trim() || '',
+        mockupId: latest.mockup?.id ?? '',
+        mockupName: latest.mockup?.name?.trim() ?? '',
+        imageUrl: cover.imageUrl,
+        createdAt: session.latestCreatedAt || latest.createdAt,
+        versionCount: flowers.length,
+        isFinished: flowers.length > STUDIO_SESSION_FINISHED_COUNT
+      }
+    ]
+  })
 
 export const toStudioSessionBouquet = ({
   version,
