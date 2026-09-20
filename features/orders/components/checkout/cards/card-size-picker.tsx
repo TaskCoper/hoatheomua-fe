@@ -2,28 +2,27 @@
 
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { CARD_SIZE_OPTIONS } from '../../../cards/card-data'
-import { CARD_SIZE_LABEL_KEYS } from '../../../cards/card-labels'
-import type { CardSizeId } from '../../../cards/types'
+import type { CardSize } from '@/types/config.type'
 import CardOptionPicker from './card-option-picker'
 
 interface CardSizePickerProps {
-  value: CardSizeId
-  onChange: (sizeId: CardSizeId) => void
+  sizes: CardSize[]
+  value: string
+  onChange: (sizeName: string) => void
 }
 
-export default function CardSizePicker({ value, onChange }: CardSizePickerProps) {
+export default function CardSizePicker({ sizes, value, onChange }: CardSizePickerProps) {
   const { t } = useTranslation()
 
   return (
-    <CardOptionPicker<CardSizeId>
+    <CardOptionPicker<string>
       label={t('orders.checkout.cards.size')}
       value={value}
       onChange={onChange}
-      options={CARD_SIZE_OPTIONS.map((size) => ({
-        value: size.id,
-        label: t(CARD_SIZE_LABEL_KEYS[size.id]),
-        hint: formatVnd(size.price)
+      options={sizes.map((size) => ({
+        value: size.name,
+        label: size.name,
+        hint: formatVnd(size.base_price)
       }))}
     />
   )

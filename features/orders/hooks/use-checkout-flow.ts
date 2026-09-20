@@ -1,6 +1,7 @@
 import { useCheckCoreProducts } from '@/features/products/hooks/use-check-core-products'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
+import { useUploadFileWithToast } from '@/hooks/use-upload-file-with-toast'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
 import { FeatureUnavailableError, isFeatureEnabled, ORDERING_DISABLED_REDIRECT_PATH } from '@/shared/feature-flags'
@@ -48,6 +49,7 @@ export const useCheckoutFlow = ({
   const productById = useProductsByIds(items)
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
   const { checkCoreProducts, isCheckingCoreProducts } = useCheckCoreProducts()
+  const { uploadFileWithToast, isUploading: isUploadingAttachments } = useUploadFileWithToast()
 
   const [step, setStep] = useState<CheckoutStep>(1)
 
@@ -154,6 +156,27 @@ export const useCheckoutFlow = ({
     return true
   }
 
+  /** Card photos upload here, not on pick, so an abandoned checkout uploads nothing. */
+  const uploadCardAttachments = async (
+    cards: CheckoutFormValues['cards']
+  ): Promise<CheckoutFormValues['cards'] | null> => {
+    const uploaded = await Promise.all(
+      cards.map(async (card) => {
+        if (card.type !== 'ai' || !card.attachedImage) return card
+
+        const attachedImageUrl = await uploadFileWithToast({
+          file: card.attachedImage,
+          showSuccessToast: false,
+          renderProgress: (progress) => t('orders.checkout.cards.attachmentProgress', { progress })
+        })
+
+        return attachedImageUrl ? { ...card, attachedImageUrl } : null
+      })
+    )
+
+    return uploaded.every((card) => card !== null) ? (uploaded as CheckoutFormValues['cards']) : null
+  }
+
   const handleConfirmOrder = (selection: CheckoutSelection) => {
     // Confirming both places the order and opens a payment session upstream.
     if (!canPlaceOrder || !isFeatureEnabled('payment')) {
@@ -167,8 +190,11 @@ export const useCheckoutFlow = ({
         if (!(await isFulfillable())) return
 
         try {
+          const cards = await uploadCardAttachments(values.cards)
+          if (!cards) return
+
           const { mrc_order_id } = await createOrder({
-            body: buildCheckoutPayload(values, items, productById, contact, selection)
+            body: buildCheckoutPayload({ ...values, cards }, items, productById, contact, selection)
           })
 
           if (source === 'cart') {
@@ -211,6 +237,7 @@ export const useCheckoutFlow = ({
     canPlaceOrder,
     canQuoteShipping,
     isVerifyingAvailability: isVerifyingSellableQuantity || isCheckingCoreProducts,
+    isUploadingAttachments,
     materialBlockedProductIds,
     estimatedGateway,
     goNext,

@@ -4,45 +4,43 @@ export type StudioGenerationStatus = 'idle' | 'generating' | 'complete'
 
 export interface StudioIngredient {
   id: string
-  imageUrl: string
-  /** How many of this stem the design already carries - the floor the counter starts at. */
+  name: string
+  imageUrl: string | null
   baseQuantity: number
-  /** What one stem beyond the base adds to the total. */
-  extraPriceAmount: number
+  step: number
+  extraPriceAmount: number | null
 }
 
 export interface StudioProduct {
   id: string
   name: string
-  note: string
+  note: string | null
   priceAmount: number
-  imageUrl: string
-  ingredientIds: string[]
+  imageUrl: string | null
   imageFit?: 'cover' | 'contain'
 }
 
-export interface StudioStyle {
+export interface StudioOption {
   id: string
-  imageUrl: string
+  name: string
+  description: string | null
+  imageUrl: string | null
 }
 
-export interface StudioSwatch {
-  id: string
-  color: string
+export interface StudioVariant extends StudioOption {
+  priceAmount: number | null
 }
 
 export interface StudioBouquetIngredient {
   ingredient: StudioIngredient
-  /** Never below `ingredient.baseQuantity` - stems can only be added at this step. */
   quantity: number
-  /** Stems on top of what the design already includes. */
   extraQuantity: number
 }
 
 export interface StudioBouquet {
-  style?: StudioStyle
-  ribbon?: StudioSwatch
-  wrap?: StudioSwatch
+  style?: StudioOption
+  ribbon?: StudioOption
+  wrap?: StudioOption
   products: StudioProduct[]
   ingredients: StudioBouquetIngredient[]
   totalAmount: number
@@ -65,13 +63,37 @@ export interface StudioMockup {
   examples: StudioMockupExample[]
 }
 
+export interface StudioScene extends StudioOption {
+  story?: string | null
+  moods?: string[]
+  examples?: StudioMockupExample[]
+}
+
 export interface StudioVersion {
   id: string
   label: number
   name: string
+  productId: string
   mockupId: string
   mockupName: string
-  imageUrl: string
+  imageUrl: string | null
+  createdAt: string | null
+  materials: AiFlowerMaterial[]
+  style: StudioOption | null
+  ribbon: StudioOption | null
+  wrap: StudioOption | null
+}
+
+export interface StudioGenerationSession {
+  sessionId: string
+  productId: string
+  name: string
+  mockupId: string
+  mockupName: string
+  imageUrl: string | null
+  createdAt: string
+  versionCount: number
+  isFinished: boolean
 }
 
 export interface StudioGeneration {
@@ -83,4 +105,116 @@ export interface StudioGeneration {
   mockupName: string
   imageUrl: string
   createdAt: string
+}
+
+export interface AiFlowerMaterialTotal {
+  matId: string
+  quantity: number
+}
+
+export interface CreateAiFlowerPayload {
+  name: string
+  productId: string
+  materialTotals: AiFlowerMaterialTotal[]
+  bundleId: string
+  mockupId: string
+  ribbonProductId: string
+  wrappingPaperProductId: string
+}
+
+export interface RegenerateAiFlowerPayload {
+  bundleId: string
+  mockupId: string
+}
+
+export interface AiFlowerProductRef {
+  id: string
+  name: string
+  attributes: {
+    productCode: string | null
+    productType: string | null
+    size: string | null
+    color: string | null
+  }
+  image: { url: string | null }
+  observedStatus: { isActive: boolean; isDeleted: boolean }
+}
+
+export interface AiFlowerMaterial extends AiFlowerMaterialTotal {
+  name: string
+  isCore: boolean
+}
+
+export interface AiFlowerMetadata {
+  subId: string
+  aiCustomize: boolean
+  ribbon: AiFlowerProductRef | null
+  wrappingPaper: AiFlowerProductRef | null
+  AdditionCustome: unknown[]
+  materials: AiFlowerMaterial[]
+}
+
+export interface AiFlower {
+  id: string
+  sessionId: string
+  name: string
+  imageUrl: string | null
+  metadata: AiFlowerMetadata
+  createdAt: string
+}
+
+export interface GeneratedFlowerRef {
+  id: string
+  name: string | null
+  imageUrl: string | null
+}
+
+export interface GeneratedFlower {
+  id: string
+  historyId: string
+  operation: string
+  regeneratedFromFlowerId: string | null
+  productId: string
+  rootProductId: string
+  name: string
+  imageUrl: string | null
+  userId: string
+  createdAt: string
+  product: GeneratedFlowerRef | null
+  bundle: GeneratedFlowerRef | null
+  mockup: GeneratedFlowerRef | null
+  ribbon: GeneratedFlowerRef | null
+  wrappingPaper: GeneratedFlowerRef | null
+  metadata: AiFlowerMetadata
+}
+
+export interface GeneratedFlowerSession {
+  sessionId: string
+  latestCreatedAt: string
+  flowers: GeneratedFlower[]
+}
+
+export interface GetGeneratedFlowersParams {
+  sessionId?: string
+  pageIndex?: number
+  pageSize?: number
+}
+
+export interface GeneratedFlowerCompositionMaterial {
+  id: string
+  name: string
+  coverImage: string | null
+}
+
+/**
+ * `GET v1/ai-flowers/{generatedFlowerId}/composition` - what a finished design is made
+ * of. It is the only read a cart line has: the generated name and artwork, the flowers
+ * that went in, and `subId`, the orderable product the design was built on.
+ */
+export interface GeneratedFlowerComposition {
+  id: string
+  name: string
+  coverImage: string
+  subId: string
+  materials: GeneratedFlowerCompositionMaterial[]
 }

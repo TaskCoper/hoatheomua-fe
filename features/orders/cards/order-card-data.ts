@@ -1,58 +1,8 @@
-import type { OrderItem } from '../types'
-import { getCardUnitPrice } from './card-data'
-import type { CardContent, CardWritingMethod, OrderAiCard, OrderCardVersion } from './types'
+import { OrderSnapshotCardType, OrderSnapshotFormType, type OrderItem, type OrderSnapshotCard } from '../types'
+import type { CardWritingMethod, OrderAiCard, OrderCardVersion } from './types'
 
-/**
- * TODO(backend): the generator will return the artwork it painted. Until then a new version
- * cycles this pool so consecutive generations at least look different from each other.
- */
-const MOCK_ARTWORK_POOL = [
-  '/images/custom/custom-flower.png',
-  '/images/5.webp',
-  '/images/ContactFlower.png',
-  '/images/2.webp',
-  '/images/8.webp',
-  '/images/6.webp'
-]
-
-export const getOrderCardArtwork = (versionIndex: number): string =>
-  MOCK_ARTWORK_POOL[versionIndex % MOCK_ARTWORK_POOL.length]
-
-export const findOrderCardVersion = (card: OrderAiCard, versionId: string): OrderCardVersion | null =>
-  card.versions.find((version) => version.id === versionId) ?? null
-
-/** The version that goes to print - falls back to the newest one if the selection is stale. */
-export const getSelectedOrderCardVersion = (card: OrderAiCard): OrderCardVersion | null =>
-  findOrderCardVersion(card, card.selectedVersionId) ?? card.versions.at(-1) ?? null
-
-export const getOrderCardUnitPrice = ({
-  card,
-  content,
-  writingMethod
-}: {
-  card: OrderAiCard
-  content: CardContent
-  writingMethod: CardWritingMethod
-}): number =>
-  getCardUnitPrice({
-    sizeId: card.sizeId,
-    messageLength: content.message.trim().length,
-    writingMethod
-  })
-
-/**
- * What the card would cost now versus what was already paid. Positive means the customer
- * owes the difference; we only show it, the order total is settled separately.
- */
-export const getOrderCardPriceDelta = ({
-  card,
-  content,
-  writingMethod
-}: {
-  card: OrderAiCard
-  content: CardContent
-  writingMethod: CardWritingMethod
-}): number => (getOrderCardUnitPrice({ card, content, writingMethod }) - card.paidUnitPrice) * card.quantity
+export const findOrderCardVersion = (versions: OrderCardVersion[], versionId: string): OrderCardVersion | null =>
+  versions.find((version) => version.id === versionId) ?? null
 
 export interface OrderItemCards {
   orderDetailsId: string
@@ -73,102 +23,85 @@ export const groupOrderAiCards = (items: OrderItem[], cards: OrderAiCard[]): Ord
         orderDetailsId: item.orderDetailsId,
         productName: item.name,
         quantity: item.number,
-        carded: itemCards.reduce((total, card) => total + card.quantity, 0),
+        carded: itemCards.length,
         cards: itemCards
       }
     })
     .filter((group) => group.cards.length > 0)
 
-/** Seeds per item, so an item bought more than once shows more than one card. */
-const MOCK_ITEM_SEEDS = [
-  [
-    {
-      templateId: 'floral',
-      sizeId: 'm',
-      writingMethod: 'handwritten',
-      quantity: 1,
-      versions: [
-        {
-          message: 'Chúc mừng sinh nhật! Mong mọi điều dịu dàng nhất sẽ đến với cậu.',
-          createdAt: '2026-09-04T02:15:00.000Z'
-        },
-        {
-          message: 'Chúc mừng sinh nhật cậu nhé! Một tuổi mới thật nhiều nắng và thật nhiều hoa.',
-          createdAt: '2026-09-04T02:24:00.000Z'
-        }
-      ]
-    },
-    {
-      templateId: 'blush',
-      sizeId: 's',
-      writingMethod: 'typed',
-      quantity: 1,
-      versions: [
-        {
-          message: 'Gửi cậu một mùa hoa nữa, và thật nhiều điều dịu dàng phía trước.',
-          createdAt: '2026-09-04T02:31:00.000Z'
-        }
-      ]
-    }
-  ],
-  [
-    {
-      templateId: 'golden',
-      sizeId: 's',
-      writingMethod: 'typed',
-      quantity: 2,
-      versions: [
-        {
-          message: 'Cảm ơn chị vì đã luôn ở đây. Chúc chị một ngày thật nhiều nắng.',
-          createdAt: '2026-09-04T03:05:00.000Z'
-        }
-      ]
-    }
-  ]
-] as const
+/**
+ * A snapshot card is what the customer paid to have printed. The API keeps the whole bouquet
+ * snapshot in the same object; a card is there only when `snapShotCard` is, and it is worth
+ * showing only once it carries either words or a design.
+ */
+const hasOrderedCard = (card: OrderSnapshotCard | null | undefined): card is OrderSnapshotCard =>
+  !!card && !!card.virtualId && (!!card.messageContent?.trim() || !!card.cardTemplate?.templateId || !!card.cardId)
+
+/** The printed shape of the card; the API sends centimetres, only their ratio matters here. */
+const getSizeRatio = (card: OrderSnapshotCard): number | null => {
+  const width = card.cardSize?.width ?? 0
+  const height = card.cardSize?.height ?? 0
+
+  return width > 0 && height > 0 ? width / height : null
+}
+
+/** `formType` is the only thing that says how the words go onto the card. */
+const toWritingMethod = (formType: OrderSnapshotCard['formType']): CardWritingMethod =>
+  formType === OrderSnapshotFormType.Calligraphy ? 'handwritten' : 'typed'
 
 /**
- * TODO(backend): replace with the order's card list. The demo cards the first lines of the
- * order so the section always has something to show, never printing more cards than the
- * item has units.
+ * How far the words may be rewritten. The size sets the budget that fits on the card, but the
+ * price tier frozen in `cardConfig` is the tighter one: leaving it would change what the card
+ * costs, and the order has already been paid.
  */
-export const buildMockOrderAiCards = (items: OrderItem[]): OrderAiCard[] =>
-  items.slice(0, MOCK_ITEM_SEEDS.length).flatMap((item, itemIndex) => {
-    let unitsLeft = Math.max(0, item.number)
+const getWordBudget = (card: OrderSnapshotCard): { minWords: number; maxWords: number } => {
+  const caps = [card.cardSize?.maxWords, card.cardConfig?.maxWords].filter(
+    (value): value is number => typeof value === 'number' && value > 0
+  )
 
-    return MOCK_ITEM_SEEDS[itemIndex].flatMap((seed, cardIndex): OrderAiCard[] => {
-      const quantity = Math.min(seed.quantity, unitsLeft)
-      if (quantity < 1) return []
-      unitsLeft -= quantity
+  return {
+    minWords: Math.max(0, card.cardConfig?.minWords ?? 0),
+    maxWords: caps.length > 0 ? Math.min(...caps) : 0
+  }
+}
 
-      const versions: OrderCardVersion[] = seed.versions.map((version, versionIndex) => ({
-        id: `${item.orderDetailsId}-card-${cardIndex + 1}-version-${versionIndex + 1}`,
-        label: versionIndex + 1,
-        imageUrl: getOrderCardArtwork(itemIndex + cardIndex + versionIndex),
-        content: { message: version.message },
-        createdAt: version.createdAt
-      }))
+/**
+ * The cards printed for one line, read off the snapshot the order froze at checkout - one
+ * metadata entry per unit bought, so a line bought twice carries two cards. They are kept
+ * apart even when they look identical: each has its own `virtualId`, which is what the card
+ * endpoints address, so two units can be regenerated into two different artworks.
+ */
+const toOrderItemAiCards = (item: OrderItem): OrderAiCard[] =>
+  (item.snapshot?.productMetadata ?? []).flatMap((unit, index): OrderAiCard[] => {
+    const snapshot = unit.snapShotCard
+    if (!hasOrderedCard(snapshot)) return []
 
-      const selected = versions[versions.length - 1]
+    const { minWords, maxWords } = getWordBudget(snapshot)
 
-      return [
-        {
-          id: `${item.orderDetailsId}-card-${cardIndex + 1}`,
-          orderDetailsId: item.orderDetailsId,
-          productName: item.name,
-          productImageUrl: item.coverImage,
-          templateId: seed.templateId,
-          sizeId: seed.sizeId,
-          quantity,
-          paidUnitPrice: getCardUnitPrice({
-            sizeId: seed.sizeId,
-            messageLength: selected.content.message.length,
-            writingMethod: seed.writingMethod
-          }),
-          writingMethod: seed.writingMethod,
-          selectedVersionId: selected.id,
-          versions
-        }
-      ]
-    })
+    return [
+      {
+        id: snapshot.virtualId as string,
+        orderDetailsId: item.orderDetailsId,
+        sourceCardId: snapshot.cardId,
+        type: snapshot.cardType === OrderSnapshotCardType.Handmade ? 'handmade' : 'ai',
+        productName: unit.name ?? item.name,
+        productImageUrl: item.coverImage,
+        templateId: snapshot.cardTemplate?.templateId ?? '',
+        templateName: snapshot.cardTemplate?.templateName ?? '',
+        templateImageUrl: snapshot.cardTemplate?.templateImageUrl ?? '',
+        sizeName: snapshot.cardSize?.name ?? '',
+        sizeRatio: getSizeRatio(snapshot),
+        unit: index + 1,
+        content: { message: snapshot.messageContent?.trim() ?? '' },
+        minWords,
+        maxWords,
+        // What was actually charged, not what the current config would charge.
+        paidUnitPrice: snapshot.totalPrice ?? (snapshot.basePrice ?? 0) + (snapshot.extraPrice ?? 0),
+        writingMethod: toWritingMethod(snapshot.formType),
+        selectedVersionId: snapshot.finalGeneratedCardId ?? ''
+      }
+    ]
   })
+
+/** Every card of a placed order, in line order. */
+export const buildOrderAiCards = (items: OrderItem[]): OrderAiCard[] => items.flatMap(toOrderItemAiCards)

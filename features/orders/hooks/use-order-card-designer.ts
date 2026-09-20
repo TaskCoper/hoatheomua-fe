@@ -1,134 +1,169 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { EMPTY_CARD_CONTENT, isSameCardContent, trimCardContent } from '../cards/card-data'
-import { findOrderCardVersion, getOrderCardArtwork, getSelectedOrderCardVersion } from '../cards/order-card-data'
-import type { CardContent, CardWritingMethod, OrderAiCard, OrderCardVersion } from '../cards/types'
+import type { CardTemplate } from '@/types/card-template.type'
+import { useEffect, useState } from 'react'
+import { countWords } from '../cards/card-config'
+import { trimCardContent } from '../cards/card-data'
+import { findOrderCardVersion } from '../cards/order-card-data'
+import type { CardContent, CheckoutCardTemplate, OrderAiCard } from '../cards/types'
+import { useOrderCardVersions } from './use-order-card-versions'
+import { useRegenerateAiCard } from './use-regenerate-ai-card'
+import { useSetFinalOrderCard } from './use-set-final-order-card'
 
 export const ORDER_CARD_STAGE_KEYS = ['reading', 'sketching', 'painting', 'finishing'] as const
 
-const STAGE_INTERVAL_MS = 650
-// TODO(backend): the real generation is asynchronous - swap the timer for the job status.
-const GENERATION_MS = 2800
+const STAGE_INTERVAL_MS = 2000
 
 export type OrderCardGenerationStatus = 'idle' | 'generating'
 
 interface UseOrderCardDesignerArgs {
   card: OrderAiCard
-  /** Start a run as soon as the session opens, for the "generate again" entry point. */
-  autoGenerate?: boolean
-  onAddVersion: (cardId: string, version: OrderCardVersion) => void
+  /** Only the open studio asks for the card's generations. */
+  enabled: boolean
 }
 
 /**
- * The editing session for one order card: the words being written, the version being looked
- * at, and the fake generation run. Design and size are not here - they are frozen on the card.
+ * The editing session for one order card. Everything else about the card was paid for and is
+ * frozen - the design and the words are all that can still change, and the words have to stay
+ * inside the budget the card was priced on.
  */
-export const useOrderCardDesigner = ({ card, autoGenerate, onAddVersion }: UseOrderCardDesignerArgs) => {
-  const selectedVersion = getSelectedOrderCardVersion(card)
-
-  const [activeVersionId, setActiveVersionId] = useState(selectedVersion?.id ?? '')
-  const [content, setContent] = useState<CardContent>(selectedVersion?.content ?? EMPTY_CARD_CONTENT)
-  const [writingMethod, setWritingMethod] = useState<CardWritingMethod>(card.writingMethod)
-  // The session is remounted on every open, so this only ever fires for the run it was opened for.
-  const [status, setStatus] = useState<OrderCardGenerationStatus>(
-    autoGenerate && (selectedVersion?.content.message.length ?? 0) > 0 ? 'generating' : 'idle'
-  )
-  const [stage, setStage] = useState(0)
-  const [showMessageError, setShowMessageError] = useState(false)
-
-  // The generation timer reads both at the moment it lands, not when it started.
-  const contentRef = useRef(content)
-  const cardRef = useRef(card)
-  useEffect(() => {
-    contentRef.current = content
-    cardRef.current = card
+export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs) => {
+  const { versions, isLoadingVersions, isVersionsError } = useOrderCardVersions({
+    orderDetailsId: card.orderDetailsId,
+    virtualId: card.id,
+    enabled
   })
 
-  const activeVersion = findOrderCardVersion(card, activeVersionId) ?? selectedVersion
+  const [template, setTemplate] = useState<CheckoutCardTemplate>({
+    templateId: card.templateId,
+    templateName: card.templateName,
+    templateImageUrl: card.templateImageUrl
+  })
+  const [content, setContent] = useState<CardContent>(card.content)
+  const [activeVersionId, setActiveVersionId] = useState(card.selectedVersionId)
+  const [selectedVersionId, setSelectedVersionId] = useState(card.selectedVersionId)
+  const [showMessageError, setShowMessageError] = useState(false)
+  const [stage, setStage] = useState(0)
+
+  const { regenerateAiCard, isRegeneratingAiCard } = useRegenerateAiCard()
+  const { setFinalOrderCard, isSettingFinalOrderCard } = useSetFinalOrderCard()
+
+  // The studio opens on the newest artwork; the one that goes to print is the one ticked in
+  // the strip, which is not necessarily the same card.
+  const activeVersion = findOrderCardVersion(versions, activeVersionId) ?? versions.at(-1) ?? null
+
   const draft = trimCardContent(content)
+  const wordCount = countWords(draft.message)
+  const isBelowBudget = wordCount < card.minWords
+  const isOverBudget = card.maxWords > 0 && wordCount > card.maxWords
 
-  // New words only reach the card through a generation - the artwork is painted from them.
-  const hasUnpaintedWords = !activeVersion || !isSameCardContent(draft, activeVersion.content)
-  const isSelectedVersion = !!activeVersion && activeVersion.id === card.selectedVersionId
-  const canGenerate = status === 'idle' && draft.message.length > 0
-  const canApply =
-    status === 'idle' &&
-    !!activeVersion &&
-    !hasUnpaintedWords &&
-    (!isSelectedVersion || writingMethod !== card.writingMethod)
+  const status: OrderCardGenerationStatus = isRegeneratingAiCard ? 'generating' : 'idle'
+  const hasChanges = draft.message !== card.content.message || template.templateId !== card.templateId
+  const canGenerate = !isRegeneratingAiCard && !!template.templateId && wordCount > 0 && !isBelowBudget && !isOverBudget
 
-  const editContent = (next: CardContent) => {
-    setContent(next)
-    if (showMessageError) setShowMessageError(false)
-  }
+  const isSelectedVersion = !!activeVersion && activeVersion.id === selectedVersionId
 
-  const selectVersion = (versionId: string) => {
-    const version = findOrderCardVersion(card, versionId)
-    if (!version || status === 'generating') return
-
-    setActiveVersionId(version.id)
-    setContent(version.content)
-    setShowMessageError(false)
-  }
-
-  const generate = () => {
-    if (status === 'generating') return
-    if (draft.message.length === 0) {
-      setShowMessageError(true)
-      return
-    }
-
-    setStage(0)
-    setStatus('generating')
-  }
-
+  // The run is server-side and gives no progress of its own, so the stages are paced by the
+  // clock - they say what is happening, not how far along it is.
   useEffect(() => {
-    if (status !== 'generating') return
+    if (!isRegeneratingAiCard) return
 
     const interval = window.setInterval(
       () => setStage((current) => Math.min(current + 1, ORDER_CARD_STAGE_KEYS.length - 1)),
       STAGE_INTERVAL_MS
     )
 
-    const timeout = window.setTimeout(() => {
-      const source = cardRef.current
-      const label = source.versions.length + 1
-      const version: OrderCardVersion = {
-        id: `${source.id}-version-${label}`,
-        label,
-        imageUrl: getOrderCardArtwork(label),
-        content: trimCardContent(contentRef.current),
-        createdAt: new Date().toISOString()
+    return () => window.clearInterval(interval)
+  }, [isRegeneratingAiCard])
+
+  const editContent = (next: CardContent) => {
+    setContent(next)
+    if (showMessageError) setShowMessageError(false)
+  }
+
+  const editTemplate = (next: CardTemplate) => {
+    setTemplate({ templateId: next.id, templateName: next.name, templateImageUrl: next.imageUrl })
+  }
+
+  const selectVersion = (versionId: string) => {
+    if (isRegeneratingAiCard) return
+    if (!findOrderCardVersion(versions, versionId)) return
+
+    setActiveVersionId(versionId)
+  }
+
+  /** Writes the choice to `snapShotCard.finalGeneratedCardId`; the tick follows the server. */
+  const applyVersion = (
+    versionId: string,
+    { onSuccess, onError }: { onSuccess?: () => void; onError?: () => void } = {}
+  ) => {
+    if (isSettingFinalOrderCard) return
+
+    setFinalOrderCard(
+      { orderDetailId: card.orderDetailsId, virtualId: card.id, generatedCardId: versionId },
+      {
+        // The order refetch settles it too, but the tick should not wait on a round trip.
+        onSuccess: () => {
+          setSelectedVersionId(versionId)
+          onSuccess?.()
+        },
+        onError: () => onError?.()
       }
+    )
+  }
 
-      onAddVersion(source.id, version)
-      setActiveVersionId(version.id)
-      setStatus('idle')
-    }, GENERATION_MS)
-
-    return () => {
-      window.clearInterval(interval)
-      window.clearTimeout(timeout)
+  const generate = ({ onSuccess, onError }: { onSuccess?: () => void; onError?: () => void } = {}) => {
+    if (isRegeneratingAiCard) return
+    if (wordCount === 0 || isBelowBudget || isOverBudget) {
+      setShowMessageError(true)
+      return
     }
-  }, [status, onAddVersion])
+
+    setStage(0)
+    regenerateAiCard(
+      {
+        orderDetailId: card.orderDetailsId,
+        virtualId: card.id,
+        sourceCardId: card.sourceCardId,
+        cardTemplateId: template.templateId,
+        messageContent: draft.message
+      },
+      {
+        onSuccess: () => {
+          setContent(draft)
+          // The run it just asked for is the one worth looking at, whichever was on screen.
+          setActiveVersionId('')
+          onSuccess?.()
+        },
+        onError: () => onError?.()
+      }
+    )
+  }
 
   return {
+    versions,
+    isLoadingVersions,
+    isVersionsError,
     activeVersion,
-    activeVersionId,
+    activeVersionId: activeVersion?.id ?? '',
+    selectedVersionId,
+    template,
     content,
     draft,
-    writingMethod,
+    wordCount,
+    isBelowBudget,
+    isOverBudget,
     status,
     stage,
+    isApplying: isSettingFinalOrderCard,
     showMessageError,
-    hasUnpaintedWords,
-    isSelectedVersion,
+    hasChanges,
     canGenerate,
-    canApply,
+    isSelectedVersion,
     editContent,
-    setWritingMethod,
+    editTemplate,
     selectVersion,
+    applyVersion,
     generate
   }
 }

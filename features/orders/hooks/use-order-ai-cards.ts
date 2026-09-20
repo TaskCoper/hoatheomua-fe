@@ -1,40 +1,15 @@
 'use client'
 
-import { useCallback, useState } from 'react'
-import { buildMockOrderAiCards } from '../cards/order-card-data'
-import type { CardWritingMethod, OrderAiCard, OrderCardVersion } from '../cards/types'
+import { useMemo } from 'react'
+import { buildOrderAiCards } from '../cards/order-card-data'
 import type { OrderItem } from '../types'
 
-interface ApplyVersionArgs {
-  versionId: string
-  writingMethod: CardWritingMethod
-}
-
 /**
- * Holds the AI cards of a placed order and the versions generated for them.
- * TODO(backend): seed from the order's card list and persist the generations server-side;
- * everything here lives in component state for the showcase.
+ * The cards of a placed order, read off each line's checkout snapshot. The artworks generated
+ * for a card are not here - they are fetched per card, once its studio is opened.
  */
 export const useOrderAiCards = (items: OrderItem[]) => {
-  const [cards, setCards] = useState<OrderAiCard[]>(() => buildMockOrderAiCards(items))
+  const cards = useMemo(() => buildOrderAiCards(items), [items])
 
-  const updateCard = useCallback((cardId: string, updater: (card: OrderAiCard) => OrderAiCard) => {
-    setCards((current) => current.map((card) => (card.id === cardId ? updater(card) : card)))
-  }, [])
-
-  const addVersion = useCallback(
-    (cardId: string, version: OrderCardVersion) => {
-      updateCard(cardId, (card) => ({ ...card, versions: [...card.versions, version] }))
-    },
-    [updateCard]
-  )
-
-  const applyVersion = useCallback(
-    (cardId: string, { versionId, writingMethod }: ApplyVersionArgs) => {
-      updateCard(cardId, (card) => ({ ...card, selectedVersionId: versionId, writingMethod }))
-    },
-    [updateCard]
-  )
-
-  return { cards, addVersion, applyVersion }
+  return { cards }
 }

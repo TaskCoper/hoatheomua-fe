@@ -191,7 +191,13 @@
         "draggable": "Nhấn phím cách để nhấc mục, sau đó di chuyển {direction}. Nhấn phím cách lần nữa để thả hoặc escape để hủy."
       }
     },
-    "loading": "Đang tải..."
+    "loading": "Đang tải...",
+    "confirm": {
+      "title": "Bạn chắc chứ?",
+      "description": "Vui lòng xác nhận để tiếp tục.",
+      "confirm": "Xác nhận",
+      "cancel": "Huỷ"
+    }
   },
   "richTextEditor": {
     "placeholder": "Nhập nội dung...",
@@ -595,13 +601,18 @@
       "outOfStock": "Sản phẩm này đã hết hàng.",
       "materials": "Tạm thời không thể chuẩn bị",
       "materialsAction": "Tạm thời không thể chuẩn bị số lượng này, vui lòng giảm số lượng.",
-      "materialsNote": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng giảm số lượng, bỏ chọn hoặc xoá để tiếp tục."
+      "materialsNote": "Chúng tôi đang thiếu nguyên liệu cho các sản phẩm được đánh dấu. Vui lòng giảm số lượng, bỏ chọn hoặc xoá để tiếp tục.",
+      "missingDesign": "Thiết kế này không còn khả dụng."
     },
     "overStock": "Chỉ còn {stock} trong kho. Vui lòng giảm số lượng.",
     "overStockAction": "Chỉ còn {stock} trong kho, nhấn để giảm số lượng.",
     "inStock": "Còn {stock} trong kho",
     "lineSubtotal": "Tạm tính",
     "unitLabel": "Phân loại: {unit}",
+    "aiLine": {
+      "badge": "Thiết kế AI",
+      "materials": "Hoa: {materials}"
+    },
     "summary": {
       "title": "Tóm tắt đơn hàng",
       "selected": "Đã chọn {count} / {total}",
@@ -828,17 +839,20 @@
         "editing": "Đang chỉnh sửa",
         "template": "Mẫu thiệp",
         "templateName": "Mẫu {name}",
-        "size": "Kích thước",
-        "sizes": {
-          "s": "Nhỏ (S)",
-          "m": "Vừa (M)",
-          "l": "Lớn (L)"
+        "templateEmpty": "Chưa có mẫu thiệp nào cho loại này.",
+        "templateOrientation": {
+          "vertical": "Thiệp dọc",
+          "horizontal": "Thiệp ngang"
         },
+        "templatePreview": "Xem lớn mẫu {name}",
+        "templateLoadMore": "Xem thêm mẫu thiệp",
+        "size": "Kích thước",
         "message": "Lời nhắn",
         "messagePlaceholder": "Viết lời nhắn gửi kèm bó hoa…",
-        "messageCount": "{count}/{max} ký tự",
-        "messageSurcharge": "Phụ thu lời nhắn dài +{price}",
+        "messageWordCount": "{count}/{max} từ",
+        "messageMaxWords": "Lời nhắn tối đa {max} từ.",
         "messageRequired": "Vui lòng nhập lời nhắn cho thiệp.",
+        "handwritingSurcharge": "Phụ thu viết tay +{price}",
         "quantity": "Số lượng",
         "quantityValue": "Số lượng: {count}",
         "decrease": "Giảm số lượng thiệp",
@@ -866,6 +880,14 @@
           "typed": "Đánh máy",
           "handwritten": "Viết tay"
         },
+        "attachment": "Ảnh đính kèm",
+        "attachmentHint": "Ảnh sẽ được tải lên khi bạn đặt hàng và gửi kèm thiệp cho người nhận.",
+        "attachmentAdd": "Chọn ảnh từ máy (tối đa {max}MB)",
+        "attachmentReplace": "Đổi ảnh",
+        "attachmentRemove": "Xoá ảnh đính kèm",
+        "attachmentProgress": "Đã tải {progress}%",
+        "attachmentInvalidType": "Chỉ hỗ trợ tệp ảnh.",
+        "attachmentTooLarge": "Ảnh đính kèm tối đa {max}MB.",
         "surcharge": "+{price}",
         "previewAlt": "Xem trước thiệp",
         "historySelect": "Chọn thiệp muốn dùng lại",
@@ -873,6 +895,10 @@
         "historyEmptyTitle": "Bạn chưa có thiệp Custom AI nào.",
         "historyEmptyBody": "Tạo thiệp đầu tiên để có thể sử dụng lại ở những đơn hàng sau.",
         "historyEmptyAction": "Tạo thiệp Custom AI",
+        "historyPickProduct": "Chọn sản phẩm trước - chúng tôi sẽ hiện những thiệp bạn đã tạo cho sản phẩm đó.",
+        "historyProductEmptyTitle": "Chưa có thiệp nào để dùng lại cho sản phẩm này",
+        "historyProductEmptyBody": "Bạn chưa tạo thiệp nào cho sản phẩm này. Tạo một tấm và lần sau sẽ thấy ở đây.",
+        "historyError": "Không tải được danh sách thiệp của sản phẩm này. Vui lòng thử lại sau giây lát.",
         "generatedAt": "Tạo ngày {date}",
         "reusedTitle": "Thiệp dùng lại",
         "aiPendingNote": "Bạn chọn cấu hình và viết lời nhắn ở bước này. Hình thiệp sẽ được AI tạo ra từ đó sau khi đơn hàng được xác nhận.",
@@ -899,10 +925,12 @@
       "dialogDescription": "Viết lại lời nhắn và tạo hình thiệp mới. Phiên bản bạn giữ lại là phiên bản chúng tôi in.",
       "locked": {
         "heading": "Đã chốt cùng đơn hàng",
-        "note": "Mẫu thiệp và kích thước đã được xác nhận khi thanh toán và không thể thay đổi.",
+        "note": "Bạn vẫn có thể đổi mẫu thiệp và lời nhắn.",
         "template": "Mẫu thiệp",
         "size": "Kích thước",
-        "badge": "Đã khoá"
+        "badge": "Đã khoá",
+        "words": "Tối đa {max} từ",
+        "wordsRange": "{min}-{max} từ"
       },
       "versions": {
         "heading": "Phiên bản",
@@ -911,7 +939,8 @@
         "select": "Xem phiên bản {index}",
         "printed": "Đang dùng cho đơn",
         "createdAt": "Tạo lúc {date}",
-        "empty": "Hình thiệp đầu tiên của bạn sẽ xuất hiện ở đây."
+        "empty": "Hình thiệp đầu tiên của bạn sẽ xuất hiện ở đây.",
+        "error": "Không tải được các mẫu thiệp đã tạo cho thiệp này."
       },
       "generation": {
         "badge": "Đang tạo",
@@ -933,7 +962,10 @@
         "close": "Đóng"
       },
       "toast": {
-        "applied": "Phiên bản {index} sẽ được in cùng đơn hàng của bạn."
+        "applied": "Phiên bản {index} sẽ được in cùng đơn hàng của bạn.",
+        "generated": "Thiệp mới đang được tạo - thiệp sẽ hiện ở đây khi xong.",
+        "generateError": "Không tạo được thiệp. Vui lòng thử lại.",
+        "applyError": "Không lưu được lựa chọn của bạn. Vui lòng thử lại."
       },
       "price": {
         "paid": "Đã thanh toán",
@@ -941,7 +973,7 @@
         "extra": "+{price} cần xác nhận",
         "refund": "-{price} cần xác nhận",
         "same": "Không đổi",
-        "note": "Lời nhắn dài hơn hoặc chữ viết tay sẽ làm thay đổi giá thiệp. Chúng tôi sẽ xác nhận phần chênh lệch với bạn trước khi in - tổng đơn hàng vẫn giữ nguyên."
+        "note": "Thiệp này đã được thanh toán. Viết lại trong giới hạn số từ sẽ giữ nguyên giá đã trả."
       },
       "previewAlt": "Hình thiệp, phiên bản {index}",
       "history": {
@@ -951,11 +983,24 @@
         "filterAll": "Tất cả",
         "filterLabel": "Lọc thiệp theo kiểu chữ",
         "emptyFilter": "Chưa có tấm thiệp nào viết theo kiểu này.",
+        "error": "Không tải được thiệp của bạn. Vui lòng thử lại.",
+        "loadMore": "Xem thêm",
+        "size": "{width}×{height} cm",
+        "attachedImage": "Có ảnh đính kèm",
+        "type": {
+          "ai": "Thiệp Custom AI",
+          "handmade": "Thiệp viết tay"
+        },
         "empty": {
           "title": "Chưa có tấm thiệp nào",
           "description": "Thêm thiệp AI khi thanh toán, mọi tấm bạn tạo ra sẽ được lưu ở đây để dùng lại.",
           "cta": "Đến giỏ hàng"
         }
+      },
+      "messageMinWords": "Lời nhắn cần ít nhất {min} từ.",
+      "confirmApply": {
+        "title": "In mẫu thiệp này?",
+        "description": "Mẫu {index} sẽ là thiệp được in kèm hoa. Bạn vẫn có thể chọn mẫu khác cho đến khi đơn hàng được chuẩn bị."
       }
     },
     "list": {
@@ -1689,6 +1734,7 @@
     "steps": {
       "ingredients": "Nguyên liệu",
       "compose": "Bó hoa",
+      "style": "Kiểu dáng",
       "mockup": "Bối cảnh",
       "preview": "Xem lại",
       "result": "Kết quả"
@@ -1701,7 +1747,9 @@
         "finishing": "Đang hoàn thiện chi tiết"
       },
       "generating": "Đang tạo",
-      "creating": "Đang tạo “{name}”…"
+      "creating": "Đang tạo “{name}”…",
+      "error": "Chúng tôi chưa tạo được hình ảnh của bạn. Vui lòng thử lại.",
+      "noMaterials": "Thiết kế này chưa có danh sách hoa nên chưa thể tạo ảnh."
     },
     "preview": {
       "ariaLabel": "Xem trước tác phẩm",
@@ -1750,7 +1798,9 @@
       "detailsNote": "Mỗi cành hoa được cắt và dưỡng vào sáng ngày giao, nên đôi chút khác biệt tự nhiên về sắc độ và kích thước là điều làm nên nét thủ công.",
       "ingredientMeaningLabel": "Ý nghĩa",
       "ingredientExpandAriaLabel": "Xem ý nghĩa của {name}",
-      "ingredientCollapseAriaLabel": "Ẩn ý nghĩa của {name}"
+      "ingredientCollapseAriaLabel": "Ẩn ý nghĩa của {name}",
+      "insideNote": "{count} nguyên liệu tạo nên thiết kế này.",
+      "noMaterials": "Danh sách hoa của thiết kế này chưa được cập nhật. Nhân viên sẽ xác nhận cùng bạn trước khi thực hiện."
     },
     "ingredients": {
       "rose": {
@@ -1833,7 +1883,25 @@
       "generateAnotherNote": "Quay lại bó hoa của bạn. Mọi phiên bản bạn tạo đều được giữ trong bản xem trước.",
       "pendingTitle": "Sẵn sàng khi bạn muốn.",
       "pendingBody": "Chúng tôi sẽ kết hợp thiết kế hoa của bạn với {mockup}. Quá trình tạo mẫu chỉ mất một chút thời gian.",
-      "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng."
+      "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng.",
+      "core": "Hoa chính",
+      "createdAt": "Đã tạo"
+    },
+    "session": {
+      "loading": "Đang mở phiên của bạn...",
+      "backToStudio": "Quay lại xưởng thiết kế",
+      "emptyTitle": "Phiên này chưa có hình ảnh nào.",
+      "emptyBody": "Chưa có phiên bản nào được tạo trong phiên này, hoặc ảnh vẫn đang được tạo. Hãy quay lại xưởng thiết kế và tạo một phiên bản."
+    },
+    "regenerate": {
+      "title": "Tạo lại tác phẩm này",
+      "note": "Khi tạo lại, bó hoa được giữ nguyên. Bạn chỉ có thể đổi kiểu dáng và bối cảnh.",
+      "cta": "Tạo lại tác phẩm này",
+      "ctaNote": "Chọn kiểu dáng hoặc bối cảnh mới sau đó lựa chọn phiên bản bạn ưng ý nhất.",
+      "lockedTitle": "Cố định trong phiên này",
+      "lockedNote": "Những lựa chọn này được đặt khi thiết kế được tạo lần đầu và không thể thay đổi khi tạo lại.",
+      "submit": "Tạo lại",
+      "submitting": "Đang tạo lại…"
     },
     "versions": {
       "ariaLabel": "Các phiên bản bạn đã tạo",
@@ -1873,11 +1941,38 @@
       "openInStudio": "Mở “{name}” trong studio",
       "previewAlt": "“{name}” trong bối cảnh {scene}",
       "emptyFilter": "Chưa có thiết kế nào trong bối cảnh này.",
+      "error": "Không tải được thiết kế của bạn. Vui lòng thử lại.",
+      "loadMore": "Xem thêm",
+      "finished": "Đã hoàn tất",
+      "draft": "Đang thực hiện",
+      "versions": "{count} phiên bản",
+      "openDetail": "Xem “{name}”",
+      "detail": {
+        "untitled": "Thiết kế của bạn",
+        "loading": "Đang tải phiên thiết kế…",
+        "error": "Không tải được phiên thiết kế này.",
+        "empty": "Phiên này chưa có phiên bản nào.",
+        "counter": "{index} / {total}",
+        "versionLabel": "Phiên bản {index}",
+        "versionAlt": "Phiên bản {index} của “{name}”",
+        "openLightbox": "Xem phiên bản này ở kích thước đầy đủ",
+        "scene": "Bối cảnh",
+        "style": "Kiểu dáng",
+        "ribbon": "Ruy băng",
+        "wrap": "Giấy gói",
+        "createdAt": "Tạo lúc",
+        "flowers": "Các loại hoa"
+      },
       "empty": {
         "title": "Chưa có thiết kế nào",
         "description": "Hãy thiết kế một bó hoa trong studio, mọi phiên bản bạn tạo ra sẽ được lưu ở đây.",
         "cta": "Bắt đầu thiết kế"
       }
+    },
+    "options": {
+      "empty": "Chưa có lựa chọn nào",
+      "loadMore": "Xem thêm",
+      "loadingMore": "Đang tải…"
     },
     "compose": {
       "title": "Tạo bó hoa của bạn",
@@ -1889,11 +1984,17 @@
         "decrease": "Bớt một {name}",
         "extraPrice": "Mỗi lần thêm cộng {price}",
         "added": "Đã thêm {count} · {price}",
-        "extra": "Đã thêm {count}"
+        "extra": "Đã thêm {count}",
+        "addedPlain": "Đã thêm {count}"
       },
       "bouquet": {
         "label": "Hoa của bạn",
-        "note": "Thêm bất kỳ loại hoa nào. Số lượng chỉ tăng so với thiết kế gốc."
+        "note": "Thêm bất kỳ loại hoa nào. Số lượng chỉ tăng so với thiết kế gốc.",
+        "emptyNote": "Thiết kế này chưa có danh sách nguyên liệu nên không có gì để điều chỉnh ở đây. Bạn vẫn chọn được dáng bó và màu hoàn thiện."
+      },
+      "variant": {
+        "label": "Phân loại",
+        "note": "Mỗi phân loại là một bó riêng, với hoa và mức giá của chính nó."
       },
       "style": {
         "label": "Kiểu bó",
@@ -1918,38 +2019,11 @@
       },
       "closingNote": "Kiểu bó chỉ mang tính định hướng. Bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm luôn mang nét tự nhiên riêng."
     },
-    "styles": {
-      "round": {
-        "name": "Bó tròn",
-        "description": "Đều, vòm cao và cổ điển từ mọi góc nhìn."
-      },
-      "triangle": {
-        "name": "Bó tam giác",
-        "description": "Đỉnh cao ở giữa, thoải dần về hai bên."
-      },
-      "rectangle": {
-        "name": "Bó chữ nhật",
-        "description": "Mặt bó phẳng và rộng, hợp để trao tay."
-      },
-      "cascade": {
-        "name": "Bó thác đổ",
-        "description": "Cành hoa buông về phía trước như dòng nước."
-      }
-    },
-    "ribbons": {
-      "dustyRose": "Hồng phấn trầm",
-      "ivory": "Trắng ngà",
-      "sage": "Xanh rêu nhạt",
-      "burgundy": "Đỏ rượu",
-      "midnight": "Xanh đêm"
-    },
-    "wraps": {
-      "kraft": "Giấy kraft",
-      "cloud": "Trắng mây",
-      "blush": "Hồng phấn",
-      "forest": "Xanh rừng",
-      "charcoal": "Xám than"
-    }
+    "imagePending": "Ảnh sẽ được cập nhật",
+    "loading": "Đang mở xưởng thiết kế...",
+    "unavailable": "Không mở được thiết kế này.",
+    "unavailableNote": "Sản phẩm có thể đã được gỡ hoặc kết nối bị gián đoạn. Hãy chọn một thiết kế trong bộ sưu tập và thử lại.",
+    "backToProducts": "Về bộ sưu tập"
   },
   "b2b": {
     "hero": {

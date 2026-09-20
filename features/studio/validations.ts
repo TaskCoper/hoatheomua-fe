@@ -1,7 +1,20 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
+import type { I18nKey } from '@/lib/i18n/types'
 import z from 'zod'
 
 export const STUDIO_NAME_MAX_LENGTH = 50
+
+const EMPTY_GUID = '00000000-0000-0000-0000-000000000000'
+
+const createStudioIdSchema = (t: TranslationFunction, field: I18nKey) => {
+  const error = t('common.validation.required', { field: t(field) })
+
+  return z
+    .string()
+    .trim()
+    .min(1, { error })
+    .refine((value) => value.toLowerCase() !== EMPTY_GUID, { error })
+}
 
 export const createStudioSchema = (t: TranslationFunction) =>
   z
@@ -16,32 +29,30 @@ export const createStudioSchema = (t: TranslationFunction) =>
             max: STUDIO_NAME_MAX_LENGTH
           })
         }),
-      mockupId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.result.mockup') })
-      }),
-      productId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.result.flowers') })
-      }),
-      /** Keyed by ingredient id, and never below the quantity the design already includes. */
-      ingredientQuantities: z.record(
-        z.string(),
-        z
-          .number()
-          .int()
-          .min(1, {
+      mockupId: createStudioIdSchema(t, 'studio.result.mockup'),
+      productId: createStudioIdSchema(t, 'studio.result.flowers'),
+      ingredientQuantities: z
+        .record(
+          z.string(),
+          z.number().min(0, {
             error: t('common.validation.required', { field: t('studio.compose.quantity.label') })
           })
-      ),
-      styleId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.compose.style.label') })
-      }),
-      ribbonId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.compose.ribbon.label') })
-      }),
-      wrapId: z.string().min(1, {
-        error: t('common.validation.required', { field: t('studio.compose.wrap.label') })
-      })
+        )
+        .refine((value) => Object.keys(value).length > 0, { error: t('studio.generation.noMaterials') }),
+      styleId: createStudioIdSchema(t, 'studio.compose.style.label'),
+      ribbonId: createStudioIdSchema(t, 'studio.compose.ribbon.label'),
+      wrapId: createStudioIdSchema(t, 'studio.compose.wrap.label')
     })
     .strict()
 
 export type StudioFormValues = z.infer<ReturnType<typeof createStudioSchema>>
+
+export const createRegenerateStudioSchema = (t: TranslationFunction) =>
+  z
+    .object({
+      bundleId: createStudioIdSchema(t, 'studio.compose.style.label'),
+      mockupId: createStudioIdSchema(t, 'studio.result.mockup')
+    })
+    .strict()
+
+export type RegenerateStudioFormValues = z.infer<ReturnType<typeof createRegenerateStudioSchema>>

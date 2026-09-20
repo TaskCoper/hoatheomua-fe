@@ -2,7 +2,8 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
-import type { StudioMockup, StudioProduct } from '@/features/studio/types'
+import StudioImage from '@/features/studio/components/studio-image'
+import type { StudioProduct, StudioScene } from '@/features/studio/types'
 import { SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
@@ -14,7 +15,7 @@ const detailTermClass = 'text-xs font-semibold text-primary'
 const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
 
 interface StudioSceneDialogProps {
-  mockup: StudioMockup
+  mockup: StudioScene
   product: StudioProduct
   designName: string
   open: boolean
@@ -25,6 +26,10 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
   const t = useTranslations('studio.sceneDialog')
   const tStep = useTranslations('studio.scene')
 
+  // Story, mood and studies only exist on the seeded scenes - API scenes just carry a name and a brief.
+  const moods = mockup.moods ?? []
+  const examples = mockup.examples ?? []
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -32,13 +37,15 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
         className='grid w-[calc(100%-1.5rem)] max-w-7xl gap-0 rounded-3xl bg-background p-0 sm:max-w-420 lg:grid-cols-[minmax(0,1.5fr)_minmax(23rem,0.8fr)] lg:overflow-hidden'
       >
         <div className='relative m-3 min-h-[55dvh] overflow-hidden rounded-2xl bg-secondary/40 sm:m-4 lg:min-h-[min(48rem,calc(100dvh-5rem))]'>
-          <Image
+          <StudioImage
             src={mockup.imageUrl}
             alt={t('fullSceneAlt', { name: mockup.name })}
             fill
             priority
             sizes='(min-width: 1024px) 62vw, 100vw'
             className='object-cover'
+            pendingLabel={t('mockupPreview')}
+            pendingIconClassName='size-12'
           />
           <div
             aria-hidden='true'
@@ -56,7 +63,7 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
             </span>
           </div>
 
-          {mockup.imageUrl !== product.imageUrl ? (
+          {product.imageUrl && mockup.imageUrl !== product.imageUrl ? (
             <div className='absolute inset-x-[12%] bottom-[14%] top-[16%] drop-shadow-[0_1.5rem_2.5rem_rgb(28_43_43/35%)]'>
               <Image src={product.imageUrl} alt='' fill sizes='38rem' className='object-contain' />
             </div>
@@ -85,62 +92,72 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
             </DialogDescription>
           </div>
 
-          <section className='rounded-3xl bg-card/40 p-6'>
-            <dl className='flex flex-col divide-y divide-border'>
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tStep('sceneBrief')}</dt>
-                <dd className={detailValueClass}>{mockup.description}</dd>
-              </div>
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tStep('sceneStoryLabel')}</dt>
-                <dd className={detailValueClass}>{mockup.story}</dd>
-              </div>
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tStep('sceneMoodLabel')}</dt>
-                <dd className='flex flex-wrap gap-2'>
-                  {mockup.moods.map((mood) => (
-                    <Badge key={mood} variant='secondary'>
-                      {mood}
-                    </Badge>
-                  ))}
-                </dd>
-              </div>
-            </dl>
-          </section>
-
-          <section>
-            <h3 className='font-title text-lg font-bold text-primary'>{t('otherArrangements')}</h3>
-            <p className='text-xs text-muted-foreground'>{tStep('floristStudies')}</p>
-
-            <div className='mt-5 flex flex-col gap-6'>
-              {mockup.examples.map((example) => (
-                <article
-                  key={example.imageUrl}
-                  className='grid grid-cols-[3.5rem_1fr] gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'
-                >
-                  <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
-                    <Image
-                      src={example.imageUrl}
-                      alt={tStep('exampleByAlt', { title: example.title, creator: example.creator })}
-                      fill
-                      sizes='4rem'
-                      className='object-cover'
-                    />
+          {mockup.description || mockup.story || moods.length > 0 ? (
+            <section className='rounded-3xl bg-card/40 p-6'>
+              <dl className='flex flex-col divide-y divide-border'>
+                {mockup.description ? (
+                  <div className={detailRowClass}>
+                    <dt className={detailTermClass}>{tStep('sceneBrief')}</dt>
+                    <dd className={detailValueClass}>{mockup.description}</dd>
                   </div>
-
-                  <div className='min-w-0'>
-                    <p className={microLabelClass}>
-                      {tStep('exampleBy', { creator: example.creator })} · {mockup.name}
-                    </p>
-                    <h4 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>
-                      {example.title}
-                    </h4>
-                    <p className='text-xs leading-relaxed text-muted-foreground'>{mockup.description}</p>
+                ) : null}
+                {mockup.story ? (
+                  <div className={detailRowClass}>
+                    <dt className={detailTermClass}>{tStep('sceneStoryLabel')}</dt>
+                    <dd className={detailValueClass}>{mockup.story}</dd>
                   </div>
-                </article>
-              ))}
-            </div>
-          </section>
+                ) : null}
+                {moods.length > 0 ? (
+                  <div className={detailRowClass}>
+                    <dt className={detailTermClass}>{tStep('sceneMoodLabel')}</dt>
+                    <dd className='flex flex-wrap gap-2'>
+                      {moods.map((mood) => (
+                        <Badge key={mood} variant='secondary'>
+                          {mood}
+                        </Badge>
+                      ))}
+                    </dd>
+                  </div>
+                ) : null}
+              </dl>
+            </section>
+          ) : null}
+
+          {examples.length > 0 ? (
+            <section>
+              <h3 className='font-title text-lg font-bold text-primary'>{t('otherArrangements')}</h3>
+              <p className='text-xs text-muted-foreground'>{tStep('floristStudies')}</p>
+
+              <div className='mt-5 flex flex-col gap-6'>
+                {examples.map((example) => (
+                  <article
+                    key={example.imageUrl}
+                    className='grid grid-cols-[3.5rem_1fr] gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'
+                  >
+                    <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
+                      <Image
+                        src={example.imageUrl}
+                        alt={tStep('exampleByAlt', { title: example.title, creator: example.creator })}
+                        fill
+                        sizes='4rem'
+                        className='object-cover'
+                      />
+                    </div>
+
+                    <div className='min-w-0'>
+                      <p className={microLabelClass}>
+                        {tStep('exampleBy', { creator: example.creator })} · {mockup.name}
+                      </p>
+                      <h4 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>
+                        {example.title}
+                      </h4>
+                      <p className='text-xs leading-relaxed text-muted-foreground'>{mockup.description}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           <p className='mt-auto flex items-start gap-2 text-xs leading-relaxed text-muted-foreground'>
             <HugeiconsIcon icon={SparklesIcon} className='mt-0.5 size-3.5 shrink-0 text-primary' />

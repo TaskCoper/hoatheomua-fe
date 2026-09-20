@@ -11,9 +11,12 @@ interface StudioMobileNavProps {
   status: StudioGenerationStatus
   canContinue: boolean
   added: boolean
+  isAddToBagDisabled?: boolean
+  isBuyNowDisabled?: boolean
   onNext: () => void
   onBack: () => void
   onAddToBag: () => void
+  onBuyNow: () => void
 }
 
 export default function StudioMobileNav({
@@ -21,9 +24,12 @@ export default function StudioMobileNav({
   status,
   canContinue,
   added,
+  isAddToBagDisabled = false,
+  isBuyNowDisabled = false,
   onNext,
   onBack,
-  onAddToBag
+  onAddToBag,
+  onBuyNow
 }: StudioMobileNavProps) {
   const tNav = useTranslations('studio.nav')
 
@@ -65,10 +71,10 @@ export default function StudioMobileNav({
       {step === 5 && status === 'complete' ? (
         <div className='grid grid-cols-[auto_1.35fr_1fr] gap-2'>
           {backButton(tNav('backToReview'))}
-          <Button type='button' size='lg' onClick={onAddToBag}>
+          <Button type='button' size='lg' onClick={onAddToBag} disabled={isAddToBagDisabled}>
             {added ? tNav('addedToBag') : tNav('addToBag')}
           </Button>
-          <Button type='button' size='lg' variant='secondary'>
+          <Button type='button' size='lg' variant='secondary' onClick={onBuyNow} disabled={isBuyNowDisabled}>
             {tNav('buyNow')}
           </Button>
         </div>

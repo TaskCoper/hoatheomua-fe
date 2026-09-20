@@ -5,8 +5,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { PenIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useState } from 'react'
-import { getSelectedOrderCardVersion } from '../../cards/order-card-data'
-import type { CardWritingMethod, OrderAiCard, OrderCardVersion } from '../../cards/types'
+import type { OrderAiCard } from '../../cards/types'
 import OrderCardArtwork from './order-card-artwork'
 import OrderCardStudio from './order-card-studio'
 
@@ -14,15 +13,44 @@ interface OrderAiCardRowProps {
   card: OrderAiCard
   /** Where this card sits among the ones printed for the same item. */
   label: string
-  onAddVersion: (cardId: string, version: OrderCardVersion) => void
-  onApplyVersion: (cardId: string, args: { versionId: string; writingMethod: CardWritingMethod }) => void
 }
 
-export default function OrderAiCardRow({ card, label, onAddVersion, onApplyVersion }: OrderAiCardRowProps) {
+export default function OrderAiCardRow({ card, label }: OrderAiCardRowProps) {
   const { t } = useTranslation()
   const [isStudioOpen, setIsStudioOpen] = useState(false)
 
-  const selectedVersion = getSelectedOrderCardVersion(card)
+  // The generated artworks belong to the open studio, so the row stays on what the order
+  // froze: the design that was picked and the words that were paid for.
+  const preview = (
+    <>
+      <OrderCardArtwork
+        imageUrl={card.templateImageUrl}
+        alt={card.templateName || label}
+        sizes='56px'
+        // A square keeps the list on one rhythm whatever shape the cards are - their real
+        // ratio is for the studio, where the artwork is actually being looked at.
+        className='aspect-square w-12 shrink-0 rounded-lg ring-1 ring-primary/15'
+      />
+
+      <span className='min-w-0 flex-1'>
+        <span className='flex items-center gap-1.5 text-xs font-semibold text-foreground'>{label}</span>
+
+        {card.content.message ? (
+          <span className='mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground italic'>
+            “{card.content.message}”
+          </span>
+        ) : (
+          <span className='mt-0.5 block text-xs text-muted-foreground'>{t('orders.cards.noVersion')}</span>
+        )}
+      </span>
+    </>
+  )
+
+  // A handmade card is written by the florist - there is nothing to design, so the row is
+  // a plain line rather than a dead button.
+  if (card.type === 'handmade') {
+    return <li className='flex w-full items-center gap-2.5 px-2 py-1.5'>{preview}</li>
+  }
 
   return (
     <li>
@@ -34,31 +62,7 @@ export default function OrderAiCardRow({ card, label, onAddVersion, onApplyVersi
             className='group flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition-colors hover:bg-secondary/25 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none'
             aria-label={t('orders.cards.designAriaLabel', { name: card.productName })}
           >
-            <OrderCardArtwork
-              version={selectedVersion}
-              writingMethod={card.writingMethod}
-              sizes='56px'
-              className='aspect-3/4 w-12 shrink-0 rounded-lg ring-1 ring-primary/15'
-            />
-
-            <span className='min-w-0 flex-1'>
-              <span className='flex items-center gap-1.5 text-xs font-semibold text-foreground'>
-                {label}
-                {card.quantity > 1 ? (
-                  <span className='rounded-full bg-secondary/40 px-1.5 py-px text-[0.65rem] font-semibold text-secondary-foreground'>
-                    {t('orders.cards.quantity', { count: card.quantity })}
-                  </span>
-                ) : null}
-              </span>
-
-              {selectedVersion ? (
-                <span className='mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground italic'>
-                  “{selectedVersion.content.message}”
-                </span>
-              ) : (
-                <span className='mt-0.5 block text-xs text-muted-foreground'>{t('orders.cards.noVersion')}</span>
-              )}
-            </span>
+            {preview}
 
             <span className='inline-flex shrink-0 items-center gap-1.5 rounded-full bg-secondary/40 px-2.5 py-1 text-[0.7rem] font-semibold text-secondary-foreground transition-colors group-hover:bg-secondary/70'>
               <HugeiconsIcon icon={PenIcon} strokeWidth={2} className='size-3.5 shrink-0' />
@@ -68,12 +72,10 @@ export default function OrderAiCardRow({ card, label, onAddVersion, onApplyVersi
         </DialogTrigger>
 
         <DialogContent className='flex w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-6xl' position='top-center'>
-          <OrderCardStudio
-            card={card}
-            onAddVersion={onAddVersion}
-            onApplyVersion={onApplyVersion}
-            onDone={() => setIsStudioOpen(false)}
-          />
+          {/* Mounted only while open, so the card's generations are asked for on the click. */}
+          {isStudioOpen ? (
+            <OrderCardStudio card={card} isOpen={isStudioOpen} onDone={() => setIsStudioOpen(false)} />
+          ) : null}
         </DialogContent>
       </Dialog>
     </li>

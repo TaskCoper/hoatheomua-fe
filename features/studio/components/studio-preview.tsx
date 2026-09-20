@@ -2,13 +2,14 @@
 
 import { Button } from '@/components/ui/button'
 import StudioGenerationOverlay from '@/features/studio/components/studio-generation-overlay'
+import StudioImage from '@/features/studio/components/studio-image'
 import StudioResultCarousel from '@/features/studio/components/studio-result-carousel'
-import { formatStudioPrice, STUDIO_LAST_STEP } from '@/features/studio/studio-data'
+import { formatStudioPrice, roundStudioQuantity, STUDIO_LAST_STEP } from '@/features/studio/studio-data'
 import type {
   StudioBouquet,
   StudioGenerationStatus,
-  StudioMockup,
   StudioProduct,
+  StudioScene,
   StudioStep,
   StudioVersion
 } from '@/features/studio/types'
@@ -23,14 +24,18 @@ interface StudioPreviewProps {
   step: StudioStep
   status: StudioGenerationStatus
   stage: number
-  mockup?: StudioMockup
+  mockup?: StudioScene
   bouquet: StudioBouquet
   designName: string
   versions: StudioVersion[]
   activeVersionId: string
   added: boolean
+  isAddToBagDisabled?: boolean
+  isBuyNowDisabled?: boolean
+  productOverlay?: boolean
   onSelectVersion: (version: StudioVersion) => void
   onAddToBag: () => void
+  onBuyNow: () => void
 }
 
 export default function StudioPreview({
@@ -44,19 +49,21 @@ export default function StudioPreview({
   versions,
   activeVersionId,
   added,
+  isAddToBagDisabled = false,
+  isBuyNowDisabled = false,
+  productOverlay = true,
   onSelectVersion,
-  onAddToBag
+  onAddToBag,
+  onBuyNow
 }: StudioPreviewProps) {
   const t = useTranslations('studio')
   const tNav = useTranslations('studio.nav')
 
-  // The preview turns into a version carousel once there is a result to browse.
   const showVersions = step === STUDIO_LAST_STEP && status !== 'generating' && versions.length > 0
-  const extraStems = bouquet.ingredients.reduce((total, item) => total + item.extraQuantity, 0)
+  const extraStems = roundStudioQuantity(bouquet.ingredients.reduce((total, item) => total + item.extraQuantity, 0))
   const complete = step === STUDIO_LAST_STEP && status === 'complete'
 
   const hero = (() => {
-    // Steps 1 and 2 are still about the bouquet itself, so the scene stays out of it.
     if (step <= 2)
       return {
         src: product.imageUrl,
@@ -71,6 +78,8 @@ export default function StudioPreview({
       }
     return { src: '/images/about/studio-flatlay.png', alt: t('preview.workTableAlt'), object: 'object-cover' }
   })()
+
+  const overlayProduct = productOverlay && !showVersions && step > 1 && mockup && mockup.imageUrl !== product.imageUrl
 
   const stageLabel =
     step === 1
@@ -98,7 +107,7 @@ export default function StudioPreview({
           onSelect={onSelectVersion}
         />
       ) : (
-        <Image
+        <StudioImage
           key={`${hero.src}-${step}`}
           src={hero.src}
           alt={hero.alt}
@@ -106,6 +115,8 @@ export default function StudioPreview({
           priority
           sizes='(min-width: 1024px) 60vw, 100vw'
           className={cn('animate-in fade-in zoom-in-[0.98] duration-700', hero.object, step > 1 && 'brightness-[0.88]')}
+          pendingLabel={t('imagePending')}
+          pendingIconClassName='size-12'
         />
       )}
       <div
@@ -124,7 +135,7 @@ export default function StudioPreview({
         </span>
       </div>
 
-      {!showVersions && step > 1 && mockup && mockup.imageUrl !== product.imageUrl ? (
+      {overlayProduct && product.imageUrl ? (
         <div className='absolute inset-0 flex items-center justify-center px-8 pb-14 pt-8'>
           <div className='relative h-full w-full max-w-[28rem] drop-shadow-[0_1.5rem_2.5rem_rgb(28_43_43/30%)]'>
             <Image
@@ -151,26 +162,13 @@ export default function StudioPreview({
               {[
                 bouquet.products.map((item) => item.name).join(' + '),
                 extraStems > 0 ? t('compose.quantity.extra', { count: extraStems }) : null,
-                bouquet.style ? t(`styles.${bouquet.style.id}.name`) : null,
+                bouquet.style?.name,
+                [bouquet.ribbon?.name, bouquet.wrap?.name].filter(Boolean).join(' · ') || null,
                 mockup?.name
               ]
                 .filter(Boolean)
                 .join(' · ')}
             </p>
-          ) : null}
-
-          {step > 1 && (bouquet.ribbon || bouquet.wrap) ? (
-            <ul aria-hidden='true' className='mt-2.5 flex items-center gap-1.5'>
-              {[bouquet.ribbon, bouquet.wrap].map((swatch) =>
-                swatch ? (
-                  <li
-                    key={swatch.id}
-                    style={{ backgroundColor: swatch.color }}
-                    className='size-3.5 rounded-full ring-1 ring-inset ring-white/60'
-                  />
-                ) : null
-              )}
-            </ul>
           ) : null}
         </div>
 
@@ -186,7 +184,13 @@ export default function StudioPreview({
             </div>
 
             <div className='hidden flex-wrap items-center justify-end gap-2 lg:flex'>
-              <Button type='button' size='lg' onClick={onAddToBag} className='bg-white text-primary hover:bg-white/90'>
+              <Button
+                type='button'
+                size='lg'
+                onClick={onAddToBag}
+                disabled={isAddToBagDisabled}
+                className='bg-white text-primary hover:bg-white/90'
+              >
                 {added ? (
                   <>
                     <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
@@ -200,6 +204,8 @@ export default function StudioPreview({
                 type='button'
                 size='lg'
                 variant='outline'
+                onClick={onBuyNow}
+                disabled={isBuyNowDisabled}
                 className='border-white/40 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:text-white'
               >
                 {tNav('buyNow')}

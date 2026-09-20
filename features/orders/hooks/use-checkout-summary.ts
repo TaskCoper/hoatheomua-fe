@@ -1,6 +1,7 @@
 import { useGetProductSummary } from '@/features/products/hooks/use-get-product-summary'
 import { useGetProductsSellableQuantity } from '@/features/products/hooks/use-get-products-sellable-quantity'
 import { toSellableQuantity } from '@/features/products/stock'
+import { useGetFlowerCompositions } from '@/features/studio/hooks/use-get-flower-composition'
 import type { CartItem } from '@/stores/cart.store'
 import { useMemo } from 'react'
 import type { CheckoutLineIssue, CheckoutSummaryLine } from '../components/checkout/checkout-sidebar'
@@ -24,7 +25,20 @@ export const useCheckoutSummary = ({
   materialBlockedProductIds = NO_BLOCKED_PRODUCTS
 }: UseCheckoutSummaryArgs) => {
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.productId))), [items])
-  const { productSummaryById } = useGetProductSummary({ productIds })
+
+  // A studio bouquet is named and pictured by its composition, not by the catalogue
+  // row it is assembled from - that row only carries its stock.
+  const catalogueProductIds = useMemo(
+    () => Array.from(new Set(items.filter((item) => !item.aiFlower).map((item) => item.productId))),
+    [items]
+  )
+  const flowerIds = useMemo(
+    () => items.flatMap((item) => (item.aiFlower ? [item.aiFlower.generatedFlowerId] : [])),
+    [items]
+  )
+
+  const { productSummaryById } = useGetProductSummary({ productIds: catalogueProductIds })
+  const { compositionByFlowerId } = useGetFlowerCompositions({ flowerIds })
 
   const { sellableQuantities, sellableQuantityById } = useGetProductsSellableQuantity({ productIds })
 
@@ -39,19 +53,26 @@ export const useCheckoutSummary = ({
   const summaryLines: CheckoutSummaryLine[] = useMemo(
     () =>
       items.map((item) => {
-        const state = productSummaryById.get(item.productId)
+        const aiFlower = item.aiFlower
+        const compositionState = aiFlower ? compositionByFlowerId.get(aiFlower.generatedFlowerId) : undefined
+        const composition = compositionState?.composition ?? null
+
+        const state = aiFlower ? undefined : productSummaryById.get(item.productId)
         const product = state?.product ?? null
-        const isResolving = state?.isResolving ?? true
-        const unitPrice = product?.price ?? 0
+
+        const isResolving = aiFlower ? (compositionState?.isResolving ?? true) : (state?.isResolving ?? true)
+        const exists = aiFlower ? Boolean(composition) : Boolean(product)
+        // The composition prices nothing: a design costs what the studio quoted.
+        const unitPrice = aiFlower ? aiFlower.unitPrice : (product?.price ?? 0)
 
         const liveStock = sellableQuantityById.get(item.productId)
-        const rawStock = liveStock ?? product?.sellableQuantity
+        const rawStock = liveStock ?? (aiFlower ? undefined : product?.sellableQuantity)
         const isStockKnown = typeof rawStock === 'number' && Number.isFinite(rawStock)
         const available = isStockKnown ? toSellableQuantity(rawStock) : null
 
         const issue: CheckoutLineIssue | null = isResolving
           ? null
-          : !product
+          : !exists
             ? 'missing'
             : inactiveIds.has(item.productId)
               ? 'inactive'
@@ -65,9 +86,12 @@ export const useCheckoutSummary = ({
 
         return {
           lineId: item.lineId,
-          name: product?.parent?.productName ?? product?.productName ?? '',
-          variantName: product?.parent ? product.productName : null,
-          image: product?.coverImage ?? null,
+          productId: item.productId,
+          name: aiFlower
+            ? (composition?.name?.trim() ?? '')
+            : (product?.parent?.productName ?? product?.productName ?? ''),
+          variantName: aiFlower ? null : product?.parent ? product.productName : null,
+          image: aiFlower ? composition?.coverImage || null : (product?.coverImage ?? null),
           quantity: item.quantity,
           unitPrice,
           subtotal: unitPrice * item.quantity,
@@ -76,7 +100,7 @@ export const useCheckoutSummary = ({
           available
         }
       }),
-    [items, productSummaryById, sellableQuantityById, inactiveIds, materialBlockedProductIds]
+    [items, productSummaryById, compositionByFlowerId, sellableQuantityById, inactiveIds, materialBlockedProductIds]
   )
 
   const unavailableLines = useMemo(() => summaryLines.filter((line) => line.issue !== null), [summaryLines])

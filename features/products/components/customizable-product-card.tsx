@@ -7,13 +7,12 @@ import {
   type BouquetIngredient,
   type BouquetPlacement
 } from '@/features/products/bouquet-composition'
-import { getMockIngredients, MOCK_AI_PREVIEW } from '@/features/products/mock-ingredients'
-import type { ProductDetail } from '@/features/products/types'
+import type { ProductDetail, ProductMaterial } from '@/features/products/types'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { cn } from '@/shared/utils'
-import { ArrowRight02Icon, SparklesIcon } from '@hugeicons/core-free-icons'
+import { ArrowRight02Icon, FlowerIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, useInView, useReducedMotion, type Variants } from 'motion/react'
 import Image from 'next/image'
@@ -31,6 +30,14 @@ const cardItem: Variants = {
 
 const STRIP_PREVIEW_COUNT = 4
 
+function toIngredients(materials: ProductMaterial[] | null | undefined): BouquetIngredient[] {
+  return (materials ?? []).map((material) => ({
+    id: material.id,
+    label: material.productName ?? undefined,
+    image: material.coverImage
+  }))
+}
+
 // Keep these phases synchronized: ingredients gather, fly into the first chip,
 // then the generated bouquet fades in after the source composition disappears.
 const GATHER_DURATION = 0.34
@@ -43,8 +50,6 @@ const GATHER_RESIDUAL = 0.92
 const GATHER_SCALE = 0.5
 const FLIGHT_SCALE = 0.4
 const CHIP_PULSE = 1.16
-const BLOOM_ROTATION = 1.28
-const BLOOM_SCALE = 1.05
 
 interface CustomizableProductCardProps {
   product: ProductDetail
@@ -82,7 +87,9 @@ function IngredientTile({
           className='object-cover'
         />
       ) : (
-        <span className='absolute inset-0 bg-[radial-gradient(70%_70%_at_34%_26%,rgb(255_255_255/70%),transparent_62%)]' />
+        <div aria-hidden='true' className='absolute inset-0 flex items-center justify-center bg-secondary/60'>
+          <HugeiconsIcon icon={FlowerIcon} className='size-1/3 text-primary/35' />
+        </div>
       )}
       <span
         className='pointer-events-none absolute inset-0 bg-white'
@@ -105,7 +112,9 @@ function IngredientChip({ ingredient }: { ingredient: BouquetIngredient }) {
           className='object-cover'
         />
       ) : (
-        <span className='absolute inset-0 bg-[radial-gradient(75%_75%_at_32%_26%,rgb(255_255_255/75%),transparent_70%)]' />
+        <span aria-hidden='true' className='absolute inset-0 flex items-center justify-center bg-secondary/60'>
+          <HugeiconsIcon icon={FlowerIcon} className='size-3 text-primary/35' />
+        </span>
       )}
     </span>
   )
@@ -114,7 +123,7 @@ function IngredientChip({ ingredient }: { ingredient: BouquetIngredient }) {
 export default function CustomizableProductCard({
   product,
   ingredients,
-  aiPreview = MOCK_AI_PREVIEW,
+  aiPreview,
   href,
   eager = false,
   isActive = false,
@@ -123,9 +132,11 @@ export default function CustomizableProductCard({
   const { t } = useTranslation()
   const prefersReducedMotion = useReducedMotion()
 
-  const [isHovered, setIsHovered] = useState(false)
+  const preview = aiPreview ?? product.coverImage
+
   const [hasComposed, setHasComposed] = useState(false)
-  const [isPreviewReady, setIsPreviewReady] = useState(false)
+  // No image to decode when there's no preview - the placeholder is ready immediately.
+  const [isPreviewReady, setIsPreviewReady] = useState(() => !preview)
   const [flight, setFlight] = useState({ x: 0, y: 0 })
 
   const articleRef = useRef<HTMLElement>(null)
@@ -139,16 +150,14 @@ export default function CustomizableProductCard({
   const hasDiscount = oldPrice > retail
   const discountPercent = hasDiscount ? Math.round(((oldPrice - retail) / oldPrice) * 100) : 0
 
-  const stems = useMemo(() => ingredients ?? getMockIngredients(product.id), [ingredients, product.id])
+  const stems = useMemo(() => ingredients ?? toIngredients(product.materials), [ingredients, product.materials])
   const composition = useMemo(() => buildBouquetComposition(stems), [stems])
   const previews = stems.slice(0, STRIP_PREVIEW_COUNT)
   const overflowCount = stems.length - previews.length
 
-  const hasReveal = Boolean(aiPreview)
   // Reduced-motion users skip the ingredient flight and see the finished preview immediately.
-  const isComposed = hasReveal && (hasComposed || Boolean(prefersReducedMotion))
+  const isComposed = hasComposed || Boolean(prefersReducedMotion)
   const isFlying = isComposed && !prefersReducedMotion
-  const isBlooming = isHovered && !hasReveal && !prefersReducedMotion
 
   const measureFlight = useCallback(() => {
     const stage = stageRef.current
@@ -168,7 +177,7 @@ export default function CustomizableProductCard({
   useEffect(() => {
     // Wait for both visibility and image decode/load before starting; otherwise
     // the composition could disappear into a preview that has not painted yet.
-    if (!hasReveal || hasComposed || prefersReducedMotion || !isInView || !isPreviewReady) return
+    if (hasComposed || prefersReducedMotion || !isInView || !isPreviewReady) return
 
     const timer = window.setTimeout(() => {
       measureFlight()
@@ -176,7 +185,7 @@ export default function CustomizableProductCard({
     }, INTRO_HOLD_MS)
 
     return () => window.clearTimeout(timer)
-  }, [hasReveal, hasComposed, isInView, isPreviewReady, prefersReducedMotion, measureFlight])
+  }, [hasComposed, isInView, isPreviewReady, prefersReducedMotion, measureFlight])
 
   return (
     <motion.article
@@ -184,11 +193,7 @@ export default function CustomizableProductCard({
       variants={cardItem}
       whileHover={{ y: -10, scale: 1.025 }}
       transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-      onHoverStart={() => {
-        setIsHovered(true)
-        onHoverStart?.()
-      }}
-      onHoverEnd={() => setIsHovered(false)}
+      onHoverStart={onHoverStart}
       className='group relative h-full'
     >
       {isActive ? (
@@ -200,8 +205,6 @@ export default function CustomizableProductCard({
 
       <Link
         href={href ?? `/products/${product.id}/studio`}
-        onFocus={() => setIsHovered(true)}
-        onBlur={() => setIsHovered(false)}
         className='relative z-10 flex h-full flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-[box-shadow,transform] duration-300 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.995]'
       >
         <div className='p-2 pb-0'>
@@ -263,8 +266,8 @@ export default function CustomizableProductCard({
                                 : {
                                     x: '0%',
                                     y: '0%',
-                                    rotate: isBlooming ? placement.rotation * BLOOM_ROTATION : placement.rotation,
-                                    scale: isBlooming ? placement.scale * BLOOM_SCALE : placement.scale
+                                    rotate: placement.rotation,
+                                    scale: placement.scale
                                   }
                             }
                             transition={
@@ -288,20 +291,20 @@ export default function CustomizableProductCard({
               </motion.div>
             </div>
 
-            {aiPreview ? (
-              <motion.div
-                aria-hidden='true'
-                className='pointer-events-none absolute inset-0 z-20'
-                initial={false}
-                animate={{ opacity: isComposed ? 1 : 0, scale: isComposed ? 1 : 1.04 }}
-                transition={{
-                  duration: 0.4,
-                  ease: [0.22, 1, 0.36, 1],
-                  delay: isFlying ? REVEAL_DELAY : 0
-                }}
-              >
+            <motion.div
+              aria-hidden='true'
+              className='pointer-events-none absolute inset-0 z-20'
+              initial={false}
+              animate={{ opacity: isComposed ? 1 : 0, scale: isComposed ? 1 : 1.04 }}
+              transition={{
+                duration: 0.4,
+                ease: [0.22, 1, 0.36, 1],
+                delay: isFlying ? REVEAL_DELAY : 0
+              }}
+            >
+              {preview ? (
                 <Image
-                  src={aiPreview}
+                  src={preview}
                   alt=''
                   fill
                   loading='lazy'
@@ -310,8 +313,12 @@ export default function CustomizableProductCard({
                   onLoad={() => setIsPreviewReady(true)}
                   className='object-cover'
                 />
-              </motion.div>
-            ) : null}
+              ) : (
+                <div className='absolute inset-0 flex items-center justify-center bg-secondary/60'>
+                  <HugeiconsIcon icon={FlowerIcon} className='size-12 text-primary/35' />
+                </div>
+              )}
+            </motion.div>
 
             <div className='absolute inset-x-3 bottom-3 z-30 flex items-end justify-between gap-2'>
               <span

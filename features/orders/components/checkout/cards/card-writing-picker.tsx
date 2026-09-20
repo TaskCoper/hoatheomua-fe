@@ -2,7 +2,6 @@
 
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { CARD_HANDWRITING_PRICE } from '../../../cards/card-data'
 import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../../cards/card-labels'
 import type { CardWritingMethod } from '../../../cards/types'
 import CardOptionPicker from './card-option-picker'
@@ -12,9 +11,10 @@ const WRITING_METHODS: CardWritingMethod[] = ['typed', 'handwritten']
 interface CardWritingPickerProps {
   value: CardWritingMethod
   onChange: (writingMethod: CardWritingMethod) => void
+  handwritingPrice?: number
 }
 
-export default function CardWritingPicker({ value, onChange }: CardWritingPickerProps) {
+export default function CardWritingPicker({ value, onChange, handwritingPrice = 0 }: CardWritingPickerProps) {
   const { t } = useTranslation()
 
   return (
@@ -26,8 +26,8 @@ export default function CardWritingPicker({ value, onChange }: CardWritingPicker
         value: method,
         label: t(CARD_WRITING_METHOD_LABEL_KEYS[method]),
         hint:
-          method === 'handwritten'
-            ? t('orders.checkout.cards.surcharge', { price: formatVnd(CARD_HANDWRITING_PRICE) })
+          method === 'handwritten' && handwritingPrice > 0
+            ? t('orders.checkout.cards.surcharge', { price: formatVnd(handwritingPrice) })
             : undefined
       }))}
     />

@@ -1,53 +1,7 @@
-import type {
-  StudioBouquetIngredient,
-  StudioIngredient,
-  StudioMockup,
-  StudioProduct,
-  StudioStep,
-  StudioStyle,
-  StudioSwatch
-} from '@/features/studio/types'
+import type { StudioBouquetIngredient, StudioMockup, StudioStep } from '@/features/studio/types'
 
-export const studioIngredients: StudioIngredient[] = [
-  { id: 'rose', imageUrl: '/images/custom/material-1.png', baseQuantity: 5, extraPriceAmount: 120000 },
-  { id: 'tulip', imageUrl: '/images/custom/material-2.png', baseQuantity: 3, extraPriceAmount: 95000 },
-  { id: 'breath', imageUrl: '/images/custom/material-3.png', baseQuantity: 2, extraPriceAmount: 60000 },
-  { id: 'eucalyptus', imageUrl: '/images/custom/material-4.png', baseQuantity: 4, extraPriceAmount: 70000 },
-  { id: 'ribbon', imageUrl: '/images/custom/material-5.png', baseQuantity: 1, extraPriceAmount: 45000 }
-]
-
-export const studioProduct: StudioProduct = {
-  id: 'seasonal-blush',
-  name: 'Seasonal Blush',
-  note: 'Soft, layered and romantic',
-  priceAmount: 1490000,
-  imageUrl: '/images/custom/custom-flower.png',
-  ingredientIds: ['rose', 'tulip', 'breath', 'ribbon'],
-  imageFit: 'cover'
-}
-
-export const studioStyles: StudioStyle[] = [
-  { id: 'round', imageUrl: '/images/custom/custom-flower.png' },
-  { id: 'triangle', imageUrl: '/images/3.webp' },
-  { id: 'rectangle', imageUrl: '/images/6.webp' },
-  { id: 'cascade', imageUrl: '/images/9.webp' }
-]
-
-export const studioRibbons: StudioSwatch[] = [
-  { id: 'dustyRose', color: '#d3a29b' },
-  { id: 'ivory', color: '#efe3d4' },
-  { id: 'sage', color: '#97a88f' },
-  { id: 'burgundy', color: '#73303a' },
-  { id: 'midnight', color: '#2f3b4a' }
-]
-
-export const studioWraps: StudioSwatch[] = [
-  { id: 'kraft', color: '#c39c74' },
-  { id: 'cloud', color: '#f3efe8' },
-  { id: 'blush', color: '#eccfc9' },
-  { id: 'forest', color: '#3d5145' },
-  { id: 'charcoal', color: '#3b3b3b' }
-]
+export const STUDIO_RIBBON_LABELS = ['RUY BĂNG']
+export const STUDIO_WRAP_LABELS = ['GIẤY']
 
 export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
   style: 'currency',
@@ -57,9 +11,39 @@ export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
 
 export const formatStudioPrice = (amount: number) => studioPriceFormatter.format(Math.round(amount))
 
-/** "Garden Rose ×6 · French Tulip ×3" - the one-line summary of what goes into the bouquet. */
-export const formatStudioIngredientCounts = (ingredients: StudioBouquetIngredient[], nameOf: (id: string) => string) =>
-  ingredients.map((item) => `${nameOf(item.ingredient.id)} ×${item.quantity}`).join(' · ')
+/** Which generated version a studio session opens on - see `StudioVersionQuerySync`. */
+export const STUDIO_VERSION_QUERY_KEY = 'version'
+
+/**
+ * Where a finished design lives. A cart line points at the exact version it was bought
+ * from, not simply the newest one the sitting went on to produce.
+ */
+export const buildStudioSessionHref = (rootProductId: string, sessionId: string, flowerId?: string | null) => {
+  const base = `/products/${rootProductId}/studio`
+  if (!sessionId) return base
+
+  return flowerId
+    ? `${base}/${sessionId}?${STUDIO_VERSION_QUERY_KEY}=${encodeURIComponent(flowerId)}`
+    : `${base}/${sessionId}`
+}
+
+export const STUDIO_WHOLE_QUANTITY_STEP = 1
+export const STUDIO_DECIMAL_QUANTITY_STEP = 0.1
+
+export const studioQuantityFormatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 3 })
+
+export const roundStudioQuantity = (value: number) => Math.round(value * 1000) / 1000
+
+export const formatStudioQuantity = (value: number) => studioQuantityFormatter.format(roundStudioQuantity(value))
+
+export const formatStudioIngredientCounts = (ingredients: StudioBouquetIngredient[]) =>
+  ingredients
+    .map((item) =>
+      item.extraQuantity > 0
+        ? `${item.ingredient.name} +${formatStudioQuantity(item.extraQuantity)}`
+        : item.ingredient.name
+    )
+    .join(' · ')
 
 export const studioMockups: StudioMockup[] = [
   {
@@ -340,6 +324,10 @@ export const studioMockups: StudioMockup[] = [
 
 export const STUDIO_GENERATION_STAGE_KEYS = ['preparing', 'lighting', 'composing', 'finishing'] as const
 
+export const STUDIO_GENERATION_STAGE_INTERVAL = 350
+export const STUDIO_GENERATION_PENDING_STAGE = STUDIO_GENERATION_STAGE_KEYS.length - 1
+export const STUDIO_GENERATION_DONE_STAGE = STUDIO_GENERATION_STAGE_KEYS.length
+
 export const STUDIO_DETAIL_KEYS = ['size', 'wrapping', 'freshness', 'handover'] as const
 
 export const STUDIO_STEP_KEYS = [
@@ -351,3 +339,22 @@ export const STUDIO_STEP_KEYS = [
 ] as const
 
 export const STUDIO_LAST_STEP: StudioStep = 5
+
+/**
+ * A session that already has a result only reopens what a regenerate can change, so its rail
+ * is three stops instead of five - the flowers and the finishing are fixed by then.
+ */
+export const STUDIO_SESSION_STEP_KEYS = [
+  { step: 1, key: 'style' },
+  { step: 2, key: 'mockup' },
+  { step: 3, key: 'result' }
+] as const
+
+export const STUDIO_SESSION_STYLE_STEP: StudioStep = 1
+export const STUDIO_SESSION_SCENE_STEP: StudioStep = 2
+export const STUDIO_SESSION_LAST_STEP: StudioStep = 3
+
+export type StudioStepKey = (typeof STUDIO_STEP_KEYS)[number]['key'] | (typeof STUDIO_SESSION_STEP_KEYS)[number]['key']
+
+export const STUDIO_SESSION_FINISHED_COUNT = 3
+export const STUDIO_SESSIONS_PAGE_SIZE = 10

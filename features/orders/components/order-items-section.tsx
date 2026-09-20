@@ -19,7 +19,7 @@ interface OrderItemsSectionProps {
 /** The ordered products, each one unfolding the cards printed for it. */
 export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
   const { t } = useTranslation()
-  const { cards, addVersion, applyVersion } = useOrderAiCards(items)
+  const { cards } = useOrderAiCards(items)
 
   // A card belongs to one line, so it is shown under that line rather than in a
   // section of its own - the product name is then the row above it, not a repeat.
@@ -31,6 +31,10 @@ export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
   // Cards are the point of the section, so a carded line starts unfolded - the
   // toggle is there to tidy them away, not to go looking for them.
   const openByDefault = useMemo(() => Array.from(cardsByItem.keys()), [cardsByItem])
+
+  // An order with no cards anywhere has no toggle column to line up against, so
+  // nothing holds its place either - the totals sit at the edge like every other card.
+  const hasCards = cardsByItem.size > 0
 
   if (items.length === 0) return null
 
@@ -55,10 +59,17 @@ export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
               >
                 {line}
                 {/* Holds the toggle's place so every line total stays on one column. */}
-                <span aria-hidden='true' className='min-w-[4.5rem] shrink-0 sm:min-w-[7rem]' />
+                {hasCards ? <span aria-hidden='true' className='min-w-[4.5rem] shrink-0 sm:min-w-[7rem]' /> : null}
               </div>
             )
           }
+
+          // A line bought twice and carded twice is "2/2 carded", not "2 cards" - what the
+          // customer wants to know is whether every bouquet in the line carries one.
+          const isPartial = group.carded < group.quantity
+          const cardedLabel = isPartial
+            ? t('orders.cards.itemCarded', { carded: group.carded, quantity: group.quantity })
+            : t('orders.cards.cardCount', { count: group.carded })
 
           return (
             <AccordionItem key={item.orderDetailsId} value={item.orderDetailsId}>
@@ -67,28 +78,26 @@ export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
 
                 <AccordionTrigger
                   className='min-w-[4.5rem] grow-0 items-center gap-1.5 py-0 sm:min-w-[7rem]'
-                  aria-label={t('orders.cards.cardCount', { count: group.cards.length })}
+                  aria-label={cardedLabel}
                 >
                   {/* The card count doubles as the affordance: it says these exist and opens them. */}
                   <span className='inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary ring-1 ring-primary/15'>
                     <HugeiconsIcon icon={AiMagicIcon} strokeWidth={2} className='size-3.5 shrink-0' />
-                    <span className='hidden tabular-nums sm:inline'>
-                      {t('orders.cards.cardCount', { count: group.cards.length })}
+                    <span className='hidden tabular-nums sm:inline'>{cardedLabel}</span>
+                    <span className='tabular-nums sm:hidden'>
+                      {isPartial ? `${group.carded}/${group.quantity}` : group.carded}
                     </span>
-                    <span className='tabular-nums sm:hidden'>{group.cards.length}</span>
                   </span>
                 </AccordionTrigger>
               </div>
 
               <AccordionContent className='pt-0 pb-3 sm:pb-4'>
                 <ul className='space-y-1 sm:ml-[5.75rem]'>
-                  {group.cards.map((card, index) => (
+                  {group.cards.map((card) => (
                     <OrderAiCardRow
                       key={card.id}
                       card={card}
-                      label={t('orders.cards.cardIndex', { index: index + 1 })}
-                      onAddVersion={addVersion}
-                      onApplyVersion={applyVersion}
+                      label={t('orders.cards.cardIndex', { index: card.unit })}
                     />
                   ))}
                 </ul>

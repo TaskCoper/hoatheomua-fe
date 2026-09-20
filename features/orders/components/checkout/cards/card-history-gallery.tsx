@@ -1,23 +1,36 @@
 'use client'
 
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import { Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useId } from 'react'
+import { useId, type ReactNode } from 'react'
 import type { GeneratedCard } from '../../../cards/types'
+
+const GRID = 'grid grid-cols-3 gap-2 sm:grid-cols-6'
 
 interface CardHistoryGalleryProps {
   generatedCards: GeneratedCard[]
   value: string
   onChange: (generatedCardId: string) => void
   invalid?: boolean
+  isLoading?: boolean
+  /** Shown in place of the grid when there is nothing to pick from. */
+  emptyState?: ReactNode
 }
 
-export default function CardHistoryGallery({ generatedCards, value, onChange, invalid }: CardHistoryGalleryProps) {
+export default function CardHistoryGallery({
+  generatedCards,
+  value,
+  onChange,
+  invalid,
+  isLoading,
+  emptyState
+}: CardHistoryGalleryProps) {
   const { t } = useTranslation()
   const { formatDate } = useDateFormat()
   const groupId = useId()
@@ -26,55 +39,65 @@ export default function CardHistoryGallery({ generatedCards, value, onChange, in
     <div className='space-y-1.5'>
       <p className='text-sm font-medium'>{t('orders.checkout.cards.historySelect')}</p>
 
-      <RadioGroup
-        value={value}
-        onValueChange={onChange}
-        className='grid grid-cols-3 gap-2 sm:grid-cols-6'
-        aria-label={t('orders.checkout.cards.historySelect')}
-      >
-        {generatedCards.map((card) => {
-          const isActive = card.id === value
-          const id = `${groupId}-${card.id}`
+      {isLoading ? (
+        <div className={GRID}>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Skeleton key={index} className='aspect-3/4 w-full rounded-2xl' />
+          ))}
+        </div>
+      ) : generatedCards.length === 0 ? (
+        emptyState
+      ) : (
+        <RadioGroup
+          value={value}
+          onValueChange={onChange}
+          className={GRID}
+          aria-label={t('orders.checkout.cards.historySelect')}
+        >
+          {generatedCards.map((card) => {
+            const isActive = card.id === value
+            const id = `${groupId}-${card.id}`
 
-          return (
-            <label
-              key={card.id}
-              htmlFor={id}
-              className={cn(
-                'cursor-pointer space-y-1 rounded-2xl border p-1.5 transition-colors',
-                'has-[button:focus-visible]:ring-3 has-[button:focus-visible]:ring-ring/30',
-                isActive
-                  ? 'border-primary/50 bg-primary/5 ring-1 ring-primary/30'
-                  : 'border-border/60 hover:bg-muted/40'
-              )}
-            >
-              <RadioGroupItem id={id} value={card.id} className='sr-only hidden' />
+            return (
+              <label
+                key={card.id}
+                htmlFor={id}
+                className={cn(
+                  'cursor-pointer space-y-1 rounded-2xl border p-1.5 transition-colors',
+                  'has-[button:focus-visible]:ring-3 has-[button:focus-visible]:ring-ring/30',
+                  isActive
+                    ? 'border-primary/50 bg-primary/5 ring-1 ring-primary/30'
+                    : 'border-border/60 hover:bg-muted/40'
+                )}
+              >
+                <RadioGroupItem id={id} value={card.id} className='sr-only hidden' />
 
-              <span className='relative block'>
-                <PreviewImage
-                  src={card.imageUrl}
-                  alt={card.content.message}
-                  sizes='(min-width: 640px) 8vw, 30vw'
-                  className='aspect-[3/4] w-full rounded-xl'
-                />
+                <span className='relative block'>
+                  <PreviewImage
+                    src={card.imageUrl}
+                    alt={card.content.message}
+                    sizes='(min-width: 640px) 8vw, 30vw'
+                    className='aspect-3/4 w-full rounded-xl'
+                  />
 
-                <span
-                  className={cn(
-                    'absolute right-1 top-1 grid size-5 place-items-center rounded-full border transition-colors',
-                    isActive ? 'border-white bg-white text-primary' : 'border-white/60 text-transparent'
-                  )}
-                >
-                  <HugeiconsIcon icon={Tick02Icon} className='size-3' strokeWidth={2.5} />
+                  <span
+                    className={cn(
+                      'absolute right-1 top-1 grid size-5 place-items-center rounded-full border transition-colors',
+                      isActive ? 'border-white bg-white text-primary' : 'border-white/60 text-transparent'
+                    )}
+                  >
+                    <HugeiconsIcon icon={Tick02Icon} className='size-3' strokeWidth={2.5} />
+                  </span>
                 </span>
-              </span>
 
-              <span className='block truncate text-[0.6875rem] font-medium tabular-nums'>
-                {formatDate(card.createdAt, 'dateShort2y')}
-              </span>
-            </label>
-          )
-        })}
-      </RadioGroup>
+                <span className='block truncate text-[0.6875rem] font-medium tabular-nums'>
+                  {card.createdAt ? formatDate(card.createdAt, 'dateShort2y') : card.sizeName}
+                </span>
+              </label>
+            )
+          })}
+        </RadioGroup>
+      )}
 
       {invalid ? <p className='text-xs text-destructive'>{t('orders.checkout.cards.historyRequired')}</p> : null}
     </div>

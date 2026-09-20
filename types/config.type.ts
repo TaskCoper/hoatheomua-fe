@@ -437,3 +437,36 @@ export interface PromotionPopupCollection {
 
 // Stored as a JSON string; parse with `parsePromotionPopup` before use.
 export type PromotionPopupConfigItem = JsonConfigItem<'promotions.popup', 'promotions'>
+
+// Card (calligraphy) config
+export type CardConfigKey = 'card_config.prices' | 'card_config.sizes'
+
+export type CardConfigGroup = 'card_config'
+
+export interface CardPriceTier {
+  min_words: number
+  max_words: number
+  extra_price: number
+}
+
+export interface CardPricesCollection {
+  items: CardPriceTier[]
+}
+
+export interface CardSize {
+  name: string
+  width: number
+  height: number
+  base_price: number
+  max_words: number
+}
+
+export interface CardSizesCollection {
+  items: CardSize[]
+}
+
+export type CardPricesConfigItem = JsonConfigItem<'card_config.prices', CardConfigGroup>
+
+export type CardSizesConfigItem = JsonConfigItem<'card_config.sizes', CardConfigGroup>
+
+export type CardConfigItem = CardPricesConfigItem | CardSizesConfigItem

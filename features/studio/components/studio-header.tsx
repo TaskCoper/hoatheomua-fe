@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { STUDIO_STEP_KEYS } from '@/features/studio/studio-data'
+import { STUDIO_STEP_KEYS, type StudioStepKey } from '@/features/studio/studio-data'
 import type { StudioStep } from '@/features/studio/types'
 import { Link } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
@@ -15,9 +15,10 @@ interface StudioHeaderProps {
   step: StudioStep
   maxStep: StudioStep
   onStep: (step: StudioStep) => void
+  steps?: readonly { step: StudioStep; key: StudioStepKey }[]
 }
 
-export default function StudioHeader({ step, maxStep, onStep }: StudioHeaderProps) {
+export default function StudioHeader({ step, maxStep, onStep, steps = STUDIO_STEP_KEYS }: StudioHeaderProps) {
   const t = useTranslations('studio.header')
   const tSteps = useTranslations('studio.steps')
 
@@ -33,7 +34,7 @@ export default function StudioHeader({ step, maxStep, onStep }: StudioHeaderProp
 
       <nav aria-label={t('progressAriaLabel')} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
         <ol className='flex items-center'>
-          {STUDIO_STEP_KEYS.map((item, index) => {
+          {steps.map((item, index) => {
             const complete = item.step < step
             const active = item.step === step
             const available = item.step <= maxStep
@@ -69,7 +70,7 @@ export default function StudioHeader({ step, maxStep, onStep }: StudioHeaderProp
                   <span className='hidden whitespace-nowrap md:inline'>{label}</span>
                 </button>
 
-                {index < STUDIO_STEP_KEYS.length - 1 ? (
+                {index < steps.length - 1 ? (
                   <span
                     aria-hidden='true'
                     className={cn(

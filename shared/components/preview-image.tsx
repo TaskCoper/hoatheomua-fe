@@ -12,9 +12,13 @@ interface PreviewImageProps {
   alt: string
   sizes: string
   className?: string
+  /** For sources the optimizer cannot fetch, such as a `blob:` preview. */
+  unoptimized?: boolean
+  /** For callers that lay out by aspect ratio. */
+  onReady?: (size: { naturalWidth: number; naturalHeight: number }) => void
 }
 
-export default function PreviewImage({ src, alt, sizes, className }: PreviewImageProps) {
+export default function PreviewImage({ src, alt, sizes, className, unoptimized, onReady }: PreviewImageProps) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(src ? 'loading' : 'error')
 
   return (
@@ -25,11 +29,18 @@ export default function PreviewImage({ src, alt, sizes, className }: PreviewImag
           alt={alt}
           fill
           sizes={sizes}
+          unoptimized={unoptimized}
           className={cn(
             'object-cover transition-opacity duration-200',
             status === 'ready' ? 'opacity-100' : 'opacity-0'
           )}
-          onLoad={() => setStatus('ready')}
+          onLoad={(event) => {
+            setStatus('ready')
+            onReady?.({
+              naturalWidth: event.currentTarget.naturalWidth,
+              naturalHeight: event.currentTarget.naturalHeight
+            })
+          }}
           onError={() => setStatus('error')}
         />
       ) : null}
