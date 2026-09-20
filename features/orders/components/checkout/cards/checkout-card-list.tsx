@@ -8,35 +8,26 @@ import { Delete02Icon, Edit02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { getCheckoutCardPrice } from '../../../cards/card-data'
 import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../../cards/card-labels'
-import type { CheckoutCardField, GeneratedCard } from '../../../cards/types'
+import type { CheckoutCardField } from '../../../cards/types'
 import { useCardConfig } from '../../../hooks/use-card-config'
 import { useObjectUrl } from '../../../hooks/use-object-url'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 
 interface CheckoutCardListProps {
   cards: CheckoutCardField[]
-  generatedCards: GeneratedCard[]
   lines: CheckoutSummaryLine[]
   onEdit: (card: CheckoutCardField, index: number) => void
   onRemove: (index: number) => void
   readOnly?: boolean
 }
 
-export default function CheckoutCardList({
-  cards,
-  generatedCards,
-  lines,
-  onEdit,
-  onRemove,
-  readOnly
-}: CheckoutCardListProps) {
+export default function CheckoutCardList({ cards, lines, onEdit, onRemove, readOnly }: CheckoutCardListProps) {
   return (
     <ul className='divide-y divide-border/60 rounded-2xl border border-border/60 bg-background/50'>
       {cards.map((card, index) => (
         <CheckoutCardListItem
           key={card.id}
           card={card}
-          generatedCards={generatedCards}
           lines={lines}
           onEdit={() => onEdit(card, index)}
           onRemove={() => onRemove(index)}
@@ -49,14 +40,12 @@ export default function CheckoutCardList({
 
 function CheckoutCardListItem({
   card,
-  generatedCards,
   lines,
   onEdit,
   onRemove,
   readOnly
 }: {
   card: CheckoutCardField
-  generatedCards: GeneratedCard[]
   lines: CheckoutSummaryLine[]
   onEdit: () => void
   onRemove: () => void
@@ -65,12 +54,9 @@ function CheckoutCardListItem({
   const { t } = useTranslation()
   const { cardConfig } = useCardConfig()
 
-  const generated =
-    card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
-
-  // A reused card carries its own snapshot; the generations list is only a fallback for older drafts.
-  const templateName = card.type === 'history' ? card.templateName || generated?.templateName : card.templateName
-  const artwork = card.type === 'history' ? card.imageUrl || generated?.imageUrl : card.templateImageUrl
+  // A reused card carries its own snapshot of the generation it was picked from.
+  const templateName = card.templateName
+  const artwork = card.type === 'history' ? card.imageUrl : card.templateImageUrl
   // The standard card is free, so it has no size to show.
   const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod

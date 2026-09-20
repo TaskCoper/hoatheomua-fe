@@ -7,7 +7,18 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
 import { useId } from 'react'
 import { countWords } from '../../../cards/card-config'
-import { CARD_MESSAGE_MAX_LENGTH } from '../../../cards/card-data'
+
+/**
+ * Keeps the first `maxWords` words and drops whatever came after them, with the spacing the
+ * writer typed left as it is - a message is measured in words, never in characters.
+ */
+const clampToWordBudget = (value: string, maxWords: number): string => {
+  const words = [...value.matchAll(/\S+/g)]
+  if (words.length <= maxWords) return value
+
+  const last = words[maxWords - 1]
+  return value.slice(0, (last.index ?? 0) + last[0].length)
+}
 
 interface CardMessageFieldProps {
   value: string
@@ -35,14 +46,20 @@ export default function CardMessageField({
   const wordCount = countWords(value)
   const isOverBudget = maxWords > 0 && wordCount > maxWords
 
+  // Typing or pasting past the budget stops at the last word that fits. A message that is
+  // already over it - the size was picked smaller underneath it - is left alone rather than
+  // cut down on the next keystroke.
+  const handleChange = (next: string) => {
+    onChange(maxWords > 0 && !isOverBudget ? clampToWordBudget(next, maxWords) : next)
+  }
+
   return (
     <Field data-invalid={invalid} className='gap-1.5'>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <Textarea
         id={id}
         value={value}
-        onChange={(event) => onChange(event.target.value.slice(0, CARD_MESSAGE_MAX_LENGTH))}
-        maxLength={CARD_MESSAGE_MAX_LENGTH}
+        onChange={(event) => handleChange(event.target.value)}
         className='h-40'
         placeholder={placeholder}
         aria-invalid={invalid}

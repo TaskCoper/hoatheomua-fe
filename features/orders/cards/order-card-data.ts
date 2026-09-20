@@ -49,15 +49,21 @@ const getSizeRatio = (card: OrderSnapshotCard): number | null => {
 const toWritingMethod = (formType: OrderSnapshotCard['formType']): CardWritingMethod =>
   formType === OrderSnapshotFormType.Calligraphy ? 'handwritten' : 'typed'
 
+/** The florist writes these by hand; `'ai'` is the kind designed in the studio. */
+const isHandmadeCard = (card: OrderSnapshotCard): boolean => card.cardType === OrderSnapshotCardType.Handmade
+
 /**
- * How far the words may be rewritten. The size sets the budget that fits on the card, but the
- * price tier frozen in `cardConfig` is the tighter one: leaving it would change what the card
- * costs, and the order has already been paid.
+ * How far the words may be rewritten. Leaving the price tier frozen in `cardConfig` would change
+ * what the card costs, and the order has already been paid - so it holds every card. A handmade
+ * card is handwritten by definition and is ordered without a size, so that tier is the only thing
+ * holding it; an AI card is held to its size as well, whichever of the two is tighter.
  */
 const getWordBudget = (card: OrderSnapshotCard): { minWords: number; maxWords: number } => {
-  const caps = [card.cardSize?.maxWords, card.cardConfig?.maxWords].filter(
-    (value): value is number => typeof value === 'number' && value > 0
-  )
+  const budgets = isHandmadeCard(card)
+    ? [card.cardConfig?.maxWords]
+    : [card.cardSize?.maxWords, card.cardConfig?.maxWords]
+
+  const caps = budgets.filter((value): value is number => typeof value === 'number' && value > 0)
 
   return {
     minWords: Math.max(0, card.cardConfig?.minWords ?? 0),
@@ -83,7 +89,7 @@ const toOrderItemAiCards = (item: OrderItem): OrderAiCard[] =>
         id: snapshot.virtualId as string,
         orderDetailsId: item.orderDetailsId,
         sourceCardId: snapshot.cardId,
-        type: snapshot.cardType === OrderSnapshotCardType.Handmade ? 'handmade' : 'ai',
+        type: isHandmadeCard(snapshot) ? 'handmade' : 'ai',
         productName: unit.name ?? item.name,
         productImageUrl: item.coverImage,
         templateId: snapshot.cardTemplate?.templateId ?? '',

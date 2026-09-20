@@ -6,6 +6,8 @@ import {
   STUDIO_WHOLE_QUANTITY_STEP
 } from '@/features/studio/studio-data'
 import type {
+  AiFlowerMaterial,
+  AiFlowerMetadata,
   AiFlowerProductRef,
   CreateAiFlowerPayload,
   GeneratedFlower,
@@ -18,7 +20,8 @@ import type {
   StudioProduct,
   StudioScene,
   StudioVariant,
-  StudioVersion
+  StudioVersion,
+  StudioVersionMaterial
 } from '@/features/studio/types'
 import type { StudioFormValues } from '@/features/studio/validations'
 import type { ReferenceFlower } from '@/services/reference-flower.service'
@@ -99,6 +102,36 @@ export const toStudioAiFlowerOption = (product: AiFlowerProductRef | null): Stud
   return { id: product.id, name, description: traits || productCode?.trim() || null, imageUrl: product.image.url }
 }
 
+/**
+ * `metadata.materials` is the recipe the product starts from and `metadata.AdditionCustome`
+ * what the customer added on top, so what actually goes in the bouquet is the two summed.
+ * They stay separate fields here so the screens can show the total without hiding the split.
+ */
+export const toStudioVersionMaterials = (metadata: AiFlowerMetadata | null | undefined): StudioVersionMaterial[] => {
+  const base = metadata?.materials ?? []
+  const additions = metadata?.AdditionCustome ?? []
+
+  const toMaterial = (material: AiFlowerMaterial, baseQuantity: number, extraQuantity: number) => ({
+    matId: material.matId,
+    name: material.name?.trim() || '',
+    isCore: material.isCore,
+    imageUrl: material.coverImage,
+    baseQuantity,
+    extraQuantity,
+    quantity: roundStudioQuantity(baseQuantity + extraQuantity)
+  })
+
+  const extras = new Map(additions.map((addition) => [addition.matId, Math.max(0, addition.quantity)]))
+
+  return [
+    ...base.map((material) => toMaterial(material, Math.max(0, material.quantity), extras.get(material.matId) ?? 0)),
+    // A material the base recipe never carried is all addition, and still part of the bouquet.
+    ...additions
+      .filter((addition) => !base.some((material) => material.matId === addition.matId))
+      .map((addition) => toMaterial(addition, 0, Math.max(0, addition.quantity)))
+  ]
+}
+
 const toGeneratedFlowerOption = (ref: GeneratedFlowerRef | null | undefined): StudioOption | null => {
   const name = ref?.name?.trim()
 
@@ -120,7 +153,7 @@ export const toStudioSessionVersions = (flowers: GeneratedFlower[] | null | unde
       mockupName: flower.mockup?.name?.trim() ?? '',
       imageUrl: flower.imageUrl,
       createdAt: flower.createdAt,
-      materials: flower.metadata?.materials ?? [],
+      materials: toStudioVersionMaterials(flower.metadata),
       style: toGeneratedFlowerOption(flower.bundle),
       // The metadata copy carries the size / colour traits, so it wins over the flat reference.
       ribbon: toStudioAiFlowerOption(flower.metadata?.ribbon ?? null) ?? toGeneratedFlowerOption(flower.ribbon),
@@ -164,21 +197,18 @@ export const toStudioSessionBouquet = ({
 }): StudioBouquet => {
   const items = version?.materials.length
     ? version.materials.map((material) => {
-        const quantity = Math.max(0, material.quantity)
         const ingredient = ingredients.find((item) => item.id === material.matId) ?? {
           id: material.matId,
-          name: material.name?.trim() || '',
-          imageUrl: null,
-          baseQuantity: quantity,
-          step: Number.isInteger(quantity) ? STUDIO_WHOLE_QUANTITY_STEP : STUDIO_DECIMAL_QUANTITY_STEP,
+          name: material.name,
+          imageUrl: material.imageUrl,
+          baseQuantity: material.baseQuantity,
+          step: Number.isInteger(material.quantity) ? STUDIO_WHOLE_QUANTITY_STEP : STUDIO_DECIMAL_QUANTITY_STEP,
           extraPriceAmount: null
         }
 
-        return {
-          ingredient,
-          quantity,
-          extraQuantity: Math.max(0, roundStudioQuantity(quantity - ingredient.baseQuantity))
-        }
+        // The addition is what the customer paid extra for, so it comes from the design, not
+        // from the difference against whatever the catalogue lists today.
+        return { ingredient, quantity: material.quantity, extraQuantity: material.extraQuantity }
       })
     : ingredients.map((ingredient) => ({ ingredient, quantity: ingredient.baseQuantity, extraQuantity: 0 }))
 

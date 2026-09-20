@@ -71,12 +71,6 @@ export const readCheckoutCardTemplate = ({
   templateImageUrl
 }: CheckoutCardTemplate): CheckoutCardTemplate => ({ templateId, templateName, templateImageUrl })
 
-/**
- * A character backstop for the textarea only. What actually limits a message is the word
- * budget of its size (`CardSize.max_words`) - see `getCardMaxWords`.
- */
-export const CARD_MESSAGE_MAX_LENGTH = 500
-
 export const CARD_MAX_QUANTITY = 20
 export const DEFAULT_CARD_QUANTITY = 1
 
@@ -139,38 +133,3 @@ export const getCheckoutCardPrice = (card: CheckoutCard, config: CardConfig): nu
 
 export const getCardsTotal = (cards: CheckoutCard[], config: CardConfig): number =>
   cards.reduce((total, card) => total + getCheckoutCardPrice(card, config), 0)
-
-// TODO(backend): replace with the user's generated-cards endpoint. Set to `[]` to
-// review the history tab's empty state.
-export const MOCK_GENERATED_CARDS: GeneratedCard[] = [
-  {
-    id: 'generated-sample-1',
-    templateId: 'floral',
-    templateName: 'Floral',
-    sizeName: 'M',
-    writingMethod: 'handwritten',
-    content: { message: 'Chúc mừng sinh nhật! Mong mọi điều dịu dàng nhất sẽ đến với cậu.' },
-    imageUrl: '/images/custom/custom-flower.png',
-    createdAt: '2026-09-03T09:15:00.000Z'
-  },
-  {
-    id: 'generated-sample-2',
-    templateId: 'golden',
-    templateName: 'Golden Hour',
-    sizeName: 'S',
-    writingMethod: 'typed',
-    content: { message: 'Cảm ơn vì đã luôn ở đây. Chúc một ngày thật nhiều nắng.' },
-    imageUrl: '/images/5.webp',
-    createdAt: '2026-08-28T02:40:00.000Z'
-  },
-  {
-    id: 'generated-sample-3',
-    templateId: 'garden',
-    templateName: 'Garden',
-    sizeName: 'L',
-    writingMethod: 'handwritten',
-    content: { message: 'Chúc hai bạn trăm năm hạnh phúc, luôn giữ được sự dịu dàng của hôm nay.' },
-    imageUrl: '/images/ContactFlower.png',
-    createdAt: '2026-08-21T11:05:00.000Z'
-  }
-]

@@ -875,6 +875,7 @@
         "allProductsTaken": "Mọi sản phẩm trong đơn này đều đã có thiệp.",
         "noEligibleProductsTitle": "Chưa có sản phẩm phù hợp",
         "noEligibleProducts": "Đơn hàng chưa có sản phẩm nào có thể đính kèm thiệp.",
+        "configUnavailable": "Hiện chưa tải được tuỳ chọn thiệp. Vui lòng thử lại sau giây lát.",
         "writingMethod": "Cách viết",
         "writing": {
           "typed": "Đánh máy",
@@ -927,6 +928,7 @@
         "heading": "Đã chốt cùng đơn hàng",
         "note": "Bạn vẫn có thể đổi mẫu thiệp và lời nhắn.",
         "template": "Mẫu thiệp",
+        "templateReused": "Thiệp này dùng lại hình bạn đã tạo trước đó, nên không có mẫu thiệp để đổi - chỉ lời nhắn là thay được.",
         "size": "Kích thước",
         "badge": "Đã khoá",
         "words": "Tối đa {max} từ",
@@ -1885,6 +1887,7 @@
       "pendingBody": "Chúng tôi sẽ kết hợp thiết kế hoa của bạn với {mockup}. Quá trình tạo mẫu chỉ mất một chút thời gian.",
       "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng.",
       "core": "Hoa chính",
+      "quantitySplit": "{base} gốc + {extra} thêm",
       "createdAt": "Đã tạo"
     },
     "session": {

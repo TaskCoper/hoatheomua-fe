@@ -59,7 +59,23 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
 
   const status: OrderCardGenerationStatus = isRegeneratingAiCard ? 'generating' : 'idle'
   const hasChanges = draft.message !== card.content.message || template.templateId !== card.templateId
-  const canGenerate = !isRegeneratingAiCard && !!template.templateId && wordCount > 0 && !isBelowBudget && !isOverBudget
+
+  const isTemplateLocked = !!card.sourceCardId
+
+  /** An empty list means "nothing painted yet" only once it is the server's actual answer. */
+  const hasVersionHistory = !isLoadingVersions && !isVersionsError
+
+  const isFirstRun = hasVersionHistory && versions.length === 0
+
+  // A template is worth insisting on only when the run actually asks for one.
+  const needsTemplate = !isFirstRun && !isTemplateLocked
+  const canGenerate =
+    !isRegeneratingAiCard &&
+    hasVersionHistory &&
+    (!needsTemplate || !!template.templateId) &&
+    wordCount > 0 &&
+    !isBelowBudget &&
+    !isOverBudget
 
   const isSelectedVersion = !!activeVersion && activeVersion.id === selectedVersionId
 
@@ -82,6 +98,8 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   }
 
   const editTemplate = (next: CardTemplate) => {
+    if (isTemplateLocked) return
+
     setTemplate({ templateId: next.id, templateName: next.name, templateImageUrl: next.imageUrl })
   }
 
@@ -114,6 +132,9 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
 
   const generate = ({ onSuccess, onError }: { onSuccess?: () => void; onError?: () => void } = {}) => {
     if (isRegeneratingAiCard) return
+    // Without the card's generations in hand there is no telling a first run from a rerun,
+    // and either guess posts the wrong body.
+    if (!hasVersionHistory) return
     if (wordCount === 0 || isBelowBudget || isOverBudget) {
       setShowMessageError(true)
       return
@@ -124,9 +145,9 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
       {
         orderDetailId: card.orderDetailsId,
         virtualId: card.id,
-        sourceCardId: card.sourceCardId,
-        cardTemplateId: template.templateId,
-        messageContent: draft.message
+        sourceCardId: isFirstRun ? null : (versions.at(-1)?.id ?? null),
+        cardTemplateId: isFirstRun ? null : template.templateId || null,
+        messageContent: isFirstRun ? null : draft.message
       },
       {
         onSuccess: () => {
@@ -159,6 +180,7 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
     showMessageError,
     hasChanges,
     canGenerate,
+    isTemplateLocked,
     isSelectedVersion,
     editContent,
     editTemplate,

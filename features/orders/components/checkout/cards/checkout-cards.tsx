@@ -7,8 +7,10 @@ import type { I18nKey } from '@/lib/i18n/types'
 import { Mail01Icon, PlusSignIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
+import { hasCardConfig } from '../../../cards/card-config'
 import { getLineCardCapacities } from '../../../cards/card-data'
-import type { CheckoutCard, CheckoutCardField, CheckoutCardType, GeneratedCard } from '../../../cards/types'
+import type { CheckoutCard, CheckoutCardField, CheckoutCardType } from '../../../cards/types'
+import { useCardConfig } from '../../../hooks/use-card-config'
 import CheckoutSection, { CheckoutPanel } from '../checkout-section'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 import AiCardForm from './ai-card-form'
@@ -26,21 +28,14 @@ interface ComposerState {
 interface CheckoutCardsProps {
   lines: CheckoutSummaryLine[]
   cards: CheckoutCardField[]
-  generatedCards: GeneratedCard[]
   onSave: (card: CheckoutCard, editingIndex: number | null) => void
   onRemove: (index: number) => void
   readOnly?: boolean
 }
 
-export default function CheckoutCards({
-  lines,
-  cards,
-  generatedCards,
-  onSave,
-  onRemove,
-  readOnly
-}: CheckoutCardsProps) {
+export default function CheckoutCards({ lines, cards, onSave, onRemove, readOnly }: CheckoutCardsProps) {
   const { t } = useTranslation()
+  const { cardConfig } = useCardConfig()
 
   const [composer, setComposer] = useState<ComposerState | null>(null)
   const [isPickingType, setIsPickingType] = useState(false)
@@ -51,20 +46,31 @@ export default function CheckoutCards({
   const editingIndex = composer?.editingIndex ?? null
   const capacities = useMemo(() => getLineCardCapacities(lines, cards, editingIndex), [lines, cards, editingIndex])
 
+  const isCardConfigReady = hasCardConfig(cardConfig)
+
   const unavailableTypes = useMemo(() => {
+    const reasons: Partial<Record<CheckoutCardType, I18nKey>> = {}
+
+    if (!isCardConfigReady) {
+      CARD_TYPES.forEach((type) => {
+        reasons[type] = 'orders.checkout.cards.configUnavailable'
+      })
+
+      return reasons
+    }
+
     const hasEligibleLine = lines.some(isCardEligibleLine)
     const noProductLeft: I18nKey = hasEligibleLine
       ? 'orders.checkout.cards.allProductsTaken'
       : 'orders.checkout.cards.noEligibleProducts'
 
     // Only rendered while no card is open, so the capacities already count every saved card.
-    const reasons: Partial<Record<CheckoutCardType, I18nKey>> = {}
     CARD_TYPES.forEach((type) => {
       if (!lines.some((line) => isLineOpenForCard(line, capacities, type))) reasons[type] = noProductLeft
     })
 
     return reasons
-  }, [lines, capacities])
+  }, [lines, capacities, isCardConfigReady])
 
   const canAddMore = CARD_TYPES.some((type) => !unavailableTypes[type])
 
@@ -120,14 +126,7 @@ export default function CheckoutCards({
 
       {cards.length > 0 && !composer ? (
         <div className='space-y-1.5'>
-          <CheckoutCardList
-            cards={cards}
-            generatedCards={generatedCards}
-            lines={lines}
-            onEdit={handleEdit}
-            onRemove={onRemove}
-            readOnly={readOnly}
-          />
+          <CheckoutCardList cards={cards} lines={lines} onEdit={handleEdit} onRemove={onRemove} readOnly={readOnly} />
         </div>
       ) : null}
 
@@ -145,7 +144,11 @@ export default function CheckoutCards({
           onClick={() => setIsPickingType(true)}
         >
           <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
-          {canAddMore ? t('orders.checkout.cards.addAnother') : t('orders.checkout.cards.allProductsTaken')}
+          {canAddMore
+            ? t('orders.checkout.cards.addAnother')
+            : isCardConfigReady
+              ? t('orders.checkout.cards.allProductsTaken')
+              : t('orders.checkout.cards.configUnavailable')}
         </Button>
       )}
     </>

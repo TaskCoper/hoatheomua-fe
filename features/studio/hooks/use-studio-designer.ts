@@ -16,7 +16,8 @@ import {
   toStudioProduct,
   toStudioProductOptions,
   toStudioReferenceOptions,
-  toStudioVariantOptions
+  toStudioVariantOptions,
+  toStudioVersionMaterials
 } from '@/features/studio/studio-mappers'
 import type {
   AiFlower,
@@ -108,7 +109,7 @@ export function useStudioDesigner(family: ProductFamily) {
       mockupName: scene?.name ?? '',
       imageUrl: flower.imageUrl ?? scene?.imageUrl ?? variantImage ?? detail.coverImage,
       createdAt: flower.createdAt,
-      materials: flower.metadata.materials,
+      materials: toStudioVersionMaterials(flower.metadata),
       style: styleOptions.find((item) => item.id === body.bundleId) ?? null,
       ribbon: toStudioAiFlowerOption(flower.metadata.ribbon),
       wrap: toStudioAiFlowerOption(flower.metadata.wrappingPaper)

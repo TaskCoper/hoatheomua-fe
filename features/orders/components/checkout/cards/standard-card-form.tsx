@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { GiftIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
-import { getCardMaxWords } from '../../../cards/card-config'
+import { getLargestCardMaxWords } from '../../../cards/card-config'
 import {
   DEFAULT_CARD_QUANTITY,
   EMPTY_CARD_CONTENT,
@@ -138,7 +138,7 @@ export default function StandardCardForm({ lines, capacities, initial, onSubmit,
       />
 
       <CardContentFields
-        maxWords={getCardMaxWords(cardConfig, null)}
+        maxWords={getLargestCardMaxWords(cardConfig)}
         value={content}
         onChange={(next) => {
           setContent(next)

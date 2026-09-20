@@ -3,7 +3,12 @@
 import { Badge } from '@/components/ui/badge'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { formatStudioIngredientCounts, formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
+import {
+  formatStudioIngredientCounts,
+  formatStudioPrice,
+  formatStudioQuantity,
+  roundStudioQuantity
+} from '@/features/studio/studio-data'
 import type {
   StudioBouquet,
   StudioGenerationStatus,
@@ -58,17 +63,25 @@ export default function StudioResult({
   const ribbon = version?.ribbon ?? bouquet.ribbon
   const wrap = version?.wrap ?? bouquet.wrap
 
+  // A generated design ships the base recipe plus whatever the customer added on top, so the
+  // row carries the total and the split that produced it.
   const flowers = version?.materials.length
     ? version.materials.map((material) => ({
         id: material.matId,
         name: material.name,
+        baseQuantity: material.baseQuantity,
+        extraQuantity: material.extraQuantity,
         quantity: material.quantity,
         isCore: material.isCore,
-        imageUrl: bouquet.ingredients.find((item) => item.ingredient.id === material.matId)?.ingredient.imageUrl ?? null
+        imageUrl:
+          bouquet.ingredients.find((item) => item.ingredient.id === material.matId)?.ingredient.imageUrl ??
+          material.imageUrl
       }))
-    : bouquet.ingredients.map(({ ingredient, quantity }) => ({
+    : bouquet.ingredients.map(({ ingredient, quantity, extraQuantity }) => ({
         id: ingredient.id,
         name: ingredient.name,
+        baseQuantity: roundStudioQuantity(quantity - extraQuantity),
+        extraQuantity,
         quantity,
         isCore: false,
         imageUrl: ingredient.imageUrl
@@ -204,9 +217,18 @@ export default function StudioResult({
                 <div className='flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5'>
                   <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>{flower.name}</h3>
                   {flower.isCore ? <Badge variant='secondary'>{t('result.core')}</Badge> : null}
-                  <span className='ml-auto shrink-0 text-xs tabular-nums text-muted-foreground'>
-                    ×{formatStudioQuantity(flower.quantity)}
-                  </span>
+
+                  <div className='ml-auto shrink-0 text-right'>
+                    <p className='font-semibold text-muted-foreground'>×{formatStudioQuantity(flower.quantity)}</p>
+                    {flower.extraQuantity > 0 ? (
+                      <p className='text-xs font-medium text-muted-foreground'>
+                        {t('result.quantitySplit', {
+                          base: formatStudioQuantity(flower.baseQuantity),
+                          extra: formatStudioQuantity(flower.extraQuantity)
+                        })}
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
               </article>
             ))}

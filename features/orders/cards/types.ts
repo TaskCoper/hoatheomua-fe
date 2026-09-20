@@ -131,7 +131,6 @@ export interface OrderAiCard {
   id: string
   /** The `OrderItem.orderDetailsId` this card is printed for. */
   orderDetailsId: string
-  /** `snapShotCard.cardId`, sent back as `sourceCardId` when regenerating. */
   sourceCardId: string | null
   /** Only an `'ai'` card is designed here - a handmade one is written by our florist. */
   type: 'ai' | 'handmade'

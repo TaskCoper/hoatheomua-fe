@@ -317,10 +317,9 @@ export interface GetOrderDetailCardsParams {
 export interface RegenerateAiCardPayload {
   orderDetailId: string
   virtualId: string
-  /** `snapShotCard.cardId` - null until the first generation is saved against the card. */
   sourceCardId: string | null
-  cardTemplateId: string
-  messageContent: string
+  cardTemplateId: string | null
+  messageContent: string | null
 }
 
 /**

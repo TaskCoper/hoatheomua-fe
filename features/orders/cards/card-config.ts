@@ -11,23 +11,7 @@ export interface CardConfig {
   priceTiers: CardPriceTier[]
 }
 
-/** Only reached when the CMS has no card config yet - a card must always be priceable. */
-export const DEFAULT_CARD_SIZES: CardSize[] = [
-  { name: 'S', width: 6, height: 9, base_price: 15_000, max_words: 20 },
-  { name: 'M', width: 9, height: 13, base_price: 25_000, max_words: 40 },
-  { name: 'L', width: 13, height: 18, base_price: 40_000, max_words: 70 }
-]
-
-export const DEFAULT_CARD_PRICE_TIERS: CardPriceTier[] = [
-  { min_words: 1, max_words: 20, extra_price: 20_000 },
-  { min_words: 21, max_words: 40, extra_price: 35_000 },
-  { min_words: 41, max_words: 70, extra_price: 50_000 }
-]
-
-export const DEFAULT_CARD_CONFIG: CardConfig = {
-  sizes: DEFAULT_CARD_SIZES,
-  priceTiers: DEFAULT_CARD_PRICE_TIERS
-}
+export const hasCardConfig = (config: CardConfig): boolean => config.sizes.length > 0 && config.priceTiers.length > 0
 
 const asNumber = (value: unknown): number => {
   const numeric = typeof value === 'number' ? value : Number(value)
@@ -99,15 +83,13 @@ export const findCardSize = (config: CardConfig, sizeName: string): CardSize | n
 
 export const getDefaultCardSizeName = (config: CardConfig): string => config.sizes[0]?.name ?? ''
 
-/** A `null` size - the free card has none - is held to the most generous budget. */
-export const getCardMaxWords = (config: CardConfig, sizeName: string | null): number => {
-  if (sizeName !== null) {
-    const size = findCardSize(config, sizeName)
-    if (size) return size.max_words
-  }
+/** The roomiest size the CMS lists - what a card ordered without a size of its own is held to. */
+export const getLargestCardMaxWords = (config: CardConfig): number =>
+  config.sizes.reduce((max, size) => Math.max(max, size.max_words), 0)
 
-  return config.sizes.reduce((max, size) => Math.max(max, size.max_words), 0)
-}
+/** What the card can physically fit. A size the CMS no longer lists falls back to the roomiest. */
+export const getCardMaxWords = (config: CardConfig, sizeName: string): number =>
+  findCardSize(config, sizeName)?.max_words ?? getLargestCardMaxWords(config)
 
 export const getCardSizePrice = (config: CardConfig, sizeName: string): number =>
   findCardSize(config, sizeName)?.base_price ?? 0

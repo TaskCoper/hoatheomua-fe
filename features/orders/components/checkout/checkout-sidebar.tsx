@@ -14,11 +14,10 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { getCheckoutCardPrice } from '../../cards/card-data'
 import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
-import type { CheckoutCardField, GeneratedCard } from '../../cards/types'
+import type { CheckoutCardField } from '../../cards/types'
 import { useCardConfig } from '../../hooks/use-card-config'
 
 const EMPTY_CARDS: CheckoutCardField[] = []
-const EMPTY_GENERATED_CARDS: GeneratedCard[] = []
 
 export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stock' | 'materials'
 
@@ -76,7 +75,6 @@ interface CheckoutSidebarProps {
   showRecap?: boolean
   /** Cards already added, listed under the product each one is attached to. */
   cards?: CheckoutCardField[]
-  generatedCards?: GeneratedCard[]
 }
 
 export default function CheckoutSidebar({
@@ -104,8 +102,7 @@ export default function CheckoutSidebar({
   showTerms = true,
   sticky = true,
   showRecap = true,
-  cards = EMPTY_CARDS,
-  generatedCards = EMPTY_GENERATED_CARDS
+  cards = EMPTY_CARDS
 }: CheckoutSidebarProps) {
   const { t } = useTranslation()
   const [termsAccepted, setTermsAccepted] = useState(true)
@@ -130,7 +127,6 @@ export default function CheckoutSidebar({
                 key={line.lineId}
                 line={line}
                 cards={cards.filter((card) => card.lineId === line.lineId)}
-                generatedCards={generatedCards}
               />
             ))}
           </ul>
@@ -226,15 +222,7 @@ export default function CheckoutSidebar({
   )
 }
 
-function CheckoutLineItem({
-  line,
-  cards,
-  generatedCards
-}: {
-  line: CheckoutSummaryLine
-  cards: CheckoutCardField[]
-  generatedCards: GeneratedCard[]
-}) {
+function CheckoutLineItem({ line, cards }: { line: CheckoutSummaryLine; cards: CheckoutCardField[] }) {
   const { t } = useTranslation()
 
   if (line.isResolving) return <CheckoutLineItemSkeleton />
@@ -272,7 +260,7 @@ function CheckoutLineItem({
         {cards.length > 0 ? (
           <div className='mt-2 space-y-1.5'>
             {cards.map((card) => (
-              <CheckoutCardLine key={card.id} card={card} generatedCards={generatedCards} />
+              <CheckoutCardLine key={card.id} card={card} />
             ))}
           </div>
         ) : null}
@@ -282,15 +270,12 @@ function CheckoutLineItem({
 }
 
 /** Always rendered under the product line the card is printed for, hence the leading `+`. */
-function CheckoutCardLine({ card, generatedCards }: { card: CheckoutCardField; generatedCards: GeneratedCard[] }) {
+function CheckoutCardLine({ card }: { card: CheckoutCardField }) {
   const { t } = useTranslation()
   const { cardConfig } = useCardConfig()
 
-  const generated =
-    card.type === 'history' ? (generatedCards.find((item) => item.id === card.generatedCardId) ?? null) : null
-
-  // A reused card carries its own snapshot; the generations list is only a fallback for older drafts.
-  const templateName = card.type === 'history' ? card.templateName || generated?.templateName : card.templateName
+  // A reused card carries its own snapshot of the generation it was picked from.
+  const templateName = card.templateName
   // The standard card is free, so it has no size to show.
   const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod

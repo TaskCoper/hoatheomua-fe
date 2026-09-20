@@ -7,10 +7,6 @@ import { getOrderDetailCardsQuery } from '../queries'
 
 const NO_VERSIONS: OrderCardVersion[] = []
 
-/**
- * The artworks generated for one card of a line. The API returns no order of its own, so the
- * position in the list is what labels a version - oldest first, the way they were generated.
- */
 export const useOrderCardVersions = ({
   orderDetailsId,
   virtualId,

@@ -875,6 +875,7 @@
         "allProductsTaken": "Every product in this order already carries a card.",
         "noEligibleProductsTitle": "No product available",
         "noEligibleProducts": "None of the products in this order can carry a card.",
+        "configUnavailable": "Card options are not available right now. Please try again in a moment.",
         "writingMethod": "Writing",
         "writing": {
           "typed": "Typed",
@@ -927,6 +928,7 @@
         "heading": "Fixed with your order",
         "note": "The design and the words are still yours to change.",
         "template": "Design",
+        "templateReused": "This card reuses an artwork you already had made, so there is no design to swap - only the words can change.",
         "size": "Size",
         "badge": "Locked",
         "words": "Up to {max} words",
@@ -1885,6 +1887,7 @@
       "pendingBody": "We’ll combine your flower design with {mockup}. Generation takes only a moment.",
       "pendingNote": "AI will create one unique image from these selections. You’ll review the result here before adding it to your bag.",
       "core": "Core",
+      "quantitySplit": "{base} base + {extra} added",
       "createdAt": "Created"
     },
     "session": {

@@ -7,14 +7,15 @@ import {
   CARD_CONFIG_GROUP,
   CARD_PRICES_KEY,
   CARD_SIZES_KEY,
-  DEFAULT_CARD_PRICE_TIERS,
-  DEFAULT_CARD_SIZES,
   parseCardPriceTiers,
   parseCardSizes,
   type CardConfig
 } from '../cards/card-config'
 
-/** Falls back to the built-in ladder on a missing or malformed blob. */
+/**
+ * The CMS is the only source. A missing or malformed blob leaves the config empty rather than
+ * standing in for it - `hasCardConfig` is what callers gate on.
+ */
 export const useCardConfig = () => {
   const { configs, isGettingConfigs } = useGetPublicConfigs<CardConfigItem>({
     group: CARD_CONFIG_GROUP,
@@ -31,8 +32,8 @@ export const useCardConfig = () => {
     const priceTiers = parseCardPriceTiers(configs.find((config) => config.key === CARD_PRICES_KEY)?.value.value)
 
     return {
-      sizes: sizes ?? DEFAULT_CARD_SIZES,
-      priceTiers: priceTiers ?? DEFAULT_CARD_PRICE_TIERS
+      sizes: sizes ?? [],
+      priceTiers: priceTiers ?? []
     }
   }, [configs])
 

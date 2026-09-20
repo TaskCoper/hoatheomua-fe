@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo } from 'react'
 import { useFieldArray, type Control } from 'react-hook-form'
-import { useGeneratedCards } from '../hooks/use-generated-cards'
 import type { CheckoutFormValues } from '../validations'
 import type { CheckoutCard, CheckoutCardField } from './types'
 
@@ -21,7 +20,6 @@ const withQuantity = (card: CheckoutCardField, quantity: number): CheckoutCard =
 
 export const useCheckoutCards = ({ control, lines }: UseCheckoutCardsArgs) => {
   const { fields, append, update, remove } = useFieldArray({ control, name: 'cards' })
-  const { generatedCards } = useGeneratedCards()
 
   const quantityByLineId = useMemo(() => new Map(lines.map((line) => [line.lineId, line.quantity])), [lines])
 
@@ -65,5 +63,5 @@ export const useCheckoutCards = ({ control, lines }: UseCheckoutCardsArgs) => {
     [append, update]
   )
 
-  return { cards: fields, generatedCards, saveCard, removeCard: remove }
+  return { cards: fields, saveCard, removeCard: remove }
 }

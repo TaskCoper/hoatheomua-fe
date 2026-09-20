@@ -53,20 +53,20 @@ export interface StudioMockupExample {
   title: string
 }
 
-export interface StudioMockup {
-  id: string
-  name: string
-  description: string
-  moods: string[]
-  imageUrl: string
-  story: string
-  examples: StudioMockupExample[]
-}
-
 export interface StudioScene extends StudioOption {
   story?: string | null
   moods?: string[]
   examples?: StudioMockupExample[]
+}
+
+export interface StudioVersionMaterial {
+  matId: string
+  name: string
+  isCore: boolean
+  imageUrl: string | null
+  baseQuantity: number
+  extraQuantity: number
+  quantity: number
 }
 
 export interface StudioVersion {
@@ -78,7 +78,7 @@ export interface StudioVersion {
   mockupName: string
   imageUrl: string | null
   createdAt: string | null
-  materials: AiFlowerMaterial[]
+  materials: StudioVersionMaterial[]
   style: StudioOption | null
   ribbon: StudioOption | null
   wrap: StudioOption | null
@@ -94,17 +94,6 @@ export interface StudioGenerationSession {
   createdAt: string
   versionCount: number
   isFinished: boolean
-}
-
-export interface StudioGeneration {
-  id: string
-  name: string
-  productId: string
-  productName: string
-  mockupId: string
-  mockupName: string
-  imageUrl: string
-  createdAt: string
 }
 
 export interface AiFlowerMaterialTotal {
@@ -143,6 +132,7 @@ export interface AiFlowerProductRef {
 export interface AiFlowerMaterial extends AiFlowerMaterialTotal {
   name: string
   isCore: boolean
+  coverImage: string | null
 }
 
 export interface AiFlowerMetadata {
@@ -150,7 +140,7 @@ export interface AiFlowerMetadata {
   aiCustomize: boolean
   ribbon: AiFlowerProductRef | null
   wrappingPaper: AiFlowerProductRef | null
-  AdditionCustome: unknown[]
+  AdditionCustome: AiFlowerMaterial[]
   materials: AiFlowerMaterial[]
 }
 

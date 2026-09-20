@@ -9,7 +9,7 @@ import { LocationUser01Icon, Mail01Icon, Motorbike02Icon, PenIcon, Wallet01Icon 
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import type { ReactNode } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
-import type { CheckoutCard, CheckoutCardField, GeneratedCard } from '../../cards/types'
+import type { CheckoutCard, CheckoutCardField } from '../../cards/types'
 import { localizedMethodText, type CheckoutDeliveryOption, type CheckoutPaymentOption } from '../../checkout-methods'
 import { InvoiceType } from '../../types'
 import type { CheckoutFormValues } from '../../validations'
@@ -21,7 +21,6 @@ import type { CheckoutStep } from './checkout-stepper'
 interface StepReviewProps {
   lines: CheckoutSummaryLine[]
   cards: CheckoutCardField[]
-  generatedCards: GeneratedCard[]
   onSaveCard: (card: CheckoutCard, editingIndex: number | null) => void
   onRemoveCard: (index: number) => void
   deliveryMethod: CheckoutDeliveryOption | null
@@ -34,7 +33,6 @@ interface StepReviewProps {
 export default function StepReview({
   lines,
   cards,
-  generatedCards,
   onSaveCard,
   onRemoveCard,
   deliveryMethod,
@@ -113,14 +111,7 @@ export default function StepReview({
       </ReviewSection>
 
       {cards.length > 0 ? (
-        <CheckoutCards
-          lines={lines}
-          cards={cards}
-          generatedCards={generatedCards}
-          onSave={onSaveCard}
-          onRemove={onRemoveCard}
-          readOnly
-        />
+        <CheckoutCards lines={lines} cards={cards} onSave={onSaveCard} onRemove={onRemoveCard} readOnly />
       ) : (
         <ReviewSection icon={Mail01Icon} title={t('orders.checkout.cards.heading')} onEdit={() => onEditStep(2)}>
           <p className='text-xs text-muted-foreground'>{t('orders.checkout.cards.reviewEmpty')}</p>

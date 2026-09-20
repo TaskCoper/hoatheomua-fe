@@ -19,11 +19,11 @@ import { toast } from 'sonner'
 import { getCardsTotal } from '../../cards/card-data'
 import { useCheckoutCards } from '../../cards/use-checkout-cards'
 import { localizedMethodText } from '../../checkout-methods'
+import { useCardConfig } from '../../hooks/use-card-config'
 import { useCheckoutAddressSelection } from '../../hooks/use-checkout-address-selection'
 import { useCheckoutDeliveryMethods } from '../../hooks/use-checkout-delivery-methods'
 import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
 import { useCheckoutPaymentMethods } from '../../hooks/use-checkout-payment-methods'
-import { useCardConfig } from '../../hooks/use-card-config'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
@@ -177,7 +177,7 @@ export default function CheckoutClient() {
   const hasTaxCode = !!(watchedIsExportInvoice && watchedTaxCode?.trim())
 
   const { cardConfig } = useCardConfig()
-  const { cards, generatedCards, saveCard, removeCard } = useCheckoutCards({ control: methods.control, lines: items })
+  const { cards, saveCard, removeCard } = useCheckoutCards({ control: methods.control, lines: items })
   const cardsTotal = useMemo(() => getCardsTotal(cards, cardConfig), [cards, cardConfig])
 
   const { summaryLines, unavailableLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } =
@@ -278,8 +278,7 @@ export default function CheckoutClient() {
     grandTotal,
     action: sidebarAction,
     showTerms: step === 4,
-    cards,
-    generatedCards
+    cards
   }
 
   return (
@@ -368,13 +367,7 @@ export default function CheckoutClient() {
                     onSelectDeliveryMethod={handleSelectDeliveryMethod}
                   />
                 ) : step === 2 ? (
-                  <CheckoutCards
-                    lines={summaryLines}
-                    cards={cards}
-                    generatedCards={generatedCards}
-                    onSave={saveCard}
-                    onRemove={removeCard}
-                  />
+                  <CheckoutCards lines={summaryLines} cards={cards} onSave={saveCard} onRemove={removeCard} />
                 ) : step === 3 ? (
                   <StepPayment
                     paymentMethods={paymentMethods}
@@ -390,7 +383,6 @@ export default function CheckoutClient() {
                   <StepReview
                     lines={summaryLines}
                     cards={cards}
-                    generatedCards={generatedCards}
                     onSaveCard={saveCard}
                     onRemoveCard={removeCard}
                     deliveryMethod={selectedDeliveryMethod}

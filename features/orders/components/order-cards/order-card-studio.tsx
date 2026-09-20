@@ -53,6 +53,7 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
     showMessageError,
     hasChanges,
     canGenerate,
+    isTemplateLocked,
     isSelectedVersion,
     editContent,
     editTemplate,
@@ -208,15 +209,22 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
             maxWords={card.maxWords}
           />
 
-          <CardTemplatePicker
-            templates={templates}
-            isLoading={isGettingCardTemplates}
-            isLoadingMore={isGettingMoreCardTemplates}
-            hasMore={hasMoreCardTemplates}
-            onLoadMore={loadMoreCardTemplates}
-            value={template.templateId}
-            onChange={editTemplate}
-          />
+          {/* A reused card is its artwork - there is no design to pick, so the picker stays shut. */}
+          {isTemplateLocked ? (
+            <p className='rounded-2xl bg-secondary/20 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground ring-1 ring-foreground/5'>
+              {t('orders.cards.locked.templateReused')}
+            </p>
+          ) : (
+            <CardTemplatePicker
+              templates={templates}
+              isLoading={isGettingCardTemplates}
+              isLoadingMore={isGettingMoreCardTemplates}
+              hasMore={hasMoreCardTemplates}
+              onLoadMore={loadMoreCardTemplates}
+              value={template.templateId}
+              onChange={editTemplate}
+            />
+          )}
 
           <CardContentFields
             value={content}

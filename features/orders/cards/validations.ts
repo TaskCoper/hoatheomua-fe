@@ -1,6 +1,6 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import z from 'zod'
-import { countWords, getCardMaxWords, type CardConfig } from './card-config'
+import { countWords, getCardMaxWords, getLargestCardMaxWords, type CardConfig } from './card-config'
 import { CARD_MAX_QUANTITY } from './card-data'
 import type { CheckoutCard } from './types'
 
@@ -62,8 +62,9 @@ export const createCheckoutCardSchema = (t: TranslationFunction, config: CardCon
       })
     ])
     .superRefine((card, ctx) => {
-      // The free card has no size, so it is held to the most generous budget.
-      const maxWords = getCardMaxWords(config, card.type === 'standard' ? null : card.sizeName)
+      // The free card has no size to pick, so it is held to the roomiest one the CMS lists.
+      const maxWords =
+        card.type === 'standard' ? getLargestCardMaxWords(config) : getCardMaxWords(config, card.sizeName)
       if (maxWords <= 0) return
 
       if (countWords(card.content.message) > maxWords) {

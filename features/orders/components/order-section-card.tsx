@@ -17,7 +17,7 @@ export default function OrderSectionCard({ icon, title, aside, className, childr
         className
       )}
     >
-      <header className='flex items-center justify-between gap-3 border-b border-border/70 pb-3'>
+      <header className='flex items-center justify-between gap-3 border-b border-border/70 pb-3 mb-4'>
         <div className='flex items-center gap-2'>
           <span className='grid size-8 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
             <HugeiconsIcon icon={icon} strokeWidth={1.75} className='size-4' />
