@@ -1,6 +1,12 @@
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import { GetProductsParams } from './hooks/use-get-products'
-import type { CoreMaterialShortage, ProductDetail, ProductSellableQuantity, ProductSummary } from './types'
+import type {
+  CoreMaterialShortage,
+  ProductDetail,
+  ProductFamily,
+  ProductSellableQuantity,
+  ProductSummary
+} from './types'
 
 export interface CoreProductCheckItem {
   productId: string
@@ -46,6 +52,12 @@ class ProductService {
 
   getProduct = async ({ id }: { id: string }) => {
     const { data } = await api.get<BaseResponse<ProductDetail>>(`/v1/${this.baseUrl}/${id}`)
+
+    return data.value
+  }
+
+  getProductFamily = async ({ id }: { id: string }) => {
+    const { data } = await api.get<BaseResponse<ProductFamily>>(`/v1/${this.baseUrl}/${id}/family`)
 
     return data.value
   }

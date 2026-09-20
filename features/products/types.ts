@@ -287,7 +287,20 @@ export interface ProductMaterial {
   price: number
 }
 
-/** Slim product shape from `GET /v2/products/{id}/detail` - just enough to render a cart/order line. */
+export interface ProductFamilyMember {
+  id: string
+  productName: string | null
+  coverImage: string | null
+  description: string | null
+  price: number | null
+  materials: ProductMaterial[] | null
+}
+
+export interface ProductFamily {
+  parent: ProductFamilyMember
+  children: ProductFamilyMember[] | null
+}
+
 export interface ProductSummary {
   id: string
   productName: string | null

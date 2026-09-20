@@ -1,7 +1,7 @@
 'use client'
 
-import { productDetailQuery } from '@/features/products/queries'
-import type { ProductDetail } from '@/features/products/types'
+import { productFamilyQuery } from '@/features/products/queries'
+import type { ProductFamilyMember } from '@/features/products/types'
 import { generatedFlowersQuery } from '@/features/studio/hooks/use-get-generated-flowers'
 import {
   toStudioIngredients,
@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 
 export const useStudioSession = ({ productId, sessionId }: { productId: string; sessionId: string }) => {
-  const { data: detail, isPending: isGettingProduct, isError: isProductError } = useQuery(productDetailQuery(productId))
+  const { data: family, isPending: isGettingProduct, isError: isProductError } = useQuery(productFamilyQuery(productId))
   const {
     data: page,
     isPending: isGettingSession,
@@ -33,9 +33,10 @@ export const useStudioSession = ({ productId, sessionId }: { productId: string; 
   // The session opens on the image it finished on; the carousel walks back from there.
   const activeVersion = versions.find((item) => item.id === selectedVersionId) ?? versions[versions.length - 1]
 
+  const detail = family?.parent
   const variants = useMemo(
-    () => (detail?.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id)),
-    [detail?.children]
+    () => (family?.children ?? []).filter((child): child is ProductFamilyMember => Boolean(child?.id)),
+    [family?.children]
   )
   const selectedDetail = variants.find((variant) => variant.id === activeVersion?.productId) ?? detail
   const product = useMemo(

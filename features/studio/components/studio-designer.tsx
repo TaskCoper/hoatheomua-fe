@@ -1,6 +1,6 @@
 'use client'
 
-import type { ProductDetail } from '@/features/products/types'
+import type { ProductFamily } from '@/features/products/types'
 import StudioComposeStep from '@/features/studio/components/studio-compose-step'
 import StudioDesktopNav from '@/features/studio/components/studio-desktop-nav'
 import StudioHeader from '@/features/studio/components/studio-header'
@@ -17,7 +17,7 @@ import { useStudioDesigner } from '@/features/studio/hooks/use-studio-designer'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 
-export default function StudioDesigner({ product: detail }: { product: ProductDetail }) {
+export default function StudioDesigner({ family }: { family: ProductFamily }) {
   const t = useTranslations('studio')
   const [sceneOpen, setSceneOpen] = useState(false)
   const {
@@ -74,7 +74,7 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
     selectWrap,
     selectVersion,
     startGeneration
-  } = useStudioDesigner(detail)
+  } = useStudioDesigner(family)
 
   const canContinue = step === 1 ? nameValid : step === 2 ? true : Boolean(selectedMockupId)
   const addToBag = () => setAdded(true)

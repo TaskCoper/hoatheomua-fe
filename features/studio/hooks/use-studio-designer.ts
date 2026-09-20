@@ -1,7 +1,7 @@
 'use client'
 
 import { useGetInfiniteProducts } from '@/features/products/hooks/use-get-infinite-products'
-import type { ProductDetail } from '@/features/products/types'
+import type { ProductFamily, ProductFamilyMember } from '@/features/products/types'
 import { useCreateAiFlower } from '@/features/studio/hooks/use-create-ai-flower'
 import {
   roundStudioQuantity,
@@ -31,12 +31,13 @@ import { useRouter } from '@/lib/i18n/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useWatch } from 'react-hook-form'
 
-export function useStudioDesigner(detail: ProductDetail) {
+export function useStudioDesigner(family: ProductFamily) {
   const router = useRouter()
 
+  const detail = family.parent
   const variants = useMemo(
-    () => (detail.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id)),
-    [detail.children]
+    () => (family.children ?? []).filter((child): child is ProductFamilyMember => Boolean(child?.id)),
+    [family.children]
   )
   const variantOptions = useMemo(() => toStudioVariantOptions(variants), [variants])
   const defaultDetail = variants[0] ?? detail

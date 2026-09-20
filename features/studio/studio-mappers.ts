@@ -1,4 +1,4 @@
-import type { ProductDetail, ProductMaterial } from '@/features/products/types'
+import type { ProductDetail, ProductFamilyMember, ProductMaterial } from '@/features/products/types'
 import {
   roundStudioQuantity,
   STUDIO_DECIMAL_QUANTITY_STEP,
@@ -23,7 +23,7 @@ import type {
 import type { StudioFormValues } from '@/features/studio/validations'
 import type { ReferenceFlower } from '@/services/reference-flower.service'
 
-export const toStudioProduct = (product: ProductDetail, parent?: ProductDetail): StudioProduct => ({
+export const toStudioProduct = (product: ProductFamilyMember, parent?: ProductFamilyMember): StudioProduct => ({
   id: product.id,
   name: product.productName?.trim() || parent?.productName?.trim() || '',
   note: product.description?.trim() || parent?.description?.trim() || null,
@@ -70,19 +70,14 @@ export const toStudioProductOptions = (products: ProductDetail[] | null | undefi
 export const toStudioReferenceOptions = (flowers: ReferenceFlower[] | null | undefined): StudioOption[] =>
   (flowers ?? []).flatMap((flower) => toStudioOption(flower.id, flower.name, flower.description, flower.imageUrl))
 
-export const toStudioVariantOptions = (variants: ProductDetail[]): StudioVariant[] =>
-  variants.map((variant) => {
-    const name = variant.productName?.trim()
-    const traits = [variant.size, variant.color].filter((part): part is string => Boolean(part?.trim())).join(' · ')
-
-    return {
-      id: variant.id,
-      name: name || traits || variant.productCode?.trim() || variant.id,
-      description: variant.description?.trim() || null,
-      imageUrl: variant.coverImage,
-      priceAmount: variant.price
-    }
-  })
+export const toStudioVariantOptions = (variants: ProductFamilyMember[]): StudioVariant[] =>
+  variants.map((variant) => ({
+    id: variant.id,
+    name: variant.productName?.trim() || variant.id,
+    description: variant.description?.trim() || null,
+    imageUrl: variant.coverImage,
+    priceAmount: variant.price
+  }))
 
 export const toCreateAiFlowerPayload = (values: StudioFormValues): CreateAiFlowerPayload => ({
   name: values.name.trim(),
