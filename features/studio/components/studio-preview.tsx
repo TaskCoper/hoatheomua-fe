@@ -64,7 +64,7 @@ export default function StudioPreview({
   const complete = step === STUDIO_LAST_STEP && status === 'complete'
 
   const hero = (() => {
-    if (step <= 2)
+    if (step <= 4)
       return {
         src: product.imageUrl,
         alt: product.name,
@@ -79,7 +79,7 @@ export default function StudioPreview({
     return { src: '/images/about/studio-flatlay.png', alt: t('preview.workTableAlt'), object: 'object-cover' }
   })()
 
-  const overlayProduct = productOverlay && !showVersions && step > 1 && mockup && mockup.imageUrl !== product.imageUrl
+  const overlayProduct = productOverlay && !showVersions && step > 4 && mockup && mockup.imageUrl !== product.imageUrl
 
   const stageLabel =
     step === 1
