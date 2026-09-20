@@ -385,7 +385,7 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
               </OrderSectionCard>
             ) : null}
 
-            <OrderItemsSection items={items} />
+            <OrderItemsSection items={items} canDesignCards={isPaid} />
 
             <OrderSectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm pt-4'>

@@ -14,10 +14,12 @@ import OrderSectionCard from './order-section-card'
 
 interface OrderItemsSectionProps {
   items: OrderItem[]
+  /** Only a paid order opens the card studio; before that the cards are read-only. */
+  canDesignCards: boolean
 }
 
 /** The ordered products, each one unfolding the cards printed for it. */
-export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
+export default function OrderItemsSection({ items, canDesignCards }: OrderItemsSectionProps) {
   const { t } = useTranslation()
   const { cards } = useOrderAiCards(items)
 
@@ -98,6 +100,7 @@ export default function OrderItemsSection({ items }: OrderItemsSectionProps) {
                       key={card.id}
                       card={card}
                       label={t('orders.cards.cardIndex', { index: card.unit })}
+                      canDesign={canDesignCards}
                     />
                   ))}
                 </ul>
