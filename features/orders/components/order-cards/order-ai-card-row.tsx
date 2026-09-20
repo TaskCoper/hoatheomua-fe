@@ -13,9 +13,11 @@ interface OrderAiCardRowProps {
   card: OrderAiCard
   /** Where this card sits among the ones printed for the same item. */
   label: string
+  /** Designing is a paid-order privilege; elsewhere the row is read-only. */
+  canDesign: boolean
 }
 
-export default function OrderAiCardRow({ card, label }: OrderAiCardRowProps) {
+export default function OrderAiCardRow({ card, label, canDesign }: OrderAiCardRowProps) {
   const { t } = useTranslation()
   const [isStudioOpen, setIsStudioOpen] = useState(false)
 
@@ -47,8 +49,9 @@ export default function OrderAiCardRow({ card, label }: OrderAiCardRowProps) {
   )
 
   // A handmade card is written by the florist - there is nothing to design, so the row is
-  // a plain line rather than a dead button.
-  if (card.type === 'handmade') {
+  // a plain line rather than a dead button. An unpaid order reads the same way: the design
+  // that was ordered is on show, but the studio only opens once the order is paid.
+  if (card.type === 'handmade' || !canDesign) {
     return <li className='flex w-full items-center gap-2.5 px-2 py-1.5'>{preview}</li>
   }
 

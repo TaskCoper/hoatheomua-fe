@@ -83,7 +83,7 @@ const toOrderCardPayload = (card: CheckoutCard): OrderCardPayload => ({
   sourceGeneratedCardId: card.type === 'history' ? card.generatedCardId : null
 })
 
-/** One bouquet per carded unit; a line with no cards sends none. */
+/** One bouquet per carded unit; a line with no cards sends none of its own. */
 const buildBouquetsByLineId = (cards: CheckoutCard[]): Map<string, OrderBouquetPayload[]> => {
   const bouquets = new Map<string, OrderBouquetPayload[]>()
 
@@ -119,12 +119,19 @@ export const buildCheckoutPayload = (
     const bouquets = bouquetsByLineId.get(line.lineId) ?? []
     const generatedFlowerId = line.aiFlower?.generatedFlowerId
 
-    // A bouquet designed in the studio says which design it is. TODO(backend): a design
-    // ordered without a card sends no bouquet at all, so the id has nowhere to ride.
-    return {
-      ...item,
-      bouquets: generatedFlowerId ? bouquets.map((bouquet) => ({ ...bouquet, generatedFlowerId })) : bouquets
+    if (!generatedFlowerId) {
+      return { ...item, bouquets }
     }
+
+    // The design has nowhere to ride but its bouquets, so every unit of a studio line sends
+    // one - the units nobody carded included. A line bought three times is three of that design.
+    const designed: OrderBouquetPayload[] = bouquets.map((bouquet) => ({ ...bouquet, generatedFlowerId }))
+
+    for (let unit = designed.length; unit < line.quantity; unit++) {
+      designed.push({ generatedFlowerId, card: null })
+    }
+
+    return { ...item, bouquets: designed }
   })
 
   const base = {
