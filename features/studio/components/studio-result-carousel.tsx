@@ -7,7 +7,6 @@ import { ArrowLeft02Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useTranslations } from 'next-intl'
-import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
 const glassClass = 'bg-white/70 text-primary shadow-[0_0.25rem_0.75rem_rgb(28_43_43/10%)] backdrop-blur-md'
@@ -91,23 +90,6 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
                 pendingLabel={tStudio('imagePending')}
                 pendingIconClassName='size-12'
               />
-
-              {product.imageUrl && version.imageUrl !== product.imageUrl ? (
-                <div className='absolute inset-0 flex items-center justify-center px-8 pb-14 pt-8'>
-                  <div className='relative h-full w-full max-w-[28rem] drop-shadow-[0_1.5rem_2.5rem_rgb(28_43_43/30%)]'>
-                    <Image
-                      src={product.imageUrl}
-                      alt=''
-                      fill
-                      sizes='28rem'
-                      className={cn(
-                        'object-contain',
-                        product.imageFit === 'cover' && 'rounded-3xl object-cover opacity-95'
-                      )}
-                    />
-                  </div>
-                </div>
-              ) : null}
             </div>
           ))}
         </div>

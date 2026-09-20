@@ -1689,6 +1689,7 @@
     "steps": {
       "ingredients": "Ingredients",
       "compose": "Compose",
+      "style": "Style",
       "mockup": "Mockup",
       "preview": "Preview",
       "result": "Result"
@@ -1701,7 +1702,9 @@
         "finishing": "Finishing the details"
       },
       "generating": "Generating",
-      "creating": "Creating “{name}”…"
+      "creating": "Creating “{name}”…",
+      "error": "We could not create your image. Please try again.",
+      "noMaterials": "This design has no flowers listed yet, so it cannot be generated."
     },
     "preview": {
       "ariaLabel": "Creation preview",
@@ -1835,7 +1838,25 @@
       "generateAnotherNote": "Go back to your bouquet. Every version you make stays in the preview.",
       "pendingTitle": "Ready when you are.",
       "pendingBody": "We’ll combine your flower design with {mockup}. Generation takes only a moment.",
-      "pendingNote": "AI will create one unique image from these selections. You’ll review the result here before adding it to your bag."
+      "pendingNote": "AI will create one unique image from these selections. You’ll review the result here before adding it to your bag.",
+      "core": "Core",
+      "createdAt": "Created"
+    },
+    "session": {
+      "loading": "Opening your session...",
+      "backToStudio": "Back to the studio",
+      "emptyTitle": "This session has no images yet.",
+      "emptyBody": "Nothing was generated in this sitting, or it is still being created. Head back to the studio and generate a version."
+    },
+    "regenerate": {
+      "title": "Regenerate this creation",
+      "note": "A regenerate keeps the bouquet exactly as it is. Only the style and the scene are yours to change.",
+      "cta": "Regenerate this creation",
+      "ctaNote": "Pick a new style or scene and then choose your favorite version.",
+      "lockedTitle": "Fixed for this session",
+      "lockedNote": "These were set when the design was first generated, and a regenerate cannot change them.",
+      "submit": "Regenerate",
+      "submitting": "Regenerating…"
     },
     "versions": {
       "ariaLabel": "Your generated versions",

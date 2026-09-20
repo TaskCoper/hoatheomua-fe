@@ -1689,6 +1689,7 @@
     "steps": {
       "ingredients": "Nguyên liệu",
       "compose": "Bó hoa",
+      "style": "Kiểu dáng",
       "mockup": "Bối cảnh",
       "preview": "Xem lại",
       "result": "Kết quả"
@@ -1701,7 +1702,9 @@
         "finishing": "Đang hoàn thiện chi tiết"
       },
       "generating": "Đang tạo",
-      "creating": "Đang tạo “{name}”…"
+      "creating": "Đang tạo “{name}”…",
+      "error": "Chúng tôi chưa tạo được hình ảnh của bạn. Vui lòng thử lại.",
+      "noMaterials": "Thiết kế này chưa có danh sách hoa nên chưa thể tạo ảnh."
     },
     "preview": {
       "ariaLabel": "Xem trước tác phẩm",
@@ -1835,7 +1838,25 @@
       "generateAnotherNote": "Quay lại bó hoa của bạn. Mọi phiên bản bạn tạo đều được giữ trong bản xem trước.",
       "pendingTitle": "Sẵn sàng khi bạn muốn.",
       "pendingBody": "Chúng tôi sẽ kết hợp thiết kế hoa của bạn với {mockup}. Quá trình tạo mẫu chỉ mất một chút thời gian.",
-      "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng."
+      "pendingNote": "AI sẽ tạo ra một hình ảnh độc nhất từ những lựa chọn này. Bạn sẽ xem lại kết quả tại đây trước khi thêm vào giỏ hàng.",
+      "core": "Hoa chính",
+      "createdAt": "Đã tạo"
+    },
+    "session": {
+      "loading": "Đang mở phiên của bạn...",
+      "backToStudio": "Quay lại xưởng thiết kế",
+      "emptyTitle": "Phiên này chưa có hình ảnh nào.",
+      "emptyBody": "Chưa có phiên bản nào được tạo trong phiên này, hoặc ảnh vẫn đang được tạo. Hãy quay lại xưởng thiết kế và tạo một phiên bản."
+    },
+    "regenerate": {
+      "title": "Tạo lại tác phẩm này",
+      "note": "Khi tạo lại, bó hoa được giữ nguyên. Bạn chỉ có thể đổi kiểu dáng và bối cảnh.",
+      "cta": "Tạo lại tác phẩm này",
+      "ctaNote": "Chọn kiểu dáng hoặc bối cảnh mới sau đó lựa chọn phiên bản bạn ưng ý nhất.",
+      "lockedTitle": "Cố định trong phiên này",
+      "lockedNote": "Những lựa chọn này được đặt khi thiết kế được tạo lần đầu và không thể thay đổi khi tạo lại.",
+      "submit": "Tạo lại",
+      "submitting": "Đang tạo lại…"
     },
     "versions": {
       "ariaLabel": "Các phiên bản bạn đã tạo",

@@ -73,9 +73,15 @@ export interface StudioVersion {
   id: string
   label: number
   name: string
+  productId: string
   mockupId: string
   mockupName: string
   imageUrl: string | null
+  createdAt: string | null
+  materials: AiFlowerMaterial[]
+  style: StudioOption | null
+  ribbon: StudioOption | null
+  wrap: StudioOption | null
 }
 
 export interface StudioGeneration {
@@ -87,4 +93,97 @@ export interface StudioGeneration {
   mockupName: string
   imageUrl: string
   createdAt: string
+}
+
+export interface AiFlowerMaterialTotal {
+  matId: string
+  quantity: number
+}
+
+export interface CreateAiFlowerPayload {
+  name: string
+  productId: string
+  materialTotals: AiFlowerMaterialTotal[]
+  bundleId: string
+  mockupId: string
+  ribbonProductId: string
+  wrappingPaperProductId: string
+}
+
+export interface RegenerateAiFlowerPayload {
+  bundleId: string
+  mockupId: string
+}
+
+export interface AiFlowerProductRef {
+  id: string
+  name: string
+  attributes: {
+    productCode: string | null
+    productType: string | null
+    size: string | null
+    color: string | null
+  }
+  image: { url: string | null }
+  observedStatus: { isActive: boolean; isDeleted: boolean }
+}
+
+export interface AiFlowerMaterial extends AiFlowerMaterialTotal {
+  name: string
+  isCore: boolean
+}
+
+export interface AiFlowerMetadata {
+  subId: string
+  aiCustomize: boolean
+  ribbon: AiFlowerProductRef | null
+  wrappingPaper: AiFlowerProductRef | null
+  AdditionCustome: unknown[]
+  materials: AiFlowerMaterial[]
+}
+
+export interface AiFlower {
+  id: string
+  sessionId: string
+  name: string
+  imageUrl: string | null
+  metadata: AiFlowerMetadata
+  createdAt: string
+}
+
+export interface GeneratedFlowerRef {
+  id: string
+  name: string | null
+  imageUrl: string | null
+}
+
+export interface GeneratedFlower {
+  id: string
+  historyId: string
+  operation: string
+  regeneratedFromFlowerId: string | null
+  productId: string
+  rootProductId: string
+  name: string
+  imageUrl: string | null
+  userId: string
+  createdAt: string
+  product: GeneratedFlowerRef | null
+  bundle: GeneratedFlowerRef | null
+  mockup: GeneratedFlowerRef | null
+  ribbon: GeneratedFlowerRef | null
+  wrappingPaper: GeneratedFlowerRef | null
+  metadata: AiFlowerMetadata
+}
+
+export interface GeneratedFlowerSession {
+  sessionId: string
+  latestCreatedAt: string
+  flowers: GeneratedFlower[]
+}
+
+export interface GetGeneratedFlowersParams {
+  sessionId?: string
+  pageIndex?: number
+  pageSize?: number
 }

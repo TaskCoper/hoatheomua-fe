@@ -1,9 +1,17 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { formatStudioIngredientCounts, formatStudioPrice } from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioGenerationStatus, StudioProduct, StudioScene } from '@/features/studio/types'
+import { formatStudioIngredientCounts, formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
+import type {
+  StudioBouquet,
+  StudioGenerationStatus,
+  StudioProduct,
+  StudioScene,
+  StudioVersion
+} from '@/features/studio/types'
+import { useDateFormat } from '@/lib/date'
 import { cn } from '@/shared/utils'
 import { ArrowRight02Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -22,7 +30,9 @@ interface StudioResultProps {
   designName: string
   status: StudioGenerationStatus
   actions?: ReactNode
-  versionLabel?: number
+  version?: StudioVersion
+  createAnotherTitle?: string
+  createAnotherNote?: string
   onCreateAnother: () => void
 }
 
@@ -33,20 +43,43 @@ export default function StudioResult({
   designName,
   status,
   actions,
-  versionLabel,
+  version,
+  createAnotherTitle,
+  createAnotherNote,
   onCreateAnother
 }: StudioResultProps) {
   const t = useTranslations('studio')
   const tScene = useTranslations('studio.scene')
   const tCompose = useTranslations('studio.compose')
+  const { formatDateTime } = useDateFormat()
   const complete = status === 'complete'
+
+  const style = version?.style ?? bouquet.style
+  const ribbon = version?.ribbon ?? bouquet.ribbon
+  const wrap = version?.wrap ?? bouquet.wrap
+
+  const flowers = version?.materials.length
+    ? version.materials.map((material) => ({
+        id: material.matId,
+        name: material.name,
+        quantity: material.quantity,
+        isCore: material.isCore,
+        imageUrl: bouquet.ingredients.find((item) => item.ingredient.id === material.matId)?.ingredient.imageUrl ?? null
+      }))
+    : bouquet.ingredients.map(({ ingredient, quantity }) => ({
+        id: ingredient.id,
+        name: ingredient.name,
+        quantity,
+        isCore: false,
+        imageUrl: ingredient.imageUrl
+      }))
 
   return (
     <article className='animate-in fade-in slide-in-from-right-2 duration-500'>
       <header className='mt-7'>
         <p className={cn(microLabelClass, 'text-xs')}>
           {t('result.eyebrow')}
-          {versionLabel ? ` · ${t('versions.short', { index: versionLabel })}` : ''}
+          {version ? ` · ${t('versions.short', { index: version.label })}` : ''}
         </p>
         <h1 className='text-pretty font-title text-5xl font-bold leading-tight text-primary'>“{designName}”</h1>
         <p className='text-xs text-muted-foreground'>
@@ -75,15 +108,15 @@ export default function StudioResult({
             ) : null}
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('style.label')}</dt>
-              <dd className={detailValueClass}>{bouquet.style?.name}</dd>
+              <dd className={detailValueClass}>{style?.name}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('ribbon.label')}</dt>
-              <dd className={detailValueClass}>{bouquet.ribbon?.name}</dd>
+              <dd className={detailValueClass}>{ribbon?.name}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('wrap.label')}</dt>
-              <dd className={detailValueClass}>{bouquet.wrap?.name}</dd>
+              <dd className={detailValueClass}>{wrap?.name}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('result.mockup')}</dt>
@@ -102,6 +135,14 @@ export default function StudioResult({
                 )}
               </dd>
             </div>
+
+            {version?.createdAt ? (
+              <div className={detailRowClass}>
+                <dt className={detailTermClass}>{t('result.createdAt')}</dt>
+                <dd className={detailValueClass}>{formatDateTime(version.createdAt, 'dateTimeMedium')}</dd>
+              </div>
+            ) : null}
+
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('result.price')}</dt>
               <dd className='font-title text-lg font-bold leading-none text-primary'>
@@ -123,10 +164,10 @@ export default function StudioResult({
 
             <span className='min-w-0 flex-1'>
               <span className='block text-pretty font-title text-lg font-bold leading-snug text-primary'>
-                {t('result.generateAnother')}
+                {createAnotherTitle ?? t('result.generateAnother')}
               </span>
               <span className='block text-xs leading-relaxed text-muted-foreground'>
-                {t('result.generateAnotherNote')}
+                {createAnotherNote ?? t('result.generateAnotherNote')}
               </span>
             </span>
 
@@ -138,20 +179,20 @@ export default function StudioResult({
         ) : null}
       </section>
 
-      {bouquet.ingredients.length > 0 ? (
+      {flowers.length > 0 ? (
         <section className='mt-14'>
           <StudioStepHeading
             title={t('review.flowersTitle')}
-            description={t('review.flowersNote', { count: bouquet.ingredients.length, name: product.name })}
+            description={t('review.flowersNote', { count: flowers.length, name: product.name })}
           />
 
           <div className='mt-6 flex flex-col gap-8'>
-            {bouquet.ingredients.map(({ ingredient }) => (
-              <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
+            {flowers.map((flower) => (
+              <article key={flower.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
                 <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
                   <StudioImage
-                    src={ingredient.imageUrl}
-                    alt={ingredient.name}
+                    src={flower.imageUrl}
+                    alt={flower.name}
                     fill
                     sizes='(min-width: 1024px) 11rem, (min-width: 640px) 30vw, 100vw'
                     loading='lazy'
@@ -160,10 +201,12 @@ export default function StudioResult({
                   />
                 </div>
 
-                <div className='flex min-w-0 items-center'>
-                  <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>
-                    {ingredient.name}
-                  </h3>
+                <div className='flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5'>
+                  <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>{flower.name}</h3>
+                  {flower.isCore ? <Badge variant='secondary'>{t('result.core')}</Badge> : null}
+                  <span className='ml-auto shrink-0 text-xs tabular-nums text-muted-foreground'>
+                    ×{formatStudioQuantity(flower.quantity)}
+                  </span>
                 </div>
               </article>
             ))}

@@ -30,6 +30,7 @@ interface StudioPreviewProps {
   versions: StudioVersion[]
   activeVersionId: string
   added: boolean
+  productOverlay?: boolean
   onSelectVersion: (version: StudioVersion) => void
   onAddToBag: () => void
 }
@@ -45,6 +46,7 @@ export default function StudioPreview({
   versions,
   activeVersionId,
   added,
+  productOverlay = true,
   onSelectVersion,
   onAddToBag
 }: StudioPreviewProps) {
@@ -71,7 +73,7 @@ export default function StudioPreview({
     return { src: '/images/about/studio-flatlay.png', alt: t('preview.workTableAlt'), object: 'object-cover' }
   })()
 
-  const overlayProduct = !showVersions && step > 1 && mockup && mockup.imageUrl !== product.imageUrl
+  const overlayProduct = productOverlay && !showVersions && step > 1 && mockup && mockup.imageUrl !== product.imageUrl
 
   const stageLabel =
     step === 1

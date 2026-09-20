@@ -23,6 +23,8 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
   const {
     control,
     product,
+    parentProduct,
+    parentIngredients,
     step,
     maxStep,
     generationStatus,
@@ -32,7 +34,6 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
     activeVersionId,
     mockup,
     selectedMockupId,
-    productIngredients,
     variantOptions,
     selectedProductId,
     styleOptions,
@@ -91,7 +92,7 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
 
       <main className='grid flex-1 lg:min-h-[calc(100dvh-5rem)] lg:grid-cols-[minmax(30rem,5fr)_minmax(0,6fr)]'>
         <StudioPreview
-          product={product}
+          product={step === 1 ? parentProduct : product}
           step={step}
           status={generationStatus}
           stage={generationStage}
@@ -110,8 +111,8 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
             {step === 1 ? (
               <StudioIngredientsStep
                 control={control}
-                product={product}
-                ingredients={productIngredients}
+                product={parentProduct}
+                ingredients={parentIngredients}
                 actions={desktopNav}
                 onNameChange={markChanged}
               />
@@ -197,7 +198,7 @@ export default function StudioDesigner({ product: detail }: { product: ProductDe
                 designName={trimmedName}
                 status={generationStatus}
                 actions={desktopNav}
-                versionLabel={versions.find((item) => item.id === activeVersionId)?.label}
+                version={versions.find((item) => item.id === activeVersionId)}
                 onCreateAnother={() => goTo(2)}
               />
             ) : null}

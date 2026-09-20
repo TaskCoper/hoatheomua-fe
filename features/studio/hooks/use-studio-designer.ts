@@ -2,6 +2,7 @@
 
 import { useGetInfiniteProducts } from '@/features/products/hooks/use-get-infinite-products'
 import type { ProductDetail } from '@/features/products/types'
+import { useCreateAiFlower } from '@/features/studio/hooks/use-create-ai-flower'
 import {
   roundStudioQuantity,
   STUDIO_LAST_STEP,
@@ -9,22 +10,29 @@ import {
   STUDIO_WRAP_LABELS
 } from '@/features/studio/studio-data'
 import {
+  toStudioAiFlowerOption,
   toStudioIngredients,
   toStudioProduct,
   toStudioProductOptions,
   toStudioReferenceOptions,
   toStudioVariantOptions
 } from '@/features/studio/studio-mappers'
-import type { StudioBouquet, StudioGenerationStatus, StudioStep, StudioVersion } from '@/features/studio/types'
-import { createStudioSchema, STUDIO_NAME_MAX_LENGTH, type StudioFormValues } from '@/features/studio/validations'
+import type {
+  AiFlower,
+  CreateAiFlowerPayload,
+  StudioBouquet,
+  StudioGenerationStatus,
+  StudioStep,
+  StudioVersion
+} from '@/features/studio/types'
+import { STUDIO_NAME_MAX_LENGTH } from '@/features/studio/validations'
 import { useGetInfiniteReferenceFlowers } from '@/hooks/use-get-infinite-reference-flowers'
-import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from '@/lib/i18n/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useWatch } from 'react-hook-form'
 
 export function useStudioDesigner(detail: ProductDetail) {
-  const { t: tRoot } = useTranslation()
+  const router = useRouter()
 
   const variants = useMemo(
     () => (detail.children ?? []).filter((child): child is ProductDetail => Boolean(child?.id)),
@@ -76,8 +84,7 @@ export function useStudioDesigner(detail: ProductDetail) {
 
   const [step, setStep] = useState<StudioStep>(1)
   const [maxStep, setMaxStep] = useState<StudioStep>(1)
-  const [generationStatus, setGenerationStatus] = useState<StudioGenerationStatus>('idle')
-  const [generationStage, setGenerationStage] = useState(0)
+  const [generated, setGenerated] = useState(false)
   const [saved, setSaved] = useState(false)
   const [added, setAdded] = useState(false)
   const [versions, setVersions] = useState<StudioVersion[]>([])
@@ -85,9 +92,45 @@ export function useStudioDesigner(detail: ProductDetail) {
 
   const versionCount = useRef(0)
 
-  const studioSchema = useMemo(() => createStudioSchema(tRoot), [tRoot])
-  const { control, setValue, getValues, handleSubmit } = useForm<StudioFormValues>({
-    resolver: zodResolver(studioSchema),
+  const onCreated = (flower: AiFlower, body: CreateAiFlowerPayload) => {
+    const scene = sceneOptions.find((item) => item.id === body.mockupId)
+    const variantImage = variants.find((item) => item.id === body.productId)?.coverImage
+    versionCount.current += 1
+
+    const version: StudioVersion = {
+      id: flower.id,
+      label: versionCount.current,
+      name: flower.name,
+      productId: body.productId,
+      mockupId: body.mockupId,
+      mockupName: scene?.name ?? '',
+      imageUrl: flower.imageUrl ?? scene?.imageUrl ?? variantImage ?? detail.coverImage,
+      createdAt: flower.createdAt,
+      materials: flower.metadata.materials,
+      style: styleOptions.find((item) => item.id === body.bundleId) ?? null,
+      ribbon: toStudioAiFlowerOption(flower.metadata.ribbon),
+      wrap: toStudioAiFlowerOption(flower.metadata.wrappingPaper)
+    }
+
+    setVersions((current) => [...current, version])
+    setActiveVersionId(version.id)
+    setAdded(false)
+    setGenerated(true)
+    setStep(STUDIO_LAST_STEP)
+    setMaxStep(STUDIO_LAST_STEP)
+
+    // The session screen owns the result from here: it lists every version the sitting
+    // produced, not just the ones this mount happens to hold.
+    if (flower.sessionId) router.push(`/products/${detail.id}/studio/${flower.sessionId}`)
+  }
+
+  const {
+    methods: { control, setValue, getValues },
+    generate: startGeneration,
+    generationStage,
+    isCreatingAiFlower,
+    resetGeneration
+  } = useCreateAiFlower({
     defaultValues: {
       name: '',
       mockupId: '',
@@ -96,8 +139,11 @@ export function useStudioDesigner(detail: ProductDetail) {
       styleId: '',
       ribbonId: '',
       wrapId: ''
-    }
+    },
+    onCreated
   })
+
+  const generationStatus: StudioGenerationStatus = isCreatingAiFlower ? 'generating' : generated ? 'complete' : 'idle'
 
   const designName = useWatch({ control, name: 'name' })
   const selectedProductId = useWatch({ control, name: 'productId' })
@@ -113,6 +159,9 @@ export function useStudioDesigner(detail: ProductDetail) {
   )
   const product = useMemo(() => toStudioProduct(selectedDetail, detail), [detail, selectedDetail])
   const productIngredients = useMemo(() => toStudioIngredients(selectedDetail.materials), [selectedDetail.materials])
+
+  const parentProduct = useMemo(() => toStudioProduct(detail), [detail])
+  const parentIngredients = useMemo(() => toStudioIngredients(detail.materials), [detail.materials])
 
   const mockup = sceneOptions.find((item) => item.id === selectedMockupId)
   const trimmedName = designName.trim()
@@ -174,8 +223,9 @@ export function useStudioDesigner(detail: ProductDetail) {
 
   const markChanged = () => {
     setSaved(false)
-    setGenerationStatus('idle')
+    setGenerated(false)
     setActiveVersionId('')
+    resetGeneration()
   }
 
   const selectMockup = (id: string) => {
@@ -230,55 +280,22 @@ export function useStudioDesigner(detail: ProductDetail) {
     markChanged()
   }
 
-  const startGeneration = handleSubmit(() => {
-    setGenerationStage(0)
-    setGenerationStatus('generating')
-    setActiveVersionId('')
-    setAdded(false)
-  })
-
   const selectVersion = (version: StudioVersion) => {
     setActiveVersionId(version.id)
     setValue('name', version.name, { shouldValidate: true })
     setValue('mockupId', version.mockupId, { shouldValidate: true })
     setSaved(false)
     setAdded(false)
-    setGenerationStatus('complete')
+    setGenerated(true)
     setStep(STUDIO_LAST_STEP)
     setMaxStep(STUDIO_LAST_STEP)
   }
 
-  useEffect(() => {
-    if (generationStatus !== 'generating') return
-    const interval = window.setInterval(() => setGenerationStage((current) => Math.min(current + 1, 3)), 650)
-
-    const timeout = window.setTimeout(() => {
-      const values = getValues()
-      const scene = sceneOptions.find((item) => item.id === values.mockupId)
-      versionCount.current += 1
-      const version: StudioVersion = {
-        id: `version-${versionCount.current}`,
-        label: versionCount.current,
-        name: values.name.trim(),
-        mockupId: values.mockupId,
-        mockupName: scene?.name ?? '',
-        imageUrl: scene?.imageUrl ?? product.imageUrl
-      }
-      setVersions((current) => [...current, version])
-      setActiveVersionId(version.id)
-      setGenerationStatus('complete')
-      setStep(STUDIO_LAST_STEP)
-      setMaxStep(STUDIO_LAST_STEP)
-    }, 2800)
-    return () => {
-      window.clearInterval(interval)
-      window.clearTimeout(timeout)
-    }
-  }, [generationStatus, getValues, product.imageUrl, sceneOptions])
-
   return {
     control,
     product,
+    parentProduct,
+    parentIngredients,
     step,
     maxStep,
     generationStatus,
