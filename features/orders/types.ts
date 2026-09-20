@@ -401,7 +401,11 @@ export interface OrderCardPayload {
 export interface OrderBouquetPayload {
   /** Only set for a bouquet designed in the studio - the version the cart line was bought from. */
   generatedFlowerId?: string
-  card: OrderCardPayload
+  /**
+   * `null` for a unit that carries no card. Only a studio bouquet sends one of these - it has
+   * to name its design whether or not anything is printed for it.
+   */
+  card: OrderCardPayload | null
 }
 
 export interface CheckoutItemPayload extends EstimateItemPayload {
