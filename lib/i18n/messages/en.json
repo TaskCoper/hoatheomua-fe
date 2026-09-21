@@ -611,7 +611,8 @@
     "unitLabel": "Variant: {unit}",
     "aiLine": {
       "badge": "AI design",
-      "materials": "Flowers: {materials}"
+      "materials": "Flowers: {materials}",
+      "trims": "Ribbon & wrapping: {trims}"
     },
     "summary": {
       "title": "Order summary",
@@ -704,6 +705,7 @@
       "lineCount": "{count} items",
       "lineQty": "x{qty} · {price}",
       "lineQtyOnly": "x{qty}",
+      "lineTrims": "Includes ribbon & wrapping: {trims}",
       "shippingHeading": "Shipping option",
       "shippingEmpty": "No shipping services available for this address.",
       "shippingMeta": "{km} km · {min} min",
@@ -831,7 +833,7 @@
           "ai": "AI custom card",
           "history": "Card history"
         },
-        "standardHint": "Free with the flowers - pick the product it ships with.",
+        "standardHint": "Handwritten with your message - pick the product it ships with.",
         "aiHint": "An AI custom card is always attached to one product in this order.",
         "historyHint": "Reuse a card you generated before and pick the product it goes with.",
         "chooseType": "What kind of card?",
@@ -860,8 +862,8 @@
         "maxQuantity": "Max {max}",
         "cardPrice": "Card price",
         "free": "Free",
-        "standardFreeNote": "Standard cards come with the flowers at no charge - one per unit of {name}, so it can still take {max}.",
-        "standardFreeHint": "Standard cards come with the flowers at no charge - pick the product to see how many it can take.",
+        "standardQuantityNote": "One card per unit of {name}, so it can still take {max}.",
+        "standardQuantityHint": "One card per unit - pick the product to see how many it can take.",
         "unitPriceHint": "{price} each",
         "subtotal": "Cards subtotal",
         "priceNote": "Card fees are not part of the order total yet - we will confirm them with you.",

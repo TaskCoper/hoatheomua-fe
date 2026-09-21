@@ -64,6 +64,7 @@ interface MergedCartLine {
   /** The product page, or the studio version the design was bought from. */
   href: string | null
   materials: string[]
+  trims: string[]
   isResolving: boolean
   isUnavailable: boolean
   unavailableReason: UnavailableReason | null
@@ -186,6 +187,8 @@ export default function CartPage() {
             : null,
         materials:
           composition?.materials.flatMap((material) => (material.name?.trim() ? [material.name.trim()] : [])) ?? [],
+        // Snapshotted on the line, so they stay with the bouquet even once the design is gone.
+        trims: [aiFlower?.ribbon, aiFlower?.wrap].flatMap((trim) => (trim?.name ? [trim.name] : [])),
         unitPrice,
         oldPrice,
         lineSubtotal: unitPrice * cartItem.quantity
@@ -541,6 +544,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
     image,
     href,
     materials,
+    trims,
     isResolving,
     isUnavailable,
     unavailableReason,
@@ -631,6 +635,12 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           {isAiFlower && materials.length > 0 && (
             <p className='line-clamp-2 text-xs leading-relaxed text-muted-foreground'>
               {t('cart.aiLine.materials', { materials: materials.join(' · ') })}
+            </p>
+          )}
+
+          {isAiFlower && trims.length > 0 && (
+            <p className='line-clamp-2 text-xs leading-relaxed text-muted-foreground'>
+              {t('cart.aiLine.trims', { trims: trims.join(' · ') })}
             </p>
           )}
 

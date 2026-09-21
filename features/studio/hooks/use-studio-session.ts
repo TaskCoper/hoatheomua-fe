@@ -1,5 +1,6 @@
 'use client'
 
+import { useGetProductSummary } from '@/features/products/hooks/use-get-product-summary'
 import { productFamilyQuery } from '@/features/products/queries'
 import type { ProductFamilyMember } from '@/features/products/types'
 import { generatedFlowersQuery } from '@/features/studio/hooks/use-get-generated-flowers'
@@ -45,9 +46,26 @@ export const useStudioSession = ({ productId, sessionId }: { productId: string; 
   )
   const ingredients = useMemo(() => toStudioIngredients(selectedDetail?.materials), [selectedDetail?.materials])
 
+  // The generation carries the ribbon and the wrapping paper but not what they cost, so the
+  // two catalogue rows are read back to price the bouquet the way the studio quoted it.
+  const trimProductIds = useMemo(
+    () => Array.from(new Set([activeVersion?.ribbon?.id, activeVersion?.wrap?.id].filter((id): id is string => !!id))),
+    [activeVersion?.ribbon?.id, activeVersion?.wrap?.id]
+  )
+  const { productSummaryById } = useGetProductSummary({ productIds: trimProductIds })
+  // Until both rows land the quote is short of their price, so the bag must wait for them.
+  const isPricingTrims = trimProductIds.some((id) => productSummaryById.get(id)?.isResolving ?? true)
+  const trimPriceByProductId = useMemo(
+    () => new Map(trimProductIds.map((id) => [id, productSummaryById.get(id)?.product?.price ?? null])),
+    [productSummaryById, trimProductIds]
+  )
+
   const bouquet = useMemo(
-    () => (product ? toStudioSessionBouquet({ version: activeVersion, product, ingredients }) : undefined),
-    [activeVersion, ingredients, product]
+    () =>
+      product
+        ? toStudioSessionBouquet({ version: activeVersion, product, ingredients, trimPriceByProductId })
+        : undefined,
+    [activeVersion, ingredients, product, trimPriceByProductId]
   )
 
   const designName = activeVersion?.name ?? ''
@@ -60,7 +78,11 @@ export const useStudioSession = ({ productId, sessionId }: { productId: string; 
       rootProductId: productId,
       sessionId,
       flowerId: activeVersion?.id ?? '',
-      unitPrice: bouquet?.totalAmount ?? 0
+      unitPrice: bouquet?.totalAmount ?? 0,
+      // Generated with the design, so they go into the bag with it.
+      ribbon: bouquet?.ribbon ?? null,
+      wrap: bouquet?.wrap ?? null,
+      isPriceResolving: isPricingTrims
     })
 
   // Every version is its own bouquet, so the bag confirmation belongs to the one on screen.

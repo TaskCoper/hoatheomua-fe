@@ -62,7 +62,7 @@ export const createCheckoutCardSchema = (t: TranslationFunction, config: CardCon
       })
     ])
     .superRefine((card, ctx) => {
-      // The free card has no size to pick, so it is held to the roomiest one the CMS lists.
+      // The standard card has no size to pick, so it is held to the roomiest one the CMS lists.
       const maxWords =
         card.type === 'standard' ? getLargestCardMaxWords(config) : getCardMaxWords(config, card.sizeName)
       if (maxWords <= 0) return

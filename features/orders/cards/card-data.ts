@@ -1,7 +1,7 @@
 import type { CardTemplate } from '@/types/card-template.type'
 import type { GeneratedCardByProductItem, GeneratedCardHistoryItem } from '@/types/generated-card.type'
 import { OrderSnapshotCardType, OrderSnapshotFormType } from '../types'
-import { countWords, getCardUnitPrice, type CardConfig } from './card-config'
+import { countWords, getCardHandwritingPrice, getCardUnitPrice, type CardConfig } from './card-config'
 import type {
   CardContent,
   CardWritingMethod,
@@ -109,7 +109,7 @@ export const getLineCardCapacities = (
     if (!capacity) return
 
     capacity.remaining -= card.quantity
-    // A free card leaves the product open to either design; only a designed one locks it.
+    // A standard card leaves the product open to either design; only a designed one locks it.
     if (card.type !== 'standard') capacity.lockedType = card.type
   })
 
@@ -117,8 +117,9 @@ export const getLineCardCapacities = (
 }
 
 const getCheckoutCardUnitPrice = (card: CheckoutCard, config: CardConfig): number => {
-  // Free: it ships with the flowers.
-  if (card.type === 'standard') return 0
+  // The standard card is the handmade one our florist writes: it is ordered without a size and
+  // is calligraphy by definition, so the handwriting ladder is the whole of its price.
+  if (card.type === 'standard') return getCardHandwritingPrice(config, countWords(card.content.message))
 
   return getCardUnitPrice({
     config,

@@ -611,7 +611,8 @@
     "unitLabel": "Phân loại: {unit}",
     "aiLine": {
       "badge": "Thiết kế AI",
-      "materials": "Hoa: {materials}"
+      "materials": "Hoa: {materials}",
+      "trims": "Ruy băng & giấy gói: {trims}"
     },
     "summary": {
       "title": "Tóm tắt đơn hàng",
@@ -704,6 +705,7 @@
       "lineCount": "{count} sản phẩm",
       "lineQty": "x{qty} · {price}",
       "lineQtyOnly": "x{qty}",
+      "lineTrims": "Kèm ruy băng & giấy gói: {trims}",
       "shippingHeading": "Phương thức giao hàng",
       "shippingEmpty": "Hiện chưa có dịch vụ giao hàng phù hợp.",
       "shippingMeta": "{km} km · {min} phút",
@@ -831,7 +833,7 @@
           "ai": "Thiệp Custom AI",
           "history": "Lịch sử thiệp"
         },
-        "standardHint": "Miễn phí kèm hoa - chọn sản phẩm mà thiệp đi cùng.",
+        "standardHint": "Thiệp viết tay theo lời nhắn - chọn sản phẩm mà thiệp đi cùng.",
         "aiHint": "Thiệp Custom AI luôn được đính kèm với một sản phẩm trong đơn.",
         "historyHint": "Dùng lại thiệp đã tạo trước đây và chọn sản phẩm đính kèm.",
         "chooseType": "Bạn muốn thêm loại thiệp nào?",
@@ -860,8 +862,8 @@
         "maxQuantity": "Tối đa {max}",
         "cardPrice": "Giá thiệp",
         "free": "Miễn phí",
-        "standardFreeNote": "Thiệp thường được tặng kèm hoa - mỗi sản phẩm {name} một tấm, nên còn nhận thêm được {max} tấm.",
-        "standardFreeHint": "Thiệp thường được tặng kèm hoa - chọn sản phẩm để biết còn nhận thêm được bao nhiêu tấm.",
+        "standardQuantityNote": "Mỗi sản phẩm {name} nhận một tấm thiệp, nên còn thêm được {max} tấm.",
+        "standardQuantityHint": "Mỗi sản phẩm nhận một tấm thiệp - chọn sản phẩm để biết còn thêm được bao nhiêu tấm.",
         "unitPriceHint": "{price} / thiệp",
         "subtotal": "Tạm tính thiệp",
         "priceNote": "Phí thiệp chưa được cộng vào tổng đơn hàng, chúng tôi sẽ xác nhận lại với bạn.",

@@ -1,13 +1,14 @@
 'use client'
 
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
+import type { StudioTrim } from '@/features/studio/types'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
 import { isFeatureEnabled } from '@/shared/feature-flags'
-import { buildLineId, useCartStore, type CartAiFlower, type CartItem } from '@/stores/cart.store'
+import { buildLineId, useCartStore, type CartAiFlower, type CartAiFlowerTrim, type CartItem } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { useCallback, useMemo, useState } from 'react'
 import { toast } from 'sonner'
@@ -25,9 +26,17 @@ interface UseStudioPurchaseArgs {
   sessionId: string
   /** The generated version on screen. Empty until a design finishes. */
   flowerId: string
-  /** The studio's own quote: product plus the extra stems the buyer added. */
+  /** The studio's own quote: product, extra stems, and the two trims below. */
   unitPrice: number
+  /** The ribbon and wrapping paper the design was generated with - they go in the bag with it. */
+  ribbon?: StudioTrim | null
+  wrap?: StudioTrim | null
+  /** True while `unitPrice` is still missing a piece - the line must not snapshot it yet. */
+  isPriceResolving?: boolean
 }
+
+const toCartTrim = (trim: StudioTrim | null | undefined): CartAiFlowerTrim | null =>
+  trim ? { productId: trim.id, name: trim.name, imageUrl: trim.imageUrl, priceAmount: trim.priceAmount ?? 0 } : null
 
 /**
  * Add to bag / buy now for a bouquet designed in the studio. It is the product purchase
@@ -42,7 +51,10 @@ export const useStudioPurchase = ({
   rootProductId,
   sessionId,
   flowerId,
-  unitPrice
+  unitPrice,
+  ribbon,
+  wrap,
+  isPriceResolving = false
 }: UseStudioPurchaseArgs) => {
   const { t } = useTranslation()
   const router = useRouter()
@@ -60,15 +72,22 @@ export const useStudioPurchase = ({
   const [added, setAdded] = useState(false)
 
   const aiFlower = useMemo<CartAiFlower>(
-    () => ({ generatedFlowerId: flowerId, sessionId, rootProductId, unitPrice }),
-    [flowerId, rootProductId, sessionId, unitPrice]
+    () => ({
+      generatedFlowerId: flowerId,
+      sessionId,
+      rootProductId,
+      unitPrice,
+      ribbon: toCartTrim(ribbon),
+      wrap: toCartTrim(wrap)
+    }),
+    [flowerId, ribbon, rootProductId, sessionId, unitPrice, wrap]
   )
 
   const lineId = useMemo(() => buildLineId(productId, null, NO_OPTIONS, flowerId), [productId, flowerId])
   const inCartQuantity = useCartStore((state) => state.items.find((item) => item.lineId === lineId)?.quantity ?? 0)
 
   const isReady = Boolean(productId && flowerId)
-  const isBusy = isGettingMe || isVerifyingSellableQuantity
+  const isBusy = isGettingMe || isVerifyingSellableQuantity || isPriceResolving
   const isPhoneMissing = !isLoadingPhoneNumber && !hasPhoneNumber
 
   const resetAdded = useCallback(() => setAdded(false), [])

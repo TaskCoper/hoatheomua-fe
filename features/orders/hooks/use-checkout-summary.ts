@@ -92,6 +92,7 @@ export const useCheckoutSummary = ({
             : (product?.parent?.productName ?? product?.productName ?? ''),
           variantName: aiFlower ? null : product?.parent ? product.productName : null,
           image: aiFlower ? composition?.coverImage || null : (product?.coverImage ?? null),
+          trims: [aiFlower?.ribbon, aiFlower?.wrap].flatMap((trim) => (trim?.name ? [trim.name] : [])),
           quantity: item.quantity,
           unitPrice,
           subtotal: unitPrice * item.quantity,

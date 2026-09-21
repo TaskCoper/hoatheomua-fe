@@ -19,6 +19,7 @@ import type {
   StudioOption,
   StudioProduct,
   StudioScene,
+  StudioTrim,
   StudioVariant,
   StudioVersion,
   StudioVersionMaterial
@@ -65,9 +66,13 @@ const toStudioOption = (
   return trimmed ? [{ id, name: trimmed, description: description?.trim() || null, imageUrl }] : []
 }
 
-export const toStudioProductOptions = (products: ProductDetail[] | null | undefined): StudioOption[] =>
+/** The ribbon and wrapping paper lists - catalogue products, so each option keeps its price. */
+export const toStudioProductOptions = (products: ProductDetail[] | null | undefined): StudioTrim[] =>
   (products ?? []).flatMap((product) =>
-    toStudioOption(product.id, product.productName, product.description, product.coverImage)
+    toStudioOption(product.id, product.productName, product.description, product.coverImage).map((option) => ({
+      ...option,
+      priceAmount: product.price ?? null
+    }))
   )
 
 export const toStudioReferenceOptions = (flowers: ReferenceFlower[] | null | undefined): StudioOption[] =>
@@ -92,14 +97,27 @@ export const toCreateAiFlowerPayload = (values: StudioFormValues): CreateAiFlowe
   wrappingPaperProductId: values.wrapId
 })
 
-export const toStudioAiFlowerOption = (product: AiFlowerProductRef | null): StudioOption | null => {
+/**
+ * The ribbon or wrapping paper a generated design came back with. The metadata copy prices
+ * nothing, so the amount is passed in from the catalogue row the option was picked from.
+ */
+export const toStudioAiFlowerOption = (
+  product: AiFlowerProductRef | null,
+  priceAmount: number | null = null
+): StudioTrim | null => {
   const name = product?.name?.trim()
   if (!product || !name) return null
 
   const { size, color, productCode } = product.attributes
   const traits = [size, color].filter((part): part is string => Boolean(part?.trim())).join(' · ')
 
-  return { id: product.id, name, description: traits || productCode?.trim() || null, imageUrl: product.image.url }
+  return {
+    id: product.id,
+    name,
+    description: traits || productCode?.trim() || null,
+    imageUrl: product.image.url,
+    priceAmount
+  }
 }
 
 /**
@@ -138,6 +156,16 @@ const toGeneratedFlowerOption = (ref: GeneratedFlowerRef | null | undefined): St
   return ref && name ? { id: ref.id, name, description: null, imageUrl: ref.imageUrl } : null
 }
 
+/** The flat reference as a trim; like `toStudioAiFlowerOption`, it is priced from the catalogue. */
+const toGeneratedFlowerTrim = (
+  ref: GeneratedFlowerRef | null | undefined,
+  priceAmount: number | null = null
+): StudioTrim | null => {
+  const option = toGeneratedFlowerOption(ref)
+
+  return option ? { ...option, priceAmount } : null
+}
+
 export const toStudioSessionScene = (ref: GeneratedFlowerRef | null | undefined): StudioScene | undefined =>
   toGeneratedFlowerOption(ref) ?? undefined
 
@@ -156,9 +184,10 @@ export const toStudioSessionVersions = (flowers: GeneratedFlower[] | null | unde
       materials: toStudioVersionMaterials(flower.metadata),
       style: toGeneratedFlowerOption(flower.bundle),
       // The metadata copy carries the size / colour traits, so it wins over the flat reference.
-      ribbon: toStudioAiFlowerOption(flower.metadata?.ribbon ?? null) ?? toGeneratedFlowerOption(flower.ribbon),
+      // Neither prices the trim: `toStudioSessionBouquet` fills that in from the catalogue.
+      ribbon: toStudioAiFlowerOption(flower.metadata?.ribbon ?? null) ?? toGeneratedFlowerTrim(flower.ribbon),
       wrap:
-        toStudioAiFlowerOption(flower.metadata?.wrappingPaper ?? null) ?? toGeneratedFlowerOption(flower.wrappingPaper)
+        toStudioAiFlowerOption(flower.metadata?.wrappingPaper ?? null) ?? toGeneratedFlowerTrim(flower.wrappingPaper)
     }))
 
 export const toStudioGenerationSessions = (
@@ -186,14 +215,29 @@ export const toStudioGenerationSessions = (
     ]
   })
 
+/** What the ribbon and the wrapping paper add on top of the flowers. */
+export const getStudioTrimsAmount = (...trims: (StudioTrim | null | undefined)[]): number =>
+  trims.reduce((total, trim) => total + (trim?.priceAmount ?? 0), 0)
+
+const priceStudioTrim = (
+  trim: StudioTrim | null | undefined,
+  priceByProductId: ReadonlyMap<string, number | null>
+): StudioTrim | undefined =>
+  trim ? { ...trim, priceAmount: trim.priceAmount ?? priceByProductId.get(trim.id) ?? null } : undefined
+
+const NO_TRIM_PRICES: ReadonlyMap<string, number | null> = new Map()
+
 export const toStudioSessionBouquet = ({
   version,
   product,
-  ingredients
+  ingredients,
+  trimPriceByProductId = NO_TRIM_PRICES
 }: {
   version: StudioVersion | undefined
   product: StudioProduct
   ingredients: StudioIngredient[]
+  /** The catalogue prices of the ribbon and wrapping paper the version was generated with. */
+  trimPriceByProductId?: ReadonlyMap<string, number | null>
 }): StudioBouquet => {
   const items = version?.materials.length
     ? version.materials.map((material) => {
@@ -212,15 +256,20 @@ export const toStudioSessionBouquet = ({
       })
     : ingredients.map((ingredient) => ({ ingredient, quantity: ingredient.baseQuantity, extraQuantity: 0 }))
 
+  const ribbon = priceStudioTrim(version?.ribbon, trimPriceByProductId)
+  const wrap = priceStudioTrim(version?.wrap, trimPriceByProductId)
+
   return {
     style: version?.style ?? undefined,
-    ribbon: version?.ribbon ?? undefined,
-    wrap: version?.wrap ?? undefined,
+    ribbon,
+    wrap,
     products: [product],
     ingredients: items,
+    // The design is generated with its ribbon and wrapping paper, so they are priced into
+    // the bouquet rather than sold beside it.
     totalAmount: items.reduce(
       (total, item) => total + item.extraQuantity * (item.ingredient.extraPriceAmount ?? 0),
-      product.priceAmount
+      product.priceAmount + getStudioTrimsAmount(ribbon, wrap)
     )
   }
 }

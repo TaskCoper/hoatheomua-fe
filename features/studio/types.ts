@@ -31,6 +31,10 @@ export interface StudioVariant extends StudioOption {
   priceAmount: number | null
 }
 
+export interface StudioTrim extends StudioOption {
+  priceAmount: number | null
+}
+
 export interface StudioBouquetIngredient {
   ingredient: StudioIngredient
   quantity: number
@@ -39,8 +43,8 @@ export interface StudioBouquetIngredient {
 
 export interface StudioBouquet {
   style?: StudioOption
-  ribbon?: StudioOption
-  wrap?: StudioOption
+  ribbon?: StudioTrim
+  wrap?: StudioTrim
   products: StudioProduct[]
   ingredients: StudioBouquetIngredient[]
   totalAmount: number
@@ -80,8 +84,8 @@ export interface StudioVersion {
   createdAt: string | null
   materials: StudioVersionMaterial[]
   style: StudioOption | null
-  ribbon: StudioOption | null
-  wrap: StudioOption | null
+  ribbon: StudioTrim | null
+  wrap: StudioTrim | null
 }
 
 export interface StudioGenerationSession {

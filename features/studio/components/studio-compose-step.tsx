@@ -4,7 +4,7 @@ import StudioImage from '@/features/studio/components/studio-image'
 import StudioOptionsFooter from '@/features/studio/components/studio-options-footer'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { formatStudioIngredientCounts, formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioOption, StudioVariant } from '@/features/studio/types'
+import type { StudioBouquet, StudioOption, StudioTrim, StudioVariant } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { Add01Icon, MinusSignIcon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -31,8 +31,8 @@ interface StudioComposeStepProps {
   variantOptions: StudioVariant[]
   selectedVariantId: string
   styleOptions: StudioOption[]
-  ribbonOptions: StudioOption[]
-  wrapOptions: StudioOption[]
+  ribbonOptions: StudioTrim[]
+  wrapOptions: StudioTrim[]
   isGettingStyleOptions: boolean
   isGettingRibbonOptions: boolean
   isGettingWrapOptions: boolean
@@ -85,7 +85,7 @@ export default function StudioComposeStep({
 
   const swatchRow = (
     label: string,
-    options: StudioOption[],
+    options: StudioTrim[],
     selectedId: string | undefined,
     loading: boolean,
     loadingMore: boolean,
@@ -99,7 +99,10 @@ export default function StudioComposeStep({
       <div className={cn(detailRowClass, 'items-center py-5')}>
         <div className='min-w-0'>
           <p className={detailTermClass}>{label}</p>
-          <p className={cn(microLabelClass, 'truncate')}>{selected?.name}</p>
+          {/* Both trims are part of the bouquet, so what they add is priced in, not a surcharge. */}
+          <p className={cn(microLabelClass, 'truncate')}>
+            {selected?.priceAmount ? `${selected.name} · ${formatStudioPrice(selected.priceAmount)}` : selected?.name}
+          </p>
         </div>
 
         <div className='flex flex-wrap items-center gap-4'>

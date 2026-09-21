@@ -1,10 +1,10 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { GiftIcon } from '@hugeicons/core-free-icons'
+import { InformationCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
-import { getLargestCardMaxWords } from '../../../cards/card-config'
+import { countWords, getCardHandwritingPrice, getLargestCardMaxWords } from '../../../cards/card-config'
 import {
   DEFAULT_CARD_QUANTITY,
   EMPTY_CARD_CONTENT,
@@ -30,7 +30,7 @@ import CheckoutProductPicker, {
 
 interface StandardCardFormProps {
   lines: CheckoutSummaryLine[]
-  /** How many more cards each line can take - a free card still occupies one of its units. */
+  /** How many more cards each line can take - a standard card still occupies one of its units. */
   capacities: LineCardCapacities
   initial?: StandardCheckoutCard | null
   onSubmit: (draft: StandardCheckoutCard) => void
@@ -62,7 +62,7 @@ export default function StandardCardForm({ lines, capacities, initial, onSubmit,
         ? toCheckoutCardTemplate(templates[0])
         : EMPTY_CARD_TEMPLATE
 
-  // One free card per unit of the product it ships with, minus the units already carded.
+  // One card per unit of the product it ships with, minus the units already carded.
   const attachedLine = lines.find((line) => line.lineId === lineId) ?? null
   const maxQuantity = Math.max(1, capacities.get(lineId)?.remaining ?? DEFAULT_CARD_QUANTITY)
 
@@ -76,7 +76,12 @@ export default function StandardCardForm({ lines, capacities, initial, onSubmit,
   const draftIssues = getCardIssuePaths(schema, draft)
   const issues = showErrors ? draftIssues : EMPTY_ISSUE_PATHS
 
-  // A product with fewer free units holds fewer cards, so moving the card pulls its quantity down.
+  // Our florist writes this one by hand, so the CMS handwriting ladder is its whole price -
+  // there is no size to pick and so no base price to add on top of it.
+  const wordCount = countWords(draft.content.message)
+  const unitPrice = getCardHandwritingPrice(cardConfig, wordCount)
+
+  // A product with fewer open units holds fewer cards, so moving the card pulls its quantity down.
   const handleSelectLine = (next: string) => {
     setLineId(next)
     if (showErrors) setShowErrors(false)
@@ -145,24 +150,26 @@ export default function StandardCardForm({ lines, capacities, initial, onSubmit,
           if (showErrors) setShowErrors(false)
         }}
         messageInvalid={issues.has('content.message')}
+        surcharge={unitPrice}
       />
 
       <p className='flex items-start gap-2 text-xs text-muted-foreground'>
-        <HugeiconsIcon icon={GiftIcon} strokeWidth={1.75} className='mt-0.5 size-3.5 shrink-0 text-primary' />
+        <HugeiconsIcon
+          icon={InformationCircleIcon}
+          strokeWidth={1.75}
+          className='mt-0.5 size-3.5 shrink-0 text-primary'
+        />
         {attachedLine
-          ? t('orders.checkout.cards.standardFreeNote', {
+          ? t('orders.checkout.cards.standardQuantityNote', {
               name: attachedLine.name || t('orders.checkout.sidebar.unknownProduct'),
               max: maxQuantity
             })
-          : t('orders.checkout.cards.standardFreeHint')}
+          : t('orders.checkout.cards.standardQuantityHint')}
       </p>
 
       <CardFormSummary
-        free
-        price={0}
-        quantity={
-          attachedLine ? { value: draft.quantity, unitPrice: 0, max: maxQuantity, onChange: setQuantity } : null
-        }
+        price={unitPrice * draft.quantity}
+        quantity={attachedLine ? { value: draft.quantity, unitPrice, max: maxQuantity, onChange: setQuantity } : null}
       />
     </div>
   )

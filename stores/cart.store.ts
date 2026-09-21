@@ -10,6 +10,13 @@ export const MAX_QUANTITY = 99
 
 export type CartSelectedOptions = Record<string, string>
 
+export interface CartAiFlowerTrim {
+  productId: string
+  name: string
+  imageUrl: string | null
+  priceAmount: number
+}
+
 /**
  * What makes a line a bouquet designed in the studio rather than a catalogue product.
  * `productId` stays the real product the design was built on - it is what stock,
@@ -22,11 +29,15 @@ export interface CartAiFlower {
   sessionId: string
   rootProductId: string
   /**
-   * What the studio quoted: the product plus the extra stems the buyer added. The
-   * composition endpoint prices nothing and the extras are not on the product row,
-   * so this snapshot is the only number the cart can show for the line.
+   * What the studio quoted: the product, the extra stems the buyer added, and the ribbon
+   * and wrapping paper it was generated with. The composition endpoint prices nothing and
+   * none of the extras are on the product row, so this snapshot is the only number the
+   * cart can show for the line.
    */
   unitPrice: number
+  /** Part of the bouquet, not an add-on - nothing in the bag or at checkout drops them. */
+  ribbon: CartAiFlowerTrim | null
+  wrap: CartAiFlowerTrim | null
 }
 
 export interface CartItem {
@@ -88,6 +99,28 @@ function normalizeSelectedOptions(value: unknown): CartSelectedOptions {
   return Object.fromEntries(entries) as CartSelectedOptions
 }
 
+/** A design added before the trims were carried has none; it keeps the price it was added at. */
+function normalizeAiFlowerTrim(value: unknown): CartAiFlowerTrim | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  const candidate = value as Record<string, unknown>
+
+  const productId = typeof candidate.productId === 'string' ? candidate.productId : ''
+  const name = typeof candidate.name === 'string' ? candidate.name.trim() : ''
+  if (!productId || !name) return null
+
+  const priceAmount =
+    typeof candidate.priceAmount === 'number' && Number.isFinite(candidate.priceAmount)
+      ? Math.max(0, candidate.priceAmount)
+      : 0
+
+  return {
+    productId,
+    name,
+    imageUrl: typeof candidate.imageUrl === 'string' && candidate.imageUrl ? candidate.imageUrl : null,
+    priceAmount
+  }
+}
+
 function normalizeAiFlower(value: unknown): CartAiFlower | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null
   const candidate = value as Record<string, unknown>
@@ -104,7 +137,9 @@ function normalizeAiFlower(value: unknown): CartAiFlower | null {
     generatedFlowerId,
     sessionId: typeof candidate.sessionId === 'string' ? candidate.sessionId : '',
     rootProductId: typeof candidate.rootProductId === 'string' ? candidate.rootProductId : '',
-    unitPrice
+    unitPrice,
+    ribbon: normalizeAiFlowerTrim(candidate.ribbon),
+    wrap: normalizeAiFlowerTrim(candidate.wrap)
   }
 }
 

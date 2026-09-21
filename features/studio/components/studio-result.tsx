@@ -14,6 +14,7 @@ import type {
   StudioGenerationStatus,
   StudioProduct,
   StudioScene,
+  StudioTrim,
   StudioVersion
 } from '@/features/studio/types'
 import { useDateFormat } from '@/lib/date'
@@ -27,6 +28,10 @@ const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
 const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
 const detailTermClass = 'text-xs font-semibold text-primary'
 const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
+
+/** The trim's name with what it adds to the bouquet - a price of its own, not a surcharge. */
+const formatTrim = (trim: StudioTrim | undefined | null): string | undefined =>
+  trim && trim.priceAmount ? `${trim.name} · ${formatStudioPrice(trim.priceAmount)}` : (trim?.name ?? undefined)
 
 interface StudioResultProps {
   product: StudioProduct
@@ -125,11 +130,11 @@ export default function StudioResult({
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('ribbon.label')}</dt>
-              <dd className={detailValueClass}>{ribbon?.name}</dd>
+              <dd className={detailValueClass}>{formatTrim(ribbon)}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('wrap.label')}</dt>
-              <dd className={detailValueClass}>{wrap?.name}</dd>
+              <dd className={detailValueClass}>{formatTrim(wrap)}</dd>
             </div>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('result.mockup')}</dt>

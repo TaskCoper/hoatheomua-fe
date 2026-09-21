@@ -11,6 +11,7 @@ import {
   STUDIO_WRAP_LABELS
 } from '@/features/studio/studio-data'
 import {
+  getStudioTrimsAmount,
   toStudioAiFlowerOption,
   toStudioIngredients,
   toStudioProduct,
@@ -98,6 +99,10 @@ export function useStudioDesigner(family: ProductFamily) {
   const onCreated = (flower: AiFlower, body: CreateAiFlowerPayload) => {
     const scene = sceneOptions.find((item) => item.id === body.mockupId)
     const variantImage = variants.find((item) => item.id === body.productId)?.coverImage
+    // The design comes back with the trims it was generated with, but not with their price -
+    // that is on the catalogue rows they were picked from.
+    const ribbonPrice = ribbonOptions.find((item) => item.id === body.ribbonProductId)?.priceAmount ?? null
+    const wrapPrice = wrapOptions.find((item) => item.id === body.wrappingPaperProductId)?.priceAmount ?? null
     versionCount.current += 1
 
     const version: StudioVersion = {
@@ -111,8 +116,8 @@ export function useStudioDesigner(family: ProductFamily) {
       createdAt: flower.createdAt,
       materials: toStudioVersionMaterials(flower.metadata),
       style: styleOptions.find((item) => item.id === body.bundleId) ?? null,
-      ribbon: toStudioAiFlowerOption(flower.metadata.ribbon),
-      wrap: toStudioAiFlowerOption(flower.metadata.wrappingPaper)
+      ribbon: toStudioAiFlowerOption(flower.metadata.ribbon, ribbonPrice),
+      wrap: toStudioAiFlowerOption(flower.metadata.wrappingPaper, wrapPrice)
     }
 
     setVersions((current) => [...current, version])
@@ -177,15 +182,20 @@ export function useStudioDesigner(family: ProductFamily) {
       return { ingredient, quantity, extraQuantity: roundStudioQuantity(quantity - ingredient.baseQuantity) }
     })
 
+    const ribbon = ribbonOptions.find((item) => item.id === selectedRibbonId)
+    const wrap = wrapOptions.find((item) => item.id === selectedWrapId)
+
     return {
       style: styleOptions.find((item) => item.id === selectedStyleId),
-      ribbon: ribbonOptions.find((item) => item.id === selectedRibbonId),
-      wrap: wrapOptions.find((item) => item.id === selectedWrapId),
+      ribbon,
+      wrap,
       products: [product],
       ingredients,
+      // The bouquet is generated with its ribbon and wrapping paper, so the quote carries
+      // them the same way it carries the extra stems.
       totalAmount: ingredients.reduce(
         (total, item) => total + item.extraQuantity * (item.ingredient.extraPriceAmount ?? 0),
-        product.priceAmount
+        product.priceAmount + getStudioTrimsAmount(ribbon, wrap)
       )
     }
   }, [
@@ -210,7 +220,10 @@ export function useStudioDesigner(family: ProductFamily) {
       rootProductId: detail.id,
       sessionId,
       flowerId: activeVersionId,
-      unitPrice: bouquet.totalAmount
+      unitPrice: bouquet.totalAmount,
+      // Generated with the design, so they go into the bag with it.
+      ribbon: activeVersion?.ribbon ?? bouquet.ribbon ?? null,
+      wrap: activeVersion?.wrap ?? bouquet.wrap ?? null
     })
 
   useEffect(() => {

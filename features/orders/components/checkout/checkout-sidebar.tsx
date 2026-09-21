@@ -28,6 +28,7 @@ export interface CheckoutSummaryLine {
   name: string
   variantName?: string | null
   image: string | null
+  trims?: string[]
   quantity: number
   unitPrice: number
   subtotal: number
@@ -257,6 +258,12 @@ function CheckoutLineItem({ line, cards }: { line: CheckoutSummaryLine; cards: C
         issueLabel={issueLabel}
         muted={Boolean(line.issue)}
       >
+        {line.trims?.length ? (
+          <p className='mt-1 truncate text-xs text-muted-foreground'>
+            {t('orders.checkout.lineTrims', { trims: line.trims.join(' · ') })}
+          </p>
+        ) : null}
+
         {cards.length > 0 ? (
           <div className='mt-2 space-y-1.5'>
             {cards.map((card) => (
@@ -276,9 +283,10 @@ function CheckoutCardLine({ card }: { card: CheckoutCardField }) {
 
   // A reused card carries its own snapshot of the generation it was picked from.
   const templateName = card.templateName
-  // The standard card is free, so it has no size to show.
+  // The standard card is ordered without a size, so it has none to show.
   const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod
+  const cardPrice = getCheckoutCardPrice(card, cardConfig)
 
   const title =
     card.type === 'standard'
@@ -308,9 +316,7 @@ function CheckoutCardLine({ card }: { card: CheckoutCardField }) {
       </div>
       <div className='shrink-0 text-right'>
         <p className='tabular-nums leading-5 text-muted-foreground'>
-          {card.type === 'standard'
-            ? t('orders.checkout.cards.free')
-            : formatVnd(getCheckoutCardPrice(card, cardConfig))}
+          {cardPrice > 0 ? formatVnd(cardPrice) : t('orders.checkout.cards.free')}
         </p>
         {card.quantity > 1 ? (
           <p className='tabular-nums text-muted-foreground/70'>

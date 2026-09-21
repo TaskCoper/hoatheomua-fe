@@ -3,7 +3,7 @@
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioScene } from '@/features/studio/types'
+import type { StudioBouquet, StudioScene, StudioTrim } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { Add01Icon, MinusSignIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -19,6 +19,10 @@ const headingClass = 'text-pretty font-title text-lg font-bold leading-snug text
 // Matches the stepper on step 2 so stems adjust the same way wherever they are listed.
 const quantityButtonClass =
   'flex size-8 cursor-pointer items-center justify-center rounded-full bg-secondary/60 text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+
+/** The trim's name with what it adds to the bouquet - a price of its own, not a surcharge. */
+const formatTrim = (trim: StudioTrim | undefined): string | undefined =>
+  trim && trim.priceAmount ? `${trim.name} · ${formatStudioPrice(trim.priceAmount)}` : trim?.name
 
 function DetailRow({ term, valueClass, children }: { term: string; valueClass?: string; children: ReactNode }) {
   return (
@@ -134,8 +138,8 @@ export default function StudioReview({
         <div className={cn('mt-8', panelClass)}>
           <dl className='flex flex-col divide-y divide-border'>
             <DetailRow term={tCompose('style.label')}>{bouquet.style?.name}</DetailRow>
-            <DetailRow term={tCompose('ribbon.label')}>{bouquet.ribbon?.name}</DetailRow>
-            <DetailRow term={tCompose('wrap.label')}>{bouquet.wrap?.name}</DetailRow>
+            <DetailRow term={tCompose('ribbon.label')}>{formatTrim(bouquet.ribbon)}</DetailRow>
+            <DetailRow term={tCompose('wrap.label')}>{formatTrim(bouquet.wrap)}</DetailRow>
             <DetailRow
               term={tCompose('summary.total')}
               valueClass='font-title text-lg font-bold leading-none text-primary'

@@ -57,12 +57,13 @@ function CheckoutCardListItem({
   // A reused card carries its own snapshot of the generation it was picked from.
   const templateName = card.templateName
   const artwork = card.type === 'history' ? card.imageUrl : card.templateImageUrl
-  // The standard card is free, so it has no size to show.
+  // The standard card is ordered without a size, so it has none to show.
   const sizeName = card.type === 'standard' ? null : card.sizeName
   const writingMethod = card.type === 'standard' ? null : card.writingMethod
   const content = card.content
 
   const attachedLine = lines.find((line) => line.lineId === card.lineId) ?? null
+  const price = getCheckoutCardPrice(card, cardConfig)
 
   const title =
     card.type === 'standard'
@@ -100,9 +101,7 @@ function CheckoutCardListItem({
           </div>
           <div className='shrink-0 text-right'>
             <p className='text-sm font-semibold leading-5 tabular-nums text-primary'>
-              {card.type === 'standard'
-                ? t('orders.checkout.cards.free')
-                : formatVnd(getCheckoutCardPrice(card, cardConfig))}
+              {price > 0 ? formatVnd(price) : t('orders.checkout.cards.free')}
             </p>
             {card.quantity > 1 ? (
               <p className='text-xs tabular-nums text-muted-foreground'>
