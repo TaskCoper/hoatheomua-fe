@@ -2,6 +2,15 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Use Node.js 24 or newer. Before running locally, create an ignored `.env.local`
+with the `NEXT_PUBLIC_*` variables mapped in `Dockerfile` for your environment.
+In particular, `NEXT_PUBLIC_API_BASE_URL` and
+`NEXT_PUBLIC_TASKCOPER_API_BASE_URL` must be absolute backend URLs. Next.js does
+not load `.docker/.env.demo` or `.docker/.env.prod` automatically; those files
+use Docker build argument names such as `API_BASE_URL` instead.
+The production build fetches public API data while prerendering, so the backend
+must also be reachable when running `pnpm build`.
+
 First, run the development server:
 
 ```bash

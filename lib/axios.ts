@@ -252,6 +252,12 @@ export const createApiClient = (
   instance.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
+      // Adapter and request setup errors may not carry an Axios config.
+      // Preserve the original failure instead of masking it with a TypeError.
+      if (!error.config) {
+        return Promise.reject(error)
+      }
+
       const originalRequest = error.config as InternalAxiosRequestConfig & {
         _retry?: boolean
         _retryCount?: number
@@ -338,7 +344,7 @@ api.interceptors.request.use((config) => {
     config.method?.toLowerCase() === 'post' && /^\/(?:api\/)?v1\/ai-flowers(?:\/[^/]+\/regenerate)?\/?$/.test(pathname)
 
   if (isFlowerGeneration) {
-    config.timeout = 120_000
+    config.timeout = 300_000
   }
 
   return config
