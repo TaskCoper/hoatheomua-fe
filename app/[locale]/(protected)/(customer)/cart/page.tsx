@@ -523,6 +523,33 @@ function CartHeading({ title, subtitle }: { title: string; subtitle?: string }) 
   )
 }
 
+const MAX_VISIBLE_CHIPS = 3
+
+function ChipRow({ label, items }: { label: string; items: string[] }) {
+  const visible = items.slice(0, MAX_VISIBLE_CHIPS)
+  const hiddenCount = items.length - visible.length
+
+  return (
+    <div className='flex flex-wrap items-center gap-1'>
+      <span className='shrink-0 text-[0.6875rem] font-semibold text-muted-foreground/70'>{label}</span>
+      {visible.map((item, index) => (
+        <span
+          key={`${item}-${index}`}
+          title={item}
+          className='max-w-28 truncate rounded-full bg-secondary/30 px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground'
+        >
+          {item}
+        </span>
+      ))}
+      {hiddenCount > 0 && (
+        <span className='rounded-full bg-secondary/30 px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground'>
+          +{hiddenCount}
+        </span>
+      )}
+    </div>
+  )
+}
+
 interface CartLineRowProps {
   line: MergedCartLine
   checked: boolean
@@ -632,17 +659,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             </div>
           )}
 
-          {isAiFlower && materials.length > 0 && (
-            <p className='line-clamp-2 text-xs leading-relaxed text-muted-foreground'>
-              {t('cart.aiLine.materials', { materials: materials.join(' · ') })}
-            </p>
-          )}
+          {isAiFlower && materials.length > 0 && <ChipRow label={t('cart.aiLine.materialsLabel')} items={materials} />}
 
-          {isAiFlower && trims.length > 0 && (
-            <p className='line-clamp-2 text-xs leading-relaxed text-muted-foreground'>
-              {t('cart.aiLine.trims', { trims: trims.join(' · ') })}
-            </p>
-          )}
+          {isAiFlower && trims.length > 0 && <ChipRow label={t('cart.aiLine.trimsLabel')} items={trims} />}
 
           {unitName && (
             <p className='inline-flex items-center gap-1 text-xs font-medium text-muted-foreground'>

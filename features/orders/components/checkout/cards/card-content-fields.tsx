@@ -10,6 +10,7 @@ interface CardContentFieldsProps {
   messageInvalid?: boolean
   maxWords: number
   surcharge?: number
+  disabled?: boolean
 }
 
 export default function CardContentFields({
@@ -17,7 +18,8 @@ export default function CardContentFields({
   onChange,
   messageInvalid,
   maxWords,
-  surcharge
+  surcharge,
+  disabled
 }: CardContentFieldsProps) {
   const { t } = useTranslation()
 
@@ -30,6 +32,7 @@ export default function CardContentFields({
       invalid={messageInvalid}
       maxWords={maxWords}
       surcharge={surcharge}
+      disabled={disabled}
     />
   )
 }

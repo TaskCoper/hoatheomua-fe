@@ -194,6 +194,19 @@ export interface GetGeneratedFlowersParams {
   pageSize?: number
 }
 
+export interface MockupGeneratedFlower {
+  id: string
+  name: string
+  imageUrl: string
+  createdAt: string
+}
+
+export interface GetMockupGeneratedFlowersParams {
+  mockupId: string
+  pageIndex?: number
+  pageSize?: number
+}
+
 export interface GeneratedFlowerCompositionMaterial {
   id: string
   name: string

@@ -3,12 +3,7 @@
 import { Badge } from '@/components/ui/badge'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import {
-  formatStudioIngredientCounts,
-  formatStudioPrice,
-  formatStudioQuantity,
-  roundStudioQuantity
-} from '@/features/studio/studio-data'
+import { formatStudioPrice, formatStudioQuantity, roundStudioQuantity } from '@/features/studio/studio-data'
 import type {
   StudioBouquet,
   StudioGenerationStatus,
@@ -26,10 +21,9 @@ import type { ReactNode } from 'react'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
 const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
-const detailTermClass = 'text-xs font-semibold text-primary'
-const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
+const detailTermClass = 'text-xs font-medium text-muted-foreground'
+const detailValueClass = 'text-sm font-medium leading-relaxed text-card-foreground'
 
-/** The trim's name with what it adds to the bouquet - a price of its own, not a surcharge. */
 const formatTrim = (trim: StudioTrim | undefined | null): string | undefined =>
   trim && trim.priceAmount ? `${trim.name} · ${formatStudioPrice(trim.priceAmount)}` : (trim?.name ?? undefined)
 
@@ -68,8 +62,6 @@ export default function StudioResult({
   const ribbon = version?.ribbon ?? bouquet.ribbon
   const wrap = version?.wrap ?? bouquet.wrap
 
-  // A generated design ships the base recipe plus whatever the customer added on top, so the
-  // row carries the total and the split that produced it.
   const flowers = version?.materials.length
     ? version.materials.map((material) => ({
         id: material.matId,
@@ -112,34 +104,28 @@ export default function StudioResult({
           actions={actions}
         />
 
-        <div className='mt-6 rounded-3xl bg-card/40 p-6'>
+        <div className='mt-4 rounded-3xl bg-card/40 p-6'>
           <dl className='flex flex-col divide-y divide-border'>
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('result.flowers')}</dt>
               <dd className={detailValueClass}>{bouquet.products.map((item) => item.name).join(' + ')}</dd>
             </div>
-            {bouquet.ingredients.length > 0 ? (
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{tCompose('quantity.label')}</dt>
-                <dd className={detailValueClass}>{formatStudioIngredientCounts(bouquet.ingredients)}</dd>
-              </div>
-            ) : null}
+
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('style.label')}</dt>
               <dd className={detailValueClass}>{style?.name}</dd>
             </div>
+
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('ribbon.label')}</dt>
               <dd className={detailValueClass}>{formatTrim(ribbon)}</dd>
             </div>
+
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{tCompose('wrap.label')}</dt>
               <dd className={detailValueClass}>{formatTrim(wrap)}</dd>
             </div>
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('result.mockup')}</dt>
-              <dd className={detailValueClass}>{mockup?.name}</dd>
-            </div>
+
             <div className={detailRowClass}>
               <dt className={detailTermClass}>{t('result.status')}</dt>
               <dd className={cn('flex items-center gap-1.5', detailValueClass)}>
@@ -245,7 +231,7 @@ export default function StudioResult({
         <section className='mt-14'>
           <StudioStepHeading title={t('review.sceneTitle')} description={t('review.sceneNote')} />
 
-          <figure className='mt-6'>
+          <figure className='mt-4'>
             <div className='relative aspect-[4/5] overflow-hidden rounded-3xl bg-secondary/40 ring-1 ring-foreground/5 sm:aspect-[4/3]'>
               <StudioImage
                 src={mockup.imageUrl}

@@ -613,8 +613,8 @@
     "unitLabel": "Variant: {unit}",
     "aiLine": {
       "badge": "AI design",
-      "materials": "Flowers: {materials}",
-      "trims": "Ribbon & wrapping: {trims}"
+      "materialsLabel": "Flowers",
+      "trimsLabel": "Ribbon & wrap"
     },
     "summary": {
       "title": "Order summary",
@@ -934,7 +934,8 @@
         "note": "The design and the words are still yours to change.",
         "settledNote": "The version you chose is settled - this card can only be viewed now.",
         "template": "Design",
-        "templateReused": "This card reuses an artwork you already had made, so there is no design to swap - only the words can change.",
+        "templateReused": "This card reuses an artwork you already had made, so there is no design to swap",
+        "firstRunNote": "The first artwork is painted from the design and the words you ordered. Once it lands you can change them and generate again.",
         "size": "Size",
         "badge": "Locked",
         "words": "Up to {max} words",
@@ -1011,7 +1012,6 @@
           "cta": "Go to cart"
         }
       },
-      "messageMinWords": "The message needs at least {min} words.",
       "confirmApply": {
         "title": "Print this version?",
         "description": "Version {index} becomes the card printed with your flowers. You can pick another one until we start preparing your order."
@@ -1911,6 +1911,8 @@
     "regenerate": {
       "title": "Regenerate this creation",
       "note": "A regenerate keeps the bouquet exactly as it is. Only the style and the scene are yours to change.",
+      "chooseStyleTitle": "Choose a new style",
+      "chooseStyleNote": "The bouquet stays exactly as it is — only how it's shaped in hand changes.",
       "cta": "Regenerate this creation",
       "ctaNote": "Pick a new style or scene and then choose your favorite version.",
       "lockedTitle": "Fixed for this session",
@@ -1945,7 +1947,18 @@
       "badge": "A place for your flowers",
       "readyForLabel": "This mockup is ready for",
       "newCreation": "Your new creation",
-      "otherArrangements": "Other arrangements in this setting"
+      "otherArrangements": "Other arrangements in this setting",
+      "openLightbox": "View the {name} scene full size",
+      "gallery": {
+        "title": "Made in this scene",
+        "loading": "Loading what has been made here…",
+        "count": "{count, plural, =0 {Nothing generated here yet} one {# bouquet generated from this mockup} other {# bouquets generated from this mockup}}",
+        "error": "We could not load the creations for this scene.",
+        "loadMore": "Show more",
+        "untitled": "Untitled creation",
+        "openLightbox": "View “{name}” full size",
+        "imageAlt": "“{name}”, generated in {scene}"
+      }
     },
     "generations": {
       "title": "AI creations",
@@ -2029,7 +2042,11 @@
         "label": "Finishing colours",
         "note": "The ribbon and paper your flowers are dressed in."
       },
-      "closingNote": "Shapes are guides, not templates. Your florist arranges by hand on the day, so the finished bouquet carries its own natural character."
+      "closingNote": "Shapes are guides, not templates. Your florist arranges by hand on the day, so the finished bouquet carries its own natural character.",
+      "zoom": {
+        "cta": "View images",
+        "open": "View the {label} options full size"
+      }
     },
     "imagePending": "Photograph coming soon",
     "loading": "Opening the studio...",

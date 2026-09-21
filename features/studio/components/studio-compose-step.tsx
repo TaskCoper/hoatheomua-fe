@@ -3,17 +3,25 @@
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioOptionsFooter from '@/features/studio/components/studio-options-footer'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { formatStudioIngredientCounts, formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
+import { formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
 import type { StudioBouquet, StudioOption, StudioTrim, StudioVariant } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
-import { Add01Icon, MinusSignIcon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
+import { Add01Icon, MinusSignIcon, Search01Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
+import Lightbox, { type Slide } from 'yet-another-react-lightbox'
+import Captions from 'yet-another-react-lightbox/plugins/captions'
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+
+import 'yet-another-react-lightbox/plugins/captions.css'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
+import 'yet-another-react-lightbox/styles.css'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
 const detailTermClass = 'text-sm font-semibold text-primary'
-const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
 const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
 const panelClass = 'mt-4 rounded-3xl bg-card/40 p-5 sm:p-6'
 const quantityButtonClass =
@@ -83,6 +91,28 @@ export default function StudioComposeStep({
 }: StudioComposeStepProps) {
   const t = useTranslations('studio.compose')
 
+  const [zoomed, setZoomed] = useState<{ slides: Slide[]; index: number } | null>(null)
+
+  const openZoom = (options: StudioTrim[], selectedId: string | undefined) => {
+    const shown = options.flatMap((option) => (option.imageUrl ? [{ ...option, imageUrl: option.imageUrl }] : []))
+    if (shown.length === 0) return
+
+    setZoomed({
+      slides: shown.map<Slide>((option) => ({
+        src: option.imageUrl,
+        alt: option.name,
+        title: option.name,
+        description: option.priceAmount
+          ? [option.description, formatStudioPrice(option.priceAmount)].filter(Boolean).join(' · ')
+          : (option.description ?? undefined)
+      })),
+      index: Math.max(
+        shown.findIndex((option) => option.id === selectedId),
+        0
+      )
+    })
+  }
+
   const swatchRow = (
     label: string,
     options: StudioTrim[],
@@ -147,6 +177,18 @@ export default function StudioComposeStep({
               )
             })}
           </div>
+
+          {options.some((option) => option.imageUrl) ? (
+            <button
+              type='button'
+              onClick={() => openZoom(options, selectedId)}
+              aria-label={t('zoom.open', { label })}
+              className='inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-secondary/50 px-3 py-1.5 text-[0.6875rem] font-semibold text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+            >
+              <HugeiconsIcon icon={Search01Icon} strokeWidth={2} className='size-3.5' />
+              {t('zoom.cta')}
+            </button>
+          ) : null}
 
           <StudioOptionsFooter
             count={options.length}
@@ -393,45 +435,22 @@ export default function StudioComposeStep({
         </div>
       </section>
 
-      <section className='mt-14'>
-        <StudioStepHeading title={t('summary.label')} description={t('summary.note')} />
-
-        <div className={panelClass}>
-          <dl className='flex flex-col divide-y divide-border'>
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('bouquet.label')}</dt>
-              <dd className={detailValueClass}>{bouquet.products.map((item) => item.name).join(' + ')}</dd>
-            </div>
-            {hasIngredients ? (
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{t('quantity.label')}</dt>
-                <dd className={detailValueClass}>{formatStudioIngredientCounts(bouquet.ingredients)}</dd>
-              </div>
-            ) : null}
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('style.label')}</dt>
-              <dd className={detailValueClass}>{bouquet.style?.name}</dd>
-            </div>
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('finishing.label')}</dt>
-              <dd className={detailValueClass}>
-                {[bouquet.ribbon?.name, bouquet.wrap?.name].filter(Boolean).join(' · ')}
-              </dd>
-            </div>
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('summary.total')}</dt>
-              <dd className='font-title text-lg font-bold leading-none text-primary'>
-                {formatStudioPrice(bouquet.totalAmount)}
-              </dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
       <p className='mt-6 flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground'>
         <HugeiconsIcon icon={SparklesIcon} className='mt-0.5 size-3.5 shrink-0 text-primary' />
         {t('closingNote')}
       </p>
+
+      {/* Looking only - the choice is made on the swatches, never in here. */}
+      <Lightbox
+        open={!!zoomed}
+        close={() => setZoomed(null)}
+        index={zoomed?.index ?? 0}
+        slides={zoomed?.slides ?? []}
+        plugins={[Captions, Fullscreen, Thumbnails, Zoom]}
+        carousel={{ finite: (zoomed?.slides.length ?? 0) <= 1 }}
+        thumbnails={{ position: 'bottom', showToggle: true }}
+        zoom={{ maxZoomPixelRatio: 3, scrollToZoom: false }}
+      />
     </div>
   )
 }

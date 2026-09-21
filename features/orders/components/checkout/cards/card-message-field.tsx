@@ -8,10 +8,6 @@ import { cn } from '@/shared/utils'
 import { useId } from 'react'
 import { countWords } from '../../../cards/card-config'
 
-/**
- * Keeps the first `maxWords` words and drops whatever came after them, with the spacing the
- * writer typed left as it is - a message is measured in words, never in characters.
- */
 const clampToWordBudget = (value: string, maxWords: number): string => {
   const words = [...value.matchAll(/\S+/g)]
   if (words.length <= maxWords) return value
@@ -26,9 +22,9 @@ interface CardMessageFieldProps {
   label: string
   placeholder: string
   invalid?: boolean
-  /** The word budget of the chosen size; messages are counted in words, not characters. */
   maxWords: number
   surcharge?: number
+  disabled?: boolean
 }
 
 export default function CardMessageField({
@@ -38,7 +34,8 @@ export default function CardMessageField({
   placeholder,
   invalid,
   maxWords,
-  surcharge = 0
+  surcharge = 0,
+  disabled
 }: CardMessageFieldProps) {
   const { t } = useTranslation()
   const id = useId()
@@ -46,9 +43,6 @@ export default function CardMessageField({
   const wordCount = countWords(value)
   const isOverBudget = maxWords > 0 && wordCount > maxWords
 
-  // Typing or pasting past the budget stops at the last word that fits. A message that is
-  // already over it - the size was picked smaller underneath it - is left alone rather than
-  // cut down on the next keystroke.
   const handleChange = (next: string) => {
     onChange(maxWords > 0 && !isOverBudget ? clampToWordBudget(next, maxWords) : next)
   }
@@ -63,6 +57,7 @@ export default function CardMessageField({
         className='h-40'
         placeholder={placeholder}
         aria-invalid={invalid}
+        disabled={disabled}
       />
       <div className='flex flex-wrap items-center justify-between gap-x-3 gap-y-1'>
         <span className={cn('text-xs', invalid ? 'text-destructive' : 'text-muted-foreground')}>

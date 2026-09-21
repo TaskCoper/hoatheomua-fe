@@ -7,22 +7,17 @@ import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
 import type { CardWritingMethod } from '../../cards/types'
 
 interface OrderCardLockedSpecsProps {
-  /** Frozen at checkout, all three: the card was priced on them. */
   sizeName: string
   writingMethod: CardWritingMethod
   minWords: number
   maxWords: number
-  /** Once the printed version is chosen, the words and the design are frozen as well. */
-  isSettled?: boolean
 }
 
-/** What the order settled and the studio cannot touch - the design and the words are elsewhere. */
 export default function OrderCardLockedSpecs({
   sizeName,
   writingMethod,
   minWords,
-  maxWords,
-  isSettled
+  maxWords
 }: OrderCardLockedSpecsProps) {
   const { t } = useTranslation()
 
@@ -44,10 +39,6 @@ export default function OrderCardLockedSpecs({
       </p>
 
       <p className='mt-1 text-sm font-semibold text-foreground'>{specs.join(' · ')}</p>
-
-      <p className='mt-1 text-[0.7rem] leading-relaxed text-muted-foreground'>
-        {t(isSettled ? 'orders.cards.locked.settledNote' : 'orders.cards.locked.note')}
-      </p>
     </div>
   )
 }

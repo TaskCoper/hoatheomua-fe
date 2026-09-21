@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import type { I18nKey } from '@/lib/i18n/types'
 import PreviewImage from '@/shared/components/preview-image'
 import { cn } from '@/shared/utils'
 import type { CardTemplate } from '@/types/card-template.type'
@@ -12,13 +13,12 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import Captions from 'yet-another-react-lightbox/plugins/captions'
+import 'yet-another-react-lightbox/plugins/captions.css'
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
-import Zoom from 'yet-another-react-lightbox/plugins/zoom'
-import 'yet-another-react-lightbox/plugins/captions.css'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
-import type { I18nKey } from '@/lib/i18n/types'
 import {
   CARD_TEMPLATE_ORIENTATIONS,
   groupCardTemplates,
@@ -52,6 +52,7 @@ interface CardTemplatePickerProps {
   onLoadMore?: () => void
   value: string
   onChange: (template: CardTemplate) => void
+  disabled?: boolean
 }
 
 export default function CardTemplatePicker({
@@ -61,7 +62,8 @@ export default function CardTemplatePicker({
   hasMore,
   onLoadMore,
   value,
-  onChange
+  onChange,
+  disabled
 }: CardTemplatePickerProps) {
   const { t } = useTranslation()
   const groupId = useId()
@@ -108,6 +110,7 @@ export default function CardTemplatePicker({
       groupId={groupId}
       ratio={ratios.get(template.id) ?? null}
       isActive={template.id === value}
+      isDisabled={!!disabled}
       onMeasure={measureTemplate}
       onZoom={() => setLightboxIndex(templates.findIndex((item) => item.id === template.id))}
     />
@@ -130,7 +133,10 @@ export default function CardTemplatePicker({
       ) : (
         <RadioGroup
           value={value}
+          disabled={disabled}
           onValueChange={(templateId) => {
+            if (disabled) return
+
             const picked = templates.find((template) => template.id === templateId)
             if (picked) onChange(picked)
           }}
@@ -150,7 +156,6 @@ export default function CardTemplatePicker({
             ) : null
           )}
 
-          {/* Painting is what measures a template, so the unsorted ones still render. */}
           {grouped.pending.length > 0 ? (
             <div className={ORIENTATION_GRID.vertical}>{grouped.pending.map(renderTile)}</div>
           ) : null}
@@ -194,6 +199,7 @@ function TemplateTile({
   groupId,
   ratio,
   isActive,
+  isDisabled,
   onMeasure,
   onZoom
 }: {
@@ -201,6 +207,7 @@ function TemplateTile({
   groupId: string
   ratio: number | null
   isActive: boolean
+  isDisabled: boolean
   onMeasure: (templateId: string, size: { naturalWidth: number; naturalHeight: number }) => void
   onZoom: () => void
 }) {
@@ -214,8 +221,9 @@ function TemplateTile({
       title={template.description || template.name}
       style={{ aspectRatio: ratio ?? PLACEHOLDER_RATIO }}
       className={cn(
-        'group relative block cursor-pointer overflow-hidden rounded-2xl border transition-colors',
+        'group relative block overflow-hidden rounded-2xl border transition-colors',
         'has-[button:focus-visible]:ring-3 has-[button:focus-visible]:ring-ring/30',
+        isDisabled ? 'cursor-default opacity-60' : 'cursor-pointer',
         isActive ? 'border-primary/50 ring-1 ring-primary/30' : 'border-border/60 hover:border-border'
       )}
     >

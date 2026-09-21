@@ -11,7 +11,8 @@ export const infiniteProductsQuery = ({
   categoryIds,
   priceFrom,
   priceTo,
-  sortBy = ['-sellablequantity'],
+  // sortBy = ['-sellablequantity'],
+  sortBy,
   labels
 }: Omit<GetProductsParams, 'pageIndex'>) =>
   infiniteQueryOptions({

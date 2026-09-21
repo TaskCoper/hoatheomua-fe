@@ -9,7 +9,14 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import DownloadImageButton from '@/shared/components/download-image-button'
 import { useConfirmStore } from '@/stores/confirm.store'
 import { CardTemplateType } from '@/types/card-template.type'
-import { AiMagicIcon, CheckmarkBadge01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
+import {
+  AiMagicIcon,
+  CheckmarkBadge01Icon,
+  Layers01Icon,
+  SparklesIcon,
+  SquareLock02Icon,
+  Tick02Icon
+} from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -24,12 +31,10 @@ import OrderCardGenerationOverlay from './order-card-generation-overlay'
 import OrderCardLockedSpecs from './order-card-locked-specs'
 import OrderCardVersionStrip from './order-card-version-strip'
 
-/** Only reached before anything has been measured and with no size on the card. */
 const DEFAULT_CARD_RATIO = 3 / 4
 
 interface OrderCardStudioProps {
   card: OrderAiCard
-  /** The dialog is what asks for the card's generations, so the query follows it open. */
   isOpen: boolean
   onDone: () => void
 }
@@ -47,7 +52,6 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
     template,
     content,
     draft,
-    isBelowBudget,
     isOverBudget,
     status,
     stage,
@@ -56,6 +60,8 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
     hasChanges,
     canGenerate,
     isTemplateLocked,
+    isEditLocked,
+    isFirstRun,
     isSettled,
     isSelectedVersion,
     editContent,
@@ -65,28 +71,21 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
     generate
   } = useOrderCardDesigner({ card, enabled: isOpen })
 
-  // A settled card can neither be redesigned nor regenerated, so its picker never renders and
-  // the template list is a request worth not making.
+  // A settled card can neither be redesigned nor regenerated - the list is a request worth skipping.
   const { templates, isGettingCardTemplates, isGettingMoreCardTemplates, hasMoreCardTemplates, loadMoreCardTemplates } =
     useCardTemplates(CardTemplateType.Ai, { enabled: !isSettled })
 
   const isGenerating = status === 'generating'
   const confirm = useConfirmStore((state) => state.confirm)
 
-  /** The generation on `finalGeneratedCardId`, once its list has landed. */
   const settledVersion = isSettled ? findOrderCardVersion(versions, selectedVersionId) : null
 
-  // The settled card was painted with its own words; the ordered ones are only a fallback for
-  // while the list is still in flight.
   const settledMessage = settledVersion?.content.message || card.content.message
 
-  // Nothing generated yet means the design itself is the best preview there is - or, on a card
-  // ordered with its artwork already in hand, that artwork.
   const previewImageUrl = activeVersion?.imageUrl || template.templateImageUrl || card.rawImageUrl
 
-  // The artwork is laid out at its own shape, measured as it paints - the same way the
-  // template picker sizes its tiles. Until it has painted, the card's printed size is the
-  // closest guess there is, so the frame does not jump from a default 3:4.
+  // The artwork keeps its own shape, measured as it paints; the card's printed size holds the
+  // frame steady until then.
   const [artworkRatios, setArtworkRatios] = useState<ReadonlyMap<string, number>>(new Map())
   const previewRatio = artworkRatios.get(previewImageUrl) ?? card.sizeRatio ?? DEFAULT_CARD_RATIO
 
@@ -98,7 +97,6 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
     )
   }
 
-  // The choice is what the florist prints, so it is confirmed before it is sent.
   const handleApply = async () => {
     if (!activeVersion) return
 
@@ -128,12 +126,26 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
 
   return (
     <div className='flex min-h-0 flex-1 flex-col overflow-y-auto md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:overflow-hidden'>
-      <section className='flex flex-col bg-secondary/25 md:min-h-0 md:overflow-hidden'>
+      <section className='relative flex shrink-0 flex-col overflow-hidden bg-gradient-to-b from-secondary/55 via-secondary/25 to-background md:min-h-0 md:shrink'>
+        <span
+          aria-hidden='true'
+          className='pointer-events-none absolute -left-20 -top-24 size-64 rounded-full bg-primary/10 blur-3xl'
+        />
+        <span
+          aria-hidden='true'
+          className='pointer-events-none absolute -bottom-16 -right-24 size-64 rounded-full bg-leaf/10 blur-3xl'
+        />
+
         <div className='relative flex min-h-0 flex-1 items-center justify-center p-5 sm:p-7'>
           <div
             style={{ aspectRatio: previewRatio }}
-            className='relative w-[min(14rem,55vw)] max-w-full md:h-full md:max-h-[24rem] md:w-auto'
+            className='relative w-[min(14rem,55vw)] max-w-full md:h-full md:max-h-[26rem] md:w-auto md:max-w-full'
           >
+            <span
+              aria-hidden='true'
+              className='pointer-events-none absolute inset-x-6 -bottom-3 h-6 rounded-[50%] bg-foreground/20 blur-xl'
+            />
+
             <OrderCardArtwork
               showWords
               onReady={measureArtwork}
@@ -146,7 +158,7 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
               message={draft.message}
               writingMethod={activeVersion?.writingMethod ?? card.writingMethod}
               sizes='(min-width: 768px) 20rem, 60vw'
-              className='size-full rounded-3xl shadow-[0_0.8rem_2rem_rgb(81_108_108/20%)] ring-1 ring-foreground/10'
+              className='size-full rounded-3xl shadow-[0_1.5rem_3rem_rgb(81_108_108/28%)] ring-1 ring-foreground/10'
             />
 
             {activeVersion ? (
@@ -169,13 +181,14 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
           {isGenerating ? <OrderCardGenerationOverlay versionLabel={versions.length + 1} stage={stage} /> : null}
         </div>
 
-        <div className='shrink-0 border-t border-border/60 bg-card/60 p-3 sm:p-4'>
-          <p className='mb-1.5 flex items-baseline justify-between gap-3'>
-            <span className='text-[0.7rem] font-medium text-muted-foreground'>
+        <div className='relative shrink-0 border-t border-border/60 bg-card/70 p-3 backdrop-blur-sm sm:p-4'>
+          <p className='mb-2 flex items-baseline justify-between gap-3'>
+            <span className='inline-flex items-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground'>
+              <HugeiconsIcon icon={Layers01Icon} strokeWidth={2} className='size-3.5 text-primary' />
               {t('orders.cards.versions.heading')}
             </span>
             {versions.length > 0 ? (
-              <span className='text-[0.7rem] font-semibold tabular-nums text-foreground/70'>
+              <span className='rounded-full bg-secondary/50 px-2 py-0.5 text-[0.7rem] font-semibold tabular-nums text-secondary-foreground'>
                 {t('orders.cards.versions.counter', {
                   index: activeVersion?.label ?? versions.length,
                   total: versions.length
@@ -208,14 +221,14 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
       </section>
 
       <section className='flex min-w-0 flex-col md:min-h-0 md:overflow-y-auto'>
-        <div className='space-y-4 p-4 sm:p-5'>
+        <div className='sticky top-0 z-10 shrink-0 border-b border-border/60 bg-popover/90 px-4 py-3 backdrop-blur-sm sm:px-5'>
           <DialogHeader className='pr-10'>
-            <div className='flex items-center gap-2'>
-              <span className='grid size-8 shrink-0 place-items-center rounded-full bg-secondary/40 text-primary ring-1 ring-primary/10'>
+            <div className='flex items-center gap-2.5'>
+              <span className='grid size-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15'>
                 <HugeiconsIcon icon={AiMagicIcon} strokeWidth={1.75} className='size-4' />
               </span>
               <div className='min-w-0'>
-                <DialogTitle className='font-title text-sm font-bold sm:text-base'>
+                <DialogTitle className='truncate font-title text-base font-bold leading-tight sm:text-lg'>
                   {t('orders.cards.dialogTitle')}
                 </DialogTitle>
                 <DialogDescription className='truncate text-xs'>
@@ -226,7 +239,9 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
               </div>
             </div>
           </DialogHeader>
+        </div>
 
+        <div className='space-y-4 p-4 sm:p-5'>
           {isSettled ? (
             <p className='flex items-start gap-2 rounded-2xl bg-leaf/10 px-3 py-2.5 text-xs leading-relaxed text-foreground/90 ring-1 ring-leaf/20'>
               <HugeiconsIcon icon={CheckmarkBadge01Icon} strokeWidth={2} className='mt-px size-4 shrink-0 text-leaf' />
@@ -243,10 +258,8 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
             writingMethod={card.writingMethod}
             minWords={card.minWords}
             maxWords={card.maxWords}
-            isSettled={isSettled}
           />
 
-          {/* Settled: the words are what was printed, so they are shown rather than offered. */}
           {isSettled ? (
             settledMessage ? (
               <div className='rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
@@ -256,11 +269,10 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
             ) : null
           ) : (
             <>
-              {/* A reused card is its artwork - there is no design to pick, so the picker stays shut. */}
+              {isFirstRun ? <StudioNote icon={SparklesIcon}>{t('orders.cards.locked.firstRunNote')}</StudioNote> : null}
+
               {isTemplateLocked ? (
-                <p className='rounded-2xl bg-secondary/20 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground ring-1 ring-foreground/5'>
-                  {t('orders.cards.locked.templateReused')}
-                </p>
+                <StudioNote icon={SquareLock02Icon}>{t('orders.cards.locked.templateReused')}</StudioNote>
               ) : (
                 <CardTemplatePicker
                   templates={templates}
@@ -270,39 +282,42 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
                   onLoadMore={loadMoreCardTemplates}
                   value={template.templateId}
                   onChange={editTemplate}
+                  disabled={isEditLocked}
                 />
               )}
 
               <CardContentFields
                 value={content}
                 onChange={editContent}
-                messageInvalid={showMessageError || isOverBudget || isBelowBudget}
+                messageInvalid={showMessageError || isOverBudget}
                 maxWords={card.maxWords}
+                disabled={isEditLocked}
               />
-
-              {isBelowBudget ? (
-                <p className='text-xs font-medium text-destructive'>
-                  {t('orders.cards.messageMinWords', { min: card.minWords })}
-                </p>
-              ) : null}
             </>
           )}
 
-          <div className='space-y-2 rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
+          <div className='space-y-2 rounded-2xl bg-primary/5 p-3.5 ring-1 ring-primary/10'>
             <div className='flex items-baseline justify-between gap-3'>
-              <span className='text-[0.7rem] font-medium text-muted-foreground'>{t('orders.cards.price.paid')}</span>
-              <span className='font-title text-base font-bold tabular-nums text-primary'>
+              <span className='text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground'>
+                {t('orders.cards.price.paid')}
+              </span>
+              <span className='font-title text-xl font-bold leading-none tabular-nums text-primary'>
                 {formatVnd(card.paidUnitPrice)}
               </span>
             </div>
 
-            <p className='border-t border-border/60 pt-2 text-[0.7rem] leading-relaxed text-muted-foreground'>
+            <p className='border-t border-primary/10 pt-2 text-[0.7rem] leading-relaxed text-muted-foreground'>
               {t('orders.cards.price.note')}
             </p>
           </div>
         </div>
 
-        <div className='sticky bottom-0 mt-auto space-y-2 border-t border-border/60 bg-popover p-4 sm:p-5'>
+        <div className='sticky bottom-0 z-10 mt-auto space-y-2 border-t border-border/60 bg-popover/95 p-4 backdrop-blur-sm sm:p-5'>
+          <span
+            aria-hidden='true'
+            className='pointer-events-none absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-popover to-transparent'
+          />
+
           {isSettled ? (
             <Button type='button' variant='outline' className='w-full' onClick={onDone}>
               {t('orders.cards.actions.close')}
@@ -310,7 +325,14 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
           ) : (
             <>
               {hasChanges && versions.length > 0 ? (
-                <p className='text-xs text-muted-foreground'>{t('orders.cards.actions.applyHint')}</p>
+                <p className='flex items-start gap-1.5 text-xs leading-relaxed text-muted-foreground'>
+                  <HugeiconsIcon
+                    icon={Tick02Icon}
+                    strokeWidth={2.5}
+                    className='mt-0.5 size-3.5 shrink-0 text-primary'
+                  />
+                  {t('orders.cards.actions.applyHint')}
+                </p>
               ) : null}
 
               <div className='grid gap-2 sm:grid-cols-2'>
@@ -352,5 +374,14 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
         </div>
       </section>
     </div>
+  )
+}
+
+function StudioNote({ icon, children }: { icon: typeof AiMagicIcon; children: React.ReactNode }) {
+  return (
+    <p className='flex items-start gap-2 rounded-2xl bg-secondary/25 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground ring-1 ring-foreground/5'>
+      <HugeiconsIcon icon={icon} strokeWidth={2} className='mt-px size-3.5 shrink-0 text-primary' />
+      <span>{children}</span>
+    </p>
   )
 }

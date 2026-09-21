@@ -184,9 +184,6 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
             ) : (
               <StudioRegeneratePanel
                 step={step}
-                product={product}
-                bouquet={bouquet}
-                designName={designName}
                 styleOptions={styleOptions}
                 sceneOptions={sceneOptions}
                 selectedStyleId={selectedStyleId}

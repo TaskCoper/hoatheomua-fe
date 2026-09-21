@@ -81,3 +81,5 @@ export type StudioStepKey = (typeof STUDIO_STEP_KEYS)[number]['key'] | (typeof S
 
 export const STUDIO_SESSION_FINISHED_COUNT = 3
 export const STUDIO_SESSIONS_PAGE_SIZE = 10
+
+export const STUDIO_MOCKUP_GALLERY_PAGE_SIZE = 12

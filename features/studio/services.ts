@@ -5,6 +5,8 @@ import type {
   GeneratedFlowerComposition,
   GeneratedFlowerSession,
   GetGeneratedFlowersParams,
+  GetMockupGeneratedFlowersParams,
+  MockupGeneratedFlower,
   RegenerateAiFlowerPayload
 } from './types'
 
@@ -27,6 +29,19 @@ class AiFlowerService {
   getGeneratedFlowers = async ({ sessionId, pageIndex, pageSize }: GetGeneratedFlowersParams) => {
     const { data } = await api.get<BasePaginationResponse<GeneratedFlowerSession>>(`${this.generatedUrl}`, {
       params: { sessionId, pageIndex, pageSize }
+    })
+
+    return data.value
+  }
+
+  /**
+   * The gallery of one mockup. Note the path: the id sits directly under `v1`, with no
+   * `mockups` segment before it, and the route only matches a GUID - anything else is a 404
+   * rather than a 400.
+   */
+  getMockupGeneratedFlowers = async ({ mockupId, pageIndex, pageSize }: GetMockupGeneratedFlowersParams) => {
+    const { data } = await api.get<BasePaginationResponse<MockupGeneratedFlower>>(`v1/${mockupId}/generated-flowers`, {
+      params: { pageIndex, pageSize }
     })
 
     return data.value

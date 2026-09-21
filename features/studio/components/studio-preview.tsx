@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import StudioGenerationOverlay from '@/features/studio/components/studio-generation-overlay'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioResultCarousel from '@/features/studio/components/studio-result-carousel'
-import { formatStudioPrice, roundStudioQuantity, STUDIO_LAST_STEP } from '@/features/studio/studio-data'
+import { formatStudioPrice, STUDIO_LAST_STEP } from '@/features/studio/studio-data'
 import type {
   StudioBouquet,
   StudioGenerationStatus,
@@ -14,7 +14,7 @@ import type {
   StudioVersion
 } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
-import { SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
+import { Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
@@ -60,7 +60,6 @@ export default function StudioPreview({
   const tNav = useTranslations('studio.nav')
 
   const showVersions = step === STUDIO_LAST_STEP && status !== 'generating' && versions.length > 0
-  const extraStems = roundStudioQuantity(bouquet.ingredients.reduce((total, item) => total + item.extraQuantity, 0))
   const complete = step === STUDIO_LAST_STEP && status === 'complete'
 
   const hero = (() => {
@@ -119,22 +118,6 @@ export default function StudioPreview({
           pendingIconClassName='size-12'
         />
       )}
-      <div
-        aria-hidden='true'
-        className='pointer-events-none absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/5 to-transparent'
-      />
-      <div
-        aria-hidden='true'
-        className='pointer-events-none absolute inset-4 rounded-2xl border border-white/30 sm:inset-7 lg:inset-8'
-      />
-
-      <div className='absolute left-5 top-5 z-10 sm:left-8 sm:top-8 lg:left-10 lg:top-10'>
-        <span className='inline-flex items-center gap-1.5 rounded-full bg-white/70 px-2.5 py-1 text-xs font-semibold text-primary shadow-[0_0.25rem_0.75rem_rgb(28_43_43/10%)] backdrop-blur-md'>
-          <HugeiconsIcon icon={SparklesIcon} className='size-3' />
-          {complete ? t('preview.createdForYou') : t('preview.liveLabel')}
-        </span>
-      </div>
-
       {overlayProduct && product.imageUrl ? (
         <div className='absolute inset-0 flex items-center justify-center px-8 pb-14 pt-8'>
           <div className='relative h-full w-full max-w-[28rem] drop-shadow-[0_1.5rem_2.5rem_rgb(28_43_43/30%)]'>
@@ -151,66 +134,55 @@ export default function StudioPreview({
 
       {status === 'generating' ? <StudioGenerationOverlay name={designName} stage={stage} /> : null}
 
-      <div className='absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-4 p-5 text-white sm:p-8 lg:p-10'>
-        <div>
-          <p className='mb-2 text-xs font-semibold text-white/75'>{stageLabel}</p>
-          <p className='text-pretty font-title text-2xl font-bold leading-tight text-white sm:text-3xl'>
-            {step === 1 ? product.name : designName ? `“${designName}”` : product.name}
-          </p>
-          {step > 1 ? (
-            <p className='mt-1.5 text-xs text-white/75'>
-              {[
-                bouquet.products.map((item) => item.name).join(' + '),
-                extraStems > 0 ? t('compose.quantity.extra', { count: extraStems }) : null,
-                bouquet.style?.name,
-                [bouquet.ribbon?.name, bouquet.wrap?.name].filter(Boolean).join(' · ') || null,
-                mockup?.name
-              ]
-                .filter(Boolean)
-                .join(' · ')}
+      <div className='absolute inset-x-0 bottom-0 z-10 bg-primary/55 text-white backdrop-blur-md'>
+        <div className='flex items-center justify-between gap-4 px-5 py-4 sm:px-8 sm:py-5 lg:px-10'>
+          <div className='min-w-0'>
+            <p className='text-xs font-semibold text-white/75'>{stageLabel}</p>
+            <p className='truncate text-pretty font-title text-lg font-bold leading-tight text-white sm:text-xl'>
+              {step === 1 ? product.name : designName ? `“${designName}”` : product.name}
             </p>
+          </div>
+
+          {step > 1 ? (
+            <div className='shrink-0 text-right'>
+              <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-white/75'>
+                {t('result.price')}
+              </p>
+              <p className='font-title text-xl font-bold leading-tight text-white sm:text-2xl'>
+                {formatStudioPrice(bouquet.totalAmount)}
+              </p>
+            </div>
           ) : null}
         </div>
 
         {complete ? (
-          <div className='flex flex-col items-end gap-3'>
-            <div className='text-right'>
-              <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-white/75'>
-                {t('result.price')}
-              </p>
-              <p className='font-title text-2xl font-bold leading-tight text-white'>
-                {formatStudioPrice(bouquet.totalAmount)}
-              </p>
-            </div>
-
-            <div className='hidden flex-wrap items-center justify-end gap-2 lg:flex'>
-              <Button
-                type='button'
-                size='lg'
-                onClick={onAddToBag}
-                disabled={isAddToBagDisabled}
-                className='bg-white text-primary hover:bg-white/90'
-              >
-                {added ? (
-                  <>
-                    <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
-                    {tNav('addedToBag')}
-                  </>
-                ) : (
-                  tNav('addToBag')
-                )}
-              </Button>
-              <Button
-                type='button'
-                size='lg'
-                variant='outline'
-                onClick={onBuyNow}
-                disabled={isBuyNowDisabled}
-                className='border-white/40 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:text-white'
-              >
-                {tNav('buyNow')}
-              </Button>
-            </div>
+          <div className='hidden flex-wrap items-center justify-end gap-2 border-t border-white/15 px-5 py-3 sm:px-8 lg:flex lg:px-10'>
+            <Button
+              type='button'
+              size='lg'
+              onClick={onAddToBag}
+              disabled={isAddToBagDisabled}
+              className='bg-white text-primary hover:bg-white/90'
+            >
+              {added ? (
+                <>
+                  <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
+                  {tNav('addedToBag')}
+                </>
+              ) : (
+                tNav('addToBag')
+              )}
+            </Button>
+            <Button
+              type='button'
+              size='lg'
+              variant='outline'
+              onClick={onBuyNow}
+              disabled={isBuyNowDisabled}
+              className='border-white/40 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:text-white'
+            >
+              {tNav('buyNow')}
+            </Button>
           </div>
         ) : null}
       </div>

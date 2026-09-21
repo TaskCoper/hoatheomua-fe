@@ -613,8 +613,8 @@
     "unitLabel": "Phân loại: {unit}",
     "aiLine": {
       "badge": "Thiết kế AI",
-      "materials": "Hoa: {materials}",
-      "trims": "Ruy băng & giấy gói: {trims}"
+      "materialsLabel": "Hoa",
+      "trimsLabel": "Ruy băng & giấy gói"
     },
     "summary": {
       "title": "Tóm tắt đơn hàng",
@@ -934,7 +934,8 @@
         "note": "Bạn vẫn có thể đổi mẫu thiệp và lời nhắn.",
         "settledNote": "Bạn đã chốt phiên bản in - thiệp này giờ chỉ có thể xem lại.",
         "template": "Mẫu thiệp",
-        "templateReused": "Thiệp này dùng lại hình bạn đã tạo trước đó, nên không có mẫu thiệp để đổi - chỉ lời nhắn là thay được.",
+        "templateReused": "Thiệp này dùng lại hình bạn đã tạo trước đó, nên không có mẫu thiệp để đổi.",
+        "firstRunNote": "Lần tạo đầu tiên sẽ dùng đúng mẫu thiệp và lời chúc bạn đã đặt. Có bản đầu tiên rồi, bạn mới đổi được và tạo lại.",
         "size": "Kích thước",
         "badge": "Đã khoá",
         "words": "Tối đa {max} từ",
@@ -1011,7 +1012,6 @@
           "cta": "Đến giỏ hàng"
         }
       },
-      "messageMinWords": "Lời nhắn cần ít nhất {min} từ.",
       "confirmApply": {
         "title": "In mẫu thiệp này?",
         "description": "Mẫu {index} sẽ là thiệp được in kèm hoa. Bạn vẫn có thể chọn mẫu khác cho đến khi đơn hàng được chuẩn bị."
@@ -1911,6 +1911,8 @@
     "regenerate": {
       "title": "Tạo lại tác phẩm này",
       "note": "Khi tạo lại, bó hoa được giữ nguyên. Bạn chỉ có thể đổi kiểu dáng và bối cảnh.",
+      "chooseStyleTitle": "Chọn kiểu dáng mới",
+      "chooseStyleNote": "Bó hoa được giữ nguyên, bạn chỉ đổi cách người cắm tạo dáng trên tay.",
       "cta": "Tạo lại tác phẩm này",
       "ctaNote": "Chọn kiểu dáng hoặc bối cảnh mới sau đó lựa chọn phiên bản bạn ưng ý nhất.",
       "lockedTitle": "Cố định trong phiên này",
@@ -1945,7 +1947,18 @@
       "badge": "Không gian dành cho hoa của bạn",
       "readyForLabel": "Bối cảnh này đã sẵn sàng cho",
       "newCreation": "Tác phẩm mới của bạn",
-      "otherArrangements": "Các mẫu cắm hoa khác trong không gian này"
+      "otherArrangements": "Các mẫu cắm hoa khác trong không gian này",
+      "openLightbox": "Xem khung cảnh {name} cỡ lớn",
+      "gallery": {
+        "title": "Đã tạo trong khung cảnh này",
+        "loading": "Đang tải các mẫu đã tạo…",
+        "count": "{count, plural, =0 {Chưa có mẫu nào được tạo} other {# mẫu đã tạo từ khung cảnh này}}",
+        "error": "Không tải được các mẫu của khung cảnh này.",
+        "loadMore": "Xem thêm",
+        "untitled": "Mẫu chưa đặt tên",
+        "openLightbox": "Xem “{name}” cỡ lớn",
+        "imageAlt": "“{name}” trong khung cảnh {scene}"
+      }
     },
     "generations": {
       "title": "Thiết kế AI",
@@ -2029,7 +2042,11 @@
         "label": "Màu hoàn thiện",
         "note": "Ruy băng và giấy gói khoác lên bó hoa của bạn."
       },
-      "closingNote": "Kiểu bó chỉ mang tính định hướng. Bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm luôn mang nét tự nhiên riêng."
+      "closingNote": "Kiểu bó chỉ mang tính định hướng. Bó hoa vẫn được cắm thủ công trong ngày, nên thành phẩm luôn mang nét tự nhiên riêng.",
+      "zoom": {
+        "cta": "Xem ảnh",
+        "open": "Xem ảnh {label} cỡ lớn"
+      }
     },
     "imagePending": "Ảnh sẽ được cập nhật",
     "loading": "Đang mở xưởng thiết kế...",
