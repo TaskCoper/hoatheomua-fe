@@ -153,6 +153,11 @@ export interface OrderAiCard {
   templateId: string
   templateName: string
   templateImageUrl: string
+  /**
+   * `snapShotCard.rawImage` - the artwork the card was ordered with, when one came from a
+   * generation the customer reused. It leaves no design to pick, so it locks the template.
+   */
+  rawImageUrl: string
   /** Frozen at checkout. */
   sizeName: string
   /**

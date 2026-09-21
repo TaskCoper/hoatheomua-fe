@@ -121,6 +121,7 @@ const toOrderItemAiCards = (item: OrderItem): OrderAiCard[] =>
         templateId: snapshot.cardTemplate?.templateId ?? '',
         templateName: snapshot.cardTemplate?.templateName ?? '',
         templateImageUrl: snapshot.cardTemplate?.templateImageUrl ?? '',
+        rawImageUrl: snapshot.rawImage ?? '',
         sizeName: snapshot.cardSize?.name ?? '',
         sizeRatio: getSizeRatio(snapshot),
         unit: index + 1,

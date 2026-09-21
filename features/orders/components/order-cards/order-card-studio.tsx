@@ -79,8 +79,9 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
   // while the list is still in flight.
   const settledMessage = settledVersion?.content.message || card.content.message
 
-  // Nothing generated yet means the design itself is the best preview there is.
-  const previewImageUrl = activeVersion?.imageUrl || template.templateImageUrl
+  // Nothing generated yet means the design itself is the best preview there is - or, on a card
+  // ordered with its artwork already in hand, that artwork.
+  const previewImageUrl = activeVersion?.imageUrl || template.templateImageUrl || card.rawImageUrl
 
   // The artwork is laid out at its own shape, measured as it paints - the same way the
   // template picker sizes its tiles. Until it has painted, the card's printed size is the

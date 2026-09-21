@@ -239,6 +239,7 @@ export interface OrderSnapshotCard {
   formType: OrderSnapshotFormType | string | null
   messageContent: string | null
   attachedImageUrl: string | null
+  rawImage: string | null
   cardTemplate: OrderSnapshotCardTemplate | null
   cardSize: OrderSnapshotCardSize | null
   /**

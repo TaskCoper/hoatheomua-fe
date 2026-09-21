@@ -23,7 +23,7 @@ export default function OrderAiCardRow({ card, label, canDesign }: OrderAiCardRo
   const preview = (
     <>
       <OrderCardArtwork
-        imageUrl={card.templateImageUrl}
+        imageUrl={card.templateImageUrl || card.rawImageUrl}
         alt={card.templateName || label}
         sizes='56px'
         // A square keeps the list on one rhythm whatever shape the cards are - their real

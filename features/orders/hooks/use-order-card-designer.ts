@@ -80,7 +80,10 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   const baseline = activeVersion ?? { content: card.content, templateId: card.templateId }
   const hasChanges = draft.message !== baseline.content.message || template.templateId !== baseline.templateId
 
-  const isTemplateLocked = !!card.sourceCardId
+  // Either the card was ordered as a reuse of an earlier generation, or the snapshot already
+  // carries the artwork it is printed from - either way the picture is set and only the words
+  // are still open.
+  const isTemplateLocked = !!card.sourceCardId || !!card.rawImageUrl
 
   /**
    * `finalGeneratedCardId` is the customer's final word on which artwork the florist prints.
