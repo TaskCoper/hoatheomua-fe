@@ -6,7 +6,7 @@ import StudioGenerationDialog from '@/features/studio/components/studio-generati
 import { useGetInfiniteGeneratedFlowers } from '@/features/studio/hooks/use-get-generated-flowers'
 import { toStudioGenerationSessions } from '@/features/studio/studio-mappers'
 import type { StudioGenerationSession } from '@/features/studio/types'
-import { AccountEmptyNote, AccountEmptyState, AccountFilterTabs } from '@/features/users/components/account-panel'
+import { AccountEmptyNote, AccountEmptyState } from '@/features/users/components/account-panel'
 import { AccountSectionHeader } from '@/features/users/components/account-shell'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -24,8 +24,6 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-
-const ALL = 'all'
 
 const tileStagger: Variants = {
   hidden: {},
@@ -56,30 +54,8 @@ export default function AccountStudioGenerations() {
 
   const generations = useMemo(() => toStudioGenerationSessions(sessions), [sessions])
 
-  const [scene, setScene] = useState<string>(ALL)
-  // The session outlives the close so the exit animation keeps its content instead of
-  // flashing the loading state on the way out.
   const [detailSession, setDetailSession] = useState<StudioGenerationSession | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
-
-  const options = useMemo(() => {
-    const counts = new Map<string, { label: string; count: number }>()
-
-    generations.forEach((generation) => {
-      const entry = counts.get(generation.mockupId)
-      counts.set(generation.mockupId, {
-        label: generation.mockupName,
-        count: (entry?.count ?? 0) + 1
-      })
-    })
-
-    return [
-      { value: ALL, label: t('studio.generations.filterAll'), count: generations.length },
-      ...Array.from(counts, ([value, entry]) => ({ value, label: entry.label, count: entry.count }))
-    ]
-  }, [generations, t])
-
-  const visible = scene === ALL ? generations : generations.filter((item) => item.mockupId === scene)
 
   const sentinelRef = useRef<HTMLDivElement>(null)
   const canLoadMore = hasMoreGeneratedFlowers && !isGettingMoreGeneratedFlowers
@@ -131,37 +107,25 @@ export default function AccountStudioGenerations() {
         />
       ) : (
         <>
-          <AccountFilterTabs
-            value={scene}
-            options={options}
-            onChange={setScene}
-            ariaLabel={t('studio.generations.filterLabel')}
-          />
-
-          {visible.length === 0 ? (
-            <AccountEmptyNote icon={AiMagicIcon}>{t('studio.generations.emptyFilter')}</AccountEmptyNote>
-          ) : (
-            <motion.ul
-              key={scene}
-              initial='hidden'
-              animate='visible'
-              variants={tileStagger}
-              className='grid grid-cols-2 gap-3 sm:grid-cols-3'
-            >
-              {visible.map((generation) => (
-                <motion.li key={generation.sessionId} variants={tileItem}>
-                  <GenerationTile
-                    generation={generation}
-                    dateLabel={formatDate(generation.createdAt, 'dateMedium')}
-                    onOpen={() => {
-                      setDetailSession(generation)
-                      setDetailOpen(true)
-                    }}
-                  />
-                </motion.li>
-              ))}
-            </motion.ul>
-          )}
+          <motion.ul
+            initial='hidden'
+            animate='visible'
+            variants={tileStagger}
+            className='grid grid-cols-2 gap-3 sm:grid-cols-3'
+          >
+            {generations.map((generation) => (
+              <motion.li key={generation.sessionId} variants={tileItem}>
+                <GenerationTile
+                  generation={generation}
+                  dateLabel={formatDate(generation.createdAt, 'dateMedium')}
+                  onOpen={() => {
+                    setDetailSession(generation)
+                    setDetailOpen(true)
+                  }}
+                />
+              </motion.li>
+            ))}
+          </motion.ul>
 
           <div ref={sentinelRef}>
             {isGettingMoreGeneratedFlowers ? (

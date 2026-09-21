@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import DownloadImageButton from '@/shared/components/download-image-button'
 import { useConfirmStore } from '@/stores/confirm.store'
 import { CardTemplateType } from '@/types/card-template.type'
 import { AiMagicIcon, CheckmarkBadge01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
@@ -156,6 +157,13 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
                 ) : null}
               </span>
             ) : null}
+
+            <DownloadImageButton
+              src={previewImageUrl}
+              filename={`${card.productName}-${activeVersion?.label ?? 'card'}`}
+              className='absolute right-2 top-2 size-7'
+              iconClassName='size-3.5'
+            />
           </div>
 
           {isGenerating ? <OrderCardGenerationOverlay versionLabel={versions.length + 1} stage={stage} /> : null}

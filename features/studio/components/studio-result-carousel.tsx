@@ -2,6 +2,7 @@
 
 import StudioImage from '@/features/studio/components/studio-image'
 import type { StudioProduct, StudioVersion } from '@/features/studio/types'
+import DownloadImageButton from '@/shared/components/download-image-button'
 import { cn } from '@/shared/utils'
 import { ArrowLeft02Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -95,39 +96,41 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
         </div>
       </div>
 
-      {multiple ? (
-        <>
-          <span
-            className={cn(
-              'absolute right-5 top-5 z-10 rounded-full px-2.5 py-1 text-xs font-semibold tabular-nums sm:right-8 sm:top-8 lg:right-10 lg:top-10',
-              glassClass
-            )}
-          >
+      <div className='absolute right-5 top-5 z-10 flex items-center gap-2 sm:right-8 sm:top-8 lg:right-10 lg:top-10'>
+        {multiple ? (
+          <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold tabular-nums', glassClass)}>
             {t('counter', { index: activeIndex + 1, total: versions.length })}
           </span>
+        ) : null}
 
-          <div className='absolute inset-x-3 top-1/2 z-10 flex -translate-y-1/2 justify-between sm:inset-x-6 lg:inset-x-8'>
-            <button
-              type='button'
-              onClick={() => emblaApi?.scrollPrev()}
-              disabled={activeIndex === 0}
-              aria-label={t('previous')}
-              className={cn(arrowClass, glassClass)}
-            >
-              <HugeiconsIcon icon={ArrowLeft02Icon} className='size-4' strokeWidth={2} />
-            </button>
+        <DownloadImageButton
+          src={versions[activeIndex]?.imageUrl ?? null}
+          filename={`${product.name}-${versions[activeIndex]?.label ?? ''}`}
+        />
+      </div>
 
-            <button
-              type='button'
-              onClick={() => emblaApi?.scrollNext()}
-              disabled={activeIndex === versions.length - 1}
-              aria-label={t('next')}
-              className={cn(arrowClass, glassClass)}
-            >
-              <HugeiconsIcon icon={ArrowRight02Icon} className='size-4' strokeWidth={2} />
-            </button>
-          </div>
-        </>
+      {multiple ? (
+        <div className='absolute inset-x-3 top-1/2 z-10 flex -translate-y-1/2 justify-between sm:inset-x-6 lg:inset-x-8'>
+          <button
+            type='button'
+            onClick={() => emblaApi?.scrollPrev()}
+            disabled={activeIndex === 0}
+            aria-label={t('previous')}
+            className={cn(arrowClass, glassClass)}
+          >
+            <HugeiconsIcon icon={ArrowLeft02Icon} className='size-4' strokeWidth={2} />
+          </button>
+
+          <button
+            type='button'
+            onClick={() => emblaApi?.scrollNext()}
+            disabled={activeIndex === versions.length - 1}
+            aria-label={t('next')}
+            className={cn(arrowClass, glassClass)}
+          >
+            <HugeiconsIcon icon={ArrowRight02Icon} className='size-4' strokeWidth={2} />
+          </button>
+        </div>
       ) : null}
     </>
   )

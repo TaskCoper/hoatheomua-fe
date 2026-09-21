@@ -143,7 +143,8 @@
       "pleaseWait": "Vui lòng chờ",
       "uploadSuccess": "Tải lên thành công",
       "optional": "tuỳ chọn",
-      "selectDate": "Chọn ngày"
+      "selectDate": "Chọn ngày",
+      "downloadOpenedInNewTab": "Đã mở ảnh trong tab mới để bạn tự lưu lại"
     },
     "button": {
       "clearAll": "Xóa tất cả",
@@ -151,7 +152,8 @@
       "cancel": "Hủy",
       "save": "Lưu",
       "upload": "Tải lên",
-      "remove": "Gỡ bỏ"
+      "remove": "Gỡ bỏ",
+      "download": "Tải xuống"
     },
     "error": {
       "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về",
@@ -995,9 +997,6 @@
         "title": "Lịch sử thiệp",
         "loading": "Đang tải thiệp của bạn…",
         "count": "{count} tấm thiệp",
-        "filterAll": "Tất cả",
-        "filterLabel": "Lọc thiệp theo kiểu chữ",
-        "emptyFilter": "Chưa có tấm thiệp nào viết theo kiểu này.",
         "error": "Không tải được thiệp của bạn. Vui lòng thử lại.",
         "loadMore": "Xem thêm",
         "size": "{width}×{height} cm",
@@ -1952,11 +1951,8 @@
       "title": "Thiết kế AI",
       "loading": "Đang tải thiết kế của bạn…",
       "count": "{count} thiết kế",
-      "filterAll": "Tất cả bối cảnh",
-      "filterLabel": "Lọc thiết kế theo bối cảnh",
       "openInStudio": "Mở “{name}” trong studio",
       "previewAlt": "“{name}” trong bối cảnh {scene}",
-      "emptyFilter": "Chưa có thiết kế nào trong bối cảnh này.",
       "error": "Không tải được thiết kế của bạn. Vui lòng thử lại.",
       "loadMore": "Xem thêm",
       "finished": "Đã hoàn tất",

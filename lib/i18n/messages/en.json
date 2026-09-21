@@ -143,7 +143,8 @@
       "pleaseWait": "Please wait",
       "uploadSuccess": "Upload successful",
       "optional": "optional",
-      "selectDate": "Select a date"
+      "selectDate": "Select a date",
+      "downloadOpenedInNewTab": "Opened the image in a new tab so you can save it manually"
     },
     "button": {
       "clearAll": "Clear all",
@@ -151,7 +152,8 @@
       "cancel": "Cancel",
       "save": "Save",
       "upload": "Upload",
-      "remove": "Remove"
+      "remove": "Remove",
+      "download": "Download"
     },
     "error": {
       "uploadNoUrlReturned": "Upload failed: no URL returned",
@@ -995,9 +997,6 @@
         "title": "Card history",
         "loading": "Loading your cards…",
         "count": "{count} cards",
-        "filterAll": "All",
-        "filterLabel": "Filter cards by writing style",
-        "emptyFilter": "No cards written this way yet.",
         "error": "We could not load your cards. Please try again.",
         "loadMore": "Show more",
         "size": "{width}×{height} cm",
@@ -1952,11 +1951,8 @@
       "title": "AI creations",
       "loading": "Loading your creations…",
       "count": "{count} creations",
-      "filterAll": "All scenes",
-      "filterLabel": "Filter creations by scene",
       "openInStudio": "Open “{name}” in the studio",
       "previewAlt": "“{name}” in the {scene} scene",
-      "emptyFilter": "Nothing generated in this scene yet.",
       "error": "We could not load your creations. Please try again.",
       "loadMore": "Show more",
       "finished": "Finished",

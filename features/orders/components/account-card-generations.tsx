@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { AccountEmptyNote, AccountEmptyState, AccountFilterTabs } from '@/features/users/components/account-panel'
+import { AccountEmptyNote, AccountEmptyState } from '@/features/users/components/account-panel'
 import { AccountSectionHeader } from '@/features/users/components/account-shell'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
@@ -12,16 +12,10 @@ import PreviewImage from '@/shared/components/preview-image'
 import { Image01Icon, Mail01Icon, ShoppingCart01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { CARD_WRITING_METHOD_LABEL_KEYS, GENERATED_CARD_KIND_LABEL_KEYS } from '../cards/card-labels'
-import type { CardWritingMethod, GeneratedCardHistoryEntry } from '../cards/types'
+import type { GeneratedCardHistoryEntry } from '../cards/types'
 import { useGeneratedCardHistory } from '../hooks/use-generated-card-history'
-
-const ALL = 'all'
-
-type WritingFilter = typeof ALL | CardWritingMethod
-
-const WRITING_FILTERS: CardWritingMethod[] = ['typed', 'handwritten']
 
 const rowStagger: Variants = {
   hidden: {},
@@ -44,23 +38,6 @@ export default function AccountCardGenerations() {
     hasMoreGeneratedCards,
     loadMoreGeneratedCards
   } = useGeneratedCardHistory()
-
-  const [writing, setWriting] = useState<WritingFilter>(ALL)
-
-  // Counts are of what has been loaded so far - the endpoint filters nothing for us.
-  const options = useMemo(
-    () => [
-      { value: ALL as WritingFilter, label: t('orders.cards.history.filterAll'), count: generatedCards.length },
-      ...WRITING_FILTERS.map((method) => ({
-        value: method as WritingFilter,
-        label: t(CARD_WRITING_METHOD_LABEL_KEYS[method]),
-        count: generatedCards.filter((card) => card.writingMethod === method).length
-      }))
-    ],
-    [generatedCards, t]
-  )
-
-  const visible = writing === ALL ? generatedCards : generatedCards.filter((card) => card.writingMethod === writing)
 
   const sentinelRef = useRef<HTMLDivElement>(null)
   const canLoadMore = hasMoreGeneratedCards && !isGettingMoreGeneratedCards
@@ -112,25 +89,13 @@ export default function AccountCardGenerations() {
         />
       ) : (
         <>
-          <AccountFilterTabs
-            value={writing}
-            options={options}
-            onChange={setWriting}
-            ariaLabel={t('orders.cards.history.filterLabel')}
-          />
-
-          {visible.length === 0 ? (
-            <AccountEmptyNote icon={Mail01Icon}>{t('orders.cards.history.emptyFilter')}</AccountEmptyNote>
-          ) : (
-            /* Keyed on the filter so switching replays the stagger. */
-            <motion.ul key={writing} initial='hidden' animate='visible' variants={rowStagger} className='grid gap-3'>
-              {visible.map((card) => (
-                <motion.li key={card.id} variants={rowItem}>
-                  <GeneratedCardRow card={card} />
-                </motion.li>
-              ))}
-            </motion.ul>
-          )}
+          <motion.ul initial='hidden' animate='visible' variants={rowStagger} className='grid gap-3'>
+            {generatedCards.map((card) => (
+              <motion.li key={card.id} variants={rowItem}>
+                <GeneratedCardRow card={card} />
+              </motion.li>
+            ))}
+          </motion.ul>
 
           <div ref={sentinelRef}>
             {isGettingMoreGeneratedCards ? (

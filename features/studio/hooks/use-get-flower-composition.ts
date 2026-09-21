@@ -19,11 +19,6 @@ export interface FlowerCompositionState {
   isResolving: boolean
 }
 
-/**
- * The AI counterpart of `useGetProductSummary`: a bouquet designed in the studio is not
- * a catalogue row, so the cart and checkout read its name, artwork and flowers from
- * `v1/ai-flowers/{id}/composition` instead of the product endpoints.
- */
 export const useGetFlowerCompositions = ({ flowerIds }: { flowerIds: string[] }) => {
   const ids = useMemo(() => Array.from(new Set(flowerIds.filter(Boolean))), [flowerIds])
 
