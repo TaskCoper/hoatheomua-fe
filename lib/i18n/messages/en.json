@@ -918,6 +918,7 @@
       "cardCount": "{count} card(s)",
       "cardIndex": "Card {index}",
       "itemCarded": "{carded}/{quantity} items carded",
+      "cardedShort": "{carded}/{quantity} cards",
       "forProduct": "For {name}",
       "quantity": "{count} copies",
       "design": "Design",

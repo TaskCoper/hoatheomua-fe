@@ -918,6 +918,7 @@
       "cardCount": "{count} thiệp",
       "cardIndex": "Thiệp {index}",
       "itemCarded": "{carded}/{quantity} sản phẩm đã có thiệp",
+      "cardedShort": "{carded}/{quantity} thiệp",
       "forProduct": "Cho {name}",
       "quantity": "{count} tấm",
       "design": "Thiết kế",
