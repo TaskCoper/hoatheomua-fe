@@ -43,6 +43,8 @@ const nextConfig: NextConfig = {
   experimental: {
     useCache: true,
     optimizeCss: true,
+    staticGenerationMaxConcurrency: 3,
+    staticGenerationRetryCount: 2,
     optimizePackageImports: [
       'motion',
       '@hugeicons/react',
