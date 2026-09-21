@@ -37,7 +37,6 @@ interface StudioReviewProps {
   mockup?: StudioScene
   bouquet: StudioBouquet
   designName: string
-  actions?: ReactNode
   onIncreaseIngredient: (id: string) => void
   onDecreaseIngredient: (id: string) => void
 }
@@ -46,7 +45,6 @@ export default function StudioReview({
   mockup,
   bouquet,
   designName,
-  actions,
   onIncreaseIngredient,
   onDecreaseIngredient
 }: StudioReviewProps) {
@@ -65,7 +63,6 @@ export default function StudioReview({
         <StudioStepHeading
           title={t('review.flowersTitle')}
           description={t('review.flowersNote', { count: bouquet.ingredients.length, name: designName })}
-          actions={actions}
         />
 
         <div className='mt-8 flex flex-col gap-8'>

@@ -4,12 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AccountSectionHeader } from '@/features/users/components/account-shell'
+import { useLoadMoreOnView } from '@/hooks/use-load-more-on-view'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { PackageIcon, ShoppingBag03Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useGetOrders } from '../hooks/use-get-orders'
 import { OrderStatus, OrderStatusLabel } from '../types'
 import { OrderCard } from './order-card'
@@ -37,26 +38,10 @@ export function AccountOrders() {
     status: filter === 'all' ? undefined : filter
   })
 
-  const sentinelRef = useRef<HTMLDivElement>(null)
-  const canLoadMore = hasMoreOrders && !isLoadingMoreOrders
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel || !canLoadMore) return
-
-    // Re-created whenever `canLoadMore` flips back to true, so a sentinel that
-    // is still on screen after a page lands keeps pulling the next one.
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) loadMoreOrders()
-      },
-      { rootMargin: '320px 0px' }
-    )
-
-    observer.observe(sentinel)
-
-    return () => observer.disconnect()
-  }, [canLoadMore, loadMoreOrders])
+  const sentinelRef = useLoadMoreOnView({
+    enabled: hasMoreOrders && !isLoadingMoreOrders,
+    onLoadMore: loadMoreOrders
+  })
 
   return (
     <>

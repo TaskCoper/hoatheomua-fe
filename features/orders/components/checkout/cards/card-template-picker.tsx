@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useLoadMoreOnView } from '@/hooks/use-load-more-on-view'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import type { I18nKey } from '@/lib/i18n/types'
 import PreviewImage from '@/shared/components/preview-image'
@@ -10,7 +11,7 @@ import { cn } from '@/shared/utils'
 import type { CardTemplate } from '@/types/card-template.type'
 import { Search01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useEffect, useId, useMemo, useRef, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 import Captions from 'yet-another-react-lightbox/plugins/captions'
 import 'yet-another-react-lightbox/plugins/captions.css'
@@ -84,24 +85,11 @@ export default function CardTemplatePicker({
     [templates]
   )
 
-  const sentinelRef = useRef<HTMLDivElement>(null)
-  const canLoadMore = !!hasMore && !isLoadingMore && !!onLoadMore
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel || !canLoadMore) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) onLoadMore?.()
-      },
-      { rootMargin: '240px 0px' }
-    )
-
-    observer.observe(sentinel)
-
-    return () => observer.disconnect()
-  }, [canLoadMore, onLoadMore])
+  const sentinelRef = useLoadMoreOnView({
+    enabled: !!hasMore && !isLoadingMore && !!onLoadMore,
+    onLoadMore: () => onLoadMore?.(),
+    rootMargin: '240px 0px'
+  })
 
   const renderTile = (template: CardTemplate) => (
     <TemplateTile

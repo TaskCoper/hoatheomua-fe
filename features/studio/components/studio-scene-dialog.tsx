@@ -1,12 +1,12 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import StudioImage from '@/features/studio/components/studio-image'
 import { useGetMockupGeneratedFlowers } from '@/features/studio/hooks/use-get-mockup-generated-flowers'
 import type { MockupGeneratedFlower, StudioProduct, StudioScene } from '@/features/studio/types'
+import { useLoadMoreOnView } from '@/hooks/use-load-more-on-view'
 import { useDateFormat } from '@/lib/date'
 import { AiMagicIcon, Search01Icon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -259,6 +259,11 @@ function MockupGallery({
     loadMoreMockupFlowers
   } = useGetMockupGeneratedFlowers({ mockupId: mockup.id, enabled })
 
+  const sentinelRef = useLoadMoreOnView({
+    enabled: hasMoreMockupFlowers && !isGettingMockupFlowers && !isGettingMoreMockupFlowers,
+    onLoadMore: loadMoreMockupFlowers
+  })
+
   const slides = useMemo(
     () =>
       flowers.map((flower) => ({
@@ -311,13 +316,8 @@ function MockupGallery({
               : null}
           </ul>
 
-          {hasMoreMockupFlowers && !isGettingMoreMockupFlowers ? (
-            <div className='mt-3 flex justify-center'>
-              <Button type='button' variant='outline' size='sm' onClick={() => loadMoreMockupFlowers()}>
-                {tGallery('loadMore')}
-              </Button>
-            </div>
-          ) : null}
+          {/* Infinite scroll - the skeletons above stand in while the next page is on its way. */}
+          {hasMoreMockupFlowers ? <div ref={sentinelRef} className='h-1' /> : null}
         </>
       )}
 

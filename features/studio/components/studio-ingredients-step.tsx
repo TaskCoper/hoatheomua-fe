@@ -9,7 +9,6 @@ import type { StudioIngredient, StudioProduct } from '@/features/studio/types'
 import { STUDIO_NAME_MAX_LENGTH, type StudioFormValues } from '@/features/studio/validations'
 import { cn } from '@/shared/utils'
 import { useTranslations } from 'next-intl'
-import type { ReactNode } from 'react'
 import { Controller, type Control } from 'react-hook-form'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
@@ -18,7 +17,6 @@ interface StudioIngredientsStepProps {
   control: Control<StudioFormValues>
   product: StudioProduct
   ingredients: StudioIngredient[]
-  actions?: ReactNode
   onNameChange: () => void
 }
 
@@ -26,7 +24,6 @@ export default function StudioIngredientsStep({
   control,
   product,
   ingredients,
-  actions,
   onNameChange
 }: StudioIngredientsStepProps) {
   const t = useTranslations('studio')
@@ -85,7 +82,6 @@ export default function StudioIngredientsStep({
         <StudioStepHeading
           title={t('step1.insideTitle', { name: product.name })}
           description={product.note ?? t('step1.insideNote', { count: ingredients.length })}
-          actions={actions}
         />
 
         {ingredients.length > 0 ? (

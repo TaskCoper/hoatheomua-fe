@@ -1954,7 +1954,6 @@
         "loading": "Đang tải các mẫu đã tạo…",
         "count": "{count, plural, =0 {Chưa có mẫu nào được tạo} other {# mẫu đã tạo từ khung cảnh này}}",
         "error": "Không tải được các mẫu của khung cảnh này.",
-        "loadMore": "Xem thêm",
         "untitled": "Mẫu chưa đặt tên",
         "openLightbox": "Xem “{name}” cỡ lớn",
         "imageAlt": "“{name}” trong khung cảnh {scene}"
@@ -1995,9 +1994,7 @@
       }
     },
     "options": {
-      "empty": "Chưa có lựa chọn nào",
-      "loadMore": "Xem thêm",
-      "loadingMore": "Đang tải…"
+      "empty": "Chưa có lựa chọn nào"
     },
     "compose": {
       "title": "Tạo bó hoa của bạn",

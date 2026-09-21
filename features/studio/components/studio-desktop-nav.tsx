@@ -18,16 +18,25 @@ export default function StudioDesktopNav({ step, status, canContinue, onNext, on
   const tNav = useTranslations('studio.nav')
 
   const back = (
-    <Button type='button' size='lg' variant='outline' onClick={onBack}>
+    <Button
+      type='button'
+      size='icon-lg'
+      variant='outline'
+      onClick={onBack}
+      aria-label={tNav('back')}
+      className='mr-auto'
+    >
       <HugeiconsIcon icon={ArrowLeft02Icon} />
-      {tNav('back')}
     </Button>
   )
 
   const next = (
-    <Button type='button' size='lg' disabled={!canContinue} onClick={onNext}>
+    <Button key='next' type='button' size='lg' disabled={!canContinue} onClick={onNext}>
       {tNav('next')}
-      <HugeiconsIcon icon={ArrowRight02Icon} />
+      <HugeiconsIcon
+        icon={ArrowRight02Icon}
+        className='transition-transform duration-300 group-hover/button:translate-x-0.5'
+      />
     </Button>
   )
 
@@ -47,9 +56,12 @@ export default function StudioDesktopNav({ step, status, canContinue, onNext, on
     return (
       <>
         {back}
-        <Button type='submit' size='lg' disabled={status === 'generating'}>
+        <Button key='generate' type='submit' size='lg' disabled={status === 'generating'}>
           {tNav('generate')}
-          <HugeiconsIcon icon={SparklesIcon} />
+          <HugeiconsIcon
+            icon={SparklesIcon}
+            className='transition-transform duration-500 group-hover/button:rotate-12'
+          />
         </Button>
       </>
     )

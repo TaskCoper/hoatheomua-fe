@@ -17,7 +17,6 @@ import { cn } from '@/shared/utils'
 import { ArrowRight02Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import type { ReactNode } from 'react'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
 const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
@@ -33,7 +32,6 @@ interface StudioResultProps {
   bouquet: StudioBouquet
   designName: string
   status: StudioGenerationStatus
-  actions?: ReactNode
   version?: StudioVersion
   createAnotherTitle?: string
   createAnotherNote?: string
@@ -46,7 +44,6 @@ export default function StudioResult({
   bouquet,
   designName,
   status,
-  actions,
   version,
   createAnotherTitle,
   createAnotherNote,
@@ -101,7 +98,6 @@ export default function StudioResult({
         <StudioStepHeading
           title={complete ? t('result.readyTitle') : t('result.pendingTitle')}
           description={complete ? t('result.readyBody') : t('result.pendingBody', { mockup: mockup?.name ?? '' })}
-          actions={actions}
         />
 
         <div className='mt-4 rounded-3xl bg-card/40 p-6'>

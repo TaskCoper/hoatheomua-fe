@@ -61,6 +61,7 @@ export const STUDIO_STEP_KEYS = [
   { step: 5, key: 'result' }
 ] as const
 
+export const STUDIO_REVIEW_STEP: StudioStep = 4
 export const STUDIO_LAST_STEP: StudioStep = 5
 
 /**

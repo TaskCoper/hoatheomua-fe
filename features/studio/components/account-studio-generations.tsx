@@ -8,6 +8,7 @@ import { toStudioGenerationSessions } from '@/features/studio/studio-mappers'
 import type { StudioGenerationSession } from '@/features/studio/types'
 import { AccountEmptyNote, AccountEmptyState } from '@/features/users/components/account-panel'
 import { AccountSectionHeader } from '@/features/users/components/account-shell'
+import { useLoadMoreOnView } from '@/hooks/use-load-more-on-view'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
@@ -23,7 +24,7 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const tileStagger: Variants = {
   hidden: {},
@@ -57,24 +58,10 @@ export default function AccountStudioGenerations() {
   const [detailSession, setDetailSession] = useState<StudioGenerationSession | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
 
-  const sentinelRef = useRef<HTMLDivElement>(null)
-  const canLoadMore = hasMoreGeneratedFlowers && !isGettingMoreGeneratedFlowers
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel || !canLoadMore) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) loadMoreGeneratedFlowers()
-      },
-      { rootMargin: '320px 0px' }
-    )
-
-    observer.observe(sentinel)
-
-    return () => observer.disconnect()
-  }, [canLoadMore, loadMoreGeneratedFlowers])
+  const sentinelRef = useLoadMoreOnView({
+    enabled: hasMoreGeneratedFlowers && !isGettingMoreGeneratedFlowers,
+    onLoadMore: loadMoreGeneratedFlowers
+  })
 
   return (
     <>

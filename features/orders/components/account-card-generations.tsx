@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AccountEmptyNote, AccountEmptyState } from '@/features/users/components/account-panel'
 import { AccountSectionHeader } from '@/features/users/components/account-shell'
+import { useLoadMoreOnView } from '@/hooks/use-load-more-on-view'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -12,7 +13,6 @@ import PreviewImage from '@/shared/components/preview-image'
 import { Image01Icon, Mail01Icon, ShoppingCart01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
-import { useEffect, useRef } from 'react'
 import { CARD_WRITING_METHOD_LABEL_KEYS, GENERATED_CARD_KIND_LABEL_KEYS } from '../cards/card-labels'
 import type { GeneratedCardHistoryEntry } from '../cards/types'
 import { useGeneratedCardHistory } from '../hooks/use-generated-card-history'
@@ -39,24 +39,10 @@ export default function AccountCardGenerations() {
     loadMoreGeneratedCards
   } = useGeneratedCardHistory()
 
-  const sentinelRef = useRef<HTMLDivElement>(null)
-  const canLoadMore = hasMoreGeneratedCards && !isGettingMoreGeneratedCards
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel || !canLoadMore) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) loadMoreGeneratedCards()
-      },
-      { rootMargin: '320px 0px' }
-    )
-
-    observer.observe(sentinel)
-
-    return () => observer.disconnect()
-  }, [canLoadMore, loadMoreGeneratedCards])
+  const sentinelRef = useLoadMoreOnView({
+    enabled: hasMoreGeneratedCards && !isGettingMoreGeneratedCards,
+    onLoadMore: loadMoreGeneratedCards
+  })
 
   return (
     <>

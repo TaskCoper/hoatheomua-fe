@@ -29,12 +29,12 @@ export default function StudioSessionNav({ step, canContinue, isRegenerating, on
       </Button>
 
       {step === STUDIO_SESSION_STYLE_STEP ? (
-        <Button type='button' size='lg' disabled={!canContinue} onClick={onNext}>
+        <Button key='next' type='button' size='lg' disabled={!canContinue} onClick={onNext}>
           {tNav('next')}
           <HugeiconsIcon icon={ArrowRight02Icon} />
         </Button>
       ) : (
-        <Button type='submit' size='lg' disabled={!canContinue || isRegenerating}>
+        <Button key='regenerate' type='submit' size='lg' disabled={!canContinue || isRegenerating}>
           {isRegenerating ? tRegenerate('submitting') : tRegenerate('submit')}
           <HugeiconsIcon icon={SparklesIcon} />
         </Button>

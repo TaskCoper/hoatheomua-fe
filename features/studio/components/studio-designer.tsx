@@ -14,12 +14,15 @@ import StudioReview from '@/features/studio/components/studio-review'
 import StudioSceneDialog from '@/features/studio/components/studio-scene-dialog'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { useStudioDesigner } from '@/features/studio/hooks/use-studio-designer'
+import { STUDIO_LAST_STEP, STUDIO_REVIEW_STEP } from '@/features/studio/studio-data'
+import { useScrollTopOnChange } from '@/hooks/use-scroll-top-on-change'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useRef, useState, type SubmitEventHandler } from 'react'
 
 export default function StudioDesigner({ family }: { family: ProductFamily }) {
   const t = useTranslations('studio')
   const [sceneOpen, setSceneOpen] = useState(false)
+  const formColumn = useRef<HTMLElement>(null)
   const {
     control,
     product,
@@ -81,15 +84,21 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
 
   const canContinue = step === 1 ? nameValid : step === 2 ? true : Boolean(selectedMockupId)
 
-  const desktopNav = (
-    <StudioDesktopNav step={step} status={generationStatus} canContinue={canContinue} onNext={goNext} onBack={goBack} />
-  )
+  const showDesktopNav = step < STUDIO_LAST_STEP || generationStatus === 'complete'
+
+  useScrollTopOnChange(step, formColumn)
+
+  const submit: SubmitEventHandler<HTMLFormElement> = (event) => {
+    if (step !== STUDIO_REVIEW_STEP) {
+      event.preventDefault()
+      return
+    }
+
+    startGeneration(event)
+  }
 
   return (
-    <form
-      onSubmit={startGeneration}
-      className='flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground'
-    >
+    <form onSubmit={submit} className='flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground'>
       <StudioHeader step={step} maxStep={maxStep} onStep={setStep} />
 
       <main className='grid flex-1 lg:min-h-[calc(100dvh-5rem)] lg:grid-cols-[minmax(30rem,5fr)_minmax(0,6fr)]'>
@@ -111,14 +120,17 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
           onBuyNow={buyNow}
         />
 
-        <section className='relative bg-background lg:order-1 lg:h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:border-r lg:border-secondary/40'>
-          <div className='mx-auto flex min-h-full max-w-4xl flex-col px-4 pb-28 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
+        <section
+          ref={formColumn}
+          className='relative bg-background lg:order-1 lg:flex lg:h-[calc(100dvh-5rem)] lg:flex-col lg:overflow-y-auto lg:border-r lg:border-secondary/40'
+        >
+          {/* `w-full` is load-bearing: as a flex item, `mx-auto` would otherwise shrink this to its content. */}
+          <div className='mx-auto flex w-full max-w-4xl grow flex-col px-4 pb-28 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
             {step === 1 ? (
               <StudioIngredientsStep
                 control={control}
                 product={parentProduct}
                 ingredients={parentIngredients}
-                actions={desktopNav}
                 onNameChange={markChanged}
               />
             ) : null}
@@ -144,7 +156,6 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
                   onLoadMoreStyleOptions={() => loadMoreStyleOptions()}
                   onLoadMoreRibbonOptions={() => loadMoreRibbonOptions()}
                   onLoadMoreWrapOptions={() => loadMoreWrapOptions()}
-                  actions={desktopNav}
                   onIncreaseIngredient={increaseIngredient}
                   onDecreaseIngredient={decreaseIngredient}
                   onSelectVariant={selectVariant}
@@ -161,7 +172,6 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
                   <StudioStepHeading
                     title={t('scene.chooseTitle')}
                     description={t('scene.chooseNote', { count: sceneOptions.length })}
-                    actions={desktopNav}
                   />
 
                   <StudioMockupGrid
@@ -189,7 +199,6 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
                 mockup={mockup}
                 bouquet={bouquet}
                 designName={trimmedName}
-                actions={desktopNav}
                 onIncreaseIngredient={increaseIngredient}
                 onDecreaseIngredient={decreaseIngredient}
               />
@@ -202,12 +211,26 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
                 bouquet={bouquet}
                 designName={trimmedName}
                 status={generationStatus}
-                actions={desktopNav}
                 version={versions.find((item) => item.id === activeVersionId)}
                 onCreateAnother={() => goTo(2)}
               />
             ) : null}
           </div>
+
+          {/* Pinned to the foot of the form column so a long step never has to be scrolled back up. */}
+          {showDesktopNav ? (
+            <div className='sticky bottom-0 z-10 hidden border-t border-secondary/40 bg-background/90 backdrop-blur-md lg:block'>
+              <div className='mx-auto flex max-w-4xl items-center justify-end gap-3 px-4 py-4 sm:px-6 lg:px-8 xl:px-10'>
+                <StudioDesktopNav
+                  step={step}
+                  status={generationStatus}
+                  canContinue={canContinue}
+                  onNext={goNext}
+                  onBack={goBack}
+                />
+              </div>
+            </div>
+          ) : null}
         </section>
       </main>
 

@@ -9,7 +9,7 @@ import { cn } from '@/shared/utils'
 import { Add01Icon, MinusSignIcon, Search01Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import Lightbox, { type Slide } from 'yet-another-react-lightbox'
 import Captions from 'yet-another-react-lightbox/plugins/captions'
 import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
@@ -53,7 +53,6 @@ interface StudioComposeStepProps {
   onLoadMoreStyleOptions: () => void
   onLoadMoreRibbonOptions: () => void
   onLoadMoreWrapOptions: () => void
-  actions?: ReactNode
   onIncreaseIngredient: (id: string) => void
   onDecreaseIngredient: (id: string) => void
   onSelectVariant: (id: string) => void
@@ -81,7 +80,6 @@ export default function StudioComposeStep({
   onLoadMoreStyleOptions,
   onLoadMoreRibbonOptions,
   onLoadMoreWrapOptions,
-  actions,
   onIncreaseIngredient,
   onDecreaseIngredient,
   onSelectVariant,
@@ -209,7 +207,7 @@ export default function StudioComposeStep({
     <div>
       {hasVariants ? (
         <section className='mt-7'>
-          <StudioStepHeading title={t('variant.label')} description={t('variant.note')} actions={actions} />
+          <StudioStepHeading title={t('variant.label')} description={t('variant.note')} />
 
           <div role='radiogroup' aria-label={t('variant.label')} className='mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3'>
             {variantOptions.map((variant, index) => {
@@ -273,7 +271,6 @@ export default function StudioComposeStep({
         <StudioStepHeading
           title={t('bouquet.label')}
           description={hasIngredients ? t('bouquet.note') : t('bouquet.emptyNote')}
-          actions={hasVariants ? undefined : actions}
         />
 
         <div className='mt-8 flex flex-col gap-8'>

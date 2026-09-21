@@ -15,16 +15,18 @@ import {
   STUDIO_GENERATION_DONE_STAGE,
   STUDIO_LAST_STEP,
   STUDIO_SESSION_LAST_STEP,
+  STUDIO_SESSION_SCENE_STEP,
   STUDIO_SESSION_STEP_KEYS,
   STUDIO_VERSION_QUERY_KEY
 } from '@/features/studio/studio-data'
 import type { StudioVersion } from '@/features/studio/types'
+import { useScrollTopOnChange } from '@/hooks/use-scroll-top-on-change'
 import { Link } from '@/lib/i18n/navigation'
 import { AiMagicIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState, type SubmitEventHandler } from 'react'
 
 interface StudioSessionClientProps {
   productId: string
@@ -37,6 +39,7 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
   const tRegenerate = useTranslations('studio.regenerate')
 
   const [sceneOpen, setSceneOpen] = useState(false)
+  const formColumn = useRef<HTMLElement>(null)
 
   const {
     product,
@@ -89,6 +92,17 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
   const studioHref = `/products/${productId}/studio`
   const onResultStep = step === STUDIO_SESSION_LAST_STEP
 
+  useScrollTopOnChange(step, formColumn)
+
+  const submit: SubmitEventHandler<HTMLFormElement> = (event) => {
+    if (step !== STUDIO_SESSION_SCENE_STEP) {
+      event.preventDefault()
+      return
+    }
+
+    regenerate(event)
+  }
+
   if (isGettingSession)
     return (
       <div className='flex min-h-dvh w-full flex-col items-center justify-center gap-3 bg-background'>
@@ -134,7 +148,7 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
   )
 
   return (
-    <form onSubmit={regenerate} className='flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground'>
+    <form onSubmit={submit} className='flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground'>
       <StudioHeader
         step={step}
         maxStep={STUDIO_SESSION_LAST_STEP}
@@ -167,7 +181,10 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
           onBuyNow={buyNow}
         />
 
-        <section className='relative bg-background lg:order-1 lg:h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:border-r lg:border-secondary/40'>
+        <section
+          ref={formColumn}
+          className='relative bg-background lg:order-1 lg:h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:border-r lg:border-secondary/40'
+        >
           <div className='mx-auto flex min-h-full max-w-4xl flex-col px-4 pb-28 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
             {onResultStep ? (
               <StudioResult
