@@ -930,6 +930,7 @@
       "locked": {
         "heading": "Đã chốt cùng đơn hàng",
         "note": "Bạn vẫn có thể đổi mẫu thiệp và lời nhắn.",
+        "settledNote": "Bạn đã chốt phiên bản in - thiệp này giờ chỉ có thể xem lại.",
         "template": "Mẫu thiệp",
         "templateReused": "Thiệp này dùng lại hình bạn đã tạo trước đó, nên không có mẫu thiệp để đổi - chỉ lời nhắn là thay được.",
         "size": "Kích thước",
@@ -946,6 +947,15 @@
         "createdAt": "Tạo lúc {date}",
         "empty": "Hình thiệp đầu tiên của bạn sẽ xuất hiện ở đây.",
         "error": "Không tải được các mẫu thiệp đã tạo cho thiệp này."
+      },
+      "final": {
+        "heading": "Thiệp sẽ được in",
+        "description": "Hình thiệp chúng tôi in cho từng tấm trong đơn này. Bạn đã chốt lựa chọn nên chỉ có thể xem lại.",
+        "view": "Xem",
+        "viewAriaLabel": "Xem thiệp in cho {name}",
+        "missing": "Hình thiệp",
+        "settledNotice": "Phiên bản {index} là thiệp chúng tôi in. Bạn đã chốt nên không thể thay đổi nữa.",
+        "settledNoticeGeneric": "Thiệp của bạn đã được chốt. Bạn có thể xem lại nhưng không thể thay đổi."
       },
       "generation": {
         "badge": "Đang tạo",

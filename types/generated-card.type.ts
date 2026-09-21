@@ -1,11 +1,13 @@
 /**
  * A row of `GET v1/generated-cards` - every card this customer has generated, newest first.
- * Confirmed against the backend DTO. There is no template on it: `cardType`/`formType` come
- * back as the strings `OrderSnapshotCardType` and `OrderSnapshotFormType` spell, and it carries
- * the printed size and the price paid.
+ * Confirmed against the backend DTO: `cardType`/`formType` come back as the strings
+ * `OrderSnapshotCardType` and `OrderSnapshotFormType` spell, and it carries the design it was
+ * painted from, the printed size and the price paid.
  */
 export interface GeneratedCardHistoryItem {
   id: string
+  /** The card template the generation was painted from. */
+  templateId: string
   /** `'ai' | 'handmade'` - see `OrderSnapshotCardType`. */
   cardType: string
   /** `'go_may' | 'calligraphy'` - see `OrderSnapshotFormType`. */

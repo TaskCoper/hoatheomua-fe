@@ -67,10 +67,14 @@ export const infiniteCardTemplatesQuery = ({
       lastPage.hasNextPage ? (lastPage.pageIndex || allPages.length) + 1 : undefined
   })
 
-export const useGetInfiniteCardTemplates = (params: Omit<GetCardTemplatesParams, 'pageIndex'> = {}) => {
-  const { data, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    infiniteCardTemplatesQuery(params)
-  )
+export const useGetInfiniteCardTemplates = ({
+  enabled = true,
+  ...params
+}: Omit<GetCardTemplatesParams, 'pageIndex'> & { enabled?: boolean } = {}) => {
+  const { data, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    ...infiniteCardTemplatesQuery(params),
+    enabled
+  })
 
   const cardTemplates = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data])
   const totalCount = data?.pages[0]?.totalCount ?? cardTemplates.length

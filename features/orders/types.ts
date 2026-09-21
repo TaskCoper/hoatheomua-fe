@@ -296,12 +296,20 @@ export interface OrderItem {
 
 /**
  * One generated artwork of an order card - a row of `GET v1/order-details/{orderDetailsId}/cards`.
- * The endpoint returns only these three fields: no words, no timestamp, no template.
+ * Each row carries the design and the words that generation was painted from, so two generations
+ * of the same card can differ in more than the picture.
  */
 export interface OrderDetailCardItem {
   id: string
   name: string
   imageUrl: string
+  formType: OrderSnapshotFormType
+  messageContent: string
+  templateId: string
+}
+
+export interface OrderDetailCardsResponse {
+  cards: OrderDetailCardItem[]
 }
 
 export interface GetOrderDetailCardsParams {

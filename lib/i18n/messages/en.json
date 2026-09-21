@@ -930,6 +930,7 @@
       "locked": {
         "heading": "Fixed with your order",
         "note": "The design and the words are still yours to change.",
+        "settledNote": "The version you chose is settled - this card can only be viewed now.",
         "template": "Design",
         "templateReused": "This card reuses an artwork you already had made, so there is no design to swap - only the words can change.",
         "size": "Size",
@@ -946,6 +947,15 @@
         "createdAt": "Generated {date}",
         "empty": "Your first artwork will appear here.",
         "error": "We could not load the cards generated for this one."
+      },
+      "final": {
+        "heading": "Cards going to print",
+        "description": "The artwork we print for each card in this order. Your choice is settled, so these can only be viewed.",
+        "view": "View",
+        "viewAriaLabel": "View the card printed for {name}",
+        "missing": "Card artwork",
+        "settledNotice": "Version {index} is the card we print. Your choice is settled, so nothing here can be changed.",
+        "settledNoticeGeneric": "Your card is settled. It can be looked through, but no longer changed."
       },
       "generation": {
         "badge": "Generating",

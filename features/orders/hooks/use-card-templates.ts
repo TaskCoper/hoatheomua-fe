@@ -14,7 +14,7 @@ export const CARD_TEMPLATE_TYPE_BY_CARD_TYPE: Partial<Record<CheckoutCardType, C
 }
 
 /** Active templates of one kind, a page at a time. */
-export const useCardTemplates = (templateType?: CardTemplateType) => {
+export const useCardTemplates = (templateType?: CardTemplateType, { enabled }: { enabled?: boolean } = {}) => {
   const {
     cardTemplates,
     totalCount,
@@ -23,7 +23,7 @@ export const useCardTemplates = (templateType?: CardTemplateType) => {
     isGettingMoreCardTemplates,
     hasMoreCardTemplates,
     loadMoreCardTemplates
-  } = useGetInfiniteCardTemplates({ pageSize: CARD_TEMPLATE_PAGE_SIZE, templateType })
+  } = useGetInfiniteCardTemplates({ pageSize: CARD_TEMPLATE_PAGE_SIZE, templateType, enabled })
 
   return {
     templates: cardTemplates,

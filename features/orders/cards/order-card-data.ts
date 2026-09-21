@@ -1,5 +1,31 @@
-import { OrderSnapshotCardType, OrderSnapshotFormType, type OrderItem, type OrderSnapshotCard } from '../types'
+import {
+  OrderSnapshotCardType,
+  OrderSnapshotFormType,
+  type OrderDetailCardItem,
+  type OrderItem,
+  type OrderSnapshotCard
+} from '../types'
 import type { CardWritingMethod, OrderAiCard, OrderCardVersion } from './types'
+
+/** `formType` is the only thing that says how the words go onto the card. */
+const toWritingMethod = (formType: OrderSnapshotCard['formType']): CardWritingMethod =>
+  formType === OrderSnapshotFormType.Calligraphy ? 'handwritten' : 'typed'
+
+/**
+ * The generations of one card, in the order the API lists them. The "Version n" labels are
+ * that position - the endpoint sends no number of its own - so every reader has to number the
+ * list the same way or the same artwork would be called two different things.
+ */
+export const toOrderCardVersions = (items: OrderDetailCardItem[]): OrderCardVersion[] =>
+  items.map((item, index) => ({
+    id: item.id,
+    label: index + 1,
+    name: item.name,
+    imageUrl: item.imageUrl,
+    templateId: item.templateId,
+    content: { message: item.messageContent?.trim() ?? '' },
+    writingMethod: toWritingMethod(item.formType)
+  }))
 
 export const findOrderCardVersion = (versions: OrderCardVersion[], versionId: string): OrderCardVersion | null =>
   versions.find((version) => version.id === versionId) ?? null
@@ -45,10 +71,6 @@ const getSizeRatio = (card: OrderSnapshotCard): number | null => {
   return width > 0 && height > 0 ? width / height : null
 }
 
-/** `formType` is the only thing that says how the words go onto the card. */
-const toWritingMethod = (formType: OrderSnapshotCard['formType']): CardWritingMethod =>
-  formType === OrderSnapshotFormType.Calligraphy ? 'handwritten' : 'typed'
-
 /** The florist writes these by hand; `'ai'` is the kind designed in the studio. */
 const isHandmadeCard = (card: OrderSnapshotCard): boolean => card.cardType === OrderSnapshotCardType.Handmade
 
@@ -90,7 +112,11 @@ const toOrderItemAiCards = (item: OrderItem): OrderAiCard[] =>
         orderDetailsId: item.orderDetailsId,
         sourceCardId: snapshot.cardId,
         type: isHandmadeCard(snapshot) ? 'handmade' : 'ai',
-        productName: unit.name ?? item.name,
+        // The line's product, not `unit.name`: a unit of an AI-customised bouquet is named after
+        // the flower that was generated for it, which says nothing about what was bought. The
+        // headline is read the way the item list reads it - a variant line carries its parent's
+        // name, and its own `name` is only the variant label underneath.
+        productName: item.parentProductName || item.name,
         productImageUrl: item.coverImage,
         templateId: snapshot.cardTemplate?.templateId ?? '',
         templateName: snapshot.cardTemplate?.templateName ?? '',

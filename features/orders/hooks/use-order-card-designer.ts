@@ -1,11 +1,11 @@
 'use client'
 
 import type { CardTemplate } from '@/types/card-template.type'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { countWords } from '../cards/card-config'
 import { trimCardContent } from '../cards/card-data'
 import { findOrderCardVersion } from '../cards/order-card-data'
-import type { CardContent, CheckoutCardTemplate, OrderAiCard } from '../cards/types'
+import type { CardContent, CheckoutCardTemplate, OrderAiCard, OrderCardVersion } from '../cards/types'
 import { useOrderCardVersions } from './use-order-card-versions'
 import { useRegenerateAiCard } from './use-regenerate-ai-card'
 import { useSetFinalOrderCard } from './use-set-final-order-card'
@@ -45,6 +45,13 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   const [showMessageError, setShowMessageError] = useState(false)
   const [stage, setStage] = useState(0)
 
+  /**
+   * The generation the form currently holds. A version brings its own design and words, so
+   * selecting one loads them - but only once per version, or every keystroke would be undone
+   * by the version still sitting under it.
+   */
+  const loadedVersionIdRef = useRef<string | null>(null)
+
   const { regenerateAiCard, isRegeneratingAiCard } = useRegenerateAiCard()
   const { setFinalOrderCard, isSettingFinalOrderCard } = useSetFinalOrderCard()
 
@@ -52,15 +59,36 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   // the strip, which is not necessarily the same card.
   const activeVersion = findOrderCardVersion(versions, activeVersionId) ?? versions.at(-1) ?? null
 
+  /**
+   * A version carries the design it was painted from but not that design's name or artwork, so
+   * the card's own template is kept whole whenever the two are the same one.
+   */
+  const toFormTemplate = (version: OrderCardVersion): CheckoutCardTemplate =>
+    version.templateId === card.templateId
+      ? { templateId: card.templateId, templateName: card.templateName, templateImageUrl: card.templateImageUrl }
+      : { templateId: version.templateId, templateName: '', templateImageUrl: '' }
+
   const draft = trimCardContent(content)
   const wordCount = countWords(draft.message)
   const isBelowBudget = wordCount < card.minWords
   const isOverBudget = card.maxWords > 0 && wordCount > card.maxWords
 
   const status: OrderCardGenerationStatus = isRegeneratingAiCard ? 'generating' : 'idle'
-  const hasChanges = draft.message !== card.content.message || template.templateId !== card.templateId
+
+  // What a new run would change, measured against the version on screen - once one is loaded it
+  // is the card being edited, and the words that were ordered are only the starting point.
+  const baseline = activeVersion ?? { content: card.content, templateId: card.templateId }
+  const hasChanges = draft.message !== baseline.content.message || template.templateId !== baseline.templateId
 
   const isTemplateLocked = !!card.sourceCardId
+
+  /**
+   * `finalGeneratedCardId` is the customer's final word on which artwork the florist prints.
+   * Once it is set the card is settled: the studio still opens, but only to look through what
+   * was generated - nothing here may paint over it or move the choice somewhere else. Browsing
+   * the strip stays open, since that is looking at a version rather than choosing one.
+   */
+  const isSettled = !!card.selectedVersionId
 
   /** An empty list means "nothing painted yet" only once it is the server's actual answer. */
   const hasVersionHistory = !isLoadingVersions && !isVersionsError
@@ -70,6 +98,7 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   // A template is worth insisting on only when the run actually asks for one.
   const needsTemplate = !isFirstRun && !isTemplateLocked
   const canGenerate =
+    !isSettled &&
     !isRegeneratingAiCard &&
     hasVersionHistory &&
     (!needsTemplate || !!template.templateId) &&
@@ -78,6 +107,20 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
     !isOverBudget
 
   const isSelectedVersion = !!activeVersion && activeVersion.id === selectedVersionId
+
+  // The version on screen is a whole card, so the form shows that card: its words in the field,
+  // its design in the picker. Nothing to load before the first generation lands - the form then
+  // holds what was ordered, which is what a first run is painted from.
+  useEffect(() => {
+    if (!activeVersion || loadedVersionIdRef.current === activeVersion.id) return
+
+    loadedVersionIdRef.current = activeVersion.id
+    setContent(activeVersion.content)
+    setTemplate(toFormTemplate(activeVersion))
+    setShowMessageError(false)
+    // `toFormTemplate` closes over the card alone, which cannot change under one open studio.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeVersion])
 
   // The run is server-side and gives no progress of its own, so the stages are paced by the
   // clock - they say what is happening, not how far along it is.
@@ -93,12 +136,14 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   }, [isRegeneratingAiCard])
 
   const editContent = (next: CardContent) => {
+    if (isSettled) return
+
     setContent(next)
     if (showMessageError) setShowMessageError(false)
   }
 
   const editTemplate = (next: CardTemplate) => {
-    if (isTemplateLocked) return
+    if (isTemplateLocked || isSettled) return
 
     setTemplate({ templateId: next.id, templateName: next.name, templateImageUrl: next.imageUrl })
   }
@@ -115,7 +160,7 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
     versionId: string,
     { onSuccess, onError }: { onSuccess?: () => void; onError?: () => void } = {}
   ) => {
-    if (isSettingFinalOrderCard) return
+    if (isSettingFinalOrderCard || isSettled) return
 
     setFinalOrderCard(
       { orderDetailId: card.orderDetailsId, virtualId: card.id, generatedCardId: versionId },
@@ -131,7 +176,7 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   }
 
   const generate = ({ onSuccess, onError }: { onSuccess?: () => void; onError?: () => void } = {}) => {
-    if (isRegeneratingAiCard) return
+    if (isRegeneratingAiCard || isSettled) return
     // Without the card's generations in hand there is no telling a first run from a rerun,
     // and either guess posts the wrong body.
     if (!hasVersionHistory) return
@@ -145,7 +190,9 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
       {
         orderDetailId: card.orderDetailsId,
         virtualId: card.id,
-        sourceCardId: isFirstRun ? null : (versions.at(-1)?.id ?? null),
+        // The version on screen is the one the form was loaded from, so it is the one being
+        // painted over - not simply the newest in the list.
+        sourceCardId: isFirstRun ? null : (activeVersion?.id ?? null),
         cardTemplateId: isFirstRun ? null : template.templateId || null,
         messageContent: isFirstRun ? null : draft.message
       },
@@ -181,6 +228,7 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
     hasChanges,
     canGenerate,
     isTemplateLocked,
+    isSettled,
     isSelectedVersion,
     editContent,
     editTemplate,

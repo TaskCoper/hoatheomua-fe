@@ -89,7 +89,7 @@ export default function HistoryCardForm({
     : generatedCardId && initial?.generatedCardId === generatedCardId
       ? {
           id: initial.generatedCardId,
-          templateId: '',
+          templateId: initial.templateId ?? '',
           templateName: initial.templateName,
           sizeName: initial.sizeName,
           writingMethod: initial.writingMethod,
@@ -106,6 +106,7 @@ export default function HistoryCardForm({
   const draft: HistoryCheckoutCard = {
     type: 'history',
     generatedCardId,
+    templateId: selected?.templateId ?? '',
     templateName: selected?.templateName ?? '',
     imageUrl: selected?.imageUrl ?? '',
     sizeName: selectedSizeName,

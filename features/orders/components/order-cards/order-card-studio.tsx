@@ -8,10 +8,11 @@ import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useConfirmStore } from '@/stores/confirm.store'
 import { CardTemplateType } from '@/types/card-template.type'
-import { AiMagicIcon, Tick02Icon } from '@hugeicons/core-free-icons'
+import { AiMagicIcon, CheckmarkBadge01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { findOrderCardVersion } from '../../cards/order-card-data'
 import type { OrderAiCard } from '../../cards/types'
 import { useCardTemplates } from '../../hooks/use-card-templates'
 import { useOrderCardDesigner } from '../../hooks/use-order-card-designer'
@@ -54,6 +55,7 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
     hasChanges,
     canGenerate,
     isTemplateLocked,
+    isSettled,
     isSelectedVersion,
     editContent,
     editTemplate,
@@ -62,11 +64,20 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
     generate
   } = useOrderCardDesigner({ card, enabled: isOpen })
 
+  // A settled card can neither be redesigned nor regenerated, so its picker never renders and
+  // the template list is a request worth not making.
   const { templates, isGettingCardTemplates, isGettingMoreCardTemplates, hasMoreCardTemplates, loadMoreCardTemplates } =
-    useCardTemplates(CardTemplateType.Ai)
+    useCardTemplates(CardTemplateType.Ai, { enabled: !isSettled })
 
   const isGenerating = status === 'generating'
   const confirm = useConfirmStore((state) => state.confirm)
+
+  /** The generation on `finalGeneratedCardId`, once its list has landed. */
+  const settledVersion = isSettled ? findOrderCardVersion(versions, selectedVersionId) : null
+
+  // The settled card was painted with its own words; the ordered ones are only a fallback for
+  // while the list is still in flight.
+  const settledMessage = settledVersion?.content.message || card.content.message
 
   // Nothing generated yet means the design itself is the best preview there is.
   const previewImageUrl = activeVersion?.imageUrl || template.templateImageUrl
@@ -131,14 +142,17 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
                   : t('orders.cards.noVersion')
               }
               message={draft.message}
-              writingMethod={card.writingMethod}
+              writingMethod={activeVersion?.writingMethod ?? card.writingMethod}
               sizes='(min-width: 768px) 20rem, 60vw'
               className='size-full rounded-3xl shadow-[0_0.8rem_2rem_rgb(81_108_108/20%)] ring-1 ring-foreground/10'
             />
 
             {activeVersion ? (
-              <span className='absolute left-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[0.7rem] font-semibold text-primary ring-1 ring-primary/10 backdrop-blur-sm'>
+              <span className='absolute left-2 top-2 flex max-w-[calc(100%-1rem)] items-baseline gap-1.5 rounded-full bg-card/90 px-2 py-0.5 text-[0.7rem] font-semibold text-primary ring-1 ring-primary/10 backdrop-blur-sm'>
                 {t('orders.cards.versions.label', { index: activeVersion.label })}
+                {activeVersion.name ? (
+                  <span className='truncate font-medium text-muted-foreground'>{activeVersion.name}</span>
+                ) : null}
               </span>
             ) : null}
           </div>
@@ -196,48 +210,74 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
                   {t('orders.cards.dialogTitle')}
                 </DialogTitle>
                 <DialogDescription className='truncate text-xs'>
-                  {t('orders.cards.forProduct', { name: card.productName })}
+                  {settledVersion?.name
+                    ? `${settledVersion.name} · ${t('orders.cards.forProduct', { name: card.productName })}`
+                    : t('orders.cards.forProduct', { name: card.productName })}
                 </DialogDescription>
               </div>
             </div>
           </DialogHeader>
+
+          {isSettled ? (
+            <p className='flex items-start gap-2 rounded-2xl bg-leaf/10 px-3 py-2.5 text-xs leading-relaxed text-foreground/90 ring-1 ring-leaf/20'>
+              <HugeiconsIcon icon={CheckmarkBadge01Icon} strokeWidth={2} className='mt-px size-4 shrink-0 text-leaf' />
+              <span>
+                {settledVersion
+                  ? t('orders.cards.final.settledNotice', { index: settledVersion.label })
+                  : t('orders.cards.final.settledNoticeGeneric')}
+              </span>
+            </p>
+          ) : null}
 
           <OrderCardLockedSpecs
             sizeName={card.sizeName}
             writingMethod={card.writingMethod}
             minWords={card.minWords}
             maxWords={card.maxWords}
+            isSettled={isSettled}
           />
 
-          {/* A reused card is its artwork - there is no design to pick, so the picker stays shut. */}
-          {isTemplateLocked ? (
-            <p className='rounded-2xl bg-secondary/20 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground ring-1 ring-foreground/5'>
-              {t('orders.cards.locked.templateReused')}
-            </p>
+          {/* Settled: the words are what was printed, so they are shown rather than offered. */}
+          {isSettled ? (
+            settledMessage ? (
+              <div className='rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
+                <p className='text-[0.7rem] font-medium text-muted-foreground'>{t('orders.checkout.cards.message')}</p>
+                <p className='mt-1 text-sm leading-relaxed text-foreground italic'>“{settledMessage}”</p>
+              </div>
+            ) : null
           ) : (
-            <CardTemplatePicker
-              templates={templates}
-              isLoading={isGettingCardTemplates}
-              isLoadingMore={isGettingMoreCardTemplates}
-              hasMore={hasMoreCardTemplates}
-              onLoadMore={loadMoreCardTemplates}
-              value={template.templateId}
-              onChange={editTemplate}
-            />
+            <>
+              {/* A reused card is its artwork - there is no design to pick, so the picker stays shut. */}
+              {isTemplateLocked ? (
+                <p className='rounded-2xl bg-secondary/20 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground ring-1 ring-foreground/5'>
+                  {t('orders.cards.locked.templateReused')}
+                </p>
+              ) : (
+                <CardTemplatePicker
+                  templates={templates}
+                  isLoading={isGettingCardTemplates}
+                  isLoadingMore={isGettingMoreCardTemplates}
+                  hasMore={hasMoreCardTemplates}
+                  onLoadMore={loadMoreCardTemplates}
+                  value={template.templateId}
+                  onChange={editTemplate}
+                />
+              )}
+
+              <CardContentFields
+                value={content}
+                onChange={editContent}
+                messageInvalid={showMessageError || isOverBudget || isBelowBudget}
+                maxWords={card.maxWords}
+              />
+
+              {isBelowBudget ? (
+                <p className='text-xs font-medium text-destructive'>
+                  {t('orders.cards.messageMinWords', { min: card.minWords })}
+                </p>
+              ) : null}
+            </>
           )}
-
-          <CardContentFields
-            value={content}
-            onChange={editContent}
-            messageInvalid={showMessageError || isOverBudget || isBelowBudget}
-            maxWords={card.maxWords}
-          />
-
-          {isBelowBudget ? (
-            <p className='text-xs font-medium text-destructive'>
-              {t('orders.cards.messageMinWords', { min: card.minWords })}
-            </p>
-          ) : null}
 
           <div className='space-y-2 rounded-2xl bg-secondary/20 p-3 ring-1 ring-foreground/5'>
             <div className='flex items-baseline justify-between gap-3'>
@@ -254,42 +294,52 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
         </div>
 
         <div className='sticky bottom-0 mt-auto space-y-2 border-t border-border/60 bg-popover p-4 sm:p-5'>
-          {hasChanges && versions.length > 0 ? (
-            <p className='text-xs text-muted-foreground'>{t('orders.cards.actions.applyHint')}</p>
-          ) : null}
-
-          <div className='grid gap-2 sm:grid-cols-2'>
-            <Button
-              type='button'
-              variant={hasChanges ? 'default' : 'outline'}
-              onClick={handleGenerate}
-              disabled={!canGenerate}
-            >
-              {isGenerating ? (
-                <Spinner className='size-4' />
-              ) : (
-                <HugeiconsIcon icon={AiMagicIcon} strokeWidth={2} className='size-4' />
-              )}
-              {versions.length === 0 ? t('orders.cards.actions.generateFirst') : t('orders.cards.actions.regenerate')}
+          {isSettled ? (
+            <Button type='button' variant='outline' className='w-full' onClick={onDone}>
+              {t('orders.cards.actions.close')}
             </Button>
+          ) : (
+            <>
+              {hasChanges && versions.length > 0 ? (
+                <p className='text-xs text-muted-foreground'>{t('orders.cards.actions.applyHint')}</p>
+              ) : null}
 
-            <Button
-              type='button'
-              variant={hasChanges ? 'outline' : 'default'}
-              onClick={handleApply}
-              disabled={isGenerating || isApplying || !activeVersion || isSelectedVersion}
-            >
-              {isApplying ? <Spinner className='size-4' /> : null}
-              {isSelectedVersion ? (
-                <>
-                  <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-4' />
-                  {t('orders.cards.actions.applied')}
-                </>
-              ) : (
-                t('orders.cards.actions.apply')
-              )}
-            </Button>
-          </div>
+              <div className='grid gap-2 sm:grid-cols-2'>
+                <Button
+                  type='button'
+                  variant={hasChanges ? 'default' : 'outline'}
+                  onClick={handleGenerate}
+                  disabled={!canGenerate}
+                >
+                  {isGenerating ? (
+                    <Spinner className='size-4' />
+                  ) : (
+                    <HugeiconsIcon icon={AiMagicIcon} strokeWidth={2} className='size-4' />
+                  )}
+                  {versions.length === 0
+                    ? t('orders.cards.actions.generateFirst')
+                    : t('orders.cards.actions.regenerate')}
+                </Button>
+
+                <Button
+                  type='button'
+                  variant={hasChanges ? 'outline' : 'default'}
+                  onClick={handleApply}
+                  disabled={isGenerating || isApplying || !activeVersion || isSelectedVersion}
+                >
+                  {isApplying ? <Spinner className='size-4' /> : null}
+                  {isSelectedVersion ? (
+                    <>
+                      <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-4' />
+                      {t('orders.cards.actions.applied')}
+                    </>
+                  ) : (
+                    t('orders.cards.actions.apply')
+                  )}
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </section>
     </div>

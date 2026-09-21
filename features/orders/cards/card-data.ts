@@ -25,7 +25,8 @@ export const toCheckoutCardTemplate = (template: CardTemplate): CheckoutCardTemp
 /** One row of `POST v1/generated-cards/by-products`, as the checkout's reuse gallery draws it. */
 export const toGeneratedCard = (item: GeneratedCardByProductItem): GeneratedCard => ({
   id: item.id,
-  templateId: '',
+  templateId: item.templateId,
+  // The row points at a design without naming it - the gallery shows the artwork instead.
   templateName: '',
   sizeName: item.sizeName,
   writingMethod: item.formType === OrderSnapshotFormType.Calligraphy ? 'handwritten' : DEFAULT_CARD_WRITING_METHOD,

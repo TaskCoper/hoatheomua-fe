@@ -38,8 +38,8 @@ export type GeneratedCardKind = 'ai' | 'handmade'
 
 /**
  * One row of the account's card history, as `GET v1/generated-cards` returns it. Unlike
- * `GeneratedCard` - the reuse gallery's shape - it carries no template, and brings the
- * printed size and the price the generation was charged at.
+ * `GeneratedCard` - the reuse gallery's shape - it keeps no design, which nothing here shows,
+ * and brings the printed size and the price the generation was charged at.
  */
 export interface GeneratedCardHistoryEntry {
   id: string
@@ -93,6 +93,11 @@ export interface AiCheckoutCard extends CheckoutCardBase, CheckoutCardTemplate {
 export interface HistoryCheckoutCard extends CheckoutCardBase {
   type: 'history'
   generatedCardId: string
+  /**
+   * The design the reused generation was painted from. The order payload wants it like any
+   * other card's, so it travels with the pick rather than being dropped as "not applicable".
+   */
+  templateId: string
   /** Copied from the generation being reused. */
   sizeName: string
   /**
@@ -110,15 +115,22 @@ export type CheckoutCard = StandardCheckoutCard | AiCheckoutCard | HistoryChecko
 
 /**
  * Post-checkout: one artwork generated for a card of a placed order, as
- * `GET v1/order-details/{id}/cards` returns it. The endpoint gives an id, a name and the
- * image - the words a version was painted from do not come back with it.
+ * `GET v1/order-details/{id}/cards` returns it. A generation stands on its own - it brings the
+ * design, the words and the hand it was painted with, so browsing the strip is browsing whole
+ * cards rather than a row of pictures over one frozen message.
  */
 export interface OrderCardVersion {
   id: string
   /** Position in the list, for the "Version n" labels the API does not provide. */
   label: number
+  /** What the generation is called - the card's own name, not the product's. */
   name: string
   imageUrl: string
+  /** The design it was painted from. */
+  templateId: string
+  /** The words it was painted with, which the ordered ones need not match any more. */
+  content: CardContent
+  writingMethod: CardWritingMethod
 }
 
 /**
@@ -134,6 +146,7 @@ export interface OrderAiCard {
   sourceCardId: string | null
   /** Only an `'ai'` card is designed here - a handmade one is written by our florist. */
   type: 'ai' | 'handmade'
+  /** The product the card is printed for - never the name of a generated flower. */
   productName: string
   productImageUrl: string | null
   /** The design ordered - the one thing about the artwork the customer may still change. */

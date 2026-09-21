@@ -15,13 +15,13 @@ import type {
   Order,
   OrderDetail,
   OrderDetailCardItem,
+  OrderDetailCardsResponse,
   OrderStatus,
   RegenerateAiCardPayload,
   SetFinalGeneratedCardPayload,
   ShippingLocation,
   ShippingLocationType
 } from './types'
-import { toOrderDetailCardItems } from './utils/normalize-order-card'
 import { ShippingGateway } from './types'
 import { toAhamoveQuotes, toXanhSmQuotes } from './utils/normalize-shipping-quotes'
 import { normalizeTaxBusinessInfo } from './utils/normalize-tax-business-info'
@@ -115,11 +115,11 @@ class OrderService {
 
   /** The artworks generated so far for one card of a line. */
   getOrderDetailCards = async ({ orderDetailsId, virtualId }: GetOrderDetailCardsParams) => {
-    const { data } = await api.get<BaseResponse<unknown>>(`v1/order-details/${orderDetailsId}/cards`, {
+    const { data } = await api.get<BaseResponse<OrderDetailCardsResponse>>(`v1/order-details/${orderDetailsId}/cards`, {
       params: { virtualId }
     })
 
-    return toOrderDetailCardItems(data.value)
+    return data.value.cards
   }
 
   // Painting a card again is our own AI run, not a third-party side effect, so it is not
@@ -136,7 +136,7 @@ class OrderService {
    * `final-generated-card` was given.
    */
   setFinalGeneratedCard = async (body: SetFinalGeneratedCardPayload) => {
-    const { data } = await api.put<BaseResponse<unknown>>('v1/ai-cards/final-generated-card', body)
+    const { data } = await api.put<BaseResponse<unknown>>('v1/final-generated-card', body)
 
     return data.value
   }

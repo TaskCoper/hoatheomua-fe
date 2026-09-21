@@ -52,6 +52,8 @@ export const createCheckoutCardSchema = (t: TranslationFunction, config: CardCon
       z.object({
         type: z.literal('history'),
         generatedCardId: z.string().min(1, { error: t('orders.checkout.cards.historyRequired') }),
+        // Carried for the payload, not picked here - never a reason to fail a submit.
+        templateId: z.string(),
         templateName,
         imageUrl: templateImageUrl,
         sizeName,

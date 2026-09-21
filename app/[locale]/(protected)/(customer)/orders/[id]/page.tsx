@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
+import OrderFinalCardsSection from '@/features/orders/components/order-cards/order-final-cards-section'
 import OrderItemsSection from '@/features/orders/components/order-items-section'
 import OrderSectionCard from '@/features/orders/components/order-section-card'
 import OrderStatusBadge from '@/features/orders/components/order-status-badge'
@@ -386,6 +387,9 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
             ) : null}
 
             <OrderItemsSection items={items} canDesignCards={isPaid} />
+
+            {/* The settled artworks, out from under the lines they were bought on. */}
+            <OrderFinalCardsSection items={items} />
 
             <OrderSectionCard icon={ReceiptTextIcon} title={t('orders.list.detail.summaryHeading')}>
               <dl className='space-y-2 text-sm'>

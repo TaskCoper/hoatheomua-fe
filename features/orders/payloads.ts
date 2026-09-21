@@ -75,7 +75,7 @@ const CARD_FORM_TYPE_CODE: Record<CardWritingMethod, OrderCardFormType> = {
 
 const toOrderCardPayload = (card: CheckoutCard): OrderCardPayload => ({
   cardType: CARD_TYPE_CODE[card.type],
-  cardTemplateId: card.type === 'history' ? null : card.templateId,
+  cardTemplateId: card.templateId || null,
   sizeName: card.type === 'standard' ? '' : card.sizeName,
   formType: card.type === 'standard' ? OrderCardFormType.Calligraphy : CARD_FORM_TYPE_CODE[card.writingMethod],
   messageContent: card.content.message,

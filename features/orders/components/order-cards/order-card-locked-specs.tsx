@@ -12,6 +12,8 @@ interface OrderCardLockedSpecsProps {
   writingMethod: CardWritingMethod
   minWords: number
   maxWords: number
+  /** Once the printed version is chosen, the words and the design are frozen as well. */
+  isSettled?: boolean
 }
 
 /** What the order settled and the studio cannot touch - the design and the words are elsewhere. */
@@ -19,7 +21,8 @@ export default function OrderCardLockedSpecs({
   sizeName,
   writingMethod,
   minWords,
-  maxWords
+  maxWords,
+  isSettled
 }: OrderCardLockedSpecsProps) {
   const { t } = useTranslation()
 
@@ -42,7 +45,9 @@ export default function OrderCardLockedSpecs({
 
       <p className='mt-1 text-sm font-semibold text-foreground'>{specs.join(' · ')}</p>
 
-      <p className='mt-1 text-[0.7rem] leading-relaxed text-muted-foreground'>{t('orders.cards.locked.note')}</p>
+      <p className='mt-1 text-[0.7rem] leading-relaxed text-muted-foreground'>
+        {t(isSettled ? 'orders.cards.locked.settledNote' : 'orders.cards.locked.note')}
+      </p>
     </div>
   )
 }
