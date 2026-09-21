@@ -260,6 +260,20 @@ export const api = createApiClient('/api', {
   ...AUTH_TOKEN_CODES
 })
 
+// Flower creation and regeneration include two sequential AI image calls.
+api.interceptors.request.use((config) => {
+  const pathname = new URL(config.url ?? '', 'http://localhost').pathname
+  const isFlowerGeneration =
+    config.method?.toLowerCase() === 'post' &&
+    /^\/(?:api\/)?v1\/ai-flowers(?:\/[^/]+\/regenerate)?\/?$/.test(pathname)
+
+  if (isFlowerGeneration) {
+    config.timeout = 120_000
+  }
+
+  return config
+})
+
 export const apiTaskcoper = createApiClient('/api/taskcoper', {
   refreshTokenPath: '/v1/users/refresh_token',
   serverBaseURL: process.env.NEXT_PUBLIC_TASKCOPER_API_BASE_URL,
