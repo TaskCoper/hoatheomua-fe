@@ -246,7 +246,7 @@ function MockupGallery({
   lightboxIndex: number
   onLightboxIndexChange: (index: number) => void
 }) {
-  const t = useTranslations('studio.sceneDialog.gallery')
+  const tGallery = useTranslations('studio.sceneDialog.gallery')
   const { formatDate } = useDateFormat()
 
   const {
@@ -263,11 +263,11 @@ function MockupGallery({
     () =>
       flowers.map((flower) => ({
         src: flower.imageUrl,
-        alt: flower.name?.trim() || t('untitled'),
-        title: flower.name?.trim() || t('untitled'),
+        alt: flower.name?.trim() || tGallery('untitled'),
+        title: flower.name?.trim() || tGallery('untitled'),
         description: flower.createdAt ? formatDate(flower.createdAt, 'dateMedium') : undefined
       })),
-    [flowers, formatDate, t]
+    [flowers, formatDate, tGallery]
   )
 
   // Nothing to show and nothing to wait for: the section stays out of the way entirely.
@@ -277,15 +277,15 @@ function MockupGallery({
     <section>
       <h3 className='flex items-center gap-2 font-title text-lg font-bold text-primary'>
         <HugeiconsIcon icon={AiMagicIcon} strokeWidth={2} className='size-4 shrink-0' />
-        {t('title')}
+        {tGallery('title')}
       </h3>
       <p className='text-xs text-muted-foreground'>
-        {isGettingMockupFlowers ? t('loading') : t('count', { count: totalCount })}
+        {isGettingMockupFlowers ? tGallery('loading') : tGallery('count', { count: totalCount })}
       </p>
 
       {isMockupFlowersError ? (
         <p className='mt-4 rounded-2xl bg-secondary/30 px-4 py-6 text-center text-xs text-muted-foreground'>
-          {t('error')}
+          {tGallery('error')}
         </p>
       ) : (
         <>
@@ -314,7 +314,7 @@ function MockupGallery({
           {hasMoreMockupFlowers && !isGettingMoreMockupFlowers ? (
             <div className='mt-3 flex justify-center'>
               <Button type='button' variant='outline' size='sm' onClick={() => loadMoreMockupFlowers()}>
-                {t('loadMore')}
+                {tGallery('loadMore')}
               </Button>
             </div>
           ) : null}
@@ -344,19 +344,19 @@ function GalleryTile({
   sceneName: string
   onOpen: () => void
 }) {
-  const t = useTranslations('studio.sceneDialog.gallery')
-  const name = flower.name?.trim() || t('untitled')
+  const tGallery = useTranslations('studio.sceneDialog.gallery')
+  const name = flower.name?.trim() || tGallery('untitled')
 
   return (
     <button
       type='button'
       onClick={onOpen}
-      aria-label={t('openLightbox', { name })}
+      aria-label={tGallery('openLightbox', { name })}
       className='group relative block aspect-square w-full cursor-zoom-in overflow-hidden rounded-2xl bg-secondary/40 ring-1 ring-foreground/5 transition-shadow duration-300 hover:shadow-[0_0.8rem_2rem_rgb(81_108_108/18%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
     >
       <StudioImage
         src={flower.imageUrl}
-        alt={t('imageAlt', { name, scene: sceneName })}
+        alt={tGallery('imageAlt', { name, scene: sceneName })}
         fill
         sizes='(min-width: 1024px) 8rem, 30vw'
         loading='lazy'
