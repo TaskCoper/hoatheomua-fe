@@ -18,7 +18,7 @@ export default function OrderCardStudioDialog({ card, children }: OrderCardStudi
       <DialogTrigger asChild>{children}</DialogTrigger>
 
       <DialogContent
-        className='flex h-[min(50rem,calc(100dvh-3rem))] w-[calc(100%-1.5rem)] flex-col gap-0 overflow-hidden p-0 sm:w-[calc(100%-3rem)] sm:max-w-6xl'
+        className='flex h-[min(50rem,calc(100dvh-3rem))] w-[calc(100%-1.5rem)] flex-col gap-0 overflow-hidden p-0 sm:w-[calc(100%-3rem)] sm:max-w-6xl [&>[data-slot=dialog-close]]:z-20'
         position='top-center'
       >
         {isStudioOpen ? (

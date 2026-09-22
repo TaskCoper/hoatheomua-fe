@@ -22,14 +22,16 @@ export default function OrderCardGenerationOverlay({
 }: OrderCardGenerationOverlayProps) {
   const { t } = useTranslation()
   return (
-    <div className='mt-4 w-full rounded-xl border bg-card p-4 text-sm'>
+    <div className='w-full shrink-0 rounded-2xl border border-primary/15 bg-card/95 p-4 text-sm shadow-sm'>
       <div role='status' aria-live='polite'>
-        <p className='flex items-center gap-2 font-medium'>
-          <Spinner className='size-4' />
+        <p className='flex items-center gap-2 font-semibold text-primary'>
+          <Spinner className='size-4 shrink-0' />
           {t('orders.cards.generation.title', { index: versionLabel })}
         </p>
         <p className='mt-2'>{t(`orders.cards.generation.stages.${ORDER_CARD_STAGE_KEYS[stage]}`)}</p>
-        <p className='mt-2 text-muted-foreground'>{t('orders.cards.generation.backgroundNote')}</p>
+        <p className='mt-2 text-xs leading-relaxed text-muted-foreground'>
+          {t('orders.cards.generation.backgroundNote')}
+        </p>
         {isConnectionError ? <p className='mt-2'>{t('orders.cards.generation.connectionError')}</p> : null}
       </div>
       <Button className='mt-3' variant='outline' onClick={cancel} disabled={isCanceling}>

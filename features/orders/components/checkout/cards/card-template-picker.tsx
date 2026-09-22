@@ -54,6 +54,7 @@ interface CardTemplatePickerProps {
   value: string
   onChange: (template: CardTemplate) => void
   disabled?: boolean
+  compact?: boolean
 }
 
 export default function CardTemplatePicker({
@@ -64,10 +65,14 @@ export default function CardTemplatePicker({
   onLoadMore,
   value,
   onChange,
-  disabled
+  disabled,
+  compact = false
 }: CardTemplatePickerProps) {
   const { t } = useTranslation()
   const groupId = useId()
+  const gridClasses = compact
+    ? { vertical: 'grid grid-cols-3 gap-3', horizontal: 'grid grid-cols-2 gap-3' }
+    : ORIENTATION_GRID
 
   const { ratios, measureTemplate } = useCardTemplateRatios()
   const [lightboxIndex, setLightboxIndex] = useState(-1)
@@ -109,7 +114,7 @@ export default function CardTemplatePicker({
       <p className='text-sm font-medium'>{t('orders.checkout.cards.template')}</p>
 
       {isLoading ? (
-        <div className={ORIENTATION_GRID.vertical}>
+        <div className={gridClasses.vertical}>
           {Array.from({ length: 6 }).map((_, index) => (
             <Skeleton key={index} className='aspect-[3/4] w-full rounded-2xl' />
           ))}
@@ -139,13 +144,13 @@ export default function CardTemplatePicker({
                   <span className='ml-1 tabular-nums'>({grouped[orientation].length})</span>
                 </p>
 
-                <div className={ORIENTATION_GRID[orientation]}>{grouped[orientation].map(renderTile)}</div>
+                <div className={gridClasses[orientation]}>{grouped[orientation].map(renderTile)}</div>
               </section>
             ) : null
           )}
 
           {grouped.pending.length > 0 ? (
-            <div className={ORIENTATION_GRID.vertical}>{grouped.pending.map(renderTile)}</div>
+            <div className={gridClasses.vertical}>{grouped.pending.map(renderTile)}</div>
           ) : null}
         </RadioGroup>
       )}
@@ -153,7 +158,7 @@ export default function CardTemplatePicker({
       {!isLoading && templates.length > 0 ? (
         <div ref={sentinelRef}>
           {isLoadingMore ? (
-            <div className={ORIENTATION_GRID.vertical}>
+            <div className={gridClasses.vertical}>
               {Array.from({ length: 3 }).map((_, index) => (
                 <Skeleton key={index} className='aspect-[3/4] w-full rounded-2xl' />
               ))}
