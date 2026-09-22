@@ -2,7 +2,22 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-Use Node.js 24 or newer. Before running locally, create an ignored `.env.local`
+Use Node.js 24 (also used by CI). Select the project runtime and the pnpm version
+pinned in `package.json` before installing dependencies or committing:
+
+```bash
+nvm install
+nvm use
+corepack enable
+pnpm install --frozen-lockfile
+pnpm check
+```
+
+Run Git from this same shell so the commit and push hooks use the correct Node.js
+and pnpm versions. If dependencies were installed using another runtime, rerun
+the frozen install after switching versions.
+
+Before running locally, create an ignored `.env.local`
 with the `NEXT_PUBLIC_*` variables mapped in `Dockerfile` for your environment.
 In particular, `NEXT_PUBLIC_API_BASE_URL` and
 `NEXT_PUBLIC_TASKCOPER_API_BASE_URL` must be absolute backend URLs. Next.js does
