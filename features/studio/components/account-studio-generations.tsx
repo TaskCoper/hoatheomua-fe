@@ -67,7 +67,7 @@ export default function AccountStudioGenerations() {
 
   return (
     <>
-      <FlowerJobBoard />
+      <FlowerJobBoard hideCompleted />
       <AccountSectionHeader
         title={t('studio.generations.title')}
         description={

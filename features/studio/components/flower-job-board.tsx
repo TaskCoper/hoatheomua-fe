@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { flowerJobs, isActiveJob, JOBS_KEY, type FlowerJob } from '../jobs'
 
-export default function FlowerJobBoard() {
+export default function FlowerJobBoard({ hideCompleted = false }: { hideCompleted?: boolean }) {
   const t = useTranslations('studio.jobs')
   const { me } = useGetMe()
   const { formatDate } = useDateFormat()
@@ -44,11 +44,21 @@ export default function FlowerJobBoard() {
     onError: () => toast.error(t('cancelError'))
   })
   const selected = selectedId ? (detail.data ?? list.data?.items.find((job) => job.jobId === selectedId)) : undefined
+  const visibleJobs = list.data?.items.filter((job) => !hideCompleted || job.status !== 'Succeeded')
+  const completedJobIds = list.data?.items
+    .filter((job) => job.status === 'Succeeded')
+    .map((job) => job.jobId)
+    .join(',')
+  useEffect(() => {
+    if (hideCompleted && completedJobIds) {
+      void queryClient.invalidateQueries({ queryKey: ['generated-flowers'] })
+    }
+  }, [hideCompleted, completedJobIds, queryClient])
   useEffect(() => {
     if (selected?.status === 'Succeeded') void queryClient.invalidateQueries({ queryKey: ['generated-flowers'] })
   }, [selected?.jobId, selected?.status, queryClient])
   if (!me?.id) return null
-  if (!list.isError && !list.data?.items.length) return null
+  if (!list.isError && !visibleJobs?.length && page === 1 && !list.data?.hasNextPage) return null
 
   const label = (job: FlowerJob) =>
     job.cancelRequested && isActiveJob(job)
@@ -70,7 +80,7 @@ export default function FlowerJobBoard() {
         </p>
       ) : null}
       <ul className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
-        {list.data?.items.map((job) => (
+        {visibleJobs?.map((job) => (
           <li key={job.jobId}>
             <button
               type='button'
