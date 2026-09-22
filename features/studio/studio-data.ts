@@ -56,7 +56,7 @@ export const STUDIO_STEP_KEYS = [
   { step: 5, key: 'result' }
 ] as const
 
-export const studioSummaryLabelClass = 'text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground'
+export const studioSummaryLabelClass = 'text-sm font-semibold text-muted-foreground'
 export const studioSummaryAmountClass = 'font-title text-2xl font-bold leading-none text-primary'
 export const studioSummaryRuleClass = 'mt-5 border-t border-dashed border-secondary pt-4'
 

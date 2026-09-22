@@ -126,7 +126,7 @@ export default function StudioReview({
 
         <div className={cn('mt-8', panelClass)}>
           <p className={studioSummaryLabelClass}>{tCompose('summary.label')}</p>
-          <p className='mt-1.5 text-xs leading-relaxed text-muted-foreground'>{tCompose('summary.note')}</p>
+          <p className='text-xs leading-relaxed text-muted-foreground'>{tCompose('summary.note')}</p>
 
           <StudioSummaryChoices
             className='mt-5'

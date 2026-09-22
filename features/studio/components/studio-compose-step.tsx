@@ -1,6 +1,5 @@
 'use client'
 
-import { Skeleton } from '@/components/ui/skeleton'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioOptionsFooter from '@/features/studio/components/studio-options-footer'
 import StudioOptionSkeletons from '@/features/studio/components/studio-skeletons'
@@ -22,10 +21,6 @@ import 'yet-another-react-lightbox/plugins/captions.css'
 import 'yet-another-react-lightbox/plugins/thumbnails.css'
 import 'yet-another-react-lightbox/styles.css'
 
-const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
-const detailTermClass = 'text-sm font-semibold text-primary'
-const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
-const panelClass = 'mt-4 rounded-3xl bg-card/40 p-5 sm:p-6'
 const quantityButtonClass =
   'flex size-8 cursor-pointer items-center justify-center rounded-full bg-secondary/60 text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
 const tileClass = (selected: boolean) =>
@@ -34,6 +29,19 @@ const tileClass = (selected: boolean) =>
     selected
       ? '-translate-y-1 shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] outline-2 outline-offset-2 outline-primary'
       : 'shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] hover:-translate-y-1 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'
+  )
+
+const trimCardClass = () =>
+  cn(
+    'group flex cursor-pointer flex-col gap-2 rounded-2xl p-2 text-left transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+  )
+
+const trimSwatchClass = (selected: boolean) =>
+  cn(
+    'relative block aspect-square w-full overflow-hidden rounded-xl bg-secondary/50 outline-2 outline-offset-2 transition-[box-shadow,outline-color] duration-300',
+    selected
+      ? 'shadow-[0_0.8rem_2rem_rgb(81_108_108/18%)] outline-primary'
+      : 'shadow-[0_0.4rem_1rem_rgb(81_108_108/8%)] outline-transparent group-hover:outline-primary/30'
   )
 
 interface StudioComposeStepProps {
@@ -113,8 +121,10 @@ export default function StudioComposeStep({
     })
   }
 
-  const swatchRow = (
+  const trimSection = (
+    className: string,
     label: string,
+    note: string,
     options: StudioTrim[],
     selectedId: string | undefined,
     loading: boolean,
@@ -122,89 +132,96 @@ export default function StudioComposeStep({
     hasMore: boolean,
     onSelect: (id: string) => void,
     onLoadMore: () => void
-  ) => {
-    const selected = options.find((option) => option.id === selectedId)
-
-    return (
-      <div className={cn(detailRowClass, 'items-center py-5')}>
-        <div className='min-w-0'>
-          <p className={detailTermClass}>{label}</p>
-          {loading ? (
-            <Skeleton className='mt-1 h-3 w-28 rounded-full' />
-          ) : (
-            <p className={cn(microLabelClass, 'truncate')}>
-              {selected?.priceAmount ? `${selected.name} · ${formatStudioPrice(selected.priceAmount)}` : selected?.name}
-            </p>
-          )}
-        </div>
-
-        <div className='flex flex-wrap items-center gap-4'>
-          <div role='radiogroup' aria-label={label} className='flex flex-wrap items-center gap-4'>
-            {loading ? <StudioOptionSkeletons count={5} className='size-10 rounded-full' /> : null}
-            {options.map((option) => {
-              const isSelected = option.id === selectedId
-
-              return (
-                <button
-                  key={option.id}
-                  type='button'
-                  role='radio'
-                  aria-checked={isSelected}
-                  aria-label={option.name}
-                  title={option.name}
-                  onClick={() => onSelect(option.id)}
-                  className={cn(
-                    'relative isolate size-10 cursor-pointer overflow-hidden rounded-full bg-secondary/40 outline-2 outline-offset-2 ring-1 ring-inset ring-foreground/10 transition-[outline-color] duration-200',
-                    isSelected ? 'outline-primary' : 'outline-transparent hover:outline-primary/35',
-                    'focus-visible:outline-primary'
-                  )}
-                >
-                  <StudioImage
-                    src={option.imageUrl}
-                    alt=''
-                    fill
-                    sizes='2.5rem'
-                    loading='lazy'
-                    className='object-cover'
-                    pendingIconClassName='size-4'
-                  />
-                  <span
-                    aria-hidden='true'
-                    className={cn(
-                      'absolute inset-0 flex items-center justify-center bg-primary/45 text-white transition-opacity duration-200',
-                      isSelected ? 'opacity-100' : 'opacity-0'
-                    )}
-                  >
-                    <HugeiconsIcon icon={Tick02Icon} strokeWidth={3} className='size-4' />
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-
-          {options.some((option) => option.imageUrl) ? (
+  ) => (
+    <section className={className}>
+      <StudioStepHeading
+        title={label}
+        description={note}
+        actions={
+          options.some((option) => option.imageUrl) ? (
             <button
               type='button'
               onClick={() => openZoom(options, selectedId)}
               aria-label={t('zoom.open', { label })}
-              className='inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-secondary/50 px-3 py-1.5 text-[0.6875rem] font-semibold text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+              className='inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-secondary/50 px-3 py-1.5 text-xs font-semibold text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
             >
               <HugeiconsIcon icon={Search01Icon} strokeWidth={2} className='size-3.5' />
               {t('zoom.cta')}
             </button>
-          ) : null}
+          ) : null
+        }
+      />
 
-          <StudioOptionsFooter
-            count={options.length}
-            loading={loading}
-            loadingMore={loadingMore}
-            hasMore={hasMore}
-            onLoadMore={onLoadMore}
-          />
-        </div>
+      <div role='radiogroup' aria-label={label} className='mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5 sm:gap-3'>
+        {loading ? <StudioOptionSkeletons count={5} className='aspect-square w-full rounded-xl' /> : null}
+
+        {options.map((option, index) => {
+          const isSelected = option.id === selectedId
+
+          return (
+            <button
+              key={option.id}
+              type='button'
+              role='radio'
+              aria-checked={isSelected}
+              title={option.name}
+              onClick={() => onSelect(option.id)}
+              className={trimCardClass()}
+            >
+              <span className={trimSwatchClass(isSelected)}>
+                <StudioImage
+                  src={option.imageUrl}
+                  alt=''
+                  fill
+                  sizes='(min-width: 640px) 12vw, 28vw'
+                  loading={index < 5 ? 'eager' : 'lazy'}
+                  className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]'
+                  pendingIconClassName='size-5'
+                />
+
+                <span
+                  aria-hidden='true'
+                  className={cn(
+                    'absolute right-1 top-1 flex size-6 items-center justify-center rounded-full bg-white text-primary shadow-[0_0.2rem_0.6rem_rgb(81_108_108/25%)] transition-[opacity,transform] duration-200',
+                    isSelected ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
+                  )}
+                >
+                  <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-3' />
+                </span>
+              </span>
+
+              <span className='block min-w-0 px-0.5 pb-0.5'>
+                <span
+                  className={cn(
+                    'block truncate text-xs font-semibold leading-snug transition-colors',
+                    isSelected ? 'text-primary' : 'text-foreground/75'
+                  )}
+                >
+                  {option.name}
+                </span>
+
+                {option.priceAmount ? (
+                  <span className='mt-0.5 block text-[0.6875rem] leading-snug text-muted-foreground'>
+                    {formatStudioPrice(option.priceAmount)}
+                  </span>
+                ) : null}
+              </span>
+            </button>
+          )
+        })}
       </div>
-    )
-  }
+
+      <div className='mt-4 flex justify-center'>
+        <StudioOptionsFooter
+          count={options.length}
+          loading={loading}
+          loadingMore={loadingMore}
+          hasMore={hasMore}
+          onLoadMore={onLoadMore}
+        />
+      </div>
+    </section>
+  )
 
   const hasIngredients = bouquet.ingredients.length > 0
   const hasVariants = variantOptions.length > 0
@@ -414,32 +431,31 @@ export default function StudioComposeStep({
         </div>
       </section>
 
-      <section className='mt-14'>
-        <StudioStepHeading title={t('finishing.label')} description={t('finishing.note')} />
+      {trimSection(
+        'mt-14',
+        t('ribbon.label'),
+        t('ribbon.note'),
+        ribbonOptions,
+        bouquet.ribbon?.id,
+        isGettingRibbonOptions,
+        isGettingMoreRibbonOptions,
+        hasMoreRibbonOptions,
+        onSelectRibbon,
+        onLoadMoreRibbonOptions
+      )}
 
-        <div className={cn(panelClass, 'flex flex-col')}>
-          {swatchRow(
-            t('ribbon.label'),
-            ribbonOptions,
-            bouquet.ribbon?.id,
-            isGettingRibbonOptions,
-            isGettingMoreRibbonOptions,
-            hasMoreRibbonOptions,
-            onSelectRibbon,
-            onLoadMoreRibbonOptions
-          )}
-          {swatchRow(
-            t('wrap.label'),
-            wrapOptions,
-            bouquet.wrap?.id,
-            isGettingWrapOptions,
-            isGettingMoreWrapOptions,
-            hasMoreWrapOptions,
-            onSelectWrap,
-            onLoadMoreWrapOptions
-          )}
-        </div>
-      </section>
+      {trimSection(
+        'mt-4',
+        t('wrap.label'),
+        t('wrap.note'),
+        wrapOptions,
+        bouquet.wrap?.id,
+        isGettingWrapOptions,
+        isGettingMoreWrapOptions,
+        hasMoreWrapOptions,
+        onSelectWrap,
+        onLoadMoreWrapOptions
+      )}
 
       <p className='mt-6 flex items-start gap-2.5 text-xs leading-relaxed text-muted-foreground'>
         <HugeiconsIcon icon={SparklesIcon} className='mt-0.5 size-3.5 shrink-0 text-primary' />
