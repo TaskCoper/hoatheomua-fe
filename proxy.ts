@@ -31,6 +31,7 @@ const buildRedirect = (request: NextRequest, target: string, search?: URLSearchP
 
 const isPrefetchRequest = (request: NextRequest) =>
   request.headers.get('next-router-prefetch') === '1' ||
+  request.headers.has('next-router-segment-prefetch') ||
   request.headers.get('purpose') === 'prefetch' ||
   request.headers.get('sec-purpose')?.includes('prefetch') === true
 
@@ -68,17 +69,18 @@ export default function proxy(request: NextRequest) {
   }
 
   const pathname = stripLocale(request.nextUrl.pathname)
+  const isPrefetch = isPrefetchRequest(request)
 
-  if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed) {
+  if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed && !isPrefetch) {
     return withSessionHint(buildRedirect(request, '/'), isProbablyAuthed)
   }
 
-  if (isOrderingBlockedPath(pathname) && !isPrefetchRequest(request)) {
+  if (isOrderingBlockedPath(pathname) && !isPrefetch) {
     return withSessionHint(buildRedirect(request, ORDERING_DISABLED_REDIRECT_PATH), isProbablyAuthed)
   }
 
-  if (!isPublicRoutePath(pathname) && !isProbablyAuthed) {
-    const params = new URLSearchParams({ from: request.nextUrl.pathname })
+  if (!isPublicRoutePath(pathname) && !isProbablyAuthed && !isPrefetch) {
+    const params = new URLSearchParams({ from: `${request.nextUrl.pathname}${request.nextUrl.search}` })
     return withSessionHint(buildRedirect(request, '/sign-in', params), isProbablyAuthed)
   }
 

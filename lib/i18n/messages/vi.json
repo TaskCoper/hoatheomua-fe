@@ -963,6 +963,7 @@
       "generation": {
         "badge": "Đang tạo",
         "title": "Đang vẽ phiên bản {index}…",
+        "lockNote": "Quá trình này có thể mất khoảng một phút. Vui lòng giữ nguyên màn hình này.",
         "stages": {
           "reading": "Đọc lời nhắn của bạn",
           "sketching": "Phác bố cục",
@@ -1764,6 +1765,7 @@
       },
       "generating": "Đang tạo",
       "creating": "Đang tạo “{name}”…",
+      "lockNote": "Quá trình này có thể mất khoảng một phút. Vui lòng giữ nguyên màn hình này.",
       "error": "Chúng tôi chưa tạo được hình ảnh của bạn. Vui lòng thử lại.",
       "noMaterials": "Thiết kế này chưa có danh sách hoa nên chưa thể tạo ảnh."
     },

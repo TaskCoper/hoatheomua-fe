@@ -963,6 +963,7 @@
       "generation": {
         "badge": "Generating",
         "title": "Painting version {index}…",
+        "lockNote": "This can take about a minute. Please stay on this screen.",
         "stages": {
           "reading": "Reading your words",
           "sketching": "Sketching the layout",
@@ -1764,6 +1765,7 @@
       },
       "generating": "Generating",
       "creating": "Creating “{name}”…",
+      "lockNote": "This can take about a minute. Please stay on this screen.",
       "error": "We could not create your image. Please try again.",
       "noMaterials": "This design has no flowers listed yet, so it cannot be generated."
     },
