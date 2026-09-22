@@ -1,7 +1,5 @@
 'use client'
 
-import FlowerJobBoard from './flower-job-board'
-
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import StudioGenerationDialog from '@/features/studio/components/studio-generation-dialog'
@@ -67,7 +65,6 @@ export default function AccountStudioGenerations() {
 
   return (
     <>
-      <FlowerJobBoard hideCompleted />
       <AccountSectionHeader
         title={t('studio.generations.title')}
         description={

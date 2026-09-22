@@ -195,7 +195,7 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
         index={Math.max(lightboxIndex, 0)}
         slides={slides}
         plugins={[Captions, Fullscreen, Thumbnails, Zoom]}
-        carousel={{ finite: slides.length <= 1 }}
+        carousel={{ finite: true }}
         thumbnails={{ position: 'bottom', showToggle: true }}
         zoom={{ maxZoomPixelRatio: 3, scrollToZoom: false }}
         on={{

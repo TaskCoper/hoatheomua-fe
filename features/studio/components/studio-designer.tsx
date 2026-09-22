@@ -1,7 +1,5 @@
 'use client'
 
-import FlowerJobBoard from './flower-job-board'
-
 import type { ProductFamily } from '@/features/products/types'
 import StudioComposeStep from '@/features/studio/components/studio-compose-step'
 import StudioDesktopNav from '@/features/studio/components/studio-desktop-nav'
@@ -101,8 +99,7 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
 
   return (
     <form onSubmit={submit} className='flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground'>
-      <StudioHeader step={step} maxStep={maxStep} onStep={setStep} />
-      {generationStatus !== 'complete' && <FlowerJobBoard />}
+      <StudioHeader step={step} maxStep={maxStep} onStep={setStep} locked={generationStatus === 'generating'} />
 
       <main className='grid flex-1 lg:min-h-[calc(100dvh-5rem)] lg:grid-cols-[minmax(30rem,5fr)_minmax(0,6fr)]'>
         <StudioPreview

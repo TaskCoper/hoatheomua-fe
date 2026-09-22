@@ -68,21 +68,13 @@ export const flowerJobs = {
   async submit(body: CreateAiFlowerPayload | RegenerateAiFlowerPayload, key: string, sourceFlowerId?: string) {
     const path = sourceFlowerId ? `v1/ai-flowers/${sourceFlowerId}/regeneration-jobs` : 'v1/ai-flower-jobs'
     const { data } = await api.post(path, body, { headers: { 'Idempotency-Key': key } })
+
     return flowerJobSchema.parse(data.value)
   },
+
   async get(jobId: string, signal?: AbortSignal) {
     const { data } = await api.get(`v1/ai-flower-jobs/${jobId}`, { signal })
-    return flowerJobSchema.parse(data.value)
-  },
-  async list(pageIndex: number, signal?: AbortSignal) {
-    // Include completed jobs so returning after completion does not lose the result.
-    const { data } = await api.get('v1/ai-flower-jobs', { params: { active: false, pageIndex, pageSize: 12 }, signal })
-    return z
-      .object({ items: z.array(flowerJobSchema), hasNextPage: z.boolean(), totalCount: z.number() })
-      .parse(data.value)
-  },
-  async cancel(jobId: string) {
-    const { data } = await api.post(`v1/ai-flower-jobs/${jobId}/cancel`)
+
     return flowerJobSchema.parse(data.value)
   }
 }

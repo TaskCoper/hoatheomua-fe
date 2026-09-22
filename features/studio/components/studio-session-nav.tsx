@@ -95,14 +95,8 @@ export default function StudioSessionNav({
           <HugeiconsIcon icon={ArrowRight02Icon} />
         </Button>
       ) : (
-        <Button
-          type='submit'
-          size='icon-lg'
-          className='max-lg:hidden'
-          disabled={!canContinue || isRegenerating}
-          aria-label={submitLabel}
-          title={submitLabel}
-        >
+        <Button type='submit' size='lg' className='max-lg:hidden' disabled={!canContinue || isRegenerating}>
+          {submitLabel}
           {isRegenerating ? <Spinner /> : <HugeiconsIcon icon={SparklesIcon} />}
         </Button>
       )}

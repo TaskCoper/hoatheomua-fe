@@ -963,7 +963,7 @@
       "generation": {
         "badge": "Đang tạo",
         "title": "Đang vẽ phiên bản {index}…",
-        "lockNote": "Quá trình này có thể mất khoảng một phút. Vui lòng giữ nguyên màn hình này.",
+        "waitNote": "Quá trình này có thể mất khoảng vài phút. Bạn vẫn có thể xem lại các phiên bản trong lúc chờ.",
         "stages": {
           "reading": "Đọc lời nhắn của bạn",
           "sketching": "Phác bố cục",
@@ -1152,13 +1152,13 @@
       "recruitment": "Tuyển dụng",
       "contact": "Liên hệ",
       "cart": "Giỏ hàng",
-      "orders": "Đơn hàng"
+      "account": "Tài khoản"
     },
     "aria": {
       "mainNav": "Điều hướng chính",
       "mobileNav": "Điều hướng di động",
       "openCart": "Mở giỏ hàng",
-      "openOrders": "Mở đơn hàng",
+      "openAccount": "Mở tài khoản",
       "search": "Tìm kiếm",
       "openMenu": "Mở menu"
     }
@@ -1746,7 +1746,10 @@
       "save": "Lưu",
       "exitAriaLabel": "Thoát Flower Studio",
       "cartAriaLabel": "Giỏ hàng của bạn",
-      "historyAriaLabel": "Thiết kế AI của bạn"
+      "cartLabel": "Giỏ hàng",
+      "historyAriaLabel": "Thiết kế AI của bạn",
+      "historyLabel": "Lịch sử thiết kế AI",
+      "exitLabel": "Thoát"
     },
     "steps": {
       "ingredients": "Nguyên liệu",
@@ -1765,7 +1768,7 @@
       },
       "generating": "Đang tạo",
       "creating": "Đang tạo “{name}”…",
-      "lockNote": "Quá trình này có thể mất khoảng một phút. Vui lòng giữ nguyên màn hình này.",
+      "waitNote": "Quá trình này có thể mất khoảng vài phút. Bạn vẫn có thể xem lại lựa chọn của mình trong lúc chờ.",
       "error": "Chúng tôi chưa tạo được hình ảnh của bạn. Vui lòng thử lại.",
       "noMaterials": "Thiết kế này chưa có danh sách hoa nên chưa thể tạo ảnh."
     },
@@ -2057,43 +2060,11 @@
     "unavailableNote": "Sản phẩm có thể đã được gỡ hoặc kết nối bị gián đoạn. Hãy chọn một thiết kế trong bộ sưu tập và thử lại.",
     "backToProducts": "Về bộ sưu tập",
     "jobs": {
-      "title": "Thiết kế AI gần đây",
-      "leaveNote": "Bạn có thể rời trang và quay lại xem tiến trình. Việc tạo ảnh vẫn tiếp tục.",
       "failed": "Không hoàn thành thiết kế",
       "failedNote": "Tác vụ đã dừng. Kết quả các bước đã xong được giữ lại. Nếu tạo một thiết kế mới, hệ thống sẽ thực hiện một lượt tạo ảnh mới.",
       "canceled": "Đã hủy tác vụ",
-      "canceling": "Đang yêu cầu hủy",
       "submitError": "Chưa xác nhận được yêu cầu tạo ảnh",
-      "submitErrorNote": "Kiểm tra danh sách thiết kế trước. Nếu gửi lại cùng lựa chọn, hệ thống sẽ đối chiếu yêu cầu cũ để tránh tạo trùng.",
-      "connectionError": "Tạm mất kết nối cập nhật. Tác vụ có thể vẫn đang chạy.",
-      "refresh": "Cập nhật lại",
-      "view": "Xem tiến trình",
-      "mockup": "Ảnh bối cảnh tham chiếu",
-      "previous": "Trang trước",
-      "next": "Trang sau",
-      "openResult": "Mở thiết kế",
-      "cancel": "Hủy tác vụ",
-      "cancelConfirm": "Hủy tác vụ này? Phần AI đã thực hiện có thể không được hoàn lại và ảnh đang tạo có thể chưa được lưu.",
-      "cancelError": "Chưa gửi được yêu cầu hủy. Vui lòng kiểm tra lại trạng thái.",
-      "types": {
-        "Create": "Tạo mới",
-        "Regenerate": "Tạo lại"
-      },
-      "statuses": {
-        "Queued": "Đang xếp hàng",
-        "Running": "Đang xử lý",
-        "Succeeded": "Hoàn thành",
-        "Failed": "Không hoàn thành",
-        "Canceled": "Đã hủy"
-      },
-      "stages": {
-        "Queued": "Đang xếp hàng",
-        "GeneratingFlower": "Đang tạo bó hoa",
-        "ApplyingMockup": "Đang ghép mockup",
-        "Branding": "Đang ghép logo",
-        "Saving": "Đang lưu kết quả",
-        "Completed": "Hoàn thành"
-      }
+      "submitErrorNote": "Nếu gửi lại cùng lựa chọn, hệ thống sẽ đối chiếu yêu cầu cũ để tránh tạo trùng."
     }
   },
   "b2b": {

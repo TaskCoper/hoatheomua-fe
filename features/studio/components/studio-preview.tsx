@@ -134,57 +134,64 @@ export default function StudioPreview({
 
       {status === 'generating' ? <StudioGenerationOverlay name={designName} stage={stage} /> : null}
 
-      <div className='absolute inset-x-0 bottom-0 z-10 bg-primary/55 text-white backdrop-blur-md'>
-        <div className='flex items-center justify-between gap-4 px-5 py-4 sm:px-8 sm:py-5 lg:px-10'>
-          <div className='min-w-0'>
-            <p className='text-xs font-semibold text-white/75'>{stageLabel}</p>
-            <p className='truncate text-pretty font-title text-lg font-bold leading-tight text-white sm:text-xl'>
-              {step === 1 ? product.name : designName ? `“${designName}”` : product.name}
-            </p>
+      <div className='absolute inset-x-0 bottom-0 z-10 text-white'>
+        {/* Melts the card into the artwork instead of cutting it with a hard edge. */}
+        <span
+          aria-hidden='true'
+          className='pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent'
+        />
+
+        <div className='relative m-2.5 rounded-2xl bg-primary/65 p-3 shadow-[0_0.75rem_2rem_rgb(28_43_43/30%)] ring-1 ring-white/20 supports-backdrop-filter:bg-primary/45 supports-backdrop-filter:backdrop-blur-xl sm:m-3.5 sm:p-3.5 lg:m-4'>
+          <div className='flex items-end justify-between gap-3'>
+            <div className='min-w-0'>
+              <span className='inline-flex max-w-full items-center rounded-full bg-white/15 px-1.5 py-px text-[0.625rem] font-semibold text-white/90 ring-1 ring-white/20'>
+                <span className='truncate'>{stageLabel}</span>
+              </span>
+
+              <p className='mt-1 truncate font-title text-base font-bold leading-tight sm:text-lg'>
+                {step === 1 ? product.name : designName ? `“${designName}”` : product.name}
+              </p>
+            </div>
+
+            {step > 1 ? (
+              <div className='shrink-0 text-right'>
+                <p className='text-sm font-semibold text-white/65'>{t('result.price')}</p>
+                <p className='font-title text-base font-bold leading-tight tabular-nums sm:text-lg'>
+                  {formatStudioPrice(bouquet.totalAmount)}
+                </p>
+              </div>
+            ) : null}
           </div>
 
-          {step > 1 ? (
-            <div className='shrink-0 text-right'>
-              <p className='text-[0.625rem] font-semibold uppercase tracking-widest text-white/75'>
-                {t('result.price')}
-              </p>
-              <p className='font-title text-xl font-bold leading-tight text-white sm:text-2xl'>
-                {formatStudioPrice(bouquet.totalAmount)}
-              </p>
+          {complete ? (
+            <div className='mt-3 gap-2 border-t border-white/20 pt-3 flex items-center justify-end'>
+              <Button
+                type='button'
+                onClick={onAddToBag}
+                disabled={isAddToBagDisabled}
+                className='bg-white text-primary shadow-[0_0.375rem_1rem_rgb(28_43_43/22%)] hover:bg-white/90'
+              >
+                {added ? (
+                  <>
+                    <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
+                    {tNav('addedToBag')}
+                  </>
+                ) : (
+                  tNav('addToBag')
+                )}
+              </Button>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={onBuyNow}
+                disabled={isBuyNowDisabled}
+                className='border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white'
+              >
+                {tNav('buyNow')}
+              </Button>
             </div>
           ) : null}
         </div>
-
-        {complete ? (
-          <div className='hidden flex-wrap items-center justify-end gap-2 px-5 pb-3 sm:px-8 lg:flex lg:px-10'>
-            <Button
-              type='button'
-              size='lg'
-              onClick={onAddToBag}
-              disabled={isAddToBagDisabled}
-              className='bg-white text-primary hover:bg-white/90'
-            >
-              {added ? (
-                <>
-                  <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
-                  {tNav('addedToBag')}
-                </>
-              ) : (
-                tNav('addToBag')
-              )}
-            </Button>
-            <Button
-              type='button'
-              size='lg'
-              variant='outline'
-              onClick={onBuyNow}
-              disabled={isBuyNowDisabled}
-              className='border-white/40 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:text-white'
-            >
-              {tNav('buyNow')}
-            </Button>
-          </div>
-        ) : null}
       </div>
     </section>
   )

@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import GenerationScreenLock from '@/shared/components/generation-screen-lock'
+import GenerationProgress from '@/shared/components/generation-progress'
 import { useMemo } from 'react'
 import { ORDER_CARD_STAGE_KEYS } from '../../hooks/use-order-card-designer'
 
@@ -19,10 +19,10 @@ export default function OrderCardGenerationOverlay({ versionLabel, stage }: Orde
   )
 
   return (
-    <GenerationScreenLock
+    <GenerationProgress
       badge={t('orders.cards.generation.badge')}
       title={t('orders.cards.generation.title', { index: versionLabel })}
-      note={t('orders.cards.generation.lockNote')}
+      note={t('orders.cards.generation.waitNote')}
       stages={stages}
       activeStage={stage}
     />

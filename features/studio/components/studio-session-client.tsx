@@ -1,7 +1,5 @@
 'use client'
 
-import FlowerJobBoard from './flower-job-board'
-
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import StudioHeader from '@/features/studio/components/studio-header'
@@ -154,12 +152,12 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
 
   return (
     <form onSubmit={submit} className='flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground'>
-      {!onResultStep && <FlowerJobBoard />}
       <StudioHeader
         step={step}
         maxStep={STUDIO_SESSION_LAST_STEP}
         steps={STUDIO_SESSION_STEP_KEYS}
         onStep={(next) => goTo(next)}
+        locked={isRegeneratingAiFlower}
       />
 
       <Suspense fallback={null}>

@@ -13,14 +13,24 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 
+// Labels unfold only once there is room beside the absolutely centred step rail.
+const actionLabelClass = 'hidden xl:inline'
+
 interface StudioHeaderProps {
   step: StudioStep
   maxStep: StudioStep
   onStep: (step: StudioStep) => void
   steps?: readonly { step: StudioStep; key: StudioStepKey }[]
+  locked?: boolean
 }
 
-export default function StudioHeader({ step, maxStep, onStep, steps = STUDIO_STEP_KEYS }: StudioHeaderProps) {
+export default function StudioHeader({
+  step,
+  maxStep,
+  onStep,
+  steps = STUDIO_STEP_KEYS,
+  locked = false
+}: StudioHeaderProps) {
   const t = useTranslations('studio.header')
   const tSteps = useTranslations('studio.steps')
 
@@ -41,7 +51,7 @@ export default function StudioHeader({ step, maxStep, onStep, steps = STUDIO_STE
           {steps.map((item, index) => {
             const complete = item.step < step
             const active = item.step === step
-            const available = item.step <= maxStep
+            const available = item.step <= maxStep && !locked
             const label = tSteps(item.key)
 
             return (
@@ -90,28 +100,74 @@ export default function StudioHeader({ step, maxStep, onStep, steps = STUDIO_STE
       </nav>
 
       <div className='flex flex-1 items-center justify-end gap-0.5 sm:gap-1'>
-        <Button asChild variant='ghost' size='icon-lg' className='text-primary'>
-          <Link href='/cart' aria-label={t('cartAriaLabel')} title={t('cartAriaLabel')}>
-            <HugeiconsIcon icon={ShoppingBasket03Icon} strokeWidth={2} />
-          </Link>
-        </Button>
+        <HeaderAction
+          href='/cart'
+          icon={ShoppingBasket03Icon}
+          label={t('cartLabel')}
+          description={t('cartAriaLabel')}
+          locked={locked}
+        />
 
         {historyHref === ACCOUNT_FALLBACK_HREF ? null : (
-          <Button asChild variant='ghost' size='icon-lg' className='text-primary'>
-            <Link href={historyHref} aria-label={t('historyAriaLabel')} title={t('historyAriaLabel')}>
-              <HugeiconsIcon icon={AiMagicIcon} strokeWidth={2} />
-            </Link>
-          </Button>
+          <HeaderAction
+            href={historyHref}
+            icon={AiMagicIcon}
+            label={t('historyLabel')}
+            description={t('historyAriaLabel')}
+            locked={locked}
+          />
         )}
 
         <span aria-hidden='true' className='mx-1 h-6 w-px bg-border' />
 
-        <Button asChild variant='ghost' size='icon-lg' className='text-primary'>
-          <Link href='/products' aria-label={t('exitAriaLabel')} title={t('exitAriaLabel')}>
-            <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
-          </Link>
-        </Button>
+        <HeaderAction href='/products' icon={Cancel01Icon} description={t('exitAriaLabel')} locked={locked} />
       </div>
     </header>
+  )
+}
+
+/**
+ * Renders either shape: pass `label` for an icon that grows a caption at `xl`, or
+ * leave it out for a square icon button. `description` is the accessible name
+ * either way, since the caption is hidden on smaller screens. A locked action
+ * keeps its place and its shape but stops being a link.
+ */
+function HeaderAction({
+  href,
+  icon,
+  label,
+  description,
+  locked
+}: {
+  href: string
+  icon: typeof Cancel01Icon
+  label?: string
+  description: string
+  locked: boolean
+}) {
+  // `icon-lg` is already the square 2.5rem button; a captioned one needs room to grow.
+  const size = label ? 'lg' : 'icon-lg'
+  const className = cn('text-primary', label && 'px-2.5 xl:px-4')
+
+  const body = (
+    <>
+      <HugeiconsIcon icon={icon} strokeWidth={2} />
+      {label ? <span className={actionLabelClass}>{label}</span> : null}
+    </>
+  )
+
+  if (locked)
+    return (
+      <Button type='button' variant='ghost' size={size} className={className} disabled aria-label={description}>
+        {body}
+      </Button>
+    )
+
+  return (
+    <Button asChild variant='ghost' size={size} className={className}>
+      <Link href={href} aria-label={description} title={description}>
+        {body}
+      </Link>
+    </Button>
   )
 }

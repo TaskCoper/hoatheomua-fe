@@ -22,7 +22,7 @@ import {
   LoginCircle01Icon,
   MailValidation01Icon,
   Menu01Icon,
-  PackageIcon,
+  Settings01Icon,
   ShoppingBasket03Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -49,7 +49,7 @@ const CART_BUTTON_CLASS_MOBILE = `flex-1 ${CART_BUTTON_CLASS}`
 
 export default function NavBar() {
   const { isAuthenticated, me, isGettingMe, isVerificationRequired } = useGetMe()
-  const ordersHref = useAccountHref('orders')
+  const accountHref = useAccountHref()
 
   const { t } = useTranslation()
   const pathname = usePathname()
@@ -134,8 +134,8 @@ export default function NavBar() {
                 </Button>
 
                 <Button asChild variant='outline' size='icon-sm' className={CART_BUTTON_CLASS}>
-                  <Link href={ordersHref} aria-label={t('header.aria.openOrders')}>
-                    <HugeiconsIcon icon={PackageIcon} />
+                  <Link href={accountHref} aria-label={t('header.aria.openAccount')}>
+                    <HugeiconsIcon icon={Settings01Icon} />
                   </Link>
                 </Button>
               </>
@@ -226,9 +226,9 @@ export default function NavBar() {
 
                     <SheetClose asChild>
                       <Button asChild variant='outline' size='sm' className={CART_BUTTON_CLASS_MOBILE}>
-                        <Link href={ordersHref}>
-                          <HugeiconsIcon icon={PackageIcon} />
-                          {t('header.nav.orders')}
+                        <Link href={accountHref}>
+                          <HugeiconsIcon icon={Settings01Icon} />
+                          {t('header.nav.account')}
                         </Link>
                       </Button>
                     </SheetClose>

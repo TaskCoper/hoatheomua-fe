@@ -18,7 +18,7 @@ import {
   Tick02Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { findOrderCardVersion } from '../../cards/order-card-data'
 import type { OrderAiCard } from '../../cards/types'
@@ -37,9 +37,10 @@ interface OrderCardStudioProps {
   card: OrderAiCard
   isOpen: boolean
   onDone: () => void
+  onBusyChange?: (busy: boolean) => void
 }
 
-export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudioProps) {
+export default function OrderCardStudio({ card, isOpen, onDone, onBusyChange }: OrderCardStudioProps) {
   const { t } = useTranslation()
 
   const {
@@ -77,6 +78,11 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
 
   const isGenerating = status === 'generating'
   const confirm = useConfirmStore((state) => state.confirm)
+
+  // A run cannot be cancelled, so the dialog holding it must refuse to close.
+  useEffect(() => {
+    onBusyChange?.(isGenerating)
+  }, [isGenerating, onBusyChange])
 
   const settledVersion = isSettled ? findOrderCardVersion(versions, selectedVersionId) : null
 

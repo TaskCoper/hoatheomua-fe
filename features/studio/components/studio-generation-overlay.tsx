@@ -1,7 +1,7 @@
 'use client'
 
 import { STUDIO_GENERATION_STAGE_KEYS } from '@/features/studio/studio-data'
-import GenerationScreenLock from '@/shared/components/generation-screen-lock'
+import GenerationProgress from '@/shared/components/generation-progress'
 import { useTranslations } from 'next-intl'
 import { useMemo } from 'react'
 
@@ -16,12 +16,13 @@ export default function StudioGenerationOverlay({ name, stage }: StudioGeneratio
   const stages = useMemo(() => STUDIO_GENERATION_STAGE_KEYS.map((key) => ({ key, label: t(`stages.${key}`) })), [t])
 
   return (
-    <GenerationScreenLock
+    <GenerationProgress
       badge={t('generating')}
       title={t('creating', { name })}
-      note={t('lockNote')}
+      note={t('waitNote')}
       stages={stages}
       activeStage={stage}
+      className='pb-20 sm:pb-24'
     />
   )
 }

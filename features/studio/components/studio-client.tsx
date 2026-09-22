@@ -1,9 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
 import { productFamilyQuery } from '@/features/products/queries'
 import StudioDesigner from '@/features/studio/components/studio-designer'
+import StudioSkeleton from '@/features/studio/components/studio-skeleton'
 import { Link } from '@/lib/i18n/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useTranslations } from 'next-intl'
@@ -12,13 +12,7 @@ export default function StudioClient({ productId }: { productId: string }) {
   const t = useTranslations('studio')
   const { data: family, isPending, isError } = useQuery(productFamilyQuery(productId))
 
-  if (isPending)
-    return (
-      <div className='flex min-h-dvh w-full flex-col items-center justify-center gap-3 bg-background'>
-        <Spinner className='size-8 text-muted-foreground' />
-        <p className='text-xs text-muted-foreground'>{t('loading')}</p>
-      </div>
-    )
+  if (isPending) return <StudioSkeleton label={t('loading')} />
 
   if (isError || !family?.parent)
     return (

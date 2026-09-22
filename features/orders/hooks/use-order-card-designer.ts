@@ -88,9 +88,10 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   /**
    * The first run carries nothing of its own - it paints the card exactly as it was ordered -
    * so there is nothing to change until it lands. The same holds while the list that would
-   * tell a first run from a rerun is still in flight.
+   * tell a first run from a rerun is still in flight, and while a run is in flight: the payload
+   * left with the request, so edits made mid-run would be silently discarded when it lands.
    */
-  const isEditLocked = isSettled || !hasVersionHistory || isFirstRun
+  const isEditLocked = isSettled || !hasVersionHistory || isFirstRun || isRegeneratingAiCard
 
   // A template is worth insisting on only when the run actually carries one.
   const needsTemplate = !isFirstRun && !isTemplateLocked
