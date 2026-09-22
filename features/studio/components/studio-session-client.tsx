@@ -154,7 +154,7 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
 
   return (
     <form onSubmit={submit} className='flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground'>
-      <FlowerJobBoard />
+      {!onResultStep && <FlowerJobBoard />}
       <StudioHeader
         step={step}
         maxStep={STUDIO_SESSION_LAST_STEP}
