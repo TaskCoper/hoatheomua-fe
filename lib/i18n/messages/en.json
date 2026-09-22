@@ -968,8 +968,16 @@
           "reading": "Reading your words",
           "sketching": "Sketching the layout",
           "painting": "Painting the artwork",
-          "finishing": "Finishing the details"
-        }
+          "finishing": "Finishing the details",
+          "queued": "Waiting to start",
+          "generating": "Designing your card",
+          "saving": "Saving the result"
+        },
+        "backgroundNote": "You can close this screen. Your card will keep generating; reopen it to see the result.",
+        "connectionError": "Updates are disconnected. Generation may still be running on the server.",
+        "cancel": "Cancel generation",
+        "canceling": "Requesting cancellation…",
+        "canceled": "Card generation canceled."
       },
       "actions": {
         "generate": "Generate new version",

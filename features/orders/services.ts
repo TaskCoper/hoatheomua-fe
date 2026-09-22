@@ -14,10 +14,8 @@ import type {
   GetOrdersParams,
   Order,
   OrderDetail,
-  OrderDetailCardItem,
   OrderDetailCardsResponse,
   OrderStatus,
-  RegenerateAiCardPayload,
   SetFinalGeneratedCardPayload,
   ShippingLocation,
   ShippingLocationType
@@ -120,14 +118,6 @@ class OrderService {
     })
 
     return data.value.cards
-  }
-
-  // Painting a card again is our own AI run, not a third-party side effect, so it is not
-  // behind the business flags - the same as the flower studio's generations.
-  regenerateAiCard = async (body: RegenerateAiCardPayload) => {
-    const { data } = await api.post<BaseResponse<OrderDetailCardItem | null>>('v1/ai-cards', body)
-
-    return data.value
   }
 
   /**

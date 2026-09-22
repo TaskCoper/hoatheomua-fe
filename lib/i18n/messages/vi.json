@@ -968,8 +968,16 @@
           "reading": "Đọc lời nhắn của bạn",
           "sketching": "Phác bố cục",
           "painting": "Vẽ hình thiệp",
-          "finishing": "Hoàn thiện chi tiết"
-        }
+          "finishing": "Hoàn thiện chi tiết",
+          "queued": "Đang chờ xử lý",
+          "generating": "AI đang thiết kế thiệp",
+          "saving": "Đang lưu kết quả"
+        },
+        "backgroundNote": "Bạn có thể đóng màn hình này. Thiệp vẫn tiếp tục được tạo; mở lại để xem kết quả.",
+        "connectionError": "Đang mất kết nối cập nhật. Tiến trình trên máy chủ có thể vẫn đang chạy.",
+        "cancel": "Hủy tạo thiệp",
+        "canceling": "Đang yêu cầu hủy…",
+        "canceled": "Đã hủy tạo thiệp."
       },
       "actions": {
         "generate": "Tạo phiên bản mới",

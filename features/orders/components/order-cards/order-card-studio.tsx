@@ -18,7 +18,7 @@ import {
   Tick02Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { findOrderCardVersion } from '../../cards/order-card-data'
 import type { OrderAiCard } from '../../cards/types'
@@ -37,10 +37,9 @@ interface OrderCardStudioProps {
   card: OrderAiCard
   isOpen: boolean
   onDone: () => void
-  onBusyChange?: (busy: boolean) => void
 }
 
-export default function OrderCardStudio({ card, isOpen, onDone, onBusyChange }: OrderCardStudioProps) {
+export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudioProps) {
   const { t } = useTranslation()
 
   const {
@@ -56,6 +55,10 @@ export default function OrderCardStudio({ card, isOpen, onDone, onBusyChange }: 
     isOverBudget,
     status,
     stage,
+    job,
+    cancelJob,
+    isCanceling,
+    isConnectionError,
     isApplying,
     showMessageError,
     hasChanges,
@@ -78,11 +81,6 @@ export default function OrderCardStudio({ card, isOpen, onDone, onBusyChange }: 
 
   const isGenerating = status === 'generating'
   const confirm = useConfirmStore((state) => state.confirm)
-
-  // A run cannot be cancelled, so the dialog holding it must refuse to close.
-  useEffect(() => {
-    onBusyChange?.(isGenerating)
-  }, [isGenerating, onBusyChange])
 
   const settledVersion = isSettled ? findOrderCardVersion(versions, selectedVersionId) : null
 
@@ -153,7 +151,7 @@ export default function OrderCardStudio({ card, isOpen, onDone, onBusyChange }: 
             />
 
             <OrderCardArtwork
-              showWords
+              showWords={!activeVersion}
               onReady={measureArtwork}
               imageUrl={previewImageUrl}
               alt={
@@ -184,7 +182,30 @@ export default function OrderCardStudio({ card, isOpen, onDone, onBusyChange }: 
             />
           </div>
 
-          {isGenerating ? <OrderCardGenerationOverlay versionLabel={versions.length + 1} stage={stage} /> : null}
+          {isGenerating ? (
+            <OrderCardGenerationOverlay
+              versionLabel={versions.length + 1}
+              stage={stage}
+              cancel={cancelJob}
+              isCanceling={isCanceling}
+              isConnectionError={isConnectionError}
+            />
+          ) : null}
+          {!isGenerating && job?.status === 'Failed' ? (
+            <p role='alert' className='mt-3 text-sm text-destructive'>
+              {t('orders.cards.toast.generateError')}
+            </p>
+          ) : null}
+          {!isGenerating && job?.status === 'Canceled' ? (
+            <p role='status' className='mt-3 text-sm'>
+              {t('orders.cards.generation.canceled')}
+            </p>
+          ) : null}
+          {!isGenerating && isConnectionError ? (
+            <p role='alert' className='mt-3 text-sm'>
+              {t('orders.cards.generation.connectionError')}
+            </p>
+          ) : null}
         </div>
 
         <div className='relative shrink-0 border-t border-border/60 bg-card/70 p-3 backdrop-blur-sm sm:p-4'>

@@ -293,13 +293,15 @@ export interface GetOrderDetailCardsParams {
   virtualId: string
 }
 
-export interface RegenerateAiCardPayload {
-  orderDetailId: string | null
-  virtualId: string | null
-  sourceCardId: string | null
-  cardTemplateId: string | null
-  messageContent: string | null
-}
+export type RegenerateAiCardPayload =
+  | { orderDetailId: string; virtualId: string; sourceCardId?: never; cardTemplateId?: never; messageContent?: never }
+  | {
+      sourceCardId: string
+      cardTemplateId?: string | null
+      messageContent?: string | null
+      orderDetailId?: never
+      virtualId?: never
+    }
 
 export interface SetFinalGeneratedCardPayload {
   orderDetailId: string

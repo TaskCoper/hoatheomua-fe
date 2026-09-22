@@ -55,7 +55,7 @@ export default function OrderFinalCardsSection({ items }: OrderFinalCardsSection
                       <Skeleton style={{ aspectRatio: ratio }} className='w-full rounded-xl' />
                     ) : (
                       <OrderCardArtwork
-                        showWords
+                        showWords={!version}
                         imageUrl={version?.imageUrl ?? card.templateImageUrl}
                         alt={
                           version

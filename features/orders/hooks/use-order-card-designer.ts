@@ -11,9 +11,7 @@ import { useOrderCardVersions } from './use-order-card-versions'
 import { useRegenerateAiCard } from './use-regenerate-ai-card'
 import { useSetFinalOrderCard } from './use-set-final-order-card'
 
-export const ORDER_CARD_STAGE_KEYS = ['reading', 'sketching', 'painting', 'finishing'] as const
-
-const STAGE_INTERVAL_MS = 2000
+export const ORDER_CARD_STAGE_KEYS = ['queued', 'generating', 'saving'] as const
 
 export type OrderCardGenerationStatus = 'idle' | 'generating'
 
@@ -38,14 +36,25 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   const [activeVersionId, setActiveVersionId] = useState(card.selectedVersionId)
   const [selectedVersionId, setSelectedVersionId] = useState(card.selectedVersionId)
   const [showMessageError, setShowMessageError] = useState(false)
-  const [stage, setStage] = useState(0)
 
   const loadedVersionIdRef = useRef<string | null>(null)
 
-  const { regenerateAiCard, isRegeneratingAiCard } = useRegenerateAiCard({
-    orderDetailsId: card.orderDetailsId,
-    virtualId: card.id
-  })
+  const {
+    regenerateAiCard,
+    isRegeneratingAiCard,
+    isCheckingJobs,
+    job,
+    stage,
+    cancelJob,
+    isCanceling,
+    isConnectionError
+  } = useRegenerateAiCard(
+    {
+      orderDetailsId: card.orderDetailsId,
+      virtualId: card.id
+    },
+    enabled
+  )
   const { setFinalOrderCard, isSettingFinalOrderCard } = useSetFinalOrderCard()
 
   const activeVersion = findOrderCardVersion(versions, activeVersionId) ?? versions.at(-1) ?? null
@@ -98,6 +107,7 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
   const canGenerate =
     !isSettled &&
     !isRegeneratingAiCard &&
+    !isCheckingJobs &&
     hasVersionHistory &&
     (!needsTemplate || !!template.templateId) &&
     wordCount > 0 &&
@@ -114,17 +124,6 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
     setShowMessageError(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeVersion])
-
-  useEffect(() => {
-    if (!isRegeneratingAiCard) return
-
-    const interval = window.setInterval(
-      () => setStage((current) => Math.min(current + 1, ORDER_CARD_STAGE_KEYS.length - 1)),
-      STAGE_INTERVAL_MS
-    )
-
-    return () => window.clearInterval(interval)
-  }, [isRegeneratingAiCard])
 
   const editContent = (next: CardContent) => {
     if (isEditLocked) return
@@ -172,26 +171,20 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
       return
     }
 
-    const sourceCardId = isFirstRun ? null : (versions.at(-1)?.id ?? null)
+    const sourceCardId = isFirstRun ? null : (activeVersion?.id ?? null)
     if (!isFirstRun && !sourceCardId) return
 
     const body: RegenerateAiCardPayload = sourceCardId
       ? {
-          orderDetailId: null,
-          virtualId: null,
           sourceCardId,
           cardTemplateId: template.templateId || null,
           messageContent: draft.message
         }
       : {
           orderDetailId: card.orderDetailsId,
-          virtualId: card.id,
-          sourceCardId: null,
-          cardTemplateId: null,
-          messageContent: null
+          virtualId: card.id
         }
 
-    setStage(0)
     regenerateAiCard(body, {
       onSuccess: () => {
         setContent(draft)
@@ -216,6 +209,10 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
     isOverBudget,
     status,
     stage,
+    job,
+    cancelJob,
+    isCanceling,
+    isConnectionError,
     isApplying: isSettingFinalOrderCard,
     showMessageError,
     hasChanges,
