@@ -42,7 +42,7 @@ export const formatStudioIngredientCounts = (ingredients: StudioBouquetIngredien
 
 export const STUDIO_GENERATION_STAGE_KEYS = ['preparing', 'lighting', 'composing', 'finishing'] as const
 
-export const STUDIO_GENERATION_STAGE_INTERVAL = 350
+export const STUDIO_GENERATION_STAGE_INTERVAL = 3000
 export const STUDIO_GENERATION_PENDING_STAGE = STUDIO_GENERATION_STAGE_KEYS.length - 1
 export const STUDIO_GENERATION_DONE_STAGE = STUDIO_GENERATION_STAGE_KEYS.length
 

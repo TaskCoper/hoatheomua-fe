@@ -1927,6 +1927,7 @@
       "counter": "Version {index}/{total}",
       "short": "V{index}",
       "slideAriaLabel": "Version {index}: {name} in {mockup}",
+      "openLightbox": "View “{name}” full screen",
       "previous": "Previous version",
       "next": "Next version"
     },

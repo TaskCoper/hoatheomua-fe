@@ -1927,6 +1927,7 @@
       "counter": "Phiên bản {index}/{total}",
       "short": "P{index}",
       "slideAriaLabel": "Phiên bản {index}: {name} trong {mockup}",
+      "openLightbox": "Xem “{name}” toàn màn hình",
       "previous": "Phiên bản trước",
       "next": "Phiên bản sau"
     },

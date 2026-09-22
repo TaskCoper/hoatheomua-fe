@@ -4,11 +4,20 @@ import StudioImage from '@/features/studio/components/studio-image'
 import type { StudioProduct, StudioVersion } from '@/features/studio/types'
 import DownloadImageButton from '@/shared/components/download-image-button'
 import { cn } from '@/shared/utils'
-import { ArrowLeft02Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons'
+import { ArrowLeft02Icon, ArrowRight02Icon, FullScreenIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Lightbox from 'yet-another-react-lightbox'
+import Captions from 'yet-another-react-lightbox/plugins/captions'
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+
+import 'yet-another-react-lightbox/plugins/captions.css'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
+import 'yet-another-react-lightbox/styles.css'
 
 const glassClass = 'bg-white/70 text-primary shadow-[0_0.25rem_0.75rem_rgb(28_43_43/10%)] backdrop-blur-md'
 const arrowClass =
@@ -31,7 +40,6 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
     0
   )
 
-  // Frozen: a changing startIndex would rebuild the carousel on every version switch.
   const [initialIndex] = useState(activeIndex)
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'center',
@@ -54,7 +62,31 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
     }
   }, [emblaApi, versions, activeId, onSelect])
 
-  // Follow the active version when it changes elsewhere, and after Embla rebuilds on a new slide.
+  const zoomable = useMemo(() => versions.filter((version) => version.imageUrl), [versions])
+  const slides = useMemo(
+    () =>
+      zoomable.map((version) => ({
+        src: version.imageUrl as string,
+        alt: tPreview('mockupSceneAlt', { product: product.name, mockup: version.mockupName }),
+        title: version.name,
+        description: version.mockupName
+      })),
+    [zoomable, product.name, tPreview]
+  )
+
+  const [lightboxIndex, setLightboxIndex] = useState(-1)
+
+  const openLightbox = useCallback(
+    (version: StudioVersion | undefined) => {
+      if (!version) return
+      const index = zoomable.findIndex((item) => item.id === version.id)
+      if (index >= 0) setLightboxIndex(index)
+    },
+    [zoomable]
+  )
+
+  const activeVersion = versions[activeIndex]
+
   useEffect(() => {
     if (!emblaApi) return
 
@@ -91,6 +123,15 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
                 pendingLabel={tStudio('imagePending')}
                 pendingIconClassName='size-12'
               />
+
+              {version.imageUrl ? (
+                <button
+                  type='button'
+                  onClick={() => openLightbox(version)}
+                  aria-label={t('openLightbox', { name: version.name })}
+                  className='absolute inset-0 cursor-zoom-in focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white'
+                />
+              ) : null}
             </div>
           ))}
         </div>
@@ -103,9 +144,24 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
           </span>
         ) : null}
 
+        {activeVersion?.imageUrl ? (
+          <button
+            type='button'
+            onClick={() => openLightbox(activeVersion)}
+            aria-label={t('openLightbox', { name: activeVersion.name })}
+            title={t('openLightbox', { name: activeVersion.name })}
+            className={cn(
+              'flex size-9 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
+              glassClass
+            )}
+          >
+            <HugeiconsIcon icon={FullScreenIcon} className='size-4' strokeWidth={2} />
+          </button>
+        ) : null}
+
         <DownloadImageButton
-          src={versions[activeIndex]?.imageUrl ?? null}
-          filename={`${product.name}-${versions[activeIndex]?.label ?? ''}`}
+          src={activeVersion?.imageUrl ?? null}
+          filename={`${product.name}-${activeVersion?.label ?? ''}`}
         />
       </div>
 
@@ -132,6 +188,23 @@ export default function StudioResultCarousel({ versions, activeId, product, onSe
           </button>
         </div>
       ) : null}
+
+      <Lightbox
+        open={lightboxIndex >= 0}
+        close={() => setLightboxIndex(-1)}
+        index={Math.max(lightboxIndex, 0)}
+        slides={slides}
+        plugins={[Captions, Fullscreen, Thumbnails, Zoom]}
+        carousel={{ finite: slides.length <= 1 }}
+        thumbnails={{ position: 'bottom', showToggle: true }}
+        zoom={{ maxZoomPixelRatio: 3, scrollToZoom: false }}
+        on={{
+          view: ({ index }) => {
+            const version = zoomable[index]
+            if (version && version.id !== activeId) onSelect(version)
+          }
+        }}
+      />
     </>
   )
 }
