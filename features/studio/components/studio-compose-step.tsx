@@ -1,7 +1,9 @@
 'use client'
 
+import { Skeleton } from '@/components/ui/skeleton'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioOptionsFooter from '@/features/studio/components/studio-options-footer'
+import StudioOptionSkeletons from '@/features/studio/components/studio-skeletons'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
 import type { StudioBouquet, StudioOption, StudioTrim, StudioVariant } from '@/features/studio/types'
@@ -127,14 +129,18 @@ export default function StudioComposeStep({
       <div className={cn(detailRowClass, 'items-center py-5')}>
         <div className='min-w-0'>
           <p className={detailTermClass}>{label}</p>
-          {/* Both trims are part of the bouquet, so what they add is priced in, not a surcharge. */}
-          <p className={cn(microLabelClass, 'truncate')}>
-            {selected?.priceAmount ? `${selected.name} · ${formatStudioPrice(selected.priceAmount)}` : selected?.name}
-          </p>
+          {loading ? (
+            <Skeleton className='mt-1 h-3 w-28 rounded-full' />
+          ) : (
+            <p className={cn(microLabelClass, 'truncate')}>
+              {selected?.priceAmount ? `${selected.name} · ${formatStudioPrice(selected.priceAmount)}` : selected?.name}
+            </p>
+          )}
         </div>
 
         <div className='flex flex-wrap items-center gap-4'>
           <div role='radiogroup' aria-label={label} className='flex flex-wrap items-center gap-4'>
+            {loading ? <StudioOptionSkeletons count={5} className='size-10 rounded-full' /> : null}
             {options.map((option) => {
               const isSelected = option.id === selectedId
 
@@ -344,6 +350,9 @@ export default function StudioComposeStep({
         <StudioStepHeading title={t('style.label')} description={t('style.note')} />
 
         <div role='radiogroup' aria-label={t('style.label')} className='mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4'>
+          {isGettingStyleOptions ? (
+            <StudioOptionSkeletons count={4} className='aspect-[3/4] w-full rounded-2xl' />
+          ) : null}
           {styleOptions.map((style, index) => {
             const selected = style.id === bouquet.style?.id
 
@@ -437,7 +446,6 @@ export default function StudioComposeStep({
         {t('closingNote')}
       </p>
 
-      {/* Looking only - the choice is made on the swatches, never in here. */}
       <Lightbox
         open={!!zoomed}
         close={() => setZoomed(null)}

@@ -81,6 +81,7 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
     goTo,
     goNext,
     goBack,
+    cancel: cancelRegenerate,
     openRegenerate,
     selectStyle,
     selectScene
@@ -137,13 +138,15 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
     )
 
   const previewScene = onResultStep ? mockup : (selectedScene ?? mockup)
-  const sessionNav = (
+  const sessionNav = (variant: 'heading' | 'footer' | 'bar') => (
     <StudioSessionNav
       step={step}
       canContinue={canContinue}
       isRegenerating={isRegeneratingAiFlower}
+      variant={variant}
       onNext={goNext}
       onBack={goBack}
+      onCancel={cancelRegenerate}
     />
   )
 
@@ -156,7 +159,6 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
         onStep={(next) => goTo(next)}
       />
 
-      {/* A cart line points at the version it was bought from, not the newest one. */}
       <Suspense fallback={null}>
         <StudioVersionQuerySync versions={versions} onSelect={selectVersion} />
       </Suspense>
@@ -183,9 +185,9 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
 
         <section
           ref={formColumn}
-          className='relative bg-background lg:order-1 lg:h-[calc(100dvh-5rem)] lg:overflow-y-auto lg:border-r lg:border-secondary/40'
+          className='relative bg-background lg:order-1 lg:flex lg:h-[calc(100dvh-5rem)] lg:flex-col lg:overflow-y-auto lg:border-r lg:border-secondary/40'
         >
-          <div className='mx-auto flex min-h-full max-w-4xl flex-col px-4 pb-28 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
+          <div className='mx-auto flex w-full min-h-full max-w-4xl grow flex-col px-4 pb-28 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
             {onResultStep ? (
               <StudioResult
                 product={product}
@@ -212,7 +214,7 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
                 hasMoreStyleOptions={hasMoreStyleOptions}
                 hasMoreSceneOptions={hasMoreSceneOptions}
                 isRegenerating={isRegeneratingAiFlower}
-                actions={sessionNav}
+                actions={sessionNav('heading')}
                 onLoadMoreStyleOptions={() => loadMoreStyleOptions()}
                 onLoadMoreSceneOptions={() => loadMoreSceneOptions()}
                 onSelectStyle={selectStyle}
@@ -221,6 +223,14 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
               />
             )}
           </div>
+
+          {onResultStep ? null : (
+            <div className='sticky bottom-0 z-10 hidden border-t border-secondary/40 bg-background/90 backdrop-blur-md lg:block'>
+              <div className='mx-auto flex max-w-4xl items-center justify-end gap-3 px-4 py-4 sm:px-6 lg:px-8 xl:px-10'>
+                {sessionNav('footer')}
+              </div>
+            </div>
+          )}
         </section>
       </main>
 
@@ -239,7 +249,7 @@ export default function StudioSessionClient({ productId, sessionId }: StudioSess
         />
       ) : (
         <div className='fixed inset-x-0 bottom-0 z-50 border-t border-secondary/40 bg-background/85 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:hidden'>
-          <div className='flex items-center gap-2 [&>button:last-child]:flex-1'>{sessionNav}</div>
+          <div className='flex items-center gap-2 [&>button:last-child]:flex-1'>{sessionNav('bar')}</div>
         </div>
       )}
 
@@ -267,8 +277,6 @@ function StudioVersionQuerySync({
   const requestedId = searchParams.get(STUDIO_VERSION_QUERY_KEY)
   const exists = versions.some((version) => version.id === requestedId)
 
-  // Once only: the carousel owns the choice from here, so arriving on a link must not
-  // keep snapping the screen back to it.
   const appliedRef = useRef(false)
 
   useEffect(() => {

@@ -19,6 +19,8 @@ interface StudioRegenerateProps {
 
 export const useStudioRegenerate = ({ activeVersion, onRegenerated }: StudioRegenerateProps) => {
   const [step, setStep] = useState<StudioStep>(STUDIO_SESSION_LAST_STEP)
+  const [openedStep, setOpenedStep] = useState<StudioStep | 0>(0)
+  const reach = (next: StudioStep) => setOpenedStep((current) => (next > current ? next : current))
 
   const {
     methods: { control, reset, setValue },
@@ -39,14 +41,14 @@ export const useStudioRegenerate = ({ activeVersion, onRegenerated }: StudioRege
     isGettingMoreReferenceFlowers: isGettingMoreStyleOptions,
     hasMoreReferenceFlowers: hasMoreStyleOptions,
     loadMoreReferenceFlowers: loadMoreStyleOptions
-  } = useGetInfiniteReferenceFlowers({ type: 'bundle' })
+  } = useGetInfiniteReferenceFlowers({ type: 'bundle', enabled: openedStep >= STUDIO_SESSION_STYLE_STEP })
   const {
     referenceFlowers: sceneFlowers,
     isGettingReferenceFlowers: isGettingSceneOptions,
     isGettingMoreReferenceFlowers: isGettingMoreSceneOptions,
     hasMoreReferenceFlowers: hasMoreSceneOptions,
     loadMoreReferenceFlowers: loadMoreSceneOptions
-  } = useGetInfiniteReferenceFlowers({ type: 'flower' })
+  } = useGetInfiniteReferenceFlowers({ type: 'flower', enabled: openedStep >= STUDIO_SESSION_SCENE_STEP })
 
   const styleOptions = useMemo(() => toStudioReferenceOptions(bundles), [bundles])
   const sceneOptions = useMemo(() => toStudioReferenceOptions(sceneFlowers), [sceneFlowers])
@@ -61,13 +63,17 @@ export const useStudioRegenerate = ({ activeVersion, onRegenerated }: StudioRege
     reset({ bundleId: versionStyleId, mockupId: versionSceneId })
   }, [reset, versionSceneId, versionStyleId])
 
-  const goTo = (next: StudioStep) => setStep(next)
-  const goNext = () => setStep((current) => Math.min(current + 1, STUDIO_SESSION_LAST_STEP) as StudioStep)
-  // Step one was reached from the result, so back returns there rather than dead-ending.
-  const goBack = () =>
-    setStep((current) =>
-      current === STUDIO_SESSION_STYLE_STEP ? STUDIO_SESSION_LAST_STEP : ((current - 1) as StudioStep)
-    )
+  const goTo = (next: StudioStep) => {
+    reach(next)
+    setStep(next)
+  }
+  const goNext = () => goTo(Math.min(step + 1, STUDIO_SESSION_LAST_STEP) as StudioStep)
+  const cancel = () => {
+    reset({ bundleId: versionStyleId, mockupId: versionSceneId })
+    setStep(STUDIO_SESSION_LAST_STEP)
+  }
+
+  const goBack = () => (step === STUDIO_SESSION_STYLE_STEP ? cancel() : setStep((step - 1) as StudioStep))
 
   const canContinue =
     step === STUDIO_SESSION_STYLE_STEP
@@ -98,7 +104,11 @@ export const useStudioRegenerate = ({ activeVersion, onRegenerated }: StudioRege
     goTo,
     goNext,
     goBack,
-    openRegenerate: () => setStep(STUDIO_SESSION_STYLE_STEP),
+    cancel,
+    openRegenerate: () => {
+      reach(STUDIO_SESSION_STYLE_STEP)
+      setStep(STUDIO_SESSION_STYLE_STEP)
+    },
     selectStyle: (id: string) => setValue('bundleId', id, { shouldDirty: true, shouldValidate: true }),
     selectScene: (id: string) => setValue('mockupId', id, { shouldDirty: true, shouldValidate: true })
   }

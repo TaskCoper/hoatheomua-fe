@@ -1,5 +1,6 @@
 'use client'
 
+import { Skeleton } from '@/components/ui/skeleton'
 import StudioImage from '@/features/studio/components/studio-image'
 import type { StudioScene } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
@@ -18,21 +19,36 @@ const TILE_RATIOS = [
 ] as const
 
 const EAGER_TILE_COUNT = 6
+const SKELETON_TILE_COUNT = 6
 
 interface StudioMockupGridProps {
   mockups: StudioScene[]
   selectedId: string
+  loading?: boolean
   onSelect: (id: string) => void
   onExpand: (id: string) => void
 }
 
-export default function StudioMockupGrid({ mockups, selectedId, onSelect, onExpand }: StudioMockupGridProps) {
+export default function StudioMockupGrid({
+  mockups,
+  selectedId,
+  loading = false,
+  onSelect,
+  onExpand
+}: StudioMockupGridProps) {
   const t = useTranslations('studio.scene')
 
   return (
     <div className='mt-6' role='group' aria-label={t('scenesAriaLabel')}>
-      {/* Don't cap this height - a multicol block fragments sideways instead of growing down. */}
       <div className='columns-2 gap-3 xl:columns-3'>
+        {loading
+          ? Array.from({ length: SKELETON_TILE_COUNT }).map((_, index) => (
+              <Skeleton
+                key={index}
+                className={cn('mb-3 w-full break-inside-avoid rounded-2xl', TILE_RATIOS[index % TILE_RATIOS.length])}
+              />
+            ))
+          : null}
         {mockups.map((item, index) => {
           const selected = item.id === selectedId
 

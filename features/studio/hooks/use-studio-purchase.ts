@@ -16,34 +16,21 @@ import { toast } from 'sonner'
 const NO_OPTIONS = {}
 
 interface UseStudioPurchaseArgs {
-  /** The catalogue product the design was built on - what stock and the order price against. */
   productId: string
   productName: string
-  /** What the buyer named the design - the bag confirmation says this back to them. */
   designName: string
-  /** The family the studio was opened from, so the cart can link back to this sitting. */
   rootProductId: string
   sessionId: string
-  /** The generated version on screen. Empty until a design finishes. */
   flowerId: string
-  /** The studio's own quote: product, extra stems, and the two trims below. */
   unitPrice: number
-  /** The ribbon and wrapping paper the design was generated with - they go in the bag with it. */
   ribbon?: StudioTrim | null
   wrap?: StudioTrim | null
-  /** True while `unitPrice` is still missing a piece - the line must not snapshot it yet. */
   isPriceResolving?: boolean
 }
 
 const toCartTrim = (trim: StudioTrim | null | undefined): CartAiFlowerTrim | null =>
   trim ? { productId: trim.id, name: trim.name, imageUrl: trim.imageUrl, priceAmount: trim.priceAmount ?? 0 } : null
 
-/**
- * Add to bag / buy now for a bouquet designed in the studio. It is the product purchase
- * box's counterpart: the same stock re-check and checkout hand-off, but the line it
- * writes carries the generated flower so the cart, the studio link and the order all
- * know this is a design rather than a catalogue row.
- */
 export const useStudioPurchase = ({
   productId,
   productName,
@@ -59,8 +46,10 @@ export const useStudioPurchase = ({
   const { t } = useTranslation()
   const router = useRouter()
 
+  const isReady = Boolean(productId && flowerId)
+
   const { isGettingMe, me } = useGetMe()
-  const { hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
+  const { hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber({ enabled: isReady })
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
 
   const addItem = useCartStore((state) => state.addItem)
@@ -86,14 +75,11 @@ export const useStudioPurchase = ({
   const lineId = useMemo(() => buildLineId(productId, null, NO_OPTIONS, flowerId), [productId, flowerId])
   const inCartQuantity = useCartStore((state) => state.items.find((item) => item.lineId === lineId)?.quantity ?? 0)
 
-  const isReady = Boolean(productId && flowerId)
-  const isBusy = isGettingMe || isVerifyingSellableQuantity || isPriceResolving
+  const isBusy = isGettingMe || isVerifyingSellableQuantity || isPriceResolving || isLoadingPhoneNumber
   const isPhoneMissing = !isLoadingPhoneNumber && !hasPhoneNumber
 
   const resetAdded = useCallback(() => setAdded(false), [])
 
-  // A studio route is already behind the auth gate, so the only account state left to
-  // check is the one ordering actually needs.
   const guardPurchase = () => {
     if (!isReady || isGettingMe) return false
 
@@ -109,7 +95,6 @@ export const useStudioPurchase = ({
   const addToBag = async () => {
     if (!guardPurchase()) return
 
-    // What the bag already holds of this design counts against the same stock.
     const { ok } = await verifySellableQuantity([{ productId, productName, quantity: inCartQuantity + 1 }])
     if (!ok) return
 
@@ -132,7 +117,6 @@ export const useStudioPurchase = ({
       return
     }
 
-    // Buy now checks out on its own, so only this one bouquet is at stake.
     const { ok } = await verifySellableQuantity([{ productId, productName, quantity: 1 }])
     if (!ok) return
 

@@ -30,7 +30,6 @@ export default function OrderItemsSection({ items, canDesignCards }: OrderItemsS
   }, [items, cards])
 
   const openByDefault = useMemo(() => Array.from(cardsByItem.keys()), [cardsByItem])
-  const hasCards = cardsByItem.size > 0
 
   if (items.length === 0) return null
 
@@ -49,10 +48,9 @@ export default function OrderItemsSection({ items, canDesignCards }: OrderItemsS
             return (
               <div
                 key={item.orderDetailsId}
-                className='flex items-center gap-2 border-b border-foreground/10 py-3 last:border-b-0 sm:py-4'
+                className='flex items-center border-b border-foreground/10 px-1 py-3 last:border-b-0 sm:py-4'
               >
                 {line}
-                {hasCards ? <span aria-hidden='true' className={TOGGLE_SLOT} /> : null}
               </div>
             )
           }

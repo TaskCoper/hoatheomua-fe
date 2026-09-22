@@ -1743,7 +1743,9 @@
       "stepAriaLabel": "Step {step}: {label}",
       "saved": "Saved",
       "save": "Save",
-      "exitAriaLabel": "Exit Flower Studio"
+      "exitAriaLabel": "Exit Flower Studio",
+      "cartAriaLabel": "Your cart",
+      "historyAriaLabel": "Your AI creations"
     },
     "steps": {
       "ingredients": "Ingredients",
@@ -1913,7 +1915,7 @@
       "note": "A regenerate keeps the bouquet exactly as it is. Only the style and the scene are yours to change.",
       "chooseStyleTitle": "Choose a new style",
       "chooseStyleNote": "The bouquet stays exactly as it is — only how it's shaped in hand changes.",
-      "cta": "Regenerate this creation",
+      "cta": "Click to Regenerate this creation",
       "ctaNote": "Pick a new style or scene and then choose your favorite version.",
       "lockedTitle": "Fixed for this session",
       "lockedNote": "These were set when the design was first generated, and a regenerate cannot change them.",
@@ -1938,7 +1940,8 @@
       "addedToBag": "Added to Bag",
       "addToBag": "Add to Bag",
       "buyNow": "Buy Now",
-      "backToCompose": "Back to bouquet"
+      "backToCompose": "Back to bouquet",
+      "cancel": "Cancel"
     },
     "sceneDialog": {
       "closeAriaLabel": "Close scene view",

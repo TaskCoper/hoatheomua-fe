@@ -11,13 +11,8 @@ export const studioPriceFormatter = new Intl.NumberFormat('vi-VN', {
 
 export const formatStudioPrice = (amount: number) => studioPriceFormatter.format(Math.round(amount))
 
-/** Which generated version a studio session opens on - see `StudioVersionQuerySync`. */
 export const STUDIO_VERSION_QUERY_KEY = 'version'
 
-/**
- * Where a finished design lives. A cart line points at the exact version it was bought
- * from, not simply the newest one the sitting went on to produce.
- */
 export const buildStudioSessionHref = (rootProductId: string, sessionId: string, flowerId?: string | null) => {
   const base = `/products/${rootProductId}/studio`
   if (!sessionId) return base
@@ -61,13 +56,15 @@ export const STUDIO_STEP_KEYS = [
   { step: 5, key: 'result' }
 ] as const
 
+export const studioSummaryLabelClass = 'text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground'
+export const studioSummaryAmountClass = 'font-title text-2xl font-bold leading-none text-primary'
+export const studioSummaryRuleClass = 'mt-5 border-t border-dashed border-secondary pt-4'
+
+export const STUDIO_COMPOSE_STEP: StudioStep = 2
+export const STUDIO_SCENE_STEP: StudioStep = 3
 export const STUDIO_REVIEW_STEP: StudioStep = 4
 export const STUDIO_LAST_STEP: StudioStep = 5
 
-/**
- * A session that already has a result only reopens what a regenerate can change, so its rail
- * is three stops instead of five - the flowers and the finishing are fixed by then.
- */
 export const STUDIO_SESSION_STEP_KEYS = [
   { step: 1, key: 'style' },
   { step: 2, key: 'mockup' },

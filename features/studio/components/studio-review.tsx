@@ -2,36 +2,30 @@
 
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { formatStudioPrice, formatStudioQuantity } from '@/features/studio/studio-data'
-import type { StudioBouquet, StudioScene, StudioTrim } from '@/features/studio/types'
+import StudioSummaryChoices, {
+  toStudioSummaryOptions,
+  toStudioSummaryProducts,
+  toStudioSummaryTrims
+} from '@/features/studio/components/studio-summary-choices'
+import {
+  formatStudioPrice,
+  formatStudioQuantity,
+  studioSummaryAmountClass,
+  studioSummaryLabelClass,
+  studioSummaryRuleClass
+} from '@/features/studio/studio-data'
+import type { StudioBouquet, StudioScene } from '@/features/studio/types'
 import { cn } from '@/shared/utils'
 import { Add01Icon, MinusSignIcon, SparklesIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
-import type { ReactNode } from 'react'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
-const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
-const detailTermClass = 'text-xs font-semibold text-primary'
 const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
-const panelClass = 'rounded-3xl bg-card/40 p-6'
+const panelClass = 'rounded-3xl bg-secondary/20 p-5 sm:p-6'
 const headingClass = 'text-pretty font-title text-lg font-bold leading-snug text-primary'
-// Matches the stepper on step 2 so stems adjust the same way wherever they are listed.
 const quantityButtonClass =
   'flex size-8 cursor-pointer items-center justify-center rounded-full bg-secondary/60 text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
-
-/** The trim's name with what it adds to the bouquet - a price of its own, not a surcharge. */
-const formatTrim = (trim: StudioTrim | undefined): string | undefined =>
-  trim && trim.priceAmount ? `${trim.name} · ${formatStudioPrice(trim.priceAmount)}` : trim?.name
-
-function DetailRow({ term, valueClass, children }: { term: string; valueClass?: string; children: ReactNode }) {
-  return (
-    <div className={detailRowClass}>
-      <dt className={detailTermClass}>{term}</dt>
-      <dd className={cn(detailValueClass, valueClass)}>{children}</dd>
-    </div>
-  )
-}
 
 interface StudioReviewProps {
   mockup?: StudioScene
@@ -68,7 +62,6 @@ export default function StudioReview({
         <div className='mt-8 flex flex-col gap-8'>
           {bouquet.ingredients.map(({ ingredient, quantity, extraQuantity }, index) => {
             const name = ingredient.name
-            // Only materials the catalogue prices carry an extra-stem line.
             const extraNote =
               ingredient.extraPriceAmount === null
                 ? extraQuantity > 0
@@ -103,7 +96,6 @@ export default function StudioReview({
                     {extraNote ? <p className={detailValueClass}>{extraNote}</p> : null}
                   </div>
 
-                  {/* Extra stems can be taken back out, but the design's own base stems stay. */}
                   <div className='flex shrink-0 items-center gap-2.5'>
                     <button
                       type='button'
@@ -133,17 +125,23 @@ export default function StudioReview({
         </div>
 
         <div className={cn('mt-8', panelClass)}>
-          <dl className='flex flex-col divide-y divide-border'>
-            <DetailRow term={tCompose('style.label')}>{bouquet.style?.name}</DetailRow>
-            <DetailRow term={tCompose('ribbon.label')}>{formatTrim(bouquet.ribbon)}</DetailRow>
-            <DetailRow term={tCompose('wrap.label')}>{formatTrim(bouquet.wrap)}</DetailRow>
-            <DetailRow
-              term={tCompose('summary.total')}
-              valueClass='font-title text-lg font-bold leading-none text-primary'
-            >
-              {formatStudioPrice(bouquet.totalAmount)}
-            </DetailRow>
-          </dl>
+          <p className={studioSummaryLabelClass}>{tCompose('summary.label')}</p>
+          <p className='mt-1.5 text-xs leading-relaxed text-muted-foreground'>{tCompose('summary.note')}</p>
+
+          <StudioSummaryChoices
+            className='mt-5'
+            choices={[
+              { label: t('review.yourFlowers'), items: toStudioSummaryProducts(bouquet.products) },
+              { label: tCompose('style.label'), items: toStudioSummaryOptions(bouquet.style) },
+              { label: tCompose('ribbon.label'), items: toStudioSummaryTrims(bouquet.ribbon) },
+              { label: tCompose('wrap.label'), items: toStudioSummaryTrims(bouquet.wrap) }
+            ]}
+          />
+
+          <div className={cn(studioSummaryRuleClass, 'flex items-end justify-between gap-4')}>
+            <p className={studioSummaryLabelClass}>{tCompose('summary.total')}</p>
+            <p className={studioSummaryAmountClass}>{formatStudioPrice(bouquet.totalAmount)}</p>
+          </div>
         </div>
       </section>
 
@@ -151,7 +149,6 @@ export default function StudioReview({
         <section className='mt-14'>
           <StudioStepHeading title={t('review.sceneTitle')} description={t('review.sceneNote')} />
 
-          {/* Just the scene itself - the story and mood notes live in the scene dialog on step 3. */}
           <figure className='mt-6'>
             <div className='relative aspect-[4/5] overflow-hidden rounded-3xl bg-secondary/40 ring-1 ring-foreground/5 sm:aspect-[4/3]'>
               <StudioImage

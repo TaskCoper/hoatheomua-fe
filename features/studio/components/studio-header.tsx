@@ -3,10 +3,12 @@
 import { Button } from '@/components/ui/button'
 import { STUDIO_STEP_KEYS, type StudioStepKey } from '@/features/studio/studio-data'
 import type { StudioStep } from '@/features/studio/types'
+import { ACCOUNT_FALLBACK_HREF } from '@/features/users/account-navigation'
+import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { Link } from '@/lib/i18n/navigation'
 import logo from '@/public/images/logo.png'
 import { cn } from '@/shared/utils'
-import { Cancel01Icon, Tick02Icon } from '@hugeicons/core-free-icons'
+import { AiMagicIcon, Cancel01Icon, ShoppingBasket03Icon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
@@ -21,6 +23,8 @@ interface StudioHeaderProps {
 export default function StudioHeader({ step, maxStep, onStep, steps = STUDIO_STEP_KEYS }: StudioHeaderProps) {
   const t = useTranslations('studio.header')
   const tSteps = useTranslations('studio.steps')
+
+  const historyHref = useAccountHref('studio')
 
   return (
     <header className='relative z-40 flex h-18 shrink-0 items-center border-b border-secondary/40 bg-background/85 px-2 backdrop-blur-md sm:px-4 lg:h-20 lg:px-6'>
@@ -85,9 +89,25 @@ export default function StudioHeader({ step, maxStep, onStep, steps = STUDIO_STE
         </ol>
       </nav>
 
-      <div className='flex flex-1 items-center justify-end gap-1'>
+      <div className='flex flex-1 items-center justify-end gap-0.5 sm:gap-1'>
         <Button asChild variant='ghost' size='icon-lg' className='text-primary'>
-          <Link href='/products' aria-label={t('exitAriaLabel')}>
+          <Link href='/cart' aria-label={t('cartAriaLabel')} title={t('cartAriaLabel')}>
+            <HugeiconsIcon icon={ShoppingBasket03Icon} strokeWidth={2} />
+          </Link>
+        </Button>
+
+        {historyHref === ACCOUNT_FALLBACK_HREF ? null : (
+          <Button asChild variant='ghost' size='icon-lg' className='text-primary'>
+            <Link href={historyHref} aria-label={t('historyAriaLabel')} title={t('historyAriaLabel')}>
+              <HugeiconsIcon icon={AiMagicIcon} strokeWidth={2} />
+            </Link>
+          </Button>
+        )}
+
+        <span aria-hidden='true' className='mx-1 h-6 w-px bg-border' />
+
+        <Button asChild variant='ghost' size='icon-lg' className='text-primary'>
+          <Link href='/products' aria-label={t('exitAriaLabel')} title={t('exitAriaLabel')}>
             <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
           </Link>
         </Button>

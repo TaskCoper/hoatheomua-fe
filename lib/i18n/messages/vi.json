@@ -1743,7 +1743,9 @@
       "stepAriaLabel": "Bước {step}: {label}",
       "saved": "Đã lưu",
       "save": "Lưu",
-      "exitAriaLabel": "Thoát Flower Studio"
+      "exitAriaLabel": "Thoát Flower Studio",
+      "cartAriaLabel": "Giỏ hàng của bạn",
+      "historyAriaLabel": "Thiết kế AI của bạn"
     },
     "steps": {
       "ingredients": "Nguyên liệu",
@@ -1913,7 +1915,7 @@
       "note": "Khi tạo lại, bó hoa được giữ nguyên. Bạn chỉ có thể đổi kiểu dáng và bối cảnh.",
       "chooseStyleTitle": "Chọn kiểu dáng mới",
       "chooseStyleNote": "Bó hoa được giữ nguyên, bạn chỉ đổi cách người cắm tạo dáng trên tay.",
-      "cta": "Tạo lại tác phẩm này",
+      "cta": "Nhấn để Tạo lại tác phẩm này",
       "ctaNote": "Chọn kiểu dáng hoặc bối cảnh mới sau đó lựa chọn phiên bản bạn ưng ý nhất.",
       "lockedTitle": "Cố định trong phiên này",
       "lockedNote": "Những lựa chọn này được đặt khi thiết kế được tạo lần đầu và không thể thay đổi khi tạo lại.",
@@ -1938,7 +1940,8 @@
       "addedToBag": "Đã thêm vào giỏ",
       "addToBag": "Thêm vào giỏ",
       "buyNow": "Mua ngay",
-      "backToCompose": "Quay lại bó hoa"
+      "backToCompose": "Quay lại bó hoa",
+      "cancel": "Huỷ"
     },
     "sceneDialog": {
       "closeAriaLabel": "Đóng xem bối cảnh",

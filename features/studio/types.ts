@@ -148,7 +148,13 @@ export interface AiFlowerMetadata {
   materials: AiFlowerMaterial[]
 }
 
-export interface AiFlower {
+export interface GeneratedFlowerImageStages {
+  flowerImageUrl: string | null
+  flowerWithMockupImageUrl: string | null
+  flowerWithLogoImageUrl: string | null
+}
+
+export interface AiFlower extends GeneratedFlowerImageStages {
   id: string
   sessionId: string
   name: string
@@ -163,7 +169,7 @@ export interface GeneratedFlowerRef {
   imageUrl: string | null
 }
 
-export interface GeneratedFlower {
+export interface GeneratedFlower extends GeneratedFlowerImageStages {
   id: string
   historyId: string
   operation: string
@@ -194,7 +200,7 @@ export interface GetGeneratedFlowersParams {
   pageSize?: number
 }
 
-export interface MockupGeneratedFlower {
+export interface MockupGeneratedFlower extends GeneratedFlowerImageStages {
   id: string
   name: string
   imageUrl: string

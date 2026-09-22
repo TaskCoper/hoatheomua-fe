@@ -6,12 +6,15 @@ import { useCreateAiFlower } from '@/features/studio/hooks/use-create-ai-flower'
 import { useStudioPurchase } from '@/features/studio/hooks/use-studio-purchase'
 import {
   roundStudioQuantity,
+  STUDIO_COMPOSE_STEP,
   STUDIO_LAST_STEP,
   STUDIO_RIBBON_LABELS,
+  STUDIO_SCENE_STEP,
   STUDIO_WRAP_LABELS
 } from '@/features/studio/studio-data'
 import {
   getStudioTrimsAmount,
+  pickGeneratedFlowerImageUrl,
   toStudioAiFlowerOption,
   toStudioIngredients,
   toStudioProduct,
@@ -52,40 +55,6 @@ export function useStudioDesigner(family: ProductFamily) {
     [defaultDetail]
   )
 
-  const {
-    referenceFlowers: bundles,
-    isGettingReferenceFlowers: isGettingBundles,
-    isGettingMoreReferenceFlowers: isGettingMoreBundles,
-    hasMoreReferenceFlowers: hasMoreBundles,
-    loadMoreReferenceFlowers: loadMoreBundles
-  } = useGetInfiniteReferenceFlowers({ type: 'bundle' })
-  const {
-    referenceFlowers: sceneFlowers,
-    isGettingReferenceFlowers: isGettingScenes,
-    isGettingMoreReferenceFlowers: isGettingMoreScenes,
-    hasMoreReferenceFlowers: hasMoreScenes,
-    loadMoreReferenceFlowers: loadMoreScenes
-  } = useGetInfiniteReferenceFlowers({ type: 'flower' })
-  const {
-    products: ribbonProducts,
-    isGettingProducts: isGettingRibbons,
-    isGettingMoreProducts: isGettingMoreRibbons,
-    hasMoreProducts: hasMoreRibbons,
-    loadMoreProducts: loadMoreRibbons
-  } = useGetInfiniteProducts({ labels: STUDIO_RIBBON_LABELS })
-  const {
-    products: wrapProducts,
-    isGettingProducts: isGettingWraps,
-    isGettingMoreProducts: isGettingMoreWraps,
-    hasMoreProducts: hasMoreWraps,
-    loadMoreProducts: loadMoreWraps
-  } = useGetInfiniteProducts({ labels: STUDIO_WRAP_LABELS })
-
-  const styleOptions = useMemo(() => toStudioReferenceOptions(bundles), [bundles])
-  const sceneOptions = useMemo(() => toStudioReferenceOptions(sceneFlowers), [sceneFlowers])
-  const ribbonOptions = useMemo(() => toStudioProductOptions(ribbonProducts), [ribbonProducts])
-  const wrapOptions = useMemo(() => toStudioProductOptions(wrapProducts), [wrapProducts])
-
   const [step, setStep] = useState<StudioStep>(1)
   const [maxStep, setMaxStep] = useState<StudioStep>(1)
   const [generated, setGenerated] = useState(false)
@@ -94,13 +63,48 @@ export function useStudioDesigner(family: ProductFamily) {
   const [versions, setVersions] = useState<StudioVersion[]>([])
   const [activeVersionId, setActiveVersionId] = useState('')
 
+  const needsComposeOptions = maxStep >= STUDIO_COMPOSE_STEP
+  const needsSceneOptions = maxStep >= STUDIO_SCENE_STEP
+
+  const {
+    referenceFlowers: bundles,
+    isGettingReferenceFlowers: isGettingBundles,
+    isGettingMoreReferenceFlowers: isGettingMoreBundles,
+    hasMoreReferenceFlowers: hasMoreBundles,
+    loadMoreReferenceFlowers: loadMoreBundles
+  } = useGetInfiniteReferenceFlowers({ type: 'bundle', enabled: needsComposeOptions })
+  const {
+    referenceFlowers: sceneFlowers,
+    isGettingReferenceFlowers: isGettingScenes,
+    isGettingMoreReferenceFlowers: isGettingMoreScenes,
+    hasMoreReferenceFlowers: hasMoreScenes,
+    loadMoreReferenceFlowers: loadMoreScenes
+  } = useGetInfiniteReferenceFlowers({ type: 'flower', enabled: needsSceneOptions })
+  const {
+    products: ribbonProducts,
+    isGettingProducts: isGettingRibbons,
+    isGettingMoreProducts: isGettingMoreRibbons,
+    hasMoreProducts: hasMoreRibbons,
+    loadMoreProducts: loadMoreRibbons
+  } = useGetInfiniteProducts({ labels: STUDIO_RIBBON_LABELS, enabled: needsComposeOptions })
+  const {
+    products: wrapProducts,
+    isGettingProducts: isGettingWraps,
+    isGettingMoreProducts: isGettingMoreWraps,
+    hasMoreProducts: hasMoreWraps,
+    loadMoreProducts: loadMoreWraps
+  } = useGetInfiniteProducts({ labels: STUDIO_WRAP_LABELS, enabled: needsComposeOptions })
+
+  const styleOptions = useMemo(() => toStudioReferenceOptions(bundles), [bundles])
+  const sceneOptions = useMemo(() => toStudioReferenceOptions(sceneFlowers), [sceneFlowers])
+  const ribbonOptions = useMemo(() => toStudioProductOptions(ribbonProducts), [ribbonProducts])
+  const wrapOptions = useMemo(() => toStudioProductOptions(wrapProducts), [wrapProducts])
+
   const versionCount = useRef(0)
 
   const onCreated = (flower: AiFlower, body: CreateAiFlowerPayload) => {
     const scene = sceneOptions.find((item) => item.id === body.mockupId)
     const variantImage = variants.find((item) => item.id === body.productId)?.coverImage
-    // The design comes back with the trims it was generated with, but not with their price -
-    // that is on the catalogue rows they were picked from.
     const ribbonPrice = ribbonOptions.find((item) => item.id === body.ribbonProductId)?.priceAmount ?? null
     const wrapPrice = wrapOptions.find((item) => item.id === body.wrappingPaperProductId)?.priceAmount ?? null
     versionCount.current += 1
@@ -112,7 +116,7 @@ export function useStudioDesigner(family: ProductFamily) {
       productId: body.productId,
       mockupId: body.mockupId,
       mockupName: scene?.name ?? '',
-      imageUrl: flower.imageUrl ?? scene?.imageUrl ?? variantImage ?? detail.coverImage,
+      imageUrl: pickGeneratedFlowerImageUrl(flower) ?? scene?.imageUrl ?? variantImage ?? detail.coverImage,
       createdAt: flower.createdAt,
       materials: toStudioVersionMaterials(flower.metadata),
       style: styleOptions.find((item) => item.id === body.bundleId) ?? null,
@@ -127,8 +131,6 @@ export function useStudioDesigner(family: ProductFamily) {
     setStep(STUDIO_LAST_STEP)
     setMaxStep(STUDIO_LAST_STEP)
 
-    // The session screen owns the result from here: it lists every version the sitting
-    // produced, not just the ones this mount happens to hold.
     if (flower.sessionId) router.push(`/products/${detail.id}/studio/${flower.sessionId}`)
   }
 
@@ -191,8 +193,6 @@ export function useStudioDesigner(family: ProductFamily) {
       wrap,
       products: [product],
       ingredients,
-      // The bouquet is generated with its ribbon and wrapping paper, so the quote carries
-      // them the same way it carries the extra stems.
       totalAmount: ingredients.reduce(
         (total, item) => total + item.extraQuantity * (item.ingredient.extraPriceAmount ?? 0),
         product.priceAmount + getStudioTrimsAmount(ribbon, wrap)
@@ -221,7 +221,6 @@ export function useStudioDesigner(family: ProductFamily) {
       sessionId,
       flowerId: activeVersionId,
       unitPrice: bouquet.totalAmount,
-      // Generated with the design, so they go into the bag with it.
       ribbon: activeVersion?.ribbon ?? bouquet.ribbon ?? null,
       wrap: activeVersion?.wrap ?? bouquet.wrap ?? null
     })

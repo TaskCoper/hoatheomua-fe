@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Skeleton } from '@/components/ui/skeleton'
 import StudioImage from '@/features/studio/components/studio-image'
 import { useGetMockupGeneratedFlowers } from '@/features/studio/hooks/use-get-mockup-generated-flowers'
+import { pickGeneratedFlowerImageUrl } from '@/features/studio/studio-mappers'
 import type { MockupGeneratedFlower, StudioProduct, StudioScene } from '@/features/studio/types'
 import { useLoadMoreOnView } from '@/hooks/use-load-more-on-view'
 import { useDateFormat } from '@/lib/date'
@@ -40,7 +41,6 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
   const t = useTranslations('studio.sceneDialog')
   const tStep = useTranslations('studio.scene')
 
-  // Story, mood and studies only exist on the seeded scenes - API scenes just carry a name and a brief.
   const moods = mockup.moods ?? []
   const examples = mockup.examples ?? []
 
@@ -49,7 +49,6 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
   const isLightboxOpen = lightboxIndex >= 0 || isSceneLightboxOpen
 
   const closeDialog = (next: boolean) => {
-    // A lightbox lives in its own portal, so either would outlive a dialog closed underneath it.
     if (!next) {
       setLightboxIndex(-1)
       setIsSceneLightboxOpen(false)
@@ -210,7 +209,6 @@ export default function StudioSceneDialog({ mockup, product, designName, open, o
           </p>
         </div>
 
-        {/* One scene, so no strip to walk along - just the picture, as large as it goes. */}
         <Lightbox
           open={isSceneLightboxOpen}
           close={() => setIsSceneLightboxOpen(false)}
@@ -267,7 +265,7 @@ function MockupGallery({
   const slides = useMemo(
     () =>
       flowers.map((flower) => ({
-        src: flower.imageUrl,
+        src: pickGeneratedFlowerImageUrl(flower),
         alt: flower.name?.trim() || tGallery('untitled'),
         title: flower.name?.trim() || tGallery('untitled'),
         description: flower.createdAt ? formatDate(flower.createdAt, 'dateMedium') : undefined
@@ -275,7 +273,6 @@ function MockupGallery({
     [flowers, formatDate, tGallery]
   )
 
-  // Nothing to show and nothing to wait for: the section stays out of the way entirely.
   if (!isGettingMockupFlowers && !isMockupFlowersError && flowers.length === 0) return null
 
   return (
@@ -316,7 +313,6 @@ function MockupGallery({
               : null}
           </ul>
 
-          {/* Infinite scroll - the skeletons above stand in while the next page is on its way. */}
           {hasMoreMockupFlowers ? <div ref={sentinelRef} className='h-1' /> : null}
         </>
       )}
@@ -355,7 +351,7 @@ function GalleryTile({
       className='group relative block aspect-square w-full cursor-zoom-in overflow-hidden rounded-2xl bg-secondary/40 ring-1 ring-foreground/5 transition-shadow duration-300 hover:shadow-[0_0.8rem_2rem_rgb(81_108_108/18%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
     >
       <StudioImage
-        src={flower.imageUrl}
+        src={pickGeneratedFlowerImageUrl(flower)}
         alt={tGallery('imageAlt', { name, scene: sceneName })}
         fill
         sizes='(min-width: 1024px) 8rem, 30vw'

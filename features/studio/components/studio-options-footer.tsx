@@ -23,7 +23,7 @@ export default function StudioOptionsFooter({
 
   const sentinelRef = useLoadMoreOnView({ enabled: hasMore && !loading && !loadingMore, onLoadMore })
 
-  if (loading) return <Spinner className='size-4 text-muted-foreground' />
+  if (loading) return null
   if (count === 0) return <p className='text-[0.625rem] font-medium text-muted-foreground'>{t('empty')}</p>
   if (!hasMore) return null
 

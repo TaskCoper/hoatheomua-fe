@@ -11,6 +11,7 @@ import type {
   AiFlowerProductRef,
   CreateAiFlowerPayload,
   GeneratedFlower,
+  GeneratedFlowerImageStages,
   GeneratedFlowerRef,
   GeneratedFlowerSession,
   StudioBouquet,
@@ -66,7 +67,6 @@ const toStudioOption = (
   return trimmed ? [{ id, name: trimmed, description: description?.trim() || null, imageUrl }] : []
 }
 
-/** The ribbon and wrapping paper lists - catalogue products, so each option keeps its price. */
 export const toStudioProductOptions = (products: ProductDetail[] | null | undefined): StudioTrim[] =>
   (products ?? []).flatMap((product) =>
     toStudioOption(product.id, product.productName, product.description, product.coverImage).map((option) => ({
@@ -97,10 +97,6 @@ export const toCreateAiFlowerPayload = (values: StudioFormValues): CreateAiFlowe
   wrappingPaperProductId: values.wrapId
 })
 
-/**
- * The ribbon or wrapping paper a generated design came back with. The metadata copy prices
- * nothing, so the amount is passed in from the catalogue row the option was picked from.
- */
 export const toStudioAiFlowerOption = (
   product: AiFlowerProductRef | null,
   priceAmount: number | null = null
@@ -120,11 +116,6 @@ export const toStudioAiFlowerOption = (
   }
 }
 
-/**
- * `metadata.materials` is the recipe the product starts from and `metadata.AdditionCustome`
- * what the customer added on top, so what actually goes in the bouquet is the two summed.
- * They stay separate fields here so the screens can show the total without hiding the split.
- */
 export const toStudioVersionMaterials = (metadata: AiFlowerMetadata | null | undefined): StudioVersionMaterial[] => {
   const base = metadata?.materials ?? []
   const additions = metadata?.AdditionCustome ?? []
@@ -143,12 +134,16 @@ export const toStudioVersionMaterials = (metadata: AiFlowerMetadata | null | und
 
   return [
     ...base.map((material) => toMaterial(material, Math.max(0, material.quantity), extras.get(material.matId) ?? 0)),
-    // A material the base recipe never carried is all addition, and still part of the bouquet.
     ...additions
       .filter((addition) => !base.some((material) => material.matId === addition.matId))
       .map((addition) => toMaterial(addition, 0, Math.max(0, addition.quantity)))
   ]
 }
+
+export const pickGeneratedFlowerImageUrl = <TImageUrl extends string | null>(
+  flower: GeneratedFlowerImageStages & { imageUrl: TImageUrl }
+): string | TImageUrl =>
+  flower.flowerWithLogoImageUrl ?? flower.flowerWithMockupImageUrl ?? flower.flowerImageUrl ?? flower.imageUrl
 
 const toGeneratedFlowerOption = (ref: GeneratedFlowerRef | null | undefined): StudioOption | null => {
   const name = ref?.name?.trim()
@@ -156,7 +151,6 @@ const toGeneratedFlowerOption = (ref: GeneratedFlowerRef | null | undefined): St
   return ref && name ? { id: ref.id, name, description: null, imageUrl: ref.imageUrl } : null
 }
 
-/** The flat reference as a trim; like `toStudioAiFlowerOption`, it is priced from the catalogue. */
 const toGeneratedFlowerTrim = (
   ref: GeneratedFlowerRef | null | undefined,
   priceAmount: number | null = null
@@ -179,12 +173,10 @@ export const toStudioSessionVersions = (flowers: GeneratedFlower[] | null | unde
       productId: flower.productId,
       mockupId: flower.mockup?.id ?? '',
       mockupName: flower.mockup?.name?.trim() ?? '',
-      imageUrl: flower.imageUrl,
+      imageUrl: pickGeneratedFlowerImageUrl(flower),
       createdAt: flower.createdAt,
       materials: toStudioVersionMaterials(flower.metadata),
       style: toGeneratedFlowerOption(flower.bundle),
-      // The metadata copy carries the size / colour traits, so it wins over the flat reference.
-      // Neither prices the trim: `toStudioSessionBouquet` fills that in from the catalogue.
       ribbon: toStudioAiFlowerOption(flower.metadata?.ribbon ?? null) ?? toGeneratedFlowerTrim(flower.ribbon),
       wrap:
         toStudioAiFlowerOption(flower.metadata?.wrappingPaper ?? null) ?? toGeneratedFlowerTrim(flower.wrappingPaper)
@@ -198,7 +190,11 @@ export const toStudioGenerationSessions = (
     const latest = flowers[flowers.length - 1]
     if (!latest) return []
 
-    const cover = [...flowers].reverse().find((flower) => flower.imageUrl) ?? latest
+    const coverImageUrl =
+      [...flowers]
+        .reverse()
+        .map((flower) => pickGeneratedFlowerImageUrl(flower))
+        .find(Boolean) ?? null
 
     return [
       {
@@ -207,7 +203,7 @@ export const toStudioGenerationSessions = (
         name: latest.name?.trim() || latest.product?.name?.trim() || '',
         mockupId: latest.mockup?.id ?? '',
         mockupName: latest.mockup?.name?.trim() ?? '',
-        imageUrl: cover.imageUrl,
+        imageUrl: coverImageUrl,
         createdAt: session.latestCreatedAt || latest.createdAt,
         versionCount: flowers.length,
         isFinished: flowers.length > STUDIO_SESSION_FINISHED_COUNT
@@ -215,7 +211,6 @@ export const toStudioGenerationSessions = (
     ]
   })
 
-/** What the ribbon and the wrapping paper add on top of the flowers. */
 export const getStudioTrimsAmount = (...trims: (StudioTrim | null | undefined)[]): number =>
   trims.reduce((total, trim) => total + (trim?.priceAmount ?? 0), 0)
 
@@ -236,7 +231,6 @@ export const toStudioSessionBouquet = ({
   version: StudioVersion | undefined
   product: StudioProduct
   ingredients: StudioIngredient[]
-  /** The catalogue prices of the ribbon and wrapping paper the version was generated with. */
   trimPriceByProductId?: ReadonlyMap<string, number | null>
 }): StudioBouquet => {
   const items = version?.materials.length
@@ -250,8 +244,6 @@ export const toStudioSessionBouquet = ({
           extraPriceAmount: null
         }
 
-        // The addition is what the customer paid extra for, so it comes from the design, not
-        // from the difference against whatever the catalogue lists today.
         return { ingredient, quantity: material.quantity, extraQuantity: material.extraQuantity }
       })
     : ingredients.map((ingredient) => ({ ingredient, quantity: ingredient.baseQuantity, extraQuantity: 0 }))
@@ -265,8 +257,6 @@ export const toStudioSessionBouquet = ({
     wrap,
     products: [product],
     ingredients: items,
-    // The design is generated with its ribbon and wrapping paper, so they are priced into
-    // the bouquet rather than sold beside it.
     totalAmount: items.reduce(
       (total, item) => total + item.extraQuantity * (item.ingredient.extraPriceAmount ?? 0),
       product.priceAmount + getStudioTrimsAmount(ribbon, wrap)

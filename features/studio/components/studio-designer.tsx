@@ -124,7 +124,6 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
           ref={formColumn}
           className='relative bg-background lg:order-1 lg:flex lg:h-[calc(100dvh-5rem)] lg:flex-col lg:overflow-y-auto lg:border-r lg:border-secondary/40'
         >
-          {/* `w-full` is load-bearing: as a flex item, `mx-auto` would otherwise shrink this to its content. */}
           <div className='mx-auto flex w-full max-w-4xl grow flex-col px-4 pb-28 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
             {step === 1 ? (
               <StudioIngredientsStep
@@ -177,6 +176,7 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
                   <StudioMockupGrid
                     mockups={sceneOptions}
                     selectedId={selectedMockupId}
+                    loading={isGettingSceneOptions}
                     onSelect={selectMockup}
                     onExpand={() => setSceneOpen(true)}
                   />
@@ -217,7 +217,6 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
             ) : null}
           </div>
 
-          {/* Pinned to the foot of the form column so a long step never has to be scrolled back up. */}
           {showDesktopNav ? (
             <div className='sticky bottom-0 z-10 hidden border-t border-secondary/40 bg-background/90 backdrop-blur-md lg:block'>
               <div className='mx-auto flex max-w-4xl items-center justify-end gap-3 px-4 py-4 sm:px-6 lg:px-8 xl:px-10'>

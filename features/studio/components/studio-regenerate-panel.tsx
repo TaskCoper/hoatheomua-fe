@@ -3,6 +3,7 @@
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioMockupGrid from '@/features/studio/components/studio-mockup-grid'
 import StudioOptionsFooter from '@/features/studio/components/studio-options-footer'
+import StudioOptionSkeletons from '@/features/studio/components/studio-skeletons'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
 import { STUDIO_SESSION_STYLE_STEP } from '@/features/studio/studio-data'
 import type { StudioOption, StudioScene, StudioStep } from '@/features/studio/types'
@@ -68,6 +69,9 @@ export default function StudioRegeneratePanel({
             aria-label={tCompose('style.label')}
             className='mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4'
           >
+            {isGettingStyleOptions ? (
+              <StudioOptionSkeletons count={4} className='aspect-[3/4] w-full rounded-2xl' />
+            ) : null}
             {styleOptions.map((style, index) => {
               const selected = style.id === selectedStyleId
 
@@ -145,6 +149,7 @@ export default function StudioRegeneratePanel({
             <StudioMockupGrid
               mockups={sceneOptions}
               selectedId={selectedSceneId}
+              loading={isGettingSceneOptions}
               onSelect={onSelectScene}
               onExpand={onExpandScene}
             />

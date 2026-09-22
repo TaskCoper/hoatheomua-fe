@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import userService from '../services'
 
-export const useGetUser = (slug: string | undefined) => {
+export const useGetUser = (slug: string | undefined, { enabled = true }: { enabled?: boolean } = {}) => {
   const {
     data: user,
     isPending,
@@ -9,7 +9,7 @@ export const useGetUser = (slug: string | undefined) => {
   } = useQuery({
     queryKey: ['users', slug],
     queryFn: () => userService.getUserBySlug(slug!),
-    enabled: !!slug,
+    enabled: enabled && !!slug,
     retry: false
   })
 

@@ -3,28 +3,34 @@
 import { Badge } from '@/components/ui/badge'
 import StudioImage from '@/features/studio/components/studio-image'
 import StudioStepHeading from '@/features/studio/components/studio-step-heading'
-import { formatStudioPrice, formatStudioQuantity, roundStudioQuantity } from '@/features/studio/studio-data'
+import StudioSummaryChoices, {
+  toStudioSummaryOptions,
+  toStudioSummaryProducts,
+  toStudioSummaryTrims
+} from '@/features/studio/components/studio-summary-choices'
+import {
+  formatStudioPrice,
+  formatStudioQuantity,
+  roundStudioQuantity,
+  studioSummaryAmountClass,
+  studioSummaryLabelClass,
+  studioSummaryRuleClass
+} from '@/features/studio/studio-data'
 import type {
   StudioBouquet,
   StudioGenerationStatus,
   StudioProduct,
   StudioScene,
-  StudioTrim,
   StudioVersion
 } from '@/features/studio/types'
 import { useDateFormat } from '@/lib/date'
 import { cn } from '@/shared/utils'
-import { ArrowRight02Icon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
+import { RepeatIcon, SparklesIcon, Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useTranslations } from 'next-intl'
 
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
-const detailRowClass = 'grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,8rem)_1fr] sm:gap-4'
-const detailTermClass = 'text-xs font-medium text-muted-foreground'
-const detailValueClass = 'text-sm font-medium leading-relaxed text-card-foreground'
-
-const formatTrim = (trim: StudioTrim | undefined | null): string | undefined =>
-  trim && trim.priceAmount ? `${trim.name} · ${formatStudioPrice(trim.priceAmount)}` : (trim?.name ?? undefined)
+const factValueClass = 'flex items-center gap-1.5 text-xs font-medium leading-snug text-card-foreground'
 
 interface StudioResultProps {
   product: StudioProduct
@@ -100,54 +106,43 @@ export default function StudioResult({
           description={complete ? t('result.readyBody') : t('result.pendingBody', { mockup: mockup?.name ?? '' })}
         />
 
-        <div className='mt-4 rounded-3xl bg-card/40 p-6'>
-          <dl className='flex flex-col divide-y divide-border'>
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('result.flowers')}</dt>
-              <dd className={detailValueClass}>{bouquet.products.map((item) => item.name).join(' + ')}</dd>
-            </div>
+        <div className='mt-4 rounded-2xl bg-secondary/20 p-4'>
+          <StudioSummaryChoices
+            choices={[
+              { label: t('result.flowers'), items: toStudioSummaryProducts(bouquet.products) },
+              { label: tCompose('style.label'), items: toStudioSummaryOptions(style) },
+              { label: tCompose('ribbon.label'), items: toStudioSummaryTrims(ribbon) },
+              { label: tCompose('wrap.label'), items: toStudioSummaryTrims(wrap) }
+            ]}
+          />
 
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{tCompose('style.label')}</dt>
-              <dd className={detailValueClass}>{style?.name}</dd>
-            </div>
-
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{tCompose('ribbon.label')}</dt>
-              <dd className={detailValueClass}>{formatTrim(ribbon)}</dd>
-            </div>
-
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{tCompose('wrap.label')}</dt>
-              <dd className={detailValueClass}>{formatTrim(wrap)}</dd>
-            </div>
-
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('result.status')}</dt>
-              <dd className={cn('flex items-center gap-1.5', detailValueClass)}>
-                {complete ? (
-                  <>
-                    <HugeiconsIcon icon={Tick02Icon} className='size-3.5 shrink-0 text-primary' strokeWidth={2.5} />
-                    {t('result.ready')}
-                  </>
-                ) : (
-                  t('preview.stage.resultPending')
-                )}
-              </dd>
-            </div>
-
-            {version?.createdAt ? (
-              <div className={detailRowClass}>
-                <dt className={detailTermClass}>{t('result.createdAt')}</dt>
-                <dd className={detailValueClass}>{formatDateTime(version.createdAt, 'dateTimeMedium')}</dd>
+          <dl className={cn(studioSummaryRuleClass, 'flex flex-wrap items-end justify-between gap-x-8 gap-y-4')}>
+            <div className='flex flex-wrap items-start gap-x-8 gap-y-4'>
+              <div>
+                <dt className={studioSummaryLabelClass}>{t('result.status')}</dt>
+                <dd className={cn(factValueClass, 'mt-1')}>
+                  {complete ? (
+                    <>
+                      <HugeiconsIcon icon={Tick02Icon} className='size-3.5 shrink-0 text-primary' strokeWidth={2.5} />
+                      {t('result.ready')}
+                    </>
+                  ) : (
+                    t('preview.stage.resultPending')
+                  )}
+                </dd>
               </div>
-            ) : null}
 
-            <div className={detailRowClass}>
-              <dt className={detailTermClass}>{t('result.price')}</dt>
-              <dd className='font-title text-lg font-bold leading-none text-primary'>
-                {formatStudioPrice(bouquet.totalAmount)}
-              </dd>
+              {version?.createdAt ? (
+                <div>
+                  <dt className={studioSummaryLabelClass}>{t('result.createdAt')}</dt>
+                  <dd className={cn(factValueClass, 'mt-1')}>{formatDateTime(version.createdAt, 'dateTimeMedium')}</dd>
+                </div>
+              ) : null}
+            </div>
+
+            <div className='text-right'>
+              <dt className={studioSummaryLabelClass}>{t('result.price')}</dt>
+              <dd className={cn(studioSummaryAmountClass, 'mt-1.5')}>{formatStudioPrice(bouquet.totalAmount)}</dd>
             </div>
           </dl>
         </div>
@@ -156,10 +151,10 @@ export default function StudioResult({
           <button
             type='button'
             onClick={onCreateAnother}
-            className='group mt-4 flex w-full cursor-pointer items-center gap-4 rounded-3xl border border-dashed border-primary/30 bg-secondary/25 p-5 text-left transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-primary/50 hover:bg-secondary/40 hover:shadow-[0_1rem_2.5rem_rgb(81_108_108/14%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+            className='group mt-2 flex w-full cursor-pointer items-center gap-3 rounded-2xl bg-secondary/25 p-4 text-left transition-[transform,border-color,background-color,box-shadow] duration-300 hover:ring hover:ring-primary/25 hover:bg-secondary/40 hover:shadow-[0_1rem_2.5rem_rgb(81_108_108/14%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
           >
             <span className='flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform duration-500 group-hover:rotate-12'>
-              <HugeiconsIcon icon={SparklesIcon} className='size-5' />
+              <HugeiconsIcon icon={RepeatIcon} className='size-5' />
             </span>
 
             <span className='min-w-0 flex-1'>
@@ -170,11 +165,6 @@ export default function StudioResult({
                 {createAnotherNote ?? t('result.generateAnotherNote')}
               </span>
             </span>
-
-            <HugeiconsIcon
-              icon={ArrowRight02Icon}
-              className='size-4 shrink-0 text-primary transition-transform duration-300 group-hover:translate-x-1'
-            />
           </button>
         ) : null}
       </section>
@@ -228,7 +218,7 @@ export default function StudioResult({
           <StudioStepHeading title={t('review.sceneTitle')} description={t('review.sceneNote')} />
 
           <figure className='mt-4'>
-            <div className='relative aspect-[4/5] overflow-hidden rounded-3xl bg-secondary/40 ring-1 ring-foreground/5 sm:aspect-[4/3]'>
+            <div className='relative aspect-[4/5] overflow-hidden rounded-2xl bg-secondary/40 ring-1 ring-foreground/5 sm:aspect-[4/3]'>
               <StudioImage
                 src={mockup.imageUrl}
                 alt={mockup.name}

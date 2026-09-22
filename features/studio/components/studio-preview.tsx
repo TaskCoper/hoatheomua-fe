@@ -156,7 +156,7 @@ export default function StudioPreview({
         </div>
 
         {complete ? (
-          <div className='hidden flex-wrap items-center justify-end gap-2 border-t border-white/15 px-5 py-3 sm:px-8 lg:flex lg:px-10'>
+          <div className='hidden flex-wrap items-center justify-end gap-2 px-5 pb-3 sm:px-8 lg:flex lg:px-10'>
             <Button
               type='button'
               size='lg'
