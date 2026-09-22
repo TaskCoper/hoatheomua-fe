@@ -1758,10 +1758,10 @@
     },
     "generation": {
       "stages": {
-        "preparing": "Preparing your flowers",
-        "lighting": "Setting the light",
-        "composing": "Composing the image",
-        "finishing": "Finishing the details"
+        "preparing": "Queued",
+        "lighting": "Generating bouquet",
+        "composing": "Applying mockup",
+        "finishing": "Adding logo and saving"
       },
       "generating": "Generating",
       "creating": "Creating “{name}”…",
@@ -2055,7 +2055,46 @@
     "loading": "Opening the studio...",
     "unavailable": "We could not open this design.",
     "unavailableNote": "The product may have been removed, or the connection dropped. Pick a design from the collection and try again.",
-    "backToProducts": "Back to the collection"
+    "backToProducts": "Back to the collection",
+    "jobs": {
+      "title": "Recent AI designs",
+      "leaveNote": "You can leave this page and return to check progress. Generation will continue.",
+      "failed": "Design could not be completed",
+      "failedNote": "This job stopped. Completed steps have been retained. Submitting a new design starts a new generation.",
+      "canceled": "Job canceled",
+      "canceling": "Cancellation requested",
+      "submitError": "Submission could not be confirmed",
+      "submitErrorNote": "Check your recent designs first. Resubmitting the same choices will reconcile the previous request to avoid duplicates.",
+      "connectionError": "Updates are temporarily disconnected. Generation may still be running.",
+      "refresh": "Refresh",
+      "view": "View progress",
+      "mockup": "Mockup reference",
+      "previous": "Previous",
+      "next": "Next",
+      "openResult": "Open design",
+      "cancel": "Cancel job",
+      "cancelConfirm": "Cancel this job? AI work already performed may not be refunded, and an image in progress may not have been saved.",
+      "cancelError": "Cancellation could not be sent. Please check the status again.",
+      "types": {
+        "Create": "New design",
+        "Regenerate": "Regeneration"
+      },
+      "statuses": {
+        "Queued": "Queued",
+        "Running": "Running",
+        "Succeeded": "Completed",
+        "Failed": "Failed",
+        "Canceled": "Canceled"
+      },
+      "stages": {
+        "Queued": "Queued",
+        "GeneratingFlower": "Generating bouquet",
+        "ApplyingMockup": "Applying mockup",
+        "Branding": "Adding logo",
+        "Saving": "Saving result",
+        "Completed": "Completed"
+      }
+    }
   },
   "b2b": {
     "hero": {

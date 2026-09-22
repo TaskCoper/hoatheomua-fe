@@ -138,8 +138,7 @@ export function useStudioDesigner(family: ProductFamily) {
     methods: { control, setValue, getValues },
     generate: startGeneration,
     generationStage,
-    isCreatingAiFlower,
-    resetGeneration
+    isCreatingAiFlower
   } = useCreateAiFlower({
     defaultValues: {
       name: '',
@@ -254,7 +253,6 @@ export function useStudioDesigner(family: ProductFamily) {
     setGenerated(false)
     setActiveVersionId('')
     resetAdded()
-    resetGeneration()
   }
 
   const selectMockup = (id: string) => {

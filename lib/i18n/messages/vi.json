@@ -1758,10 +1758,10 @@
     },
     "generation": {
       "stages": {
-        "preparing": "Đang chuẩn bị hoa",
-        "lighting": "Đang chỉnh ánh sáng",
-        "composing": "Đang dựng hình",
-        "finishing": "Đang hoàn thiện chi tiết"
+        "preparing": "Đang xếp hàng",
+        "lighting": "Đang tạo bó hoa",
+        "composing": "Đang ghép mockup",
+        "finishing": "Đang ghép logo và lưu kết quả"
       },
       "generating": "Đang tạo",
       "creating": "Đang tạo “{name}”…",
@@ -2055,7 +2055,46 @@
     "loading": "Đang mở xưởng thiết kế...",
     "unavailable": "Không mở được thiết kế này.",
     "unavailableNote": "Sản phẩm có thể đã được gỡ hoặc kết nối bị gián đoạn. Hãy chọn một thiết kế trong bộ sưu tập và thử lại.",
-    "backToProducts": "Về bộ sưu tập"
+    "backToProducts": "Về bộ sưu tập",
+    "jobs": {
+      "title": "Thiết kế AI gần đây",
+      "leaveNote": "Bạn có thể rời trang và quay lại xem tiến trình. Việc tạo ảnh vẫn tiếp tục.",
+      "failed": "Không hoàn thành thiết kế",
+      "failedNote": "Tác vụ đã dừng. Kết quả các bước đã xong được giữ lại. Nếu tạo một thiết kế mới, hệ thống sẽ thực hiện một lượt tạo ảnh mới.",
+      "canceled": "Đã hủy tác vụ",
+      "canceling": "Đang yêu cầu hủy",
+      "submitError": "Chưa xác nhận được yêu cầu tạo ảnh",
+      "submitErrorNote": "Kiểm tra danh sách thiết kế trước. Nếu gửi lại cùng lựa chọn, hệ thống sẽ đối chiếu yêu cầu cũ để tránh tạo trùng.",
+      "connectionError": "Tạm mất kết nối cập nhật. Tác vụ có thể vẫn đang chạy.",
+      "refresh": "Cập nhật lại",
+      "view": "Xem tiến trình",
+      "mockup": "Ảnh bối cảnh tham chiếu",
+      "previous": "Trang trước",
+      "next": "Trang sau",
+      "openResult": "Mở thiết kế",
+      "cancel": "Hủy tác vụ",
+      "cancelConfirm": "Hủy tác vụ này? Phần AI đã thực hiện có thể không được hoàn lại và ảnh đang tạo có thể chưa được lưu.",
+      "cancelError": "Chưa gửi được yêu cầu hủy. Vui lòng kiểm tra lại trạng thái.",
+      "types": {
+        "Create": "Tạo mới",
+        "Regenerate": "Tạo lại"
+      },
+      "statuses": {
+        "Queued": "Đang xếp hàng",
+        "Running": "Đang xử lý",
+        "Succeeded": "Hoàn thành",
+        "Failed": "Không hoàn thành",
+        "Canceled": "Đã hủy"
+      },
+      "stages": {
+        "Queued": "Đang xếp hàng",
+        "GeneratingFlower": "Đang tạo bó hoa",
+        "ApplyingMockup": "Đang ghép mockup",
+        "Branding": "Đang ghép logo",
+        "Saving": "Đang lưu kết quả",
+        "Completed": "Hoàn thành"
+      }
+    }
   },
   "b2b": {
     "hero": {
