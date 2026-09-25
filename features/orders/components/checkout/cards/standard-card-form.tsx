@@ -19,6 +19,7 @@ import { useCardConfig } from '../../../hooks/use-card-config'
 import { CARD_TEMPLATE_TYPE_BY_CARD_TYPE, useCardTemplates } from '../../../hooks/use-card-templates'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 import CardContentFields from './card-content-fields'
+import CardFormActions from './card-form-actions'
 import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
 import CardTemplatePicker from './card-template-picker'
@@ -104,7 +105,7 @@ export default function StandardCardForm({ lines, capacities, initial, onSubmit,
 
     return (
       <div className='space-y-4'>
-        <CardFormHeader type='standard' isEditing={false} disabled onSubmit={handleSubmit} onCancel={onCancel} />
+        <CardFormHeader type='standard' />
 
         <div className='rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center'>
           <p className='text-sm font-medium'>{t('orders.checkout.cards.noEligibleProductsTitle')}</p>
@@ -114,13 +115,15 @@ export default function StandardCardForm({ lines, capacities, initial, onSubmit,
               : t('orders.checkout.cards.noEligibleProducts')}
           </p>
         </div>
+
+        <CardFormActions isEditing={false} disabled onSubmit={handleSubmit} onCancel={onCancel} />
       </div>
     )
   }
 
   return (
     <div className='space-y-4'>
-      <CardFormHeader type='standard' isEditing={!!initial} onSubmit={handleSubmit} onCancel={onCancel} />
+      <CardFormHeader type='standard' />
 
       <CheckoutProductPicker
         lines={lines}
@@ -171,6 +174,8 @@ export default function StandardCardForm({ lines, capacities, initial, onSubmit,
         price={unitPrice * draft.quantity}
         quantity={attachedLine ? { value: draft.quantity, unitPrice, max: maxQuantity, onChange: setQuantity } : null}
       />
+
+      <CardFormActions isEditing={!!initial} onSubmit={handleSubmit} onCancel={onCancel} />
     </div>
   )
 }

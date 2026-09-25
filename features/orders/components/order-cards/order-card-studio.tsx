@@ -146,8 +146,8 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
   }
 
   return (
-    <div className='flex min-h-0 flex-1 flex-col'>
-      <div className='relative z-10 shrink-0 border-b border-border/60 bg-popover px-4 py-3 backdrop-blur-sm sm:px-5'>
+    <div className='flex min-h-0 flex-1 flex-col bg-background'>
+      <div className='relative z-10 shrink-0 border-b border-secondary/40 bg-background/85 px-4 py-4 backdrop-blur-md sm:px-6 sm:py-5 lg:px-8'>
         <DialogHeader className='pr-10'>
           <div className='flex items-center gap-2.5'>
             <span className='grid size-9 shrink-0 place-items-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/15'>
@@ -167,17 +167,8 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
         </DialogHeader>
       </div>
 
-      <div className='min-h-0 flex-1 overflow-y-auto overscroll-contain md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:grid-rows-[minmax(0,1fr)] md:overflow-hidden'>
-        <section className='relative flex min-w-0 shrink-0 flex-col overflow-hidden bg-gradient-to-b from-secondary/55 via-secondary/25 to-background md:min-h-0 md:shrink md:overflow-y-auto'>
-          <span
-            aria-hidden='true'
-            className='pointer-events-none absolute -left-20 -top-24 size-64 rounded-full bg-primary/10 blur-3xl'
-          />
-          <span
-            aria-hidden='true'
-            className='pointer-events-none absolute -bottom-16 -right-24 size-64 rounded-full bg-leaf/10 blur-3xl'
-          />
-
+      <div className='min-h-0 flex-1 overflow-y-auto overscroll-contain md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:grid-rows-[minmax(0,1fr)] md:overflow-hidden'>
+        <section className='relative flex min-w-0 shrink-0 flex-col overflow-hidden bg-secondary/40 md:min-h-0 md:shrink md:overflow-y-auto'>
           <div className='relative flex shrink-0 flex-1 flex-col gap-4 p-4 sm:p-6'>
             <div
               ref={previewRef}
@@ -255,47 +246,49 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
             ) : null}
           </div>
 
-          <div className='relative shrink-0 border-t border-border/60 bg-card/70 p-3 backdrop-blur-sm sm:p-4'>
-            <p className='mb-2 flex items-baseline justify-between gap-3'>
-              <span className='inline-flex items-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground'>
-                <HugeiconsIcon icon={Layers01Icon} strokeWidth={2} className='size-3.5 text-primary' />
-                {t('orders.cards.versions.heading')}
-              </span>
-              {versions.length > 0 ? (
-                <span className='rounded-full bg-secondary/50 px-2 py-0.5 text-[0.7rem] font-semibold tabular-nums text-secondary-foreground'>
-                  {t('orders.cards.versions.counter', {
-                    index: activeVersion?.label ?? versions.length,
-                    total: versions.length
-                  })}
+          <div className='relative shrink-0 border-t border-secondary/40 bg-background/90 p-3 backdrop-blur-md sm:p-4'>
+            <div className='mx-auto w-full max-w-4xl'>
+              <p className='mb-2 flex items-baseline justify-between gap-3'>
+                <span className='inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground'>
+                  <HugeiconsIcon icon={Layers01Icon} strokeWidth={2} className='size-3.5 text-primary' />
+                  {t('orders.cards.versions.heading')}
                 </span>
-              ) : null}
-            </p>
-
-            {isLoadingVersions ? (
-              <div className='flex gap-2'>
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <Skeleton key={index} style={{ aspectRatio: previewRatio }} className='w-14 rounded-2xl sm:w-16' />
-                ))}
-              </div>
-            ) : isVersionsError ? (
-              <p className='rounded-2xl bg-secondary/20 px-3 py-4 text-center text-xs text-muted-foreground ring-1 ring-foreground/5'>
-                {t('orders.cards.versions.error')}
+                {versions.length > 0 ? (
+                  <span className='rounded-full bg-secondary/50 px-2 py-0.5 text-[0.7rem] font-semibold tabular-nums text-secondary-foreground'>
+                    {t('orders.cards.versions.counter', {
+                      index: activeVersion?.label ?? versions.length,
+                      total: versions.length
+                    })}
+                  </span>
+                ) : null}
               </p>
-            ) : (
-              <OrderCardVersionStrip
-                versions={versions}
-                activeVersionId={activeVersionId}
-                selectedVersionId={selectedVersionId}
-                ratio={previewRatio}
-                disabled={isGenerating}
-                onSelect={selectVersion}
-              />
-            )}
+
+              {isLoadingVersions ? (
+                <div className='flex gap-2'>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <Skeleton key={index} style={{ aspectRatio: previewRatio }} className='w-14 rounded-2xl sm:w-16' />
+                  ))}
+                </div>
+              ) : isVersionsError ? (
+                <p className='rounded-2xl bg-secondary/20 px-3 py-4 text-center text-xs text-muted-foreground ring-1 ring-foreground/5'>
+                  {t('orders.cards.versions.error')}
+                </p>
+              ) : (
+                <OrderCardVersionStrip
+                  versions={versions}
+                  activeVersionId={activeVersionId}
+                  selectedVersionId={selectedVersionId}
+                  ratio={previewRatio}
+                  disabled={isGenerating}
+                  onSelect={selectVersion}
+                />
+              )}
+            </div>
           </div>
         </section>
 
-        <section className='flex min-w-0 flex-col border-t border-border/60 md:min-h-0 md:border-l md:border-t-0'>
-          <div className='min-h-0 space-y-5 p-4 sm:p-5 md:flex-1 md:overflow-y-auto md:overscroll-contain'>
+        <section className='flex min-w-0 flex-col border-t border-secondary/40 md:min-h-0 md:border-l md:border-t-0'>
+          <div className='mx-auto w-full min-h-0 max-w-4xl space-y-5 px-4 py-6 sm:px-6 sm:py-8 md:flex-1 md:overflow-y-auto md:overscroll-contain lg:px-8'>
             {isSettled ? (
               <p className='flex items-start gap-2 rounded-2xl bg-leaf/10 px-3 py-2.5 text-xs leading-relaxed text-foreground/90 ring-1 ring-leaf/20'>
                 <HugeiconsIcon
@@ -361,9 +354,7 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
 
             <div className='space-y-2 rounded-2xl bg-primary/5 p-3.5 ring-1 ring-primary/10'>
               <div className='flex items-baseline justify-between gap-3'>
-                <span className='text-[0.7rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground'>
-                  {t('orders.cards.price.paid')}
-                </span>
+                <span className='text-sm font-semibold text-muted-foreground'>{t('orders.cards.price.paid')}</span>
                 <span className='font-title text-xl font-bold leading-none tabular-nums text-primary'>
                   {formatVnd(card.paidUnitPrice)}
                 </span>
@@ -375,10 +366,10 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
             </div>
           </div>
 
-          <div className='sticky bottom-0 z-10 mt-auto shrink-0 space-y-2 border-t border-border/60 bg-popover/95 p-4 backdrop-blur-sm sm:p-5'>
+          <div className='sticky bottom-0 z-10 mx-auto mt-auto w-full max-w-4xl shrink-0 space-y-2 border-t border-secondary/40 bg-background/90 p-4 backdrop-blur-md sm:px-6 sm:py-4 lg:px-8'>
             <span
               aria-hidden='true'
-              className='pointer-events-none absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-popover to-transparent'
+              className='pointer-events-none absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-background/90 to-transparent'
             />
 
             {isSettled ? (

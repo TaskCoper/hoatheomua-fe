@@ -1,5 +1,6 @@
 'use client'
 
+import { Separator } from '@/components/ui/separator'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { AiMagicIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -28,6 +29,7 @@ import { CARD_TEMPLATE_TYPE_BY_CARD_TYPE, useCardTemplates } from '../../../hook
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 import CardAttachmentField from './card-attachment-field'
 import CardContentFields from './card-content-fields'
+import CardFormActions from './card-form-actions'
 import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
 import CardSizePicker from './card-size-picker'
@@ -125,7 +127,7 @@ export default function AiCardForm({ lines, capacities, initial, onSubmit, onCan
 
     return (
       <div className='space-y-4'>
-        <CardFormHeader type='ai' isEditing={false} disabled onSubmit={handleSubmit} onCancel={onCancel} />
+        <CardFormHeader type='ai' />
 
         <div className='rounded-2xl border border-dashed border-border bg-muted/20 px-4 py-8 text-center'>
           <p className='text-sm font-medium'>{t('orders.checkout.cards.noEligibleProductsTitle')}</p>
@@ -135,13 +137,15 @@ export default function AiCardForm({ lines, capacities, initial, onSubmit, onCan
               : t('orders.checkout.cards.noEligibleProducts')}
           </p>
         </div>
+
+        <CardFormActions isEditing={false} disabled onSubmit={handleSubmit} onCancel={onCancel} />
       </div>
     )
   }
 
   return (
     <div className='space-y-4'>
-      <CardFormHeader type='ai' isEditing={!!initial} onSubmit={handleSubmit} onCancel={onCancel} />
+      <CardFormHeader type='ai' />
 
       <CheckoutProductPicker
         lines={lines}
@@ -189,6 +193,10 @@ export default function AiCardForm({ lines, capacities, initial, onSubmit, onCan
         price={unitPrice * draft.quantity}
         quantity={attachedLine ? { value: draft.quantity, unitPrice, max: maxQuantity, onChange: setQuantity } : null}
       />
+
+      <Separator />
+
+      <CardFormActions isEditing={!!initial} onSubmit={handleSubmit} onCancel={onCancel} />
     </div>
   )
 }

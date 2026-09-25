@@ -27,6 +27,7 @@ import { useCardConfig } from '../../../hooks/use-card-config'
 import { useGeneratedCardsByProducts } from '../../../hooks/use-generated-cards-by-products'
 import type { CheckoutSummaryLine } from '../checkout-sidebar'
 import CardContentFields from './card-content-fields'
+import CardFormActions from './card-form-actions'
 import CardFormHeader from './card-form-header'
 import CardFormSummary from './card-form-summary'
 import CardHistoryGallery from './card-history-gallery'
@@ -182,13 +183,7 @@ export default function HistoryCardForm({
 
   return (
     <div className='space-y-4'>
-      <CardFormHeader
-        type='history'
-        isEditing={!!initial}
-        disabled={openLines.length === 0 && !initial}
-        onSubmit={handleSubmit}
-        onCancel={onCancel}
-      />
+      <CardFormHeader type='history' />
 
       <CheckoutProductPicker
         lines={lines}
@@ -251,6 +246,13 @@ export default function HistoryCardForm({
             ? { value: draft.quantity, unitPrice, max: maxQuantity, onChange: setQuantity }
             : null
         }
+      />
+
+      <CardFormActions
+        isEditing={!!initial}
+        disabled={openLines.length === 0 && !initial}
+        onSubmit={handleSubmit}
+        onCancel={onCancel}
       />
     </div>
   )
