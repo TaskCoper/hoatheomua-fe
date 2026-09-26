@@ -7,6 +7,15 @@ import type { GetProductsParams } from './use-get-products'
 
 interface InfiniteProductsParams extends Omit<GetProductsParams, 'pageIndex'> {
   enabled?: boolean
+  /**
+   * Cap on how many pages stay resident. Left undefined every fetched page is kept -
+   * which is what the studio option lists want. Set it (the home carousel does) to turn
+   * the cache into a sliding window: fetching forward drops the oldest page, fetching
+   * backward drops the newest, so memory stays at `maxPages * pageSize` items no matter
+   * how deep the catalog is. React Query only trims when it can walk backwards again,
+   * hence `getPreviousPageParam` below.
+   */
+  maxPages?: number
 }
 
 export const infiniteProductsQuery = ({
@@ -18,7 +27,8 @@ export const infiniteProductsQuery = ({
   // sortBy = ['-sellablequantity'],
   sortBy,
   labels,
-  enabled = true
+  enabled = true,
+  maxPages
 }: InfiniteProductsParams) =>
   infiniteQueryOptions({
     queryKey: ['products', 'infinite', pageSize, search, categoryIds, priceFrom, priceTo, sortBy, labels] as const,
@@ -34,8 +44,13 @@ export const infiniteProductsQuery = ({
         labels
       }),
     initialPageParam: DEFAULT_PAGE_INDEX,
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.value.hasNextPage ? (lastPage.value.pageIndex || allPages.length) + 1 : undefined,
+    getNextPageParam: (lastPage, allPages, lastPageParam) =>
+      lastPage.value.hasNextPage ? (lastPage.value.pageIndex || lastPageParam || allPages.length) + 1 : undefined,
+    getPreviousPageParam: (firstPage, _allPages, firstPageParam) => {
+      const current = firstPage.value.pageIndex || firstPageParam
+      return firstPage.value.hasPreviousPage && current > DEFAULT_PAGE_INDEX ? current - 1 : undefined
+    },
+    maxPages,
     enabled
   })
 

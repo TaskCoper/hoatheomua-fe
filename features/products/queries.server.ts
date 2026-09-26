@@ -2,12 +2,16 @@ import 'server-only'
 
 import { PRODUCTS_LIST_LIFE, PRODUCT_DETAIL_LIFE } from '@/lib/cache-life'
 import { getQueryClient } from '@/lib/react-query-client'
+import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
+import type { QueryClient } from '@tanstack/react-query'
 import { isAxiosError } from 'axios'
 import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
+import { infiniteProductsQuery } from './hooks/use-get-infinite-products'
 import type { GetProductsParams } from './hooks/use-get-products'
 import { fetchProductDetail, productListQuery } from './queries'
 import productService from './services'
+import type { CarouselProductsParams } from './section-defaults'
 import type { ProductDetail } from './types'
 
 export const PRODUCTS_CACHE_TAG = 'products'
@@ -18,6 +22,22 @@ export async function getCachedProducts(params: GetProductsParams) {
   cacheLife(PRODUCTS_LIST_LIFE)
 
   return productService.getProducts(params)
+}
+
+/**
+ * Seeds page one of a carousel's infinite query so the opening slides are inside the
+ * rendered HTML. Only the first page - the window walks itself from there, on the client.
+ */
+export async function prefetchCarouselProducts(queryClient: QueryClient, params: CarouselProductsParams) {
+  // `maxPages` is a cache-shape knob, not a request param - it must not reach the API.
+  const { maxPages, ...listParams } = params
+  void maxPages
+  const firstPage = await getCachedProducts({ ...listParams, pageIndex: DEFAULT_PAGE_INDEX })
+
+  queryClient.setQueryData(infiniteProductsQuery(params).queryKey, {
+    pages: [firstPage],
+    pageParams: [DEFAULT_PAGE_INDEX]
+  })
 }
 
 export async function getAllProductIds(limit = 20): Promise<string[]> {

@@ -4,8 +4,6 @@ import HomeCategorySections from '@/features/home/components/home-category-secti
 import ShopFreshFlowersSection from '@/features/home/components/shop-fresh-flowers-section'
 import TestimonialSection from '@/features/home/components/testimonial-section'
 import WhyChooseUsSection from '@/features/home/components/why-choose-us-section'
-import CategoryFilterSection from '@/features/products/components/category-filter-section'
-import CategorySectionDefault from '@/features/products/components/category-section-default'
 import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 import bannerOne from '@/public/images/banner-one.webp'
 import saleBanner from '@/public/images/sale-banner.webp'
@@ -30,13 +28,13 @@ export default function HomeContent({
     <div className='relative overflow-hidden'>
       <CriteriaSection />
 
-      {customizableCategory && (
+      {/* {customizableCategory && (
         <Suspense fallback={<CategorySectionDefault category={customizableCategory} />}>
           <CategoryFilterSection category={customizableCategory} />
         </Suspense>
-      )}
+      )} */}
 
-      <ShopFreshFlowersSection />
+      <ShopFreshFlowersSection category={customizableCategory} />
 
       <ConfigurableBanner
         slot={BANNER_SLOTS.homeCollection}
