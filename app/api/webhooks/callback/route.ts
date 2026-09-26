@@ -1,3 +1,4 @@
+import { isFeatureEnabled } from '@/shared/feature-flags'
 import { z } from 'zod'
 
 /**
@@ -68,6 +69,14 @@ export async function POST(req: Request) {
   // Verification ping - Nhanh sends this when webhooks are enabled and when
   // periodically checking the callback URL. Ack without side effects.
   if (event === 'webhooksEnabled') {
+    return Response.json({ ok: true })
+  }
+
+  // External services are switched off (see shared/feature-flags), so order and
+  // inventory events are acked and dropped rather than acted on. Nhanh still
+  // needs its 200, or it retries and eventually disables the webhook.
+  if (!isFeatureEnabled('externalServices')) {
+    console.log('[nhanh-webhook:skipped]', { event, businessId })
     return Response.json({ ok: true })
   }
 

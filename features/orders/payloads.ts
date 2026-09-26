@@ -1,7 +1,15 @@
 import type { ProductSummary } from '@/features/products/types'
 import type { CartItem } from '@/stores/cart.store'
-import type { CheckoutPayload, CheckoutSelection, EstimatePayload } from './types'
-import { PaymentGatewayCode } from './types'
+import type { CardWritingMethod, CheckoutCard, CheckoutCardType } from './cards/types'
+import type {
+  CheckoutItemPayload,
+  CheckoutPayload,
+  CheckoutSelection,
+  EstimatePayload,
+  OrderBouquetPayload,
+  OrderCardPayload
+} from './types'
+import { OrderCardFormType, OrderCardType, PaymentGatewayCode } from './types'
 import type { CheckoutFormValues, EstimateFormValues } from './validations'
 
 export interface OrderContact {
@@ -9,9 +17,6 @@ export interface OrderContact {
   phone: string
 }
 
-// The form holds the delivery date as an ISO string; the API wants unix seconds
-// and reads 0 as "as soon as possible". Today collapses to 0 - its midnight
-// timestamp is already in the past by the time the order is placed.
 export const toOrderTimestamp = (value: string | null): number => {
   if (!value) {
     return 0
@@ -56,6 +61,46 @@ export const buildEstimatePayload = (
   }
 }
 
+const CARD_TYPE_CODE: Record<CheckoutCardType, OrderCardType> = {
+  standard: OrderCardType.Handmade,
+  ai: OrderCardType.Ai,
+  // A reused card is an AI card - `sourceGeneratedCardId` is what says which generation.
+  history: OrderCardType.Ai
+}
+
+const CARD_FORM_TYPE_CODE: Record<CardWritingMethod, OrderCardFormType> = {
+  typed: OrderCardFormType.GoMay,
+  handwritten: OrderCardFormType.Calligraphy
+}
+
+const toOrderCardPayload = (card: CheckoutCard): OrderCardPayload => ({
+  cardType: CARD_TYPE_CODE[card.type],
+  cardTemplateId: card.templateId || null,
+  sizeName: card.type === 'standard' ? '' : card.sizeName,
+  formType: card.type === 'standard' ? OrderCardFormType.Calligraphy : CARD_FORM_TYPE_CODE[card.writingMethod],
+  messageContent: card.content.message,
+  attachedImageUrl: card.type === 'ai' ? card.attachedImageUrl || null : null,
+  sourceGeneratedCardId: card.type === 'history' ? card.generatedCardId : null
+})
+
+/** One bouquet per carded unit; a line with no cards sends none of its own. */
+const buildBouquetsByLineId = (cards: CheckoutCard[]): Map<string, OrderBouquetPayload[]> => {
+  const bouquets = new Map<string, OrderBouquetPayload[]>()
+
+  cards.forEach((card) => {
+    const payload = toOrderCardPayload(card)
+    const line = bouquets.get(card.lineId) ?? []
+
+    for (let unit = 0; unit < card.quantity; unit++) {
+      line.push({ card: payload })
+    }
+
+    bouquets.set(card.lineId, line)
+  })
+
+  return bouquets
+}
+
 export const buildCheckoutPayload = (
   values: CheckoutFormValues,
   items: CartItem[],
@@ -65,8 +110,33 @@ export const buildCheckoutPayload = (
 ): CheckoutPayload => {
   const { paymentMethod, gateway, shippingGateway, shippingFee } = selection
 
+  const estimate = buildEstimatePayload(values, items, productById, contact)
+  const bouquetsByLineId = buildBouquetsByLineId(values.cards)
+
+  // `buildEstimatePayload` maps `items` in order, so index `i` is still line `items[i]`.
+  const checkoutItems: CheckoutItemPayload[] = estimate.items.map((item, index) => {
+    const line = items[index]
+    const bouquets = bouquetsByLineId.get(line.lineId) ?? []
+    const generatedFlowerId = line.aiFlower?.generatedFlowerId
+
+    if (!generatedFlowerId) {
+      return { ...item, bouquets }
+    }
+
+    // The design has nowhere to ride but its bouquets, so every unit of a studio line sends
+    // one - the units nobody carded included. A line bought three times is three of that design.
+    const designed: OrderBouquetPayload[] = bouquets.map((bouquet) => ({ ...bouquet, generatedFlowerId }))
+
+    for (let unit = designed.length; unit < line.quantity; unit++) {
+      designed.push({ generatedFlowerId, card: null })
+    }
+
+    return { ...item, bouquets: designed }
+  })
+
   const base = {
-    ...buildEstimatePayload(values, items, productById, contact),
+    ...estimate,
+    items: checkoutItems,
     fullNameReceiver: values.fullNameReceiver.trim(),
     phoneReceiver: values.phoneReceiver.trim()
   }

@@ -127,6 +127,68 @@ const refreshAccessToken = async (
   }
 }
 
+const BROWSER_TIMEOUT = 15_000
+const SERVER_TIMEOUT = 20_000
+
+const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504])
+const RETRYABLE_CODES = new Set([
+  'ECONNABORTED',
+  'ETIMEDOUT',
+  'ECONNRESET',
+  'ECONNREFUSED',
+  'EAI_AGAIN',
+  'ENOTFOUND',
+  'EPIPE',
+  'ERR_NETWORK'
+])
+const MAX_SERVER_RETRIES = 2
+const MAX_RATE_LIMIT_RETRIES = 1
+const RETRY_BASE_DELAY = 500
+const MAX_RETRY_AFTER_DELAY = 65_000
+
+const isIdempotentMethod = (method?: string) => {
+  const normalized = method?.toLowerCase()
+  return normalized === 'get' || normalized === 'head' || normalized === 'options'
+}
+
+const isTransientError = (error: AxiosError) => {
+  const status = error.response?.status
+
+  if (status) {
+    return RETRYABLE_STATUSES.has(status)
+  }
+
+  return !!error.code && RETRYABLE_CODES.has(error.code)
+}
+
+const parseRetryAfter = (value: unknown) => {
+  if (typeof value !== 'string' && typeof value !== 'number') {
+    return null
+  }
+
+  const seconds = Number(value)
+
+  if (Number.isFinite(seconds)) {
+    return Math.max(0, seconds * 1000)
+  }
+
+  const timestamp = Date.parse(String(value))
+
+  return Number.isNaN(timestamp) ? null : Math.max(0, timestamp - Date.now())
+}
+
+const getRetryDelay = (error: AxiosError, attempt: number) => {
+  const retryAfter = parseRetryAfter(error.response?.headers?.['retry-after'])
+
+  if (retryAfter !== null) {
+    return Math.min(retryAfter, MAX_RETRY_AFTER_DELAY)
+  }
+
+  return RETRY_BASE_DELAY * 2 ** attempt + Math.random() * 250
+}
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 interface CreateApiClientOptions {
   refreshTokenPath: string
   expiredAccessTokenCodes: readonly string[]
@@ -143,7 +205,7 @@ export const createApiClient = (
 
   const instance = axios.create({
     baseURL: resolvedBaseURL,
-    timeout: 15_000,
+    timeout: isBrowser() ? BROWSER_TIMEOUT : SERVER_TIMEOUT,
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
@@ -171,6 +233,11 @@ export const createApiClient = (
   })
 
   instance.interceptors.request.use((config) => {
+    if (!isBrowser()) {
+      console.log(
+        `[REQLOG] pid=${process.pid} phase=${process.env.NEXT_PHASE ?? 'unset'} ${config.method} ${config.baseURL ?? ''}${config.url}`
+      )
+    }
     if (isBrowser()) {
       if (!config.headers['Accept-Language']) {
         config.headers['Accept-Language'] = getCurrentLanguage()
@@ -185,16 +252,35 @@ export const createApiClient = (
   instance.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+      // Adapter and request setup errors may not carry an Axios config.
+      // Preserve the original failure instead of masking it with a TypeError.
+      if (!error.config) {
+        return Promise.reject(error)
+      }
+
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean
+        _retryCount?: number
+      }
       const status = error.response?.status
       const messageCode = (error.response?.data as ErrorResponse)?.messageCode
+
+      if (!isBrowser() && originalRequest && isIdempotentMethod(originalRequest.method) && isTransientError(error)) {
+        const attempt = originalRequest._retryCount ?? 0
+        const maxRetries = status === 429 ? MAX_RATE_LIMIT_RETRIES : MAX_SERVER_RETRIES
+
+        if (attempt < maxRetries) {
+          originalRequest._retryCount = attempt + 1
+
+          await wait(getRetryDelay(error, attempt))
+
+          return instance.request(originalRequest)
+        }
+      }
 
       const isExpiredAccessToken = status === 401 && !!messageCode && expiredAccessTokenCodes.includes(messageCode)
       const isRefreshRequest = originalRequest.url?.includes(refreshTokenPath)
 
-      // No silent refresh on the server: there are no cookies to update on the
-      // user's browser from here, and a redirect isn't possible. Let the caller
-      // (Server Component / *.server.ts fetcher) decide what to do with the 401.
       if (!isBrowser() || !originalRequest || !isExpiredAccessToken || isRefreshRequest) {
         return Promise.reject(error)
       }
@@ -237,15 +323,6 @@ export const createApiClient = (
 }
 
 const AUTH_TOKEN_CODES = {
-  // `MissingAccessToken` has to stay here: the access token cookie is short-lived,
-  // so a returning user routinely arrives with only the refresh token and the API
-  // reports the access token as missing rather than expired. Dropping it would log
-  // those sessions out.
-  //
-  // The cost this used to carry - anonymous visitors triggering a refresh that
-  // could never succeed - is handled upstream instead: `useGetMe` only fires when
-  // the middleware's `hasSession` hint cookie says there is a session to fetch, so
-  // an anonymous page view now makes no auth request at all.
   expiredAccessTokenCodes: ['ExpiredAccessToken', 'MissingAccessToken'],
   expiredRefreshTokenCodes: ['InvalidRefreshToken']
 } as const
@@ -258,6 +335,19 @@ export const api = createApiClient('/api', {
   refreshTokenPath: TASKCOPER_REFRESH_TOKEN_PATH,
   serverBaseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   ...AUTH_TOKEN_CODES
+})
+
+// Flower creation and regeneration include two sequential AI image calls.
+api.interceptors.request.use((config) => {
+  const pathname = new URL(config.url ?? '', 'http://localhost').pathname
+  const isFlowerGeneration =
+    config.method?.toLowerCase() === 'post' && /^\/(?:api\/)?v1\/ai-flowers(?:\/[^/]+\/regenerate)?\/?$/.test(pathname)
+
+  if (isFlowerGeneration) {
+    config.timeout = 300_000
+  }
+
+  return config
 })
 
 export const apiTaskcoper = createApiClient('/api/taskcoper', {

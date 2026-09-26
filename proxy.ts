@@ -2,6 +2,7 @@ import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
 import { GUEST_ONLY_ROUTES, isPublicRoutePath, SESSION_HINT_COOKIE } from './shared/constants'
+import { isOrderingBlockedPath, ORDERING_DISABLED_REDIRECT_PATH } from './shared/feature-flags'
 
 const ACCESS_TOKEN_COOKIE = 'accessToken'
 const REFRESH_TOKEN_COOKIE = 'refreshToken'
@@ -27,6 +28,12 @@ const buildRedirect = (request: NextRequest, target: string, search?: URLSearchP
   url.search = search ? `?${search.toString()}` : ''
   return NextResponse.redirect(url)
 }
+
+const isPrefetchRequest = (request: NextRequest) =>
+  request.headers.get('next-router-prefetch') === '1' ||
+  request.headers.has('next-router-segment-prefetch') ||
+  request.headers.get('purpose') === 'prefetch' ||
+  request.headers.get('sec-purpose')?.includes('prefetch') === true
 
 const withSessionHint = <T extends NextResponse>(response: T, isProbablyAuthed: boolean): T => {
   if (isProbablyAuthed) {
@@ -62,13 +69,18 @@ export default function proxy(request: NextRequest) {
   }
 
   const pathname = stripLocale(request.nextUrl.pathname)
+  const isPrefetch = isPrefetchRequest(request)
 
-  if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed) {
+  if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed && !isPrefetch) {
     return withSessionHint(buildRedirect(request, '/'), isProbablyAuthed)
   }
 
-  if (!isPublicRoutePath(pathname) && !isProbablyAuthed) {
-    const params = new URLSearchParams({ from: request.nextUrl.pathname })
+  if (isOrderingBlockedPath(pathname) && !isPrefetch) {
+    return withSessionHint(buildRedirect(request, ORDERING_DISABLED_REDIRECT_PATH), isProbablyAuthed)
+  }
+
+  if (!isPublicRoutePath(pathname) && !isProbablyAuthed && !isPrefetch) {
+    const params = new URLSearchParams({ from: `${request.nextUrl.pathname}${request.nextUrl.search}` })
     return withSessionHint(buildRedirect(request, '/sign-in', params), isProbablyAuthed)
   }
 

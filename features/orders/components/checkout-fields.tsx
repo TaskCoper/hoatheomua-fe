@@ -10,9 +10,9 @@ import type { Address } from '@/features/addresses/types'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { DeliveryTruck02Icon } from '@hugeicons/core-free-icons'
+import { Calendar03Icon, DeliveryTruck02Icon, LocationUser01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import type { CheckoutDeliveryOption } from '../checkout-methods'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
@@ -21,7 +21,8 @@ import { matchShippingLocation } from '../utils/match-shipping-location'
 import type { CheckoutFormValues } from '../validations'
 import { AddressAutocomplete } from './address-autocomplete'
 import { AddressMapField } from './address-map-field'
-import { DeliveryMethodPicker } from './checkout/delivery-method-picker'
+import CheckoutSection from './checkout/checkout-section'
+import DeliveryMethodPicker from './checkout/delivery-method-picker'
 import { LocationCombobox } from './location-combobox'
 import { SavedAddressPicker } from './saved-address-picker'
 
@@ -41,7 +42,7 @@ interface CheckoutFieldsProps {
   onSelectDeliveryMethod: (id: string) => void
 }
 
-export function CheckoutFields({
+export default function CheckoutFields({
   addresses,
   selectedAddressId,
   selectedAddress,
@@ -169,6 +170,7 @@ export function CheckoutFields({
   return (
     <div className='flex flex-col gap-2'>
       <CheckoutSection
+        icon={LocationUser01Icon}
         title={t('orders.checkout.deliveryHeading')}
         description={t('orders.checkout.deliveryDescription')}
         action={
@@ -371,9 +373,6 @@ export function CheckoutFields({
                     emptyLabel={t('orders.checkout.addressLineEmpty')}
                     invalid={fieldState.invalid}
                   />
-                  {/* <div className='min-h-4'>
-                  {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                </div> */}
                 </Field>
               )}
             />
@@ -424,6 +423,7 @@ export function CheckoutFields({
       />
 
       <CheckoutSection
+        icon={Calendar03Icon}
         title={t('orders.checkout.deliveryOptionsHeading')}
         description={t('orders.checkout.deliveryOptionsDescription')}
       >
@@ -511,30 +511,5 @@ function DeliveryTimingNote({ label }: { label: string }) {
         <p className='text-sm font-semibold text-foreground'>{label}</p>
       </div>
     </div>
-  )
-}
-
-function CheckoutSection({
-  title,
-  description,
-  action,
-  children
-}: {
-  title: string
-  description: string
-  action?: ReactNode
-  children: ReactNode
-}) {
-  return (
-    <section className='rounded-3xl bg-card p-5 sm:p-6 border border-border'>
-      <header className='mb-4 flex items-start justify-between gap-3 border-b border-border/70 pb-4'>
-        <div className='min-w-0'>
-          <h2 className='font-title font-semibold'>{title}</h2>
-          <p className='text-xs text-muted-foreground'>{description}</p>
-        </div>
-        {action}
-      </header>
-      <div className='space-y-3'>{children}</div>
-    </section>
   )
 }
