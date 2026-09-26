@@ -1,5 +1,4 @@
 import { Toaster } from '@/components/ui/sonner'
-import ConfirmDialog from '@/shared/components/confirm-dialog'
 import { routing } from '@/lib/i18n/routing'
 import ReactQueryProvider from '@/lib/react-query'
 import RouteScrollReset from '@/shared/components/route-scroll-reset'
@@ -114,7 +113,6 @@ export default async function RootLayout({
               {children}
               {modal}
               <Toaster position='top-center' duration={2000} />
-              <ConfirmDialog />
             </ReactQueryProvider>
           </NextIntlClientProvider>
         </NuqsAdapter>

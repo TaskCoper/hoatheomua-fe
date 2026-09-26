@@ -1,9 +1,9 @@
 import { useGetMe } from './use-get-me'
 import { useGetUser } from './use-get-user'
 
-export const useAccountPhoneNumber = ({ enabled = true }: { enabled?: boolean } = {}) => {
+export const useAccountPhoneNumber = () => {
   const { me, isGettingMe } = useGetMe()
-  const { user, isLoading: isLoadingUser } = useGetUser(me?.slug, { enabled })
+  const { user, isLoading: isLoadingUser } = useGetUser(me?.slug)
 
   return {
     slug: me?.slug,

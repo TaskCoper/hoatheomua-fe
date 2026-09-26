@@ -1,4 +1,3 @@
-import SanitizedHtml from '@/components/sanitized-html'
 import ProductDetailsTabsShell, { type TabKey } from '@/features/products/components/product-details-tabs-shell'
 import {
   ArrowUpRight01Icon,
@@ -76,8 +75,7 @@ export default async function ProductDetailsTabs({
   category,
   country,
   shipping,
-  landingUrl,
-  description
+  landingUrl
 }: {
   code: string | null
   brand: string | null
@@ -86,7 +84,6 @@ export default async function ProductDetailsTabs({
   country: string | null
   shipping: ShippingDimensions | null
   landingUrl: string | null
-  description: string | null
 }) {
   const t = await getTranslations()
 
@@ -108,9 +105,7 @@ export default async function ProductDetailsTabs({
   if (weight) specs.push({ label: t('products.detail.tabs.specRows.weight'), value: weight })
 
   const panels: Partial<Record<TabKey, ReactNode>> = {
-    description: description ? (
-      <SanitizedHtml html={description} className='text-sm text-foreground p-4 bg-white/50 rounded-3xl' />
-    ) : (
+    description: (
       <p className='text-sm text-muted-foreground p-4 bg-white/50 rounded-3xl'>
         {t('products.detail.tabs.noDescription')}
       </p>

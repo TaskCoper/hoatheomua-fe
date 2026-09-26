@@ -4,11 +4,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
-import { Motorbike02Icon } from '@hugeicons/core-free-icons'
 import { localizedMethodText, type CheckoutDeliveryOption } from '../../checkout-methods'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
 import { isWithinFreeShip } from '../../shipping-fee'
-import CheckoutSection from './checkout-section'
 
 interface DeliveryMethodPickerProps {
   methods: CheckoutDeliveryOption[]
@@ -16,16 +14,17 @@ interface DeliveryMethodPickerProps {
   onSelect: (id: string) => void
 }
 
-export default function DeliveryMethodPicker({ methods, selectedId, onSelect }: DeliveryMethodPickerProps) {
+export function DeliveryMethodPicker({ methods, selectedId, onSelect }: DeliveryMethodPickerProps) {
   const { t, locale } = useTranslation()
   const freeShipKm = useFreeShipKm()
 
   return (
-    <CheckoutSection
-      icon={Motorbike02Icon}
-      title={t('orders.checkout.shippingHeading')}
-      description={t('orders.checkout.shippingDescription')}
-    >
+    <section className='rounded-3xl bg-card p-5 sm:p-6 border border-border'>
+      <header className='mb-4 border-b border-border/70 pb-4'>
+        <h2 className='font-title font-semibold'>{t('orders.checkout.shippingHeading')}</h2>
+        <p className='text-xs text-muted-foreground'>{t('orders.checkout.shippingDescription')}</p>
+      </header>
+
       {methods.length === 0 ? (
         <div className='bg-secondary/25 px-4 py-8 text-center rounded-xl'>
           <p className='text-xs text-muted-foreground'>{t('orders.checkout.shippingEmpty')}</p>
@@ -78,6 +77,6 @@ export default function DeliveryMethodPicker({ methods, selectedId, onSelect }: 
           })}
         </RadioGroup>
       )}
-    </CheckoutSection>
+    </section>
   )
 }

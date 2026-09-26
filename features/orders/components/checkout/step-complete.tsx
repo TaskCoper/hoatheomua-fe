@@ -1,19 +1,16 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { CheckmarkCircle02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { CheckoutPanel } from './checkout-section'
 
-export default function StepComplete() {
+export function StepComplete() {
   const { t } = useTranslation()
-  const ordersHref = useAccountHref('orders')
 
   return (
-    <CheckoutPanel className='p-8 text-center sm:p-10'>
+    <section className='rounded-3xl bg-card p-8 sm:p-10 border border-border text-center'>
       <div className='mx-auto mb-4 grid size-16 place-items-center rounded-full bg-primary/10 text-primary'>
         <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} className='size-8' />
       </div>
@@ -22,12 +19,12 @@ export default function StepComplete() {
 
       <div className='mt-6 flex flex-wrap justify-center gap-3'>
         <Button asChild size='lg'>
-          <Link href={ordersHref}>{t('orders.checkout.completeViewOrders')}</Link>
+          <Link href='/orders'>{t('orders.checkout.completeViewOrders')}</Link>
         </Button>
         <Button asChild size='lg' variant='outline'>
           <Link href='/products'>{t('orders.checkout.completeContinueShopping')}</Link>
         </Button>
       </div>
-    </CheckoutPanel>
+    </section>
   )
 }

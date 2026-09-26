@@ -11,7 +11,6 @@ import {
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import NavUser from '@/features/layout/components/nav-user'
-import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
@@ -22,7 +21,7 @@ import {
   LoginCircle01Icon,
   MailValidation01Icon,
   Menu01Icon,
-  Settings01Icon,
+  PackageIcon,
   ShoppingBasket03Icon
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -49,7 +48,6 @@ const CART_BUTTON_CLASS_MOBILE = `flex-1 ${CART_BUTTON_CLASS}`
 
 export default function NavBar() {
   const { isAuthenticated, me, isGettingMe, isVerificationRequired } = useGetMe()
-  const accountHref = useAccountHref()
 
   const { t } = useTranslation()
   const pathname = usePathname()
@@ -134,8 +132,8 @@ export default function NavBar() {
                 </Button>
 
                 <Button asChild variant='outline' size='icon-sm' className={CART_BUTTON_CLASS}>
-                  <Link href={accountHref} aria-label={t('header.aria.openAccount')}>
-                    <HugeiconsIcon icon={Settings01Icon} />
+                  <Link href='/orders' aria-label={t('header.aria.openOrders')}>
+                    <HugeiconsIcon icon={PackageIcon} />
                   </Link>
                 </Button>
               </>
@@ -226,9 +224,9 @@ export default function NavBar() {
 
                     <SheetClose asChild>
                       <Button asChild variant='outline' size='sm' className={CART_BUTTON_CLASS_MOBILE}>
-                        <Link href={accountHref}>
-                          <HugeiconsIcon icon={Settings01Icon} />
-                          {t('header.nav.account')}
+                        <Link href='/orders'>
+                          <HugeiconsIcon icon={PackageIcon} />
+                          {t('header.nav.orders')}
                         </Link>
                       </Button>
                     </SheetClose>

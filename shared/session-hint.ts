@@ -1,18 +1,5 @@
 import { SESSION_HINT_COOKIE } from '@/shared/constants'
 
-const listeners = new Set<() => void>()
-
-const notify = () => {
-  listeners.forEach((listener) => listener())
-}
-
-export const subscribeToSessionHint = (listener: () => void) => {
-  listeners.add(listener)
-  return () => {
-    listeners.delete(listener)
-  }
-}
-
 export const readSessionHint = (): boolean => {
   if (typeof document === 'undefined') return false
 
@@ -27,7 +14,6 @@ export const writeSessionHint = (): void => {
 
   const secure = window.location.protocol === 'https:' ? '; Secure' : ''
   document.cookie = `${SESSION_HINT_COOKIE}=1; path=/; SameSite=Lax${secure}`
-  notify()
 }
 
 export const clearSessionHint = (): void => {
@@ -35,5 +21,4 @@ export const clearSessionHint = (): void => {
 
   const secure = window.location.protocol === 'https:' ? '; Secure' : ''
   document.cookie = `${SESSION_HINT_COOKIE}=; path=/; Max-Age=0; SameSite=Lax${secure}`
-  notify()
 }

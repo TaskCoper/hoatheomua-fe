@@ -11,23 +11,15 @@ import { useGetProductsSellableQuantity } from '@/features/products/hooks/use-ge
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import { toSellableQuantity } from '@/features/products/stock'
 import type { ProductSummary } from '@/features/products/types'
-import { useGetFlowerCompositions } from '@/features/studio/hooks/use-get-flower-composition'
-import { buildStudioSessionHref } from '@/features/studio/studio-data'
-import type { GeneratedFlowerComposition } from '@/features/studio/types'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useCartHydrated } from '@/hooks/use-cart-hydrated'
-import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
-import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import { ThumbnailImage } from '@/shared/components/thumbnail-image'
-import { isFeatureEnabled } from '@/shared/feature-flags'
 import { type CartItem, useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import {
-  AiMagicIcon,
   Alert02Icon,
   Delete02Icon,
   FlowerIcon,
@@ -38,9 +30,10 @@ import {
 } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
+import Image from 'next/image'
 import { useMemo, useState } from 'react'
 
-type UnavailableReason = 'missing' | 'missing-design' | 'out-of-stock' | 'materials'
+type UnavailableReason = 'missing' | 'out-of-stock' | 'materials'
 
 interface MaterialBlock {
   signature: string
@@ -52,19 +45,6 @@ const NO_BLOCKED_PRODUCTS: ReadonlySet<string> = new Set()
 interface MergedCartLine {
   cartItem: CartItem
   product: ProductSummary | null
-  /** Set for a bouquet designed in the studio - it names and pictures the line instead. */
-  composition: GeneratedFlowerComposition | null
-  isAiFlower: boolean
-  /** The design (or product) behind the line actually came back. */
-  exists: boolean
-  name: string
-  /** The catalogue variant, when the line is one. A design has no variant. */
-  variantName: string | null
-  image: string | null
-  /** The product page, or the studio version the design was bought from. */
-  href: string | null
-  materials: string[]
-  trims: string[]
   isResolving: boolean
   isUnavailable: boolean
   unavailableReason: UnavailableReason | null
@@ -74,7 +54,6 @@ interface MergedCartLine {
   /** A material shortage depends on how many are wanted, so a smaller order may still go through. */
   canReduceQuantity: boolean
   unitPrice: number
-  oldPrice: number
   lineSubtotal: number
 }
 
@@ -116,29 +95,12 @@ export default function CartPage() {
   const { slug: mySlug, hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber()
   const isPhoneMissing = !isLoadingPhoneNumber && !hasPhoneNumber
 
-  // Editing the cart stays live; only the hand-off to checkout is switched off.
-  const canCheckout = isFeatureEnabled('ordering')
-  const notifyUnavailable = useFeatureUnavailableToast()
-
   const productIds = useMemo(
     () => (hasHydrated ? Array.from(new Set(items.map((item) => item.productId))) : []),
     [items, hasHydrated]
   )
 
-  // A bouquet designed in the studio is not a catalogue row: its name, artwork and
-  // flowers come from the composition endpoint, not from the product summary.
-  const catalogueProductIds = useMemo(
-    () =>
-      hasHydrated ? Array.from(new Set(items.filter((item) => !item.aiFlower).map((item) => item.productId))) : [],
-    [items, hasHydrated]
-  )
-  const flowerIds = useMemo(
-    () => (hasHydrated ? items.flatMap((item) => (item.aiFlower ? [item.aiFlower.generatedFlowerId] : [])) : []),
-    [items, hasHydrated]
-  )
-
-  const { productSummaryById } = useGetProductSummary({ productIds: catalogueProductIds })
-  const { compositionByFlowerId } = useGetFlowerCompositions({ flowerIds })
+  const { productSummaryById } = useGetProductSummary({ productIds })
 
   // Product details can be served from cache; stock cannot. This is the number
   // every line below is judged against.
@@ -148,50 +110,22 @@ export default function CartPage() {
 
   const mergedLines = useMemo<MergedCartLine[]>(() => {
     return items.map<MergedCartLine>((cartItem) => {
-      const aiFlower = cartItem.aiFlower
-      const compositionState = aiFlower ? compositionByFlowerId.get(aiFlower.generatedFlowerId) : undefined
-      const composition = compositionState?.composition ?? null
+      const state = productSummaryById.get(cartItem.productId)
+      const product = state?.product ?? null
+      const isResolving = state?.isResolving ?? true
 
-      const summaryState = aiFlower ? undefined : productSummaryById.get(cartItem.productId)
-      const product = summaryState?.product ?? null
-
-      const isResolving = aiFlower ? (compositionState?.isResolving ?? true) : (summaryState?.isResolving ?? true)
-      // What the line is *of*: the design for a studio bouquet, the product otherwise.
-      const exists = aiFlower ? Boolean(composition) : Boolean(product)
-
-      // Stock is always the product's - a design is assembled from the same shelf.
       const liveStock = sellableQuantityById.get(cartItem.productId)
-      const rawStock = liveStock ?? (aiFlower ? undefined : product?.sellableQuantity)
+      const rawStock = liveStock ?? product?.sellableQuantity
       const isStockKnown = typeof rawStock === 'number' && Number.isFinite(rawStock)
       const stock = isStockKnown ? toSellableQuantity(rawStock) : null
-
-      // The composition prices nothing, so a design shows what the studio quoted.
-      const unitPrice = aiFlower ? aiFlower.unitPrice : (product?.price ?? 0)
-      const oldPrice = aiFlower ? 0 : (product?.oldPrice ?? 0)
+      const unitPrice = product?.price ?? 0
+      const lineSubtotal = unitPrice * cartItem.quantity
 
       const base = {
         cartItem,
         product,
-        composition,
-        isAiFlower: Boolean(aiFlower),
-        exists,
-        name: aiFlower
-          ? (composition?.name?.trim() ?? '')
-          : (product?.parent?.productName ?? product?.productName ?? ''),
-        variantName: aiFlower ? null : product?.parent ? product.productName : null,
-        image: aiFlower ? composition?.coverImage || null : (product?.coverImage ?? null),
-        href: aiFlower
-          ? buildStudioSessionHref(aiFlower.rootProductId, aiFlower.sessionId, aiFlower.generatedFlowerId)
-          : product
-            ? buildProductVariantHref(product.parent?.id ?? product.id, product.parent?.id ? product.id : null)
-            : null,
-        materials:
-          composition?.materials.flatMap((material) => (material.name?.trim() ? [material.name.trim()] : [])) ?? [],
-        // Snapshotted on the line, so they stay with the bouquet even once the design is gone.
-        trims: [aiFlower?.ribbon, aiFlower?.wrap].flatMap((trim) => (trim?.name ? [trim.name] : [])),
         unitPrice,
-        oldPrice,
-        lineSubtotal: unitPrice * cartItem.quantity
+        lineSubtotal
       }
 
       if (isResolving) {
@@ -207,12 +141,13 @@ export default function CartPage() {
         }
       }
 
-      if (!exists) {
+      if (!product) {
         return {
           ...base,
+          product: null,
           isResolving: false,
           isUnavailable: true,
-          unavailableReason: aiFlower ? 'missing-design' : 'missing',
+          unavailableReason: 'missing',
           stock: null,
           isOverStock: false,
           isSelectable: false,
@@ -258,7 +193,7 @@ export default function CartPage() {
         canReduceQuantity: cartItem.quantity > 1
       }
     })
-  }, [items, productSummaryById, compositionByFlowerId, sellableQuantityById, materialBlockedIds])
+  }, [items, productSummaryById, sellableQuantityById, materialBlockedIds])
 
   const isLineChecked = (line: MergedCartLine) => line.isSelectable && !deselectedIds.has(line.cartItem.lineId)
 
@@ -291,14 +226,9 @@ export default function CartPage() {
   // pressed. On a shortage the fresh numbers land in the query cache, which re-marks
   // the offending lines as over-stock or sold out and drops them out of the selection.
   const handleCheckout = async () => {
-    if (!canCheckout) {
-      notifyUnavailable()
-      return
-    }
-
     const wanted = selectedLines.map((line) => ({
       productId: line.cartItem.productId,
-      productName: line.name || (line.product?.productName ?? null),
+      productName: line.product?.productName ?? null,
       quantity: line.cartItem.quantity
     }))
 
@@ -451,11 +381,9 @@ export default function CartPage() {
 
             <p className='text-xs leading-relaxed text-muted-foreground'>{t('cart.summary.shippingNote')}</p>
 
-            {canCheckout ? null : <FeatureUnavailableNotice />}
-
             <motion.div
-              whileHover={!noneChecked && canCheckout ? { y: -2, scale: 1.02 } : undefined}
-              whileTap={!noneChecked && canCheckout ? { scale: 0.97 } : undefined}
+              whileHover={!noneChecked ? { y: -2, scale: 1.02 } : undefined}
+              whileTap={!noneChecked ? { scale: 0.97 } : undefined}
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
             >
               {!noneChecked && isPhoneMissing && mySlug ? (
@@ -464,7 +392,7 @@ export default function CartPage() {
                 </Button>
               ) : (
                 <Button
-                  disabled={!canCheckout || noneChecked || isVerifyingSellableQuantity || isCheckingCoreProducts}
+                  disabled={noneChecked || isVerifyingSellableQuantity || isCheckingCoreProducts}
                   className='w-full'
                   size='lg'
                   onClick={handleCheckout}
@@ -523,33 +451,6 @@ function CartHeading({ title, subtitle }: { title: string; subtitle?: string }) 
   )
 }
 
-const MAX_VISIBLE_CHIPS = 3
-
-function ChipRow({ label, items }: { label: string; items: string[] }) {
-  const visible = items.slice(0, MAX_VISIBLE_CHIPS)
-  const hiddenCount = items.length - visible.length
-
-  return (
-    <div className='flex flex-wrap items-center gap-1'>
-      <span className='shrink-0 text-[0.6875rem] font-semibold text-muted-foreground/70'>{label}</span>
-      {visible.map((item, index) => (
-        <span
-          key={`${item}-${index}`}
-          title={item}
-          className='max-w-28 truncate rounded-full bg-secondary/30 px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground'
-        >
-          {item}
-        </span>
-      ))}
-      {hiddenCount > 0 && (
-        <span className='rounded-full bg-secondary/30 px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground'>
-          +{hiddenCount}
-        </span>
-      )}
-    </div>
-  )
-}
-
 interface CartLineRowProps {
   line: MergedCartLine
   checked: boolean
@@ -564,27 +465,23 @@ interface CartLineRowProps {
 function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemove, onUseMax, t }: CartLineRowProps) {
   const {
     cartItem,
-    isAiFlower,
-    exists,
-    name,
-    variantName,
-    image,
-    href,
-    materials,
-    trims,
+    product,
     isResolving,
     isUnavailable,
     unavailableReason,
     stock,
     isOverStock,
     isSelectable,
-    canReduceQuantity,
-    unitPrice,
-    oldPrice
+    canReduceQuantity
   } = line
   const unitName = cartItem.selectedOptions?.unit
-  const hasDetails = exists && Boolean(href)
-  const hasDiscount = oldPrice > unitPrice
+  const avatar = product?.coverImage ?? null
+  const retailPrice = product?.price ?? 0
+  const oldPrice = product?.oldPrice ?? 0
+  const hasDiscount = product ? oldPrice > retailPrice : false
+  const productHref = product
+    ? buildProductVariantHref(product.parent?.id ?? product.id, product.parent?.id ? product.id : null)
+    : null
 
   return (
     <motion.li
@@ -605,22 +502,23 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           className='mt-2'
         />
 
-        {hasDetails && href ? (
+        {product?.id && productHref ? (
           <Link
-            href={href}
+            href={productHref}
             className='relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-foreground/8 sm:size-28'
           >
-            <ThumbnailImage
-              src={image}
-              alt={name}
-              fill
-              sizes='112px'
-              quality={65}
-              className='object-cover transition-transform duration-500 ease-out group-hover:scale-105'
-              fallback={
-                <HugeiconsIcon icon={isAiFlower ? AiMagicIcon : FlowerIcon} className='size-9 text-primary/40' />
-              }
-            />
+            {avatar ? (
+              <Image
+                src={avatar}
+                alt={product.productName ?? ''}
+                fill
+                sizes='112px'
+                quality={65}
+                className='object-cover transition-transform duration-500 ease-out group-hover:scale-105'
+              />
+            ) : (
+              <HugeiconsIcon icon={FlowerIcon} className='size-9 text-primary/40' />
+            )}
           </Link>
         ) : isResolving ? (
           <Skeleton className='size-24 shrink-0 sm:size-28' />
@@ -631,37 +529,25 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
         )}
 
         <div className='min-w-0 flex-1 space-y-1 py-0.5'>
-          {hasDetails && href ? (
+          {product?.id && productHref ? (
             <>
               <Link
-                href={href}
+                href={productHref}
                 className='font-title line-clamp-2 text-base font-bold leading-snug text-primary hover:text-primary/80 sm:text-lg'
               >
-                {name}
+                {product.parent?.productName ?? product.productName}
               </Link>
-              {isAiFlower && (
+              {product.parent && (
                 <Badge variant='secondary' className='max-w-full font-semibold'>
-                  <HugeiconsIcon icon={AiMagicIcon} className='size-3' />
-                  <span className='truncate'>{t('cart.aiLine.badge')}</span>
-                </Badge>
-              )}
-              {variantName && (
-                <Badge variant='secondary' className='max-w-full font-semibold'>
-                  <span className='truncate'>{variantName}</span>
+                  <span className='truncate'>{product.productName}</span>
                 </Badge>
               )}
             </>
           ) : isResolving ? (
             <Skeleton className='h-4 w-32' />
           ) : (
-            <div className='text-sm font-semibold text-muted-foreground'>
-              {t(isAiFlower ? 'cart.unavailable.missingDesign' : 'cart.unavailable.missing')}
-            </div>
+            <div className='text-sm font-semibold text-muted-foreground'>{t('cart.unavailable.missing')}</div>
           )}
-
-          {isAiFlower && materials.length > 0 && <ChipRow label={t('cart.aiLine.materialsLabel')} items={materials} />}
-
-          {isAiFlower && trims.length > 0 && <ChipRow label={t('cart.aiLine.trimsLabel')} items={trims} />}
 
           {unitName && (
             <p className='inline-flex items-center gap-1 text-xs font-medium text-muted-foreground'>
@@ -672,9 +558,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
 
           {isResolving && <Skeleton className='h-4 w-20' />}
 
-          {hasDetails && !isResolving && (
+          {product && !isResolving && (
             <div className='flex items-baseline gap-2 pt-0.5'>
-              <span className='font-title text-lg font-bold text-primary'>{formatVnd(unitPrice)}</span>
+              <span className='font-title text-lg font-bold text-primary'>{formatVnd(retailPrice)}</span>
               {hasDiscount && <span className='text-xs text-muted-foreground line-through'>{formatVnd(oldPrice)}</span>}
             </div>
           )}
@@ -685,7 +571,6 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
               {
                 {
                   missing: t('cart.unavailable.missing'),
-                  'missing-design': t('cart.unavailable.missingDesign'),
                   'out-of-stock': t('cart.unavailable.outOfStock'),
                   materials: canReduceQuantity ? t('cart.unavailable.materialsAction') : t('cart.unavailable.materials')
                 }[unavailableReason]
@@ -745,7 +630,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
           </Button>
         </div>
 
-        {!isUnavailable && hasDetails && (
+        {!isUnavailable && product && (
           <div className='text-right'>
             <p className='text-[0.625rem] font-medium text-muted-foreground'>{t('cart.lineSubtotal')}</p>
             <p data-testid='cart-line-subtotal' className='font-title text-lg font-bold text-primary'>

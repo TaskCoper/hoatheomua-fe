@@ -20,6 +20,9 @@ export default function CategoryFilterSection({ category }: { category: Sortable
   const urlKeys = useMemo(() => buildSectionUrlKeys(category.categoryId), [category.categoryId])
   const [search, setSearch] = useQueryStates(sectionSearchParsers, { urlKeys })
 
+  // Pagination links get real, scoped URLs (e.g. `?<catId>_page=2`). Serializing
+  // onto the *current* query string preserves this section's own filters and every
+  // sibling section's params, so open-in-new-tab doesn't reset the rest of the page.
   const currentSearchParams = useSearchParams()
   const serializePage = useMemo(() => createSerializer(sectionSearchParsers, { urlKeys }), [urlKeys])
   const pageHref = (page: number) => serializePage(new URLSearchParams(currentSearchParams.toString()), { page })

@@ -2,7 +2,6 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import SignInProvider from '@/features/users/components/sign-in-provider'
-import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
 import { LockPasswordIcon } from '@hugeicons/core-free-icons'
@@ -15,12 +14,10 @@ export default function SignInModalPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { t } = useTranslation()
-  const { isAuthenticated } = useGetMe()
   const [isUserClosing, setIsUserClosing] = useState(false)
 
   const isOnSignInRoute = pathname.startsWith('/sign-in')
-
-  const isOpen = isOnSignInRoute && !isUserClosing && !isAuthenticated
+  const isOpen = isOnSignInRoute && !isUserClosing
 
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 

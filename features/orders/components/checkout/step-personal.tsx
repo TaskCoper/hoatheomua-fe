@@ -3,8 +3,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Address } from '@/features/addresses/types'
 import type { CheckoutDeliveryOption } from '../../checkout-methods'
-import CheckoutFields from '../checkout-fields'
-import { CheckoutPanel } from './checkout-section'
+import { CheckoutFields } from '../checkout-fields'
 
 interface StepPersonalProps {
   addresses: Address[]
@@ -21,7 +20,7 @@ interface StepPersonalProps {
   onSelectDeliveryMethod: (id: string) => void
 }
 
-export default function StepPersonal({
+export function StepPersonal({
   addresses,
   isLoadingAddresses,
   selectedAddressId,
@@ -37,7 +36,7 @@ export default function StepPersonal({
 }: StepPersonalProps) {
   if (isLoadingAddresses) {
     return (
-      <CheckoutPanel className='space-y-4'>
+      <section className='space-y-4 rounded-3xl bg-card p-5 sm:p-6 border border-border'>
         <Skeleton className='h-6 w-40 rounded-md' />
         <div className='space-y-3'>
           {Array.from({ length: 2 }).map((_, index) => (
@@ -49,7 +48,7 @@ export default function StepPersonal({
             <Skeleton key={index} className='h-11 w-full rounded-xl' />
           ))}
         </div>
-      </CheckoutPanel>
+      </section>
     )
   }
 

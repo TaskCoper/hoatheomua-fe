@@ -5,8 +5,6 @@ import {
   createPhoneNumberSchema
 } from '@/shared/validations'
 import z from 'zod'
-import type { CardConfig } from './cards/card-config'
-import { createCheckoutCardSchema } from './cards/validations'
 import { InvoiceType } from './types'
 
 const createBaseCheckoutSchema = (t: TranslationFunction) => {
@@ -47,12 +45,11 @@ const createBaseCheckoutSchema = (t: TranslationFunction) => {
 
 export const createEstimateSchema = (t: TranslationFunction) => createBaseCheckoutSchema(t)
 
-export const createCheckoutSchema = (t: TranslationFunction, cardConfig: CardConfig) => {
+export const createCheckoutSchema = (t: TranslationFunction) => {
   const requiredFor = (field: string) => t('common.validation.required', { field })
 
   return createBaseCheckoutSchema(t)
     .extend({
-      cards: z.array(createCheckoutCardSchema(t, cardConfig)),
       taxCode: z
         .string()
         .trim()

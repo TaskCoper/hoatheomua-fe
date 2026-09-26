@@ -6,7 +6,11 @@ export interface GetPublicConfigsParams {
   key?: string
 }
 
-type PublicConfigsQueryOptions<TData> = Pick<UseQueryOptions<TData>, 'staleTime' | 'gcTime' | 'retry' | 'throwOnError'>
+// Non-essential configs should pass `throwOnError: false`.
+type PublicConfigsQueryOptions<TData> = Pick<
+  UseQueryOptions<TData>,
+  'staleTime' | 'gcTime' | 'retry' | 'throwOnError'
+>
 
 export const useGetPublicConfigs = <T extends { key: string }, K extends T['key'] = T['key']>({
   group,

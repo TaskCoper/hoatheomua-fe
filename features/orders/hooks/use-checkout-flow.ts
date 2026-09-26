@@ -1,10 +1,7 @@
 import { useCheckCoreProducts } from '@/features/products/hooks/use-check-core-products'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
-import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
-import { useUploadFileWithToast } from '@/hooks/use-upload-file-with-toast'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useRouter } from '@/lib/i18n/navigation'
-import { FeatureUnavailableError, isFeatureEnabled, ORDERING_DISABLED_REDIRECT_PATH } from '@/shared/feature-flags'
 import { useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { useEffect, useRef, useState } from 'react'
@@ -35,12 +32,6 @@ export const useCheckoutFlow = ({
 }: UseCheckoutFlowArgs) => {
   const { t } = useTranslation()
   const router = useRouter()
-  const notifyUnavailable = useFeatureUnavailableToast()
-
-  // Mirrors the middleware block in proxy.ts, for the soft navigations it does
-  // not see (a prefetched route entered from the cart, a stale client bundle).
-  const canPlaceOrder = isFeatureEnabled('ordering')
-  const canQuoteShipping = isFeatureEnabled('externalServices')
 
   const items = useCheckoutIntentStore((state) => state.items)
   const source = useCheckoutIntentStore((state) => state.source)
@@ -49,32 +40,30 @@ export const useCheckoutFlow = ({
   const productById = useProductsByIds(items)
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
   const { checkCoreProducts, isCheckingCoreProducts } = useCheckCoreProducts()
-  const { uploadFileWithToast, isUploading: isUploadingAttachments } = useUploadFileWithToast()
 
   const [step, setStep] = useState<CheckoutStep>(1)
-
+  // The carrier the quote in hand was priced by. Null means nothing is priced.
   const [estimatedGateway, setEstimatedGateway] = useState<ShippingGateway | null>(null)
   const [materialBlockedProductIds, setMaterialBlockedProductIds] = useState<ReadonlySet<string>>(() => new Set())
   const hasSubmittedRef = useRef(false)
 
   useEffect(() => {
-    if (!canPlaceOrder) {
-      router.replace(ORDERING_DISABLED_REDIRECT_PATH)
-      return
-    }
-
     if (hasSubmittedRef.current) return
     if (items.length === 0) router.replace('/cart')
-  }, [canPlaceOrder, items.length, router])
+  }, [items.length, router])
 
   const goBack = () => setStep((prev) => (prev - 1) as CheckoutStep)
 
+  // `fullName`/`phone` come from the signed-in account (`useGetUser`), never the
+  // form. Nothing on screen surfaces them, so a still-loading or incomplete
+  // profile would otherwise ship an order with both fields blank.
   const hasContact = () => {
     if (contact.fullName.trim() && contact.phone.trim()) return true
     toast.error(t('orders.checkout.contactMissing'))
     return false
   }
 
+  // Stock and materials are separate limits, and either can have moved since the cart.
   const isFulfillable = async () => {
     const wanted = items.map((item) => ({
       productId: item.productId,
@@ -84,27 +73,14 @@ export const useCheckoutFlow = ({
 
     const [stock, core] = await Promise.all([verifySellableQuantity(wanted), checkCoreProducts(wanted)])
 
+    // The toast is gone in a few seconds; the summary keeps the offending lines
+    // marked until a later check clears them.
     setMaterialBlockedProductIds(core.blockedProductIds)
 
     return stock.ok && core.ok
   }
 
-  const goNext = () => {
-    setStep((prev) => Math.min(prev + 1, 5) as CheckoutStep)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const goToStep = (next: CheckoutStep) => {
-    setStep(next)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleGoToCards = async (shippingGateway: ShippingGateway | undefined) => {
-    if (!canQuoteShipping) {
-      notifyUnavailable()
-      return
-    }
-
+  const handleGoToPayment = async (shippingGateway: ShippingGateway | undefined) => {
     if (items.length === 0) {
       toast.error(t('orders.checkout.emptyCart'))
       return
@@ -137,7 +113,8 @@ export const useCheckoutFlow = ({
         shippingGateway
       })
       setEstimatedGateway(shippingGateway)
-      goToStep(2)
+      setStep(2)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {}
   }
 
@@ -146,55 +123,28 @@ export const useCheckoutFlow = ({
     setEstimatedGateway(null)
   }
 
+  // Address changed during payment. Drop the stale shippingFee and rewind
+  // so the new address is shown before estimating again
   const invalidateEstimate = () => {
-    if (step === 1 || step === 5) {
+    if (step !== 2) {
       return false
     }
 
     clearEstimate()
-    goToStep(1)
+    setStep(1)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     return true
   }
 
-  /** Card photos upload here, not on pick, so an abandoned checkout uploads nothing. */
-  const uploadCardAttachments = async (
-    cards: CheckoutFormValues['cards']
-  ): Promise<CheckoutFormValues['cards'] | null> => {
-    const uploaded = await Promise.all(
-      cards.map(async (card) => {
-        if (card.type !== 'ai' || !card.attachedImage) return card
-
-        const attachedImageUrl = await uploadFileWithToast({
-          file: card.attachedImage,
-          showSuccessToast: false,
-          renderProgress: (progress) => t('orders.checkout.cards.attachmentProgress', { progress })
-        })
-
-        return attachedImageUrl ? { ...card, attachedImageUrl } : null
-      })
-    )
-
-    return uploaded.every((card) => card !== null) ? (uploaded as CheckoutFormValues['cards']) : null
-  }
-
-  const handleConfirmOrder = (selection: CheckoutSelection) => {
-    // Confirming both places the order and opens a payment session upstream.
-    if (!canPlaceOrder || !isFeatureEnabled('payment')) {
-      notifyUnavailable()
-      return
-    }
-
-    return methods.handleSubmit(
+  const handleConfirmOrder = (selection: CheckoutSelection) =>
+    methods.handleSubmit(
       async (values) => {
         if (!hasContact()) return
         if (!(await isFulfillable())) return
 
         try {
-          const cards = await uploadCardAttachments(values.cards)
-          if (!cards) return
-
           const { mrc_order_id } = await createOrder({
-            body: buildCheckoutPayload({ ...values, cards }, items, productById, contact, selection)
+            body: buildCheckoutPayload(values, items, productById, contact, selection)
           })
 
           if (source === 'cart') {
@@ -206,22 +156,12 @@ export const useCheckoutFlow = ({
 
           router.push(`/orders/${mrc_order_id}`)
         } catch (error) {
-          // The service-level backstop speaks English; say it in the buyer's language.
-          if (error instanceof FeatureUnavailableError) {
-            notifyUnavailable()
-            return
-          }
-
           const message = error instanceof Error ? error.message : t('orders.checkout.createError')
           toast.error(t('orders.checkout.createError'), { description: message })
         }
       },
-      (errors) => {
-        toast.error(t('common.validation.fixErrors'))
-        goToStep(errors.cards ? 2 : 3)
-      }
+      () => toast.error(t('common.validation.fixErrors'))
     )()
-  }
 
   const handleCancel = () => {
     clearIntent()
@@ -234,15 +174,10 @@ export const useCheckoutFlow = ({
     goBack,
     items,
     source,
-    canPlaceOrder,
-    canQuoteShipping,
     isVerifyingAvailability: isVerifyingSellableQuantity || isCheckingCoreProducts,
-    isUploadingAttachments,
     materialBlockedProductIds,
     estimatedGateway,
-    goNext,
-    goToStep,
-    handleGoToCards,
+    handleGoToPayment,
     handleConfirmOrder,
     handleCancel,
     clearEstimate,

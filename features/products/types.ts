@@ -11,8 +11,6 @@ export interface Product {
   categories: ProductCategory[]
   sellableQuantity: number
 
-  description: string | null
-
   otherImages: string[] | null
 
   sourceRowNumber: number
@@ -279,29 +277,7 @@ export interface CoreMaterialShortage {
   affectedProducts: CoreMaterialAffectedProduct[]
 }
 
-export interface ProductMaterial {
-  id: string
-  productName: string | null
-  coverImage: string | null
-  quantity: number
-  price: number
-}
-
-export interface ProductFamilyMember {
-  id: string
-  productName: string | null
-  coverImage: string | null
-  description: string | null
-  price: number | null
-  materials: ProductMaterial[] | null
-  sellableQuantity: number
-}
-
-export interface ProductFamily {
-  parent: ProductFamilyMember
-  children: ProductFamilyMember[] | null
-}
-
+/** Slim product shape from `GET /v2/products/{id}/detail` - just enough to render a cart/order line. */
 export interface ProductSummary {
   id: string
   productName: string | null
@@ -357,31 +333,12 @@ export interface ProductDetail extends Omit<Product, ProductRawFieldKey> {
 
   webOrder: number | null
   nhanhCreatedAt: string | null
-  nhanhUpdatedAt: string | null
-
-  nhanhCategoryId: number | null
-  nhanhBrandId: number | null
-  nhanhTypeId: number | null
 
   branchPriceDuplicate: number | null
   wholesaleBranchPriceDuplicate: number | null
 
-  position: number | null
-
-  factor: number | null
-
-  isActive: boolean
-  isDeleted: boolean
-
-  stockStatus: string | null
-  unavailableReason: string | null
-
   createdAt: string
   updatedAt: string | null
 
-  parentId: string | null
-
   children: ProductDetail[] | null
-
-  materials: ProductMaterial[] | null
 }

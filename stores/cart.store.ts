@@ -10,44 +10,12 @@ export const MAX_QUANTITY = 99
 
 export type CartSelectedOptions = Record<string, string>
 
-export interface CartAiFlowerTrim {
-  productId: string
-  name: string
-  imageUrl: string | null
-  priceAmount: number
-}
-
-/**
- * What makes a line a bouquet designed in the studio rather than a catalogue product.
- * `productId` stays the real product the design was built on - it is what stock,
- * shipping and the order item are priced against - and this rides alongside it.
- */
-export interface CartAiFlower {
-  /** Keys `GET v1/ai-flowers/{id}/composition`, and the id the order carries per bouquet. */
-  generatedFlowerId: string
-  /** Back to where the design was made: `/products/{rootProductId}/studio/{sessionId}`. */
-  sessionId: string
-  rootProductId: string
-  /**
-   * What the studio quoted: the product, the extra stems the buyer added, and the ribbon
-   * and wrapping paper it was generated with. The composition endpoint prices nothing and
-   * none of the extras are on the product row, so this snapshot is the only number the
-   * cart can show for the line.
-   */
-  unitPrice: number
-  /** Part of the bouquet, not an add-on - nothing in the bag or at checkout drops them. */
-  ribbon: CartAiFlowerTrim | null
-  wrap: CartAiFlowerTrim | null
-}
-
 export interface CartItem {
   lineId: string
   productId: string
   variantId: number | null
   quantity: number
   selectedOptions: CartSelectedOptions
-  /** `null` for an ordinary catalogue line. */
-  aiFlower: CartAiFlower | null
   addedAt: string
   updatedAt: string
 }
@@ -57,7 +25,6 @@ export interface AddCartItemInput {
   variantId?: number | null
   quantity?: number
   selectedOptions?: CartSelectedOptions
-  aiFlower?: CartAiFlower | null
 }
 
 export interface CheckoutCartItem {
@@ -65,7 +32,6 @@ export interface CheckoutCartItem {
   variantId: number | null
   quantity: number
   selectedOptions: CartSelectedOptions
-  aiFlower: CartAiFlower | null
 }
 
 interface CartState {
@@ -99,65 +65,10 @@ function normalizeSelectedOptions(value: unknown): CartSelectedOptions {
   return Object.fromEntries(entries) as CartSelectedOptions
 }
 
-/** A design added before the trims were carried has none; it keeps the price it was added at. */
-function normalizeAiFlowerTrim(value: unknown): CartAiFlowerTrim | null {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
-  const candidate = value as Record<string, unknown>
-
-  const productId = typeof candidate.productId === 'string' ? candidate.productId : ''
-  const name = typeof candidate.name === 'string' ? candidate.name.trim() : ''
-  if (!productId || !name) return null
-
-  const priceAmount =
-    typeof candidate.priceAmount === 'number' && Number.isFinite(candidate.priceAmount)
-      ? Math.max(0, candidate.priceAmount)
-      : 0
-
-  return {
-    productId,
-    name,
-    imageUrl: typeof candidate.imageUrl === 'string' && candidate.imageUrl ? candidate.imageUrl : null,
-    priceAmount
-  }
-}
-
-function normalizeAiFlower(value: unknown): CartAiFlower | null {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
-  const candidate = value as Record<string, unknown>
-
-  const generatedFlowerId = typeof candidate.generatedFlowerId === 'string' ? candidate.generatedFlowerId : ''
-  if (!generatedFlowerId) return null
-
-  const unitPrice =
-    typeof candidate.unitPrice === 'number' && Number.isFinite(candidate.unitPrice)
-      ? Math.max(0, candidate.unitPrice)
-      : 0
-
-  return {
-    generatedFlowerId,
-    sessionId: typeof candidate.sessionId === 'string' ? candidate.sessionId : '',
-    rootProductId: typeof candidate.rootProductId === 'string' ? candidate.rootProductId : '',
-    unitPrice,
-    ribbon: normalizeAiFlowerTrim(candidate.ribbon),
-    wrap: normalizeAiFlowerTrim(candidate.wrap)
-  }
-}
-
-/**
- * Two designs can sit on the same product, so the generated flower joins the key -
- * without it a second bouquet would merge into the first. Catalogue lines keep the
- * key they have always had, which is what already sits in storage.
- */
-export function buildLineId(
-  productId: string,
-  variantId: number | null,
-  selectedOptions: CartSelectedOptions,
-  generatedFlowerId?: string | null
-): string {
+export function buildLineId(productId: string, variantId: number | null, selectedOptions: CartSelectedOptions): string {
   const normalizedOptions = normalizeSelectedOptions(selectedOptions)
   const optionsKey = Object.keys(normalizedOptions).length ? JSON.stringify(Object.entries(normalizedOptions)) : ''
-  const base = `p:${productId}|v:${variantId ?? 'none'}|o:${optionsKey}`
-  return generatedFlowerId ? `${base}|g:${generatedFlowerId}` : base
+  return `p:${productId}|v:${variantId ?? 'none'}|o:${optionsKey}`
 }
 
 function nowIso(): string {
@@ -181,12 +92,11 @@ export function sanitizeItems(input: unknown): CartItem[] {
 
     const selectedOptions = normalizeSelectedOptions(candidate.selectedOptions)
     const quantity = sanitizeQuantity(candidate.quantity)
-    const aiFlower = normalizeAiFlower(candidate.aiFlower)
 
     const lineId =
       typeof candidate.lineId === 'string' && candidate.lineId.length > 0
         ? candidate.lineId
-        : buildLineId(productId, variantId, selectedOptions, aiFlower?.generatedFlowerId)
+        : buildLineId(productId, variantId, selectedOptions)
 
     if (seen.has(lineId)) continue
     seen.add(lineId)
@@ -201,7 +111,6 @@ export function sanitizeItems(input: unknown): CartItem[] {
       variantId,
       quantity,
       selectedOptions,
-      aiFlower,
       addedAt,
       updatedAt
     })
@@ -212,12 +121,11 @@ export function sanitizeItems(input: unknown): CartItem[] {
 
 export function toCheckoutPayload(items: CartItem[]): { items: CheckoutCartItem[] } {
   return {
-    items: items.map(({ productId, variantId, quantity, selectedOptions, aiFlower }) => ({
+    items: items.map(({ productId, variantId, quantity, selectedOptions }) => ({
       productId,
       variantId,
       quantity,
-      selectedOptions,
-      aiFlower
+      selectedOptions
     }))
   }
 }
@@ -233,8 +141,7 @@ export const useCartStore = create<CartState>()(
         const variantId = input.variantId ?? null
         const selectedOptions = normalizeSelectedOptions(input.selectedOptions)
         const requestedQuantity = sanitizeQuantity(input.quantity ?? 1)
-        const aiFlower = normalizeAiFlower(input.aiFlower)
-        const lineId = buildLineId(productId, variantId, selectedOptions, aiFlower?.generatedFlowerId)
+        const lineId = buildLineId(productId, variantId, selectedOptions)
         const timestamp = nowIso()
 
         const existing = get().items.find((item) => item.lineId === lineId)
@@ -258,7 +165,6 @@ export const useCartStore = create<CartState>()(
           variantId,
           quantity: requestedQuantity,
           selectedOptions,
-          aiFlower,
           addedAt: timestamp,
           updatedAt: timestamp
         }

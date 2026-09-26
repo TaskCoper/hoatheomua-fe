@@ -19,12 +19,7 @@ function AccordionItem({ className, ...props }: React.ComponentProps<typeof Acco
   )
 }
 
-interface AccordionTriggerProps extends React.ComponentProps<typeof AccordionPrimitive.Trigger> {
-  /** Opt out of the built-in caret when the trigger draws its own - e.g. inside a pill. */
-  hideChevron?: boolean
-}
-
-function AccordionTrigger({ className, children, hideChevron = false, ...props }: AccordionTriggerProps) {
+function AccordionTrigger({ className, children, ...props }: React.ComponentProps<typeof AccordionPrimitive.Trigger>) {
   return (
     <AccordionPrimitive.Header className='flex'>
       <AccordionPrimitive.Trigger
@@ -36,12 +31,10 @@ function AccordionTrigger({ className, children, hideChevron = false, ...props }
         {...props}
       >
         {children}
-        {hideChevron ? null : (
-          <HugeiconsIcon
-            icon={ArrowDown01Icon}
-            className='size-5 shrink-0 text-primary transition-transform duration-200 group-data-[state=open]:rotate-180'
-          />
-        )}
+        <HugeiconsIcon
+          icon={ArrowDown01Icon}
+          className='size-5 shrink-0 text-primary transition-transform duration-200 group-data-[state=open]:rotate-180'
+        />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   )

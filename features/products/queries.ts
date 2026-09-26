@@ -16,12 +16,6 @@ export const productDetailQuery = (id: string) =>
     queryFn: () => fetchProductDetail(id)
   })
 
-export const productFamilyQuery = (id: string) =>
-  queryOptions({
-    queryKey: ['product-family', id] as const,
-    queryFn: () => productService.getProductFamily({ id })
-  })
-
 export const productSummaryQuery = (id: string) =>
   queryOptions({
     queryKey: ['product-summary', id] as const,

@@ -11,7 +11,7 @@ async function loadTestimonials() {
 
   try {
     const parsed = JSON.parse(raw) as FeedbacksCollection
-    return parsed.items ?? []
+    return (parsed.items ?? []).filter((item) => !item.isPlaceholder)
   } catch {
     return []
   }

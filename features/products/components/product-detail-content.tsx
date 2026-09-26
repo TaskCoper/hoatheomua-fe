@@ -45,7 +45,6 @@ export default function ProductDetailContent({
                   type={product.productType}
                   category={product.categoryName}
                   country={product.origin}
-                  description={product.description}
                   shipping={{
                     width: product.width,
                     height: product.height,

@@ -41,8 +41,6 @@ export interface Category {
 
   metaData: string | null
 
-  page: CategoryProductPage[]
-
   startTime: string | null
   endTime: string | null
 
