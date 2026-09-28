@@ -144,8 +144,8 @@ export default function B2BServicesSection({
                   transition={{ type: 'spring', stiffness: 260, damping: 14 }}
                   className={`pointer-events-none absolute font-title font-bold leading-none transition-colors ${
                     isFeatured
-                      ? 'right-4 -top-2 text-5xl text-secondary/35 group-hover:text-secondary/55 sm:right-5 sm:-top-3 sm:text-6xl lg:text-7xl'
-                      : 'right-3 -top-1 text-5xl text-secondary/40 group-hover:text-secondary/70 sm:right-4 sm:-top-2 sm:text-6xl'
+                      ? 'right-4 bottom-3 text-5xl text-secondary/35 group-hover:text-secondary/55 sm:right-5 sm:bottom-3 sm:text-6xl lg:text-7xl 2xl:top-2 2xl:right-4'
+                      : 'right-3 bottom-2 text-5xl text-secondary/40 group-hover:text-secondary/70 sm:right-4 sm:bottom-2 sm:text-6xl 2xl:top-2 2xl:right-3'
                   }`}
                 >
                   {String(index + 1).padStart(2, '0')}

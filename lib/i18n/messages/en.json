@@ -29,12 +29,6 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Password",
-      "validation": {
-        "password": {
-          "minLength": "Password must be at least 8 characters.",
-          "strong": "Password must include lowercase, uppercase, a number, and a special character."
-        }
-      },
       "passwordPlaceholder": "Enter your password",
       "confirmPassword": "Confirm password",
       "confirmPasswordPlaceholder": "Re-enter your password",
@@ -170,7 +164,14 @@
       "arrayMin": "{field} must have at least {min} items.",
       "arrayMax": "{field} must have no more than {max} items.",
       "phoneNumber": "Invalid Vietnamese phone number (e.g., 0983 024 353).",
-      "passwordStrength": "Use at least 1 uppercase letter, 1 number, and 1 special character.",
+      "password": {
+        "missing": "{field} is missing: {missing}.",
+        "invalidCharacters": "{field} can only contain letters, numbers, and symbols such as ! @ # $ _ . - (no spaces or accented characters).",
+        "lowercase": "a lowercase letter",
+        "uppercase": "an uppercase letter",
+        "number": "a number",
+        "specialChar": "a special character"
+      },
       "passwordMismatch": "Confirm password does not match.",
       "fixErrors": "Please review the highlighted fields."
     },
@@ -454,13 +455,18 @@
       "uploadAttachment": "Upload attachment",
       "uploadedAttachment": "Attachment uploaded",
       "removeAttachment": "Remove attachment",
+      "attachmentRequired": "Please attach at least one file.",
       "fields": {
         "roleTitle": "Role title",
         "coverLetter": "Cover letter",
         "attachments": "Attachments"
       }
     },
-    "negotiable": "Negotiable"
+    "negotiable": "Negotiable",
+    "salary": {
+      "from": "From {amount}",
+      "upTo": "Up to {amount}"
+    }
   },
   "dataTable": {
     "table": {
@@ -692,6 +698,7 @@
       "tagPlaceholder": "Select a delivery time range",
       "tagNone": "No specific time slot",
       "tagNoneHint": "No time slot picked - we'll assign a delivery time within this date.",
+      "tagEmpty": "No time slot available",
       "tagWithinDate": "Delivery within {date}",
       "tagWithDate": "{date} at {tag}",
       "deliveryNoteHeading": "Delivery timing",
@@ -977,7 +984,8 @@
         "connectionError": "Updates are disconnected. Generation may still be running on the server.",
         "cancel": "Cancel generation",
         "canceling": "Requesting cancellation…",
-        "canceled": "Card generation canceled."
+        "canceled": "Card generation canceled.",
+        "cancelError": "The generation could not be canceled. Please try again."
       },
       "actions": {
         "generate": "Generate new version",

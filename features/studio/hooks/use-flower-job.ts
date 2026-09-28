@@ -1,7 +1,9 @@
 'use client'
 
 import { useGetMe } from '@/features/users/hooks/use-get-me'
+import type { ErrorResponse } from '@/lib/axios'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { AxiosError } from 'axios'
 import { useTranslations } from 'next-intl'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
@@ -90,8 +92,10 @@ export function useFlowerJob(onFinished: (job: FlowerJob) => void) {
         /* no-op */
       }
       void queryClient.invalidateQueries({ queryKey: JOBS_KEY })
-    } catch {
-      toast.error(t('submitError'), { description: t('submitErrorNote') })
+    } catch (error) {
+      toast.error(t('submitError'), {
+        description: (error as AxiosError<ErrorResponse>).response?.data?.detail ?? t('submitErrorNote')
+      })
     } finally {
       submitting.current = false
     }

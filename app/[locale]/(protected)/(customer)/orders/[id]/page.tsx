@@ -214,9 +214,6 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
           toast.success(t('orders.list.detail.cancelSuccess'))
           setIsCancelDialogOpen(false)
           router.push(ordersHref)
-        },
-        onError: () => {
-          toast.error(t('orders.list.detail.cancelError'))
         }
       }
     )

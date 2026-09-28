@@ -46,7 +46,7 @@ type JobDetailProps = {
 export default function JobDetail({ job, detailHref }: JobDetailProps) {
   const { t } = useTranslation()
   const pathname = usePathname()
-  const salary = formatJobSalary(job)
+  const salary = formatJobSalary(job, t)
   const avatarFallback = getJobAvatarFallback(job.title)
   const employmentTypeLabel = getJobEmploymentTypeLabel(job.employmentType, t)
   const description = job.description?.trim()

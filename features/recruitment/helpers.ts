@@ -45,7 +45,7 @@ export const getJobAvatarFallback = (title: string | null | undefined) => {
   return normalizedTitle.charAt(0).toUpperCase() || 'H'
 }
 
-export const formatJobSalary = ({ salaryMin, salaryMax }: Job) => {
+export const formatJobSalary = ({ salaryMin, salaryMax }: Job, t: TranslationFunction) => {
   const hasMin = hasValidSalaryValue(salaryMin)
   const hasMax = hasValidSalaryValue(salaryMax)
 
@@ -54,11 +54,11 @@ export const formatJobSalary = ({ salaryMin, salaryMax }: Job) => {
   }
 
   if (hasMin) {
-    return formatCurrency(salaryMin)
+    return t('recruitment.salary.from', { amount: formatCurrency(salaryMin) })
   }
 
   if (hasMax) {
-    return formatCurrency(salaryMax)
+    return t('recruitment.salary.upTo', { amount: formatCurrency(salaryMax) })
   }
 
   return ''

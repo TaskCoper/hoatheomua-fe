@@ -1,5 +1,5 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
-import { createEmailSchema, createOptionalPhoneNumberSchema } from '@/shared/validations'
+import { createEmailSchema, createOptionalPhoneNumberSchema, createPasswordSchema } from '@/shared/validations'
 import z from 'zod'
 
 export const createSignInSchema = (t: TranslationFunction) =>
@@ -58,39 +58,14 @@ export const createSignUpSchema = (t: TranslationFunction) =>
           })
         }),
       email: z
-        .string()
-        .trim()
         .email({
           error: t('common.validation.email')
         })
         .toLowerCase(),
-      password: z
-        .string()
-        .trim()
-        .min(6, {
-          error: t('common.validation.minLength', {
-            field: t('auth.signUp.password'),
-            min: 6
-          })
-        })
-        .max(128, {
-          error: t('common.validation.maxLength', {
-            field: t('auth.signUp.password'),
-            max: 128
-          })
-        })
-        .refine((value) => /[A-Z]/.test(value) && /\d/.test(value) && /[^A-Za-z0-9]/.test(value), {
-          error: t('common.validation.passwordStrength')
-        }),
-      confirmPassword: z
-        .string()
-        .trim()
-        .min(1, {
-          error: t('common.validation.minLength', {
-            field: t('auth.signUp.confirmPassword'),
-            min: 1
-          })
-        })
+      password: createPasswordSchema(t, t('auth.signUp.password')),
+      confirmPassword: z.string().min(1, {
+        error: t('common.validation.required', { field: t('auth.signUp.confirmPassword') })
+      })
     })
     .refine((data) => data.password === data.confirmPassword, {
       path: ['confirmPassword'],
@@ -177,31 +152,16 @@ export const createChangePasswordSchema = (t: TranslationFunction) =>
     .object({
       currentPassword: z
         .string()
-        .trim()
         .min(1, {
           error: t('common.validation.required', { field: t('profile.currentPassword') })
         })
         .max(128, {
           error: t('common.validation.maxLength', { field: t('profile.currentPassword'), max: 128 })
         }),
-      newPassword: z
-        .string()
-        .trim()
-        .min(6, {
-          error: t('common.validation.minLength', { field: t('profile.newPassword'), min: 6 })
-        })
-        .max(128, {
-          error: t('common.validation.maxLength', { field: t('profile.newPassword'), max: 128 })
-        })
-        .refine((value) => /[A-Z]/.test(value) && /\d/.test(value) && /[^A-Za-z0-9]/.test(value), {
-          error: t('common.validation.passwordStrength')
-        }),
-      confirmPassword: z
-        .string()
-        .trim()
-        .min(1, {
-          error: t('common.validation.required', { field: t('profile.confirmNewPassword') })
-        })
+      newPassword: createPasswordSchema(t, t('profile.newPassword')),
+      confirmPassword: z.string().min(1, {
+        error: t('common.validation.required', { field: t('profile.confirmNewPassword') })
+      })
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
       path: ['confirmPassword'],
@@ -223,14 +183,7 @@ export const forgotPasswordFormValues = (t: TranslationFunction) =>
 export const resetPassWordFormValue = (t: TranslationFunction) => {
   return z
     .object({
-      newPassword: z
-        .string()
-        .trim()
-        .min(8, t('auth.signUp.validation.password.minLength'))
-        .regex(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-          t('auth.signUp.validation.password.strong')
-        )
+      newPassword: createPasswordSchema(t, t('profile.newPassword'))
     })
     .strict()
 }

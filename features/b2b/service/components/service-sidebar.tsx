@@ -42,7 +42,7 @@ export default function ServiceSidebar({ detail, locale, sections, siblings }: P
 
         {/* Related services */}
         <div className={cn(petalCard, 'p-5')}>
-          <p className='relative mb-3 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-primary/70'>
+          <p className='relative mb-3 text-xs font-semibold text-primary/70'>
             {t('b2b.serviceDetails.common.sidebarRelatedTitle')}
           </p>
           <ul className='space-y-0.5'>
@@ -76,7 +76,7 @@ export default function ServiceSidebar({ detail, locale, sections, siblings }: P
 
         {/* Contact CTA */}
         <div className='relative overflow-hidden rounded-[1.5rem] rounded-tl-[0.4375rem] bg-gradient-to-br from-primary via-primary to-primary/85 p-5 text-primary-foreground shadow-lg shadow-primary/20'>
-          <p className='relative mb-3 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-primary-foreground/70'>
+          <p className='relative mb-3 text-xs font-semibold text-primary-foreground/70'>
             {t('b2b.serviceDetails.common.sidebarContactTitle')}
           </p>
 

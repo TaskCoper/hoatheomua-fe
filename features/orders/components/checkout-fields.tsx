@@ -28,6 +28,16 @@ import { SavedAddressPicker } from './saved-address-picker'
 
 const ORDER_TAG_NONE = '__none__'
 
+// Slots are published as "17h - 19h" (minutes optional, e.g. "17h30 - 19h").
+// Anything that does not parse has no time we can trust, so it is dropped
+// rather than offered as a window we cannot check against the clock.
+const slotEndMinutes = (label: string) => {
+  const match = label.match(/^\s*\d{1,2}h(?:\d{1,2})?\s*[-–—]\s*(\d{1,2})h(\d{1,2})?\s*$/)
+  if (!match) return null
+
+  return Number(match[1]) * 60 + Number(match[2] ?? 0)
+}
+
 interface CheckoutFieldsProps {
   addresses: Address[]
   selectedAddressId: string
@@ -104,6 +114,32 @@ export default function CheckoutFields({
   const hasDeliverySlot = selectedTagId !== undefined
   const isScheduledDate = toOrderTimestamp(orderTimeForm) !== 0
   const effectiveOrderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
+
+  // Only today can have windows that already closed - a later date keeps every
+  // slot. A slot stays bookable until its end hour passes.
+  const tagOptions = useMemo(() => {
+    const options = orderTags?.options ?? []
+    const now = new Date()
+    const orderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
+    const isToday = orderDate.toDateString() === now.toDateString()
+    const minutesNow = now.getHours() * 60 + now.getMinutes()
+
+    return options.filter((option) => {
+      const endMinutes = slotEndMinutes(option.label)
+      if (endMinutes === null) return false
+
+      return !isToday || endMinutes > minutesNow
+    })
+  }, [orderTags?.options, orderTimeForm, minOrderDate])
+
+  // A slot can fall out of the list when the date moves back to today, so the
+  // picked one never survives as a window that already passed.
+  useEffect(() => {
+    if (selectedTagId === undefined || !orderTags?.options?.length) return
+    if (tagOptions.some((option) => option.value === selectedTagId)) return
+
+    setValue('tagIds', [], { shouldDirty: true, shouldValidate: true })
+  }, [selectedTagId, tagOptions, orderTags?.options?.length, setValue])
 
   const selectedTagLabel = orderTags?.options?.find((option) => option.value === selectedTagId)?.label
   const deliveryTimingLabel = hasDeliverySlot
@@ -453,14 +489,18 @@ export default function CheckoutFields({
                     onValueChange={(value) => {
                       field.onChange(value === ORDER_TAG_NONE ? [] : [Number(value)])
                     }}
-                    disabled={isGettingOrderTags || !orderTags?.options?.length}
+                    disabled={isGettingOrderTags || !tagOptions.length}
                   >
                     <SelectTrigger id={field.name} className='w-full' aria-invalid={fieldState.invalid}>
-                      <SelectValue placeholder={t('orders.checkout.tagPlaceholder')} />
+                      {isGettingOrderTags || tagOptions.length ? (
+                        <SelectValue placeholder={t('orders.checkout.tagPlaceholder')} />
+                      ) : (
+                        <span className='text-muted-foreground'>{t('orders.checkout.tagEmpty')}</span>
+                      )}
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value={ORDER_TAG_NONE}>{t('orders.checkout.tagNone')}</SelectItem>
-                      {orderTags?.options?.map((option) => (
+                      {tagOptions.map((option) => (
                         <SelectItem key={option.value} value={String(option.value)}>
                           {option.label}
                         </SelectItem>

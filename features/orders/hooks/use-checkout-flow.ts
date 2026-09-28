@@ -212,14 +212,10 @@ export const useCheckoutFlow = ({
 
           router.push(`/orders/${mrc_order_id}`)
         } catch (error) {
-          // The service-level backstop speaks English; say it in the buyer's language.
           if (error instanceof FeatureUnavailableError) {
             notifyUnavailable()
             return
           }
-
-          const message = error instanceof Error ? error.message : t('orders.checkout.createError')
-          toast.error(t('orders.checkout.createError'), { description: message })
         }
       },
       (errors) => {

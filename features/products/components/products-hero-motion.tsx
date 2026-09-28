@@ -118,7 +118,7 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
               </Button>
             </motion.div>
 
-            <motion.div
+            {/* <motion.div
               whileHover={{ y: -5, scale: 1.06 }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
@@ -138,7 +138,7 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
                   {strings.shopByOccasion}
                 </Link>
               </Button>
-            </motion.div>
+            </motion.div> */}
 
             <motion.div
               whileHover={{ y: -5, scale: 1.06 }}

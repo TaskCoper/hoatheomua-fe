@@ -5,7 +5,9 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = join(fileURLToPath(import.meta.url), '..', '..')
 const MESSAGES_DIR = join(ROOT, 'lib', 'i18n', 'messages')
-const SOURCE_DIRS = ['app', 'components', 'features', 'lib'].map((dir) => join(ROOT, dir))
+const SOURCE_DIRS = ['app', 'components', 'features', 'guards', 'hooks', 'lib', 'shared', 'stores'].map((dir) =>
+  join(ROOT, dir)
+)
 const PRIMARY_LOCALE = 'en'
 const SCAN_EXTS = new Set(['.ts', '.tsx'])
 const SKIP_DIRS = new Set(['.git', '.next', 'node_modules'])

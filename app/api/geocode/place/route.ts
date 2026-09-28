@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { apiErrorJson } from '@/lib/api-envelope'
+
 /**
  * VietMap Place v4 proxy - resolves an autocomplete suggestion's `ref_id` to
  * `lat`/`lng` + a formatted label. Called once per user selection, never per
@@ -9,7 +11,9 @@ import { z } from 'zod'
  *
  * Response: { result: { latitude, longitude, mapId, display, ward, city } | null }
  * `result` is null when the ref_id has no match (a data-quality signal, not
- * an error). Upstream/config failures return a 4xx/5xx with a short reason.
+ * an error). Upstream/config failures return a 4xx/5xx carrying the backend's
+ * error envelope alongside `result: null`, so a client `onError` reading
+ * `response.data.detail` has something to show.
  */
 
 const VIETMAP_BASE_URL = 'https://maps.vietmap.vn/api'
@@ -31,14 +35,24 @@ const PlaceSchema = z.object({
 export async function GET(req: Request) {
   const apikey = process.env.VIETMAP_API_KEY
   if (!apikey) {
-    return Response.json({ result: null, reason: 'server-not-configured' }, { status: 503 })
+    return apiErrorJson(
+      {
+        status: 503,
+        detail: 'Tính năng tìm địa chỉ chưa được cấu hình trên máy chủ.',
+        messageCode: 'ServerNotConfigured'
+      },
+      { result: null }
+    )
   }
 
   const { searchParams } = new URL(req.url)
   const parsed = QuerySchema.safeParse({ refId: searchParams.get('refId') ?? '' })
 
   if (!parsed.success) {
-    return Response.json({ result: null, reason: 'invalid-query' }, { status: 400 })
+    return apiErrorJson(
+      { status: 400, detail: 'Thiếu mã tham chiếu địa điểm.', messageCode: 'InvalidQuery' },
+      { result: null }
+    )
   }
 
   const { refId } = parsed.data
@@ -50,7 +64,14 @@ export async function GET(req: Request) {
 
     const res = await fetch(url, { headers: { Accept: 'application/json' } })
     if (!res.ok) {
-      return Response.json({ result: null, reason: 'place-upstream-error' }, { status: 502 })
+      return apiErrorJson(
+        {
+          status: 502,
+          detail: 'Nhà cung cấp bản đồ đã từ chối yêu cầu tra cứu địa chỉ.',
+          messageCode: 'PlaceUpstreamError'
+        },
+        { result: null }
+      )
     }
 
     const place = PlaceSchema.safeParse(await res.json())
@@ -69,6 +90,13 @@ export async function GET(req: Request) {
       }
     })
   } catch {
-    return Response.json({ result: null, reason: 'upstream-unreachable' }, { status: 502 })
+    return apiErrorJson(
+      {
+        status: 502,
+        detail: 'Không thể kết nối tới nhà cung cấp bản đồ. Vui lòng thử lại.',
+        messageCode: 'UpstreamUnreachable'
+      },
+      { result: null }
+    )
   }
 }
