@@ -29,12 +29,6 @@
       "email": "Email",
       "emailPlaceholder": "example@gmail.com",
       "password": "Mật khẩu",
-      "validation": {
-        "password": {
-          "minLength": "Mật khẩu phải có ít nhất 8 ký tự.",
-          "strong": "Mật khẩu phải có chữ thường, chữ hoa, số và ký tự đặc biệt."
-        }
-      },
       "passwordPlaceholder": "Nhập mật khẩu",
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
@@ -170,7 +164,14 @@
       "arrayMin": "{field} phải chọn ít nhất {min} mục.",
       "arrayMax": "{field} không được chọn quá {max} mục.",
       "phoneNumber": "Số điện thoại không hợp lệ (ví dụ: 0983 024 353).",
-      "passwordStrength": "Mật khẩu phải chứa ít nhất 1 chữ cái in hoa, 1 số và 1 ký tự đặc biệt.",
+      "password": {
+        "missing": "{field} còn thiếu: {missing}.",
+        "invalidCharacters": "{field} chỉ được chứa chữ cái, chữ số và ký tự đặc biệt như ! @ # $ _ . - (không chứa dấu cách hoặc ký tự có dấu).",
+        "lowercase": "1 chữ thường",
+        "uppercase": "1 chữ in hoa",
+        "number": "1 chữ số",
+        "specialChar": "1 ký tự đặc biệt"
+      },
       "passwordMismatch": "Mật khẩu xác nhận không khớp.",
       "fixErrors": "Vui lòng kiểm tra lại các trường thông tin."
     },

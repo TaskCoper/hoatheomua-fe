@@ -36,11 +36,14 @@ export function ChangePasswordForm() {
     const { confirmPassword, ...values } = formValues
     void confirmPassword
 
-    resetPassword(values, {
-      onSuccess: () => {
-        methods.reset(defaultValues)
+    resetPassword(
+      { body: values },
+      {
+        onSuccess: () => {
+          methods.reset(defaultValues)
+        }
       }
-    })
+    )
   })
 
   return (
