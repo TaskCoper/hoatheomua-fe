@@ -10,7 +10,6 @@ import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useChangePassword } from '../hooks/use-change-password'
 import { createChangePasswordSchema, type ChangePasswordFormValues } from '../validations'
 
@@ -37,15 +36,11 @@ export function ChangePasswordForm() {
     const { confirmPassword, ...values } = formValues
     void confirmPassword
 
-    try {
-      await resetPassword(values)
-      methods.reset(defaultValues)
-      toast.success(t('profile.passwordUpdated'))
-    } catch (error) {
-      toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined
-      })
-    }
+    resetPassword(values, {
+      onSuccess: () => {
+        methods.reset(defaultValues)
+      }
+    })
   })
 
   return (

@@ -26,7 +26,6 @@ import { ArrowDown01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
-import { toast } from 'sonner'
 import { useCreateAddress } from '../hooks/use-create-address'
 import { useGetAddress } from '../hooks/use-get-address'
 import { useUpdateAddress } from '../hooks/use-update-address'
@@ -79,11 +78,6 @@ export function AddressFormDialog({
     resolver: zodResolver(schema)
   })
 
-  // The coordinate the typed address resolved to - map picks are constrained
-  // to a radius around it. `resolvedAnchor` is the user's most recent pick
-  // (via autocomplete) within this session; it falls back to the saved
-  // address's own coordinate, derived from `activeAddress` so it stays in
-  // sync as that data loads without a dedicated effect.
   const [resolvedAnchor, setResolvedAnchor] = useState<{ latitude: number; longitude: number } | null>(null)
   const savedAnchor = useMemo(
     () =>
@@ -123,6 +117,7 @@ export function AddressFormDialog({
     }
     pendingWardRef.current = null
   }, [wards, isLoadingWards, methods])
+
   useEffect(() => {
     resolvePendingWard()
   }, [resolvePendingWard])
@@ -155,18 +150,20 @@ export function AddressFormDialog({
   }
 
   const onSubmit = methods.handleSubmit(async (values) => {
-    try {
-      if (isEditMode && activeAddress?.id) {
-        await updateAddress({ id: activeAddress.id, body: values })
-        toast.success(t('profile.addressUpdated'))
-      } else {
-        await createAddress(values)
-        toast.success(t('profile.addressCreated'))
-      }
-      close()
-    } catch (error) {
-      toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined
+    if (isEditMode && activeAddress?.id) {
+      updateAddress(
+        { id: activeAddress.id, body: values },
+        {
+          onSettled: () => {
+            close()
+          }
+        }
+      )
+    } else {
+      createAddress(values, {
+        onSettled: () => {
+          close()
+        }
       })
     }
   })

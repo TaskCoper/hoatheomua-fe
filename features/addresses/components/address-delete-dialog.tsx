@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/dialog'
 import { Spinner } from '@/components/ui/spinner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { toast } from 'sonner'
 import { useDeleteAddress } from '../hooks/use-delete-address'
 
 interface AddressDeleteDialogProps {
@@ -26,15 +25,11 @@ export function AddressDeleteDialog({ addressId, receiverName, open, onOpenChang
   const { deleteAddress, isDeletingAddress } = useDeleteAddress()
 
   const handleDelete = async () => {
-    try {
-      await deleteAddress(addressId)
-      toast.success(t('profile.addressDeleted'))
-      onOpenChange(false)
-    } catch (error) {
-      toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined
-      })
-    }
+    deleteAddress(addressId, {
+      onSuccess: () => {
+        onOpenChange(false)
+      }
+    })
   }
 
   return (

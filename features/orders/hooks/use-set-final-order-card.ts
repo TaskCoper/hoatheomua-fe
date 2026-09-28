@@ -1,6 +1,8 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import orderService from '../services'
 import type { SetFinalGeneratedCardPayload } from '../types'
 
@@ -10,10 +12,16 @@ import type { SetFinalGeneratedCardPayload } from '../types'
  */
 export const useSetFinalOrderCard = () => {
   const queryClient = useQueryClient()
+  const { t } = useTranslation()
 
   const { mutate: setFinalOrderCard, isPending: isSettingFinalOrderCard } = useMutation({
     mutationFn: (body: SetFinalGeneratedCardPayload) => orderService.setFinalGeneratedCard(body),
-    onSuccess: () => {
+    onError: (error) => {
+      toast.error(t('orders.cards.toast.applyError'), {
+        description: error.response?.data?.detail
+      })
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['order'] })
     }
   })

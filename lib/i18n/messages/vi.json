@@ -977,7 +977,8 @@
         "connectionError": "Đang mất kết nối cập nhật. Tiến trình trên máy chủ có thể vẫn đang chạy.",
         "cancel": "Hủy tạo thiệp",
         "canceling": "Đang yêu cầu hủy…",
-        "canceled": "Đã hủy tạo thiệp."
+        "canceled": "Đã hủy tạo thiệp.",
+        "cancelError": "Không hủy được yêu cầu tạo thiệp. Vui lòng thử lại."
       },
       "actions": {
         "generate": "Tạo phiên bản mới",

@@ -12,7 +12,6 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { CheckmarkCircle02Icon, Delete02Icon, MoreVerticalIcon, PencilEdit02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useState } from 'react'
-import { toast } from 'sonner'
 import { useSetDefaultAddress } from '../hooks/use-set-default-address'
 import type { Address } from '../types'
 import { AddressDeleteDialog } from './address-delete-dialog'
@@ -28,15 +27,8 @@ export function AddressActionsMenu({ address }: AddressActionsMenuProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const { setDefaultAddress, isSettingDefaultAddress } = useSetDefaultAddress()
 
-  const handleSetDefault = async () => {
-    try {
-      await setDefaultAddress(address.id)
-      toast.success(t('profile.addressDefaultSet'))
-    } catch (error) {
-      toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined
-      })
-    }
+  const handleSetDefault = () => {
+    setDefaultAddress(address.id)
   }
 
   return (

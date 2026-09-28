@@ -1,16 +1,22 @@
 'use client'
 
 import { useGetMe } from '@/features/users/hooks/use-get-me'
+import type { ErrorResponse } from '@/lib/axios'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { AxiosError } from 'axios'
 import { useEffect, useRef, useState } from 'react'
-import { activeCardJob, cardJobs, CARD_JOBS_KEY, type CardJob } from '../card-jobs'
+import { toast } from 'sonner'
+import { activeCardJob, CARD_JOBS_KEY, cardJobs, type CardJob } from '../card-jobs'
 import { orderDetailCardsQueryKey } from '../queries'
 import type { GetOrderDetailCardsParams, RegenerateAiCardPayload } from '../types'
 
-type Callbacks = { onSuccess?: () => void; onError?: () => void }
+export type CardJobError = AxiosError<ErrorResponse>
+type Callbacks = { onSuccess?: () => void; onError?: (error?: CardJobError) => void }
 
 export const useRegenerateAiCard = (params: GetOrderDetailCardsParams, enabled = true) => {
   const { me } = useGetMe()
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const scope = `${me?.id}:${params.orderDetailsId}:${params.virtualId}`
   const listKey = [...CARD_JOBS_KEY, scope]
@@ -46,6 +52,11 @@ export const useRegenerateAiCard = (params: GetOrderDetailCardsParams, enabled =
     onSuccess: (next) => {
       queryClient.setQueryData([...CARD_JOBS_KEY, scope, next.jobId], next)
       void queryClient.invalidateQueries({ queryKey: listKey })
+    },
+    onError: (error) => {
+      toast.error(t('orders.cards.generation.cancelError'), {
+        description: error.response?.data?.detail
+      })
     }
   })
 
@@ -100,9 +111,9 @@ export const useRegenerateAiCard = (params: GetOrderDetailCardsParams, enabled =
           }
           void queryClient.invalidateQueries({ queryKey: listKey })
         },
-        onError: () => {
+        onError: (error) => {
           callbacks.current = null
-          nextCallbacks.onError?.()
+          nextCallbacks.onError?.(error)
           void queryClient.invalidateQueries({ queryKey: listKey })
         },
         onSettled: () => {

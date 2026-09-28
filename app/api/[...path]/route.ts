@@ -1,6 +1,7 @@
 // Same-origin proxy to the upstream API. Strips `Domain=` from Set-Cookie so the
 // browser binds the upstream's HttpOnly auth cookies to this host.
 
+import { apiErrorJson } from '@/lib/api-envelope'
 import { SERVER_API_BASE_URL, SERVER_TASKCOPER_API_BASE_URL } from '@/lib/api-upstream'
 
 const DEFAULT_UPSTREAM = SERVER_API_BASE_URL
@@ -26,17 +27,11 @@ const upstreamUnavailable = (method: string, target: string, error: unknown) => 
 
   console.error(`[API-PROXY] ${method} ${target} failed: ${code}`)
 
-  return Response.json(
-    {
-      title: status === 504 ? 'Gateway Timeout' : 'Bad Gateway',
-      status,
-      detail: 'The upstream API could not be reached.',
-      messageCode: 'UpstreamUnavailable',
-      errors: null,
-      timestampUtc: new Date().toISOString()
-    },
-    { status }
-  )
+  return apiErrorJson({
+    status,
+    detail: 'Không thể kết nối tới máy chủ. Vui lòng thử lại.',
+    messageCode: 'UpstreamUnavailable'
+  })
 }
 
 async function proxy(req: Request, ctx: { params: Promise<{ path: string[] }> }) {
@@ -48,7 +43,11 @@ async function proxy(req: Request, ctx: { params: Promise<{ path: string[] }> })
   const forwardedPath = prefixedUpstream ? rest : path
 
   if (!upstreamBaseUrl) {
-    return new Response('Upstream API base URL is not configured', { status: 500 })
+    return apiErrorJson({
+      status: 500,
+      detail: 'Địa chỉ máy chủ API chưa được cấu hình.',
+      messageCode: 'UpstreamNotConfigured'
+    })
   }
 
   const { search } = new URL(req.url)

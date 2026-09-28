@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { apiErrorJson } from '@/lib/api-envelope'
+
 const VIETMAP_BASE_URL = 'https://maps.vietmap.vn/api'
 const MAX_RESULTS = 8
 
@@ -53,7 +55,14 @@ const boundaryMatchesCore = (boundaries: { name: string; full_name: string }[], 
 export async function GET(req: Request) {
   const apikey = process.env.VIETMAP_API_KEY
   if (!apikey) {
-    return Response.json({ results: [], reason: 'server-not-configured' }, { status: 503 })
+    return apiErrorJson(
+      {
+        status: 503,
+        detail: 'Tính năng tìm địa chỉ chưa được cấu hình trên máy chủ.',
+        messageCode: 'ServerNotConfigured'
+      },
+      { results: [] }
+    )
   }
 
   const { searchParams } = new URL(req.url)
@@ -65,7 +74,10 @@ export async function GET(req: Request) {
   })
 
   if (!parsed.success) {
-    return Response.json({ results: [], reason: 'invalid-query' }, { status: 400 })
+    return apiErrorJson(
+      { status: 400, detail: 'Vui lòng nhập ít nhất 2 ký tự để tìm địa chỉ.', messageCode: 'InvalidQuery' },
+      { results: [] }
+    )
   }
 
   const { text, focus, ward, city } = parsed.data
@@ -79,7 +91,14 @@ export async function GET(req: Request) {
 
     const res = await fetch(url, { headers: { Accept: 'application/json' } })
     if (!res.ok) {
-      return Response.json({ results: [], reason: 'autocomplete-upstream-error' }, { status: 502 })
+      return apiErrorJson(
+        {
+          status: 502,
+          detail: 'Nhà cung cấp bản đồ đã từ chối yêu cầu tìm địa chỉ.',
+          messageCode: 'AutocompleteUpstreamError'
+        },
+        { results: [] }
+      )
     }
 
     const results = z
@@ -108,6 +127,13 @@ export async function GET(req: Request) {
       }))
     })
   } catch {
-    return Response.json({ results: [], reason: 'upstream-unreachable' }, { status: 502 })
+    return apiErrorJson(
+      {
+        status: 502,
+        detail: 'Không thể kết nối tới nhà cung cấp bản đồ. Vui lòng thử lại.',
+        messageCode: 'UpstreamUnreachable'
+      },
+      { results: [] }
+    )
   }
 }

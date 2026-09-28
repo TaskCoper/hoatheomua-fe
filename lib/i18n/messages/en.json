@@ -977,7 +977,8 @@
         "connectionError": "Updates are disconnected. Generation may still be running on the server.",
         "cancel": "Cancel generation",
         "canceling": "Requesting cancellation…",
-        "canceled": "Card generation canceled."
+        "canceled": "Card generation canceled.",
+        "cancelError": "The generation could not be canceled. Please try again."
       },
       "actions": {
         "generate": "Generate new version",

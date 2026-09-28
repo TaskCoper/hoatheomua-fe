@@ -8,7 +8,7 @@ import { findOrderCardVersion } from '../cards/order-card-data'
 import type { CardContent, CheckoutCardTemplate, OrderAiCard, OrderCardVersion } from '../cards/types'
 import type { RegenerateAiCardPayload } from '../types'
 import { useOrderCardVersions } from './use-order-card-versions'
-import { useRegenerateAiCard } from './use-regenerate-ai-card'
+import { useRegenerateAiCard, type CardJobError } from './use-regenerate-ai-card'
 import { useSetFinalOrderCard } from './use-set-final-order-card'
 
 export const ORDER_CARD_STAGE_KEYS = ['queued', 'generating', 'saving'] as const
@@ -163,7 +163,10 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
     )
   }
 
-  const generate = ({ onSuccess, onError }: { onSuccess?: () => void; onError?: () => void } = {}) => {
+  const generate = ({
+    onSuccess,
+    onError
+  }: { onSuccess?: () => void; onError?: (error?: CardJobError) => void } = {}) => {
     if (isRegeneratingAiCard || isSettled) return
     if (!hasVersionHistory) return
     if (wordCount === 0 || isOverBudget) {
@@ -191,7 +194,7 @@ export const useOrderCardDesigner = ({ card, enabled }: UseOrderCardDesignerArgs
         setActiveVersionId('')
         onSuccess?.()
       },
-      onError: () => onError?.()
+      onError: (error) => onError?.(error)
     })
   }
 
