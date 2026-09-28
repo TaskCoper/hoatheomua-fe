@@ -4,6 +4,7 @@ import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useGetUserHomePath } from '@/hooks/use-get-user-home-path'
 import { useHasMounted } from '@/hooks/use-has-mounted'
 import { usePathname, useRouter } from '@/lib/i18n/navigation'
+import { isGuestAuthPath } from '@/shared/constants'
 import { useEffect, useRef } from 'react'
 import AuthGuardLoading from './auth-guard-loading'
 import { isRedirectLoop } from './redirect-loop'
@@ -22,10 +23,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
   const { me, isGettingMe, isAuthenticated, isVerificationRequired } = useGetMe()
 
   const isOnVerifyPage = pathname.startsWith('/verify')
-  const isOnSignInPage = pathname.startsWith('/sign-in')
-  const isOnSignUpPage = pathname.startsWith('/sign-up')
-  const isOnForgotPasswordPage = pathname.startsWith('/forgot-password')
-  const isOnGuestAuthPage = isOnSignInPage || isOnSignUpPage || isOnForgotPasswordPage || isOnVerifyPage
+  const isOnGuestAuthPage = isGuestAuthPath(pathname)
 
   const isModalOverlay = requiresAuth && isOnGuestAuthPage
 
@@ -38,7 +36,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
 
   const shouldRedirectToVerify = isVerificationRequired && !isOnVerifyPage
   const shouldRedirectAuthedAway = isAuthenticated && !isVerificationRequired && isOnGuestAuthPage
-  const shouldRedirectToSignIn = !isAuthenticated && !isVerificationRequired && !isOnGuestAuthPage && !isOnGuestAuthPage
+  const shouldRedirectToSignIn = requiresAuth && !isAuthenticated && !isVerificationRequired && !isOnGuestAuthPage
 
   useEffect(() => {
     if (!hasMounted || isGettingMe) return

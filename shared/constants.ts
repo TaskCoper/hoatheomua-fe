@@ -73,3 +73,9 @@ export const isPublicRoutePath = (pathname: string) => {
 }
 
 export const GUEST_ONLY_ROUTES = new Set<string>(['/sign-in', '/sign-up'])
+
+const GUEST_AUTH_PATH_PREFIXES = ['/sign-in', '/sign-up', '/forgot-password', '/verify'] as const
+
+export const isGuestAuthPath = (pathname: string) => {
+  return GUEST_AUTH_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+}
