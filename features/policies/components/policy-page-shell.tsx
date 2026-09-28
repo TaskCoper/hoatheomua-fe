@@ -94,9 +94,7 @@ export default function PolicyPageShell({
         </motion.nav>
 
         <motion.div variants={fadeUp} className='mx-auto mt-6 w-full max-w-7xl space-y-2 sm:space-y-3 md:space-y-4'>
-          <p className='text-center text-[0.625rem] font-semibold uppercase tracking-widest text-primary/70 sm:text-xs'>
-            {eyebrow}
-          </p>
+          <p className='text-center text-xs font-semibold text-primary/70 sm:text-xs'>{eyebrow}</p>
 
           <div className='flex items-center justify-center gap-3'>
             <SparkleDivider
@@ -157,9 +155,7 @@ export default function PolicyPageShell({
                   <HugeiconsIcon icon={SmartPhone01Icon} className='size-4' />
                 </span>
                 <span className='-space-y-0.5'>
-                  <span className='block text-[0.625rem] font-medium uppercase tracking-widest text-primary-foreground/65'>
-                    {contact.hotlineLabel}
-                  </span>
+                  <span className='block text-xs font-medium text-primary-foreground/65'>{contact.hotlineLabel}</span>
                   <span className='block whitespace-nowrap text-xs font-bold text-primary-foreground sm:text-sm'>
                     {hotlineValue}
                   </span>
@@ -174,9 +170,7 @@ export default function PolicyPageShell({
                   <HugeiconsIcon icon={MailValidation01Icon} className='size-4' />
                 </span>
                 <span className='-space-y-0.5'>
-                  <span className='block text-[0.625rem] font-medium uppercase tracking-widest text-primary-foreground/65'>
-                    {contact.emailLabel}
-                  </span>
+                  <span className='block text-xs font-medium text-primary-foreground/65'>{contact.emailLabel}</span>
                   <span className='block truncate text-xs font-bold text-primary-foreground sm:text-sm'>
                     {emailValue}
                   </span>

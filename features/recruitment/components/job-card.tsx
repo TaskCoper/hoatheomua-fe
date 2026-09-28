@@ -19,7 +19,7 @@ type JobCardProps = {
 
 export default function JobCard({ job, isSelected, onClick }: JobCardProps) {
   const { t } = useTranslation()
-  const salary = formatJobSalary(job)
+  const salary = formatJobSalary(job, t)
   const avatarFallback = getJobAvatarFallback(job.title)
   const employmentTypeLabel = getJobEmploymentTypeLabel(job.employmentType, t)
 

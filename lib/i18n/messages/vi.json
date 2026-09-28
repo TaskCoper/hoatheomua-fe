@@ -454,13 +454,18 @@
       "uploadAttachment": "Tải tệp lên",
       "uploadedAttachment": "Đã tải tệp lên",
       "removeAttachment": "Xóa tệp đính kèm",
+      "attachmentRequired": "Vui lòng đính kèm ít nhất một tệp.",
       "fields": {
         "roleTitle": "Vị trí ứng tuyển",
         "coverLetter": "Thư giới thiệu",
         "attachments": "Tệp đính kèm"
       }
     },
-    "negotiable": "Có thể thương lượng"
+    "negotiable": "Có thể thương lượng",
+    "salary": {
+      "from": "Từ {amount}",
+      "upTo": "Lên đến {amount}"
+    }
   },
   "dataTable": {
     "table": {
@@ -692,6 +697,7 @@
       "tagPlaceholder": "Chọn khung giờ giao hàng",
       "tagNone": "Không chọn khung giờ cụ thể",
       "tagNoneHint": "Chưa chọn khung giờ - chúng tôi sẽ sắp xếp thời gian giao ngẫu nhiên trong ngày này.",
+      "tagEmpty": "Không có khung giờ nào",
       "tagWithinDate": "Giao trong ngày {date}",
       "tagWithDate": "{date} lúc {tag}",
       "deliveryNoteHeading": "Thời gian giao dự kiến",

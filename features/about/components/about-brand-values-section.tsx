@@ -158,7 +158,7 @@ export default function BrandValuesSection() {
 
           <span
             aria-hidden='true'
-            className='numeral-drift-value pointer-events-none absolute -right-8 -bottom-10 font-title text-[10rem] font-bold leading-none text-primary-foreground/10 sm:-right-10 sm:-bottom-12 sm:text-[13rem]'
+            className='numeral-drift-value pointer-events-none absolute right-0 bottom-0 font-title text-[10rem] font-bold leading-none text-primary-foreground/10 sm:right-4 sm:bottom-0 sm:text-[13rem]'
           >
             {featuredValue.number}
           </span>
@@ -177,6 +177,7 @@ export default function BrandValuesSection() {
                   <HugeiconsIcon icon={featuredValue.icon} className='size-5 sm:size-6' />
                 </motion.div>
               </div>
+
               <span className='rounded-full bg-primary-foreground/15 px-3 py-1 font-title text-xs font-bold tracking-widest text-primary-foreground backdrop-blur ring-1 ring-primary-foreground/20 sm:text-sm'>
                 {featuredValue.number}
               </span>
@@ -185,9 +186,7 @@ export default function BrandValuesSection() {
             <div className='space-y-2'>
               <div className='flex items-center gap-2'>
                 <span className='h-px w-3 bg-primary-foreground/60' aria-hidden='true' />
-                <p className='text-[0.625rem] text-primary-foreground font-bold uppercase tracking-[0.2em]'>
-                  {t('about.values.coreLabel')}
-                </p>
+                <p className='text-xs text-primary-foreground font-bold'>{t('about.values.coreLabel')}</p>
               </div>
               <h2 className='font-title text-2xl text-primary-foreground font-bold leading-tight drop-shadow-sm sm:text-3xl lg:text-4xl'>
                 {t(featuredValue.titleKey)}
@@ -208,6 +207,7 @@ export default function BrandValuesSection() {
         >
           {restValues.map((value, index) => {
             const isWide = index === restValues.length - 1
+
             return (
               <motion.article
                 key={value.number}
@@ -243,7 +243,7 @@ export default function BrandValuesSection() {
                   aria-hidden='true'
                   whileHover={{ scale: 1.15, rotate: 4 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 14 }}
-                  className='pointer-events-none absolute right-2 -top-1 z-10 font-title text-5xl font-bold leading-none text-secondary/40 transition-colors group-hover:text-secondary/70 sm:right-2 sm:-top-2 sm:text-6xl'
+                  className='pointer-events-none absolute right-2 top-1 z-10 font-title text-5xl font-bold leading-none text-secondary/40 transition-colors group-hover:text-secondary/70 sm:right-2 sm:top-1 sm:text-6xl'
                 >
                   {value.number}
                 </motion.span>

@@ -44,7 +44,7 @@ export default function B2BHeroSection({ hero, locale }: { hero: OverviewHero; l
   const subtitle = pick(hero.subtitle, locale)
   const audienceLine = pick(hero.audienceLine, locale)
   const primaryCta = pick(hero.primaryCta, locale)
-  const secondaryCta = pick(hero.secondaryCta, locale)
+  // const secondaryCta = pick(hero.secondaryCta, locale)
   const imageAlt = pick(hero.imageAlt, locale)
 
   return (
@@ -162,14 +162,14 @@ export default function B2BHeroSection({ hero, locale }: { hero: OverviewHero; l
                 />
               </Link>
             </Button>
-            <Button
+            {/* <Button
               asChild
               size='lg'
               variant='ghost'
               className='w-full text-primary hover:bg-primary/5 hover:text-primary sm:w-auto lg:text-white lg:hover:bg-white/10 lg:hover:text-white'
             >
               <Link href='/contact'>{secondaryCta}</Link>
-            </Button>
+            </Button> */}
           </motion.div>
         </motion.div>
 

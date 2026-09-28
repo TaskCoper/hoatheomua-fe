@@ -42,11 +42,18 @@ export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
   const { methods, sendRequest, isSendingRequest } = useCreateRecruitmentRequest()
   const { uploadFileWithToast, isUploading } = useUploadFileWithToast()
   const [pendingFiles, setPendingFiles] = useState<Array<File | null>>([null])
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false)
+
+  // Attachments live outside the form (they're raw `File`s until upload), so the
+  // resolver can't validate them - gate on the first submit attempt instead.
+  const hasAttachment = pendingFiles.some((file) => file !== null)
+  const attachmentError = hasAttemptedSubmit && !hasAttachment ? t('recruitment.applyDialog.attachmentRequired') : null
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (nextOpen) {
       methods.reset(getDefaultValues(job))
       setPendingFiles([null])
+      setHasAttemptedSubmit(false)
     }
 
     setOpen(nextOpen)
@@ -56,6 +63,8 @@ export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
 
   const handleSubmit: SubmitHandler<CreateRecruitmentRequest> = async (values) => {
     const files = pendingFiles.filter((file): file is File => file !== null)
+    if (files.length === 0) return
+
     const urls = await Promise.all(files.map((file) => uploadFileWithToast({ file, showSuccessToast: false })))
     if (urls.some((url) => !url)) return
     const attachments = urls as string[]
@@ -73,6 +82,7 @@ export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
         onSuccess: () => {
           methods.reset(getDefaultValues(job))
           setPendingFiles([null])
+          setHasAttemptedSubmit(false)
           setOpen(false)
         }
       }
@@ -89,8 +99,19 @@ export default function ApplyJobDialog({ job, children }: ApplyJobDialogProps) {
         </DialogHeader>
 
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(handleSubmit)} className='space-y-5'>
-            <ApplyJobFields isSubmitting={isSubmitting} pendingFiles={pendingFiles} setPendingFiles={setPendingFiles} />
+          <form
+            onSubmit={(event) => {
+              setHasAttemptedSubmit(true)
+              void methods.handleSubmit(handleSubmit)(event)
+            }}
+            className='space-y-5'
+          >
+            <ApplyJobFields
+              isSubmitting={isSubmitting}
+              pendingFiles={pendingFiles}
+              setPendingFiles={setPendingFiles}
+              attachmentError={attachmentError}
+            />
 
             <DialogFooter className='gap-2 pt-1'>
               <Button type='button' variant='outline' disabled={isSubmitting} onClick={() => setOpen(false)}>
@@ -112,9 +133,10 @@ interface ApplyJobFieldsProps {
   isSubmitting: boolean
   pendingFiles: Array<File | null>
   setPendingFiles: React.Dispatch<React.SetStateAction<Array<File | null>>>
+  attachmentError: string | null
 }
 
-function ApplyJobFields({ isSubmitting, pendingFiles, setPendingFiles }: ApplyJobFieldsProps) {
+function ApplyJobFields({ isSubmitting, pendingFiles, setPendingFiles, attachmentError }: ApplyJobFieldsProps) {
   const { t } = useTranslation()
   const { control } = useFormContext<CreateRecruitmentRequest>()
 
@@ -158,7 +180,12 @@ function ApplyJobFields({ isSubmitting, pendingFiles, setPendingFiles }: ApplyJo
         )}
       />
 
-      <AttachmentFields isSubmitting={isSubmitting} pendingFiles={pendingFiles} setPendingFiles={setPendingFiles} />
+      <AttachmentFields
+        isSubmitting={isSubmitting}
+        pendingFiles={pendingFiles}
+        setPendingFiles={setPendingFiles}
+        attachmentError={attachmentError}
+      />
     </FieldGroup>
   )
 }
@@ -167,9 +194,10 @@ interface AttachmentFieldsProps {
   isSubmitting: boolean
   pendingFiles: Array<File | null>
   setPendingFiles: React.Dispatch<React.SetStateAction<Array<File | null>>>
+  attachmentError: string | null
 }
 
-function AttachmentFields({ isSubmitting, pendingFiles, setPendingFiles }: AttachmentFieldsProps) {
+function AttachmentFields({ isSubmitting, pendingFiles, setPendingFiles, attachmentError }: AttachmentFieldsProps) {
   const { t } = useTranslation()
 
   const appendRow = () => setPendingFiles((prev) => [...prev, null])
@@ -182,7 +210,7 @@ function AttachmentFields({ isSubmitting, pendingFiles, setPendingFiles }: Attac
     })
 
   return (
-    <Field className='gap-2'>
+    <Field data-invalid={Boolean(attachmentError)} className='gap-2'>
       <div className='flex flex-wrap items-center justify-between gap-3'>
         <FieldLabel>{t('recruitment.applyDialog.fields.attachments')}</FieldLabel>
         <Button
@@ -209,6 +237,10 @@ function AttachmentFields({ isSubmitting, pendingFiles, setPendingFiles }: Attac
             onRemove={() => removeRow(index)}
           />
         ))}
+      </div>
+
+      <div className='min-h-4'>
+        {attachmentError ? <FieldError className='text-xs'>{attachmentError}</FieldError> : null}
       </div>
     </Field>
   )
@@ -242,11 +274,15 @@ function AttachmentRow({ file, isSubmitting, canRemove, onSelectFile, onRemove }
 
   return (
     <Field className='gap-1'>
-      <div className='flex gap-2'>
+      <div className='flex min-w-0 gap-2'>
         <input ref={fileInputRef} type='file' className='hidden' onChange={handleFileChange} />
         {file && previewUrl ? (
-          <Button asChild variant='outline' className='h-10 flex-1 justify-start gap-2 bg-input/40 px-3.5 font-normal'>
-            <a href={previewUrl} target='_blank' rel='noopener noreferrer'>
+          <Button
+            asChild
+            variant='outline'
+            className='h-10 min-w-0 flex-1 shrink justify-start gap-2 overflow-hidden bg-input/40 px-3.5 font-normal'
+          >
+            <a href={previewUrl} target='_blank' rel='noopener noreferrer' title={file.name}>
               <HugeiconsIcon icon={Attachment01Icon} strokeWidth={1.8} className='size-4 shrink-0' />
               <span className='truncate'>{file.name}</span>
             </a>
@@ -257,7 +293,7 @@ function AttachmentRow({ file, isSubmitting, canRemove, onSelectFile, onRemove }
             variant='outline'
             disabled={isSubmitting}
             onClick={() => fileInputRef.current?.click()}
-            className='h-10 flex-1 justify-start gap-2 bg-input/40 px-3.5 font-normal'
+            className='h-10 min-w-0 flex-1 shrink justify-start gap-2 overflow-hidden bg-input/40 px-3.5 font-normal'
           >
             <HugeiconsIcon icon={CloudUploadIcon} strokeWidth={1.8} className='size-4 shrink-0' />
             <span className='truncate text-muted-foreground'>{t('recruitment.applyDialog.attachmentPlaceholder')}</span>
