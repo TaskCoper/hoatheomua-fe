@@ -1,5 +1,6 @@
 import type { ProductSummary } from '@/features/products/types'
 import type { CartItem } from '@/stores/cart.store'
+import { ARE_CARDS_ENABLED } from './cards/card-feature'
 import type { CardWritingMethod, CheckoutCard, CheckoutCardType } from './cards/types'
 import type {
   CheckoutItemPayload,
@@ -111,7 +112,8 @@ export const buildCheckoutPayload = (
   const { paymentMethod, gateway, shippingGateway, shippingFee } = selection
 
   const estimate = buildEstimatePayload(values, items, productById, contact)
-  const bouquetsByLineId = buildBouquetsByLineId(values.cards)
+  // The last word on cards: while they are off the order carries none, whatever the form holds.
+  const bouquetsByLineId = buildBouquetsByLineId(ARE_CARDS_ENABLED ? values.cards : [])
 
   // `buildEstimatePayload` maps `items` in order, so index `i` is still line `items[i]`.
   const checkoutItems: CheckoutItemPayload[] = estimate.items.map((item, index) => {

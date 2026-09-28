@@ -5,16 +5,23 @@ import type { I18nKey } from '@/lib/i18n/types'
 import { cn } from '@/shared/utils'
 import { Tick02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { ARE_CARDS_ENABLED } from '../../cards/card-feature'
 
 export type CheckoutStep = 1 | 2 | 3 | 4 | 5
 
-const STEPS: { step: CheckoutStep; labelKey: I18nKey }[] = [
+export const CHECKOUT_CARDS_STEP: CheckoutStep = 2
+
+const ALL_STEPS: { step: CheckoutStep; labelKey: I18nKey }[] = [
   { step: 1, labelKey: 'orders.checkout.stepPersonal' },
-  { step: 2, labelKey: 'orders.checkout.stepCards' },
+  { step: CHECKOUT_CARDS_STEP, labelKey: 'orders.checkout.stepCards' },
   { step: 3, labelKey: 'orders.checkout.stepPayment' },
   { step: 4, labelKey: 'orders.checkout.stepReview' },
   { step: 5, labelKey: 'orders.checkout.stepComplete' }
 ]
+
+const STEPS = ALL_STEPS.filter(({ step }) => ARE_CARDS_ENABLED || step !== CHECKOUT_CARDS_STEP)
+
+export const CHECKOUT_STEPS: CheckoutStep[] = STEPS.map(({ step }) => step)
 
 export default function CheckoutStepper({ current }: { current: CheckoutStep }) {
   const { t } = useTranslation()
@@ -36,7 +43,7 @@ export default function CheckoutStepper({ current }: { current: CheckoutStep }) 
                   isReached ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
                 )}
               >
-                {isCompleted ? <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-3.5' /> : step}
+                {isCompleted ? <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-3.5' /> : index + 1}
               </span>
 
               <span

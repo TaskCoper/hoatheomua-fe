@@ -10,7 +10,8 @@ import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { useEffect, useRef, useState } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
-import type { CheckoutStep } from '../components/checkout/checkout-stepper'
+import { ARE_CARDS_ENABLED } from '../cards/card-feature'
+import { CHECKOUT_CARDS_STEP, CHECKOUT_STEPS, type CheckoutStep } from '../components/checkout/checkout-stepper'
 import { buildCheckoutPayload, buildEstimatePayload, type OrderContact } from '../payloads'
 import type { CheckoutSelection, ShippingGateway } from '../types'
 import { createEstimateSchema, type CheckoutFormValues } from '../validations'
@@ -67,7 +68,12 @@ export const useCheckoutFlow = ({
     if (items.length === 0) router.replace('/cart')
   }, [canPlaceOrder, items.length, router])
 
-  const goBack = () => setStep((prev) => (prev - 1) as CheckoutStep)
+  const stepAt = (from: CheckoutStep, offset: number): CheckoutStep => {
+    const index = CHECKOUT_STEPS.indexOf(from)
+    return CHECKOUT_STEPS[Math.min(Math.max(index + offset, 0), CHECKOUT_STEPS.length - 1)] ?? from
+  }
+
+  const goBack = () => setStep((prev) => stepAt(prev, -1))
 
   const hasContact = () => {
     if (contact.fullName.trim() && contact.phone.trim()) return true
@@ -90,7 +96,7 @@ export const useCheckoutFlow = ({
   }
 
   const goNext = () => {
-    setStep((prev) => Math.min(prev + 1, 5) as CheckoutStep)
+    setStep((prev) => stepAt(prev, 1))
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -137,7 +143,7 @@ export const useCheckoutFlow = ({
         shippingGateway
       })
       setEstimatedGateway(shippingGateway)
-      goToStep(2)
+      goToStep(stepAt(1, 1))
     } catch {}
   }
 
@@ -190,7 +196,7 @@ export const useCheckoutFlow = ({
         if (!(await isFulfillable())) return
 
         try {
-          const cards = await uploadCardAttachments(values.cards)
+          const cards = ARE_CARDS_ENABLED ? await uploadCardAttachments(values.cards) : []
           if (!cards) return
 
           const { mrc_order_id } = await createOrder({
@@ -218,7 +224,7 @@ export const useCheckoutFlow = ({
       },
       (errors) => {
         toast.error(t('common.validation.fixErrors'))
-        goToStep(errors.cards ? 2 : 3)
+        goToStep(ARE_CARDS_ENABLED && errors.cards ? CHECKOUT_CARDS_STEP : 3)
       }
     )()
   }

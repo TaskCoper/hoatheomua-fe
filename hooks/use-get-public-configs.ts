@@ -6,7 +6,10 @@ export interface GetPublicConfigsParams {
   key?: string
 }
 
-type PublicConfigsQueryOptions<TData> = Pick<UseQueryOptions<TData>, 'staleTime' | 'gcTime' | 'retry' | 'throwOnError'>
+type PublicConfigsQueryOptions<TData> = Pick<
+  UseQueryOptions<TData>,
+  'staleTime' | 'gcTime' | 'retry' | 'throwOnError' | 'enabled'
+>
 
 export const useGetPublicConfigs = <T extends { key: string }, K extends T['key'] = T['key']>({
   group,

@@ -27,6 +27,7 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
     control,
     product,
     parentProduct,
+    previewProduct,
     parentIngredients,
     step,
     maxStep,
@@ -103,7 +104,7 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
 
       <main className='grid flex-1 lg:min-h-[calc(100dvh-5rem)] lg:grid-cols-[minmax(30rem,5fr)_minmax(0,6fr)]'>
         <StudioPreview
-          product={step === 1 ? parentProduct : product}
+          product={step === 1 ? parentProduct : previewProduct}
           step={step}
           status={generationStatus}
           stage={generationStage}

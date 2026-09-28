@@ -17,6 +17,7 @@ import { useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { getCardsTotal } from '../../cards/card-data'
+import { ARE_CARDS_ENABLED } from '../../cards/card-feature'
 import { useCheckoutCards } from '../../cards/use-checkout-cards'
 import { localizedMethodText } from '../../checkout-methods'
 import { useCardConfig } from '../../hooks/use-card-config'
@@ -34,7 +35,7 @@ import type { TaxBusinessInfo } from '../../types'
 import CheckoutCards from './cards/checkout-cards'
 import { CheckoutPanel } from './checkout-section'
 import CheckoutSidebar from './checkout-sidebar'
-import CheckoutStepper from './checkout-stepper'
+import CheckoutStepper, { CHECKOUT_CARDS_STEP } from './checkout-stepper'
 import StepComplete from './step-complete'
 import StepPayment from './step-payment'
 import StepPersonal from './step-personal'
@@ -178,7 +179,8 @@ export default function CheckoutClient() {
 
   const { cardConfig } = useCardConfig()
   const { cards, saveCard, removeCard } = useCheckoutCards({ control: methods.control, lines: items })
-  const cardsTotal = useMemo(() => getCardsTotal(cards, cardConfig), [cards, cardConfig])
+
+  const cardsTotal = useMemo(() => (ARE_CARDS_ENABLED ? getCardsTotal(cards, cardConfig) : 0), [cards, cardConfig])
 
   const { summaryLines, unavailableLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } =
     useCheckoutSummary({
@@ -212,13 +214,15 @@ export default function CheckoutClient() {
   const sidebarAction =
     step === 1
       ? {
-          label: isVerifyingAvailability ? t('products.stock.checking') : t('orders.checkout.sidebar.continueToCards'),
+          label: isVerifyingAvailability
+            ? t('products.stock.checking')
+            : t(ARE_CARDS_ENABLED ? 'orders.checkout.sidebar.continueToCards' : 'orders.checkout.sidebar.goToPayment'),
           onClick: () => handleGoToCards(selectedDeliveryMethod?.shippingGateway),
           disabled:
             items.length === 0 || !selectedDeliveryMethod || isLoading || isBlockedByStock || isStepBlockedByFlag,
           loading: isEstimatingOrder || isVerifyingAvailability
         }
-      : step === 2
+      : step === CHECKOUT_CARDS_STEP
         ? {
             label: t('orders.checkout.sidebar.goToPayment'),
             onClick: goNext,
@@ -366,7 +370,7 @@ export default function CheckoutClient() {
                     selectedDeliveryMethodId={selectedDeliveryMethodId}
                     onSelectDeliveryMethod={handleSelectDeliveryMethod}
                   />
-                ) : step === 2 ? (
+                ) : step === CHECKOUT_CARDS_STEP ? (
                   <CheckoutCards lines={summaryLines} cards={cards} onSave={saveCard} onRemove={removeCard} />
                 ) : step === 3 ? (
                   <StepPayment

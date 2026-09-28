@@ -3,6 +3,7 @@
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { PenIcon, ViewIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
+import { ARE_CARDS_ENABLED, ORDER_CARD_CONSTANT_LABELS } from '../../cards/card-feature'
 import type { OrderAiCard } from '../../cards/types'
 import OrderCardArtwork from './order-card-artwork'
 import OrderCardStudioDialog from './order-card-studio-dialog'
@@ -32,7 +33,15 @@ export default function OrderAiCardRow({ card, label, canDesign }: OrderAiCardRo
       />
 
       <span className='min-w-0 flex-1'>
-        <span className='flex items-center gap-1.5 text-xs font-semibold text-foreground'>{label}</span>
+        <span className='flex items-center gap-1.5 text-xs font-semibold text-foreground'>
+          {label}
+
+          {ARE_CARDS_ENABLED ? null : (
+            <span className='rounded-full bg-secondary/40 px-1.5 py-0.5 text-[0.7rem] font-normal text-secondary-foreground'>
+              {ORDER_CARD_CONSTANT_LABELS[card.type]}
+            </span>
+          )}
+        </span>
 
         {card.content.message ? (
           <span className='mt-0.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground italic'>
@@ -45,7 +54,7 @@ export default function OrderAiCardRow({ card, label, canDesign }: OrderAiCardRo
     </>
   )
 
-  if (card.type === 'handmade' || !canDesign) {
+  if (!ARE_CARDS_ENABLED || card.type === 'handmade' || !canDesign) {
     return <li className='flex w-full items-center gap-2.5 px-2 py-1.5'>{preview}</li>
   }
 
