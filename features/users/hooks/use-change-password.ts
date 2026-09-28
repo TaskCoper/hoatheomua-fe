@@ -2,6 +2,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import userService from '../services'
+import type { ChangePasswordPayload } from '../types'
 
 export const useChangePassword = () => {
   const { t } = useTranslation()
