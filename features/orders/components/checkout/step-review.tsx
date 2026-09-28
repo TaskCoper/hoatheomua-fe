@@ -9,6 +9,7 @@ import { LocationUser01Icon, Mail01Icon, Motorbike02Icon, PenIcon, Wallet01Icon 
 import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
 import type { ReactNode } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
+import { ARE_CARDS_ENABLED } from '../../cards/card-feature'
 import type { CheckoutCard, CheckoutCardField } from '../../cards/types'
 import { localizedMethodText, type CheckoutDeliveryOption, type CheckoutPaymentOption } from '../../checkout-methods'
 import { InvoiceType } from '../../types'
@@ -16,7 +17,7 @@ import type { CheckoutFormValues } from '../../validations'
 import CheckoutCards from './cards/checkout-cards'
 import CheckoutSection from './checkout-section'
 import type { CheckoutSummaryLine } from './checkout-sidebar'
-import type { CheckoutStep } from './checkout-stepper'
+import { CHECKOUT_CARDS_STEP, type CheckoutStep } from './checkout-stepper'
 
 interface StepReviewProps {
   lines: CheckoutSummaryLine[]
@@ -110,10 +111,14 @@ export default function StepReview({
         )}
       </ReviewSection>
 
-      {cards.length > 0 ? (
+      {!ARE_CARDS_ENABLED ? null : cards.length > 0 ? (
         <CheckoutCards lines={lines} cards={cards} onSave={onSaveCard} onRemove={onRemoveCard} readOnly />
       ) : (
-        <ReviewSection icon={Mail01Icon} title={t('orders.checkout.cards.heading')} onEdit={() => onEditStep(2)}>
+        <ReviewSection
+          icon={Mail01Icon}
+          title={t('orders.checkout.cards.heading')}
+          onEdit={() => onEditStep(CHECKOUT_CARDS_STEP)}
+        >
           <p className='text-xs text-muted-foreground'>{t('orders.checkout.cards.reviewEmpty')}</p>
         </ReviewSection>
       )}

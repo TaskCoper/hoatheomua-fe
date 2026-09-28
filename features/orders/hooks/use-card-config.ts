@@ -11,15 +11,13 @@ import {
   parseCardSizes,
   type CardConfig
 } from '../cards/card-config'
+import { ARE_CARDS_ENABLED } from '../cards/card-feature'
 
-/**
- * The CMS is the only source. A missing or malformed blob leaves the config empty rather than
- * standing in for it - `hasCardConfig` is what callers gate on.
- */
 export const useCardConfig = () => {
   const { configs, isGettingConfigs } = useGetPublicConfigs<CardConfigItem>({
     group: CARD_CONFIG_GROUP,
     options: {
+      enabled: ARE_CARDS_ENABLED,
       staleTime: 5 * 60_000,
       gcTime: 30 * 60_000,
       retry: false,

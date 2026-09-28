@@ -28,6 +28,7 @@ import type {
   CreateAiFlowerPayload,
   StudioBouquet,
   StudioGenerationStatus,
+  StudioProduct,
   StudioStep,
   StudioVersion
 } from '@/features/studio/types'
@@ -171,6 +172,15 @@ export function useStudioDesigner(family: ProductFamily) {
 
   const parentProduct = useMemo(() => toStudioProduct(detail), [detail])
   const parentIngredients = useMemo(() => toStudioIngredients(detail.materials), [detail.materials])
+
+  const previewProduct = useMemo<StudioProduct>(
+    () => ({
+      ...product,
+      imageUrl: parentProduct.imageUrl ?? product.imageUrl,
+      imageFit: parentProduct.imageUrl ? parentProduct.imageFit : product.imageFit
+    }),
+    [parentProduct, product]
+  )
 
   const mockup = sceneOptions.find((item) => item.id === selectedMockupId)
   const trimmedName = designName.trim()
@@ -322,6 +332,7 @@ export function useStudioDesigner(family: ProductFamily) {
     control,
     product,
     parentProduct,
+    previewProduct,
     parentIngredients,
     step,
     maxStep,
