@@ -1,15 +1,43 @@
 // Same-origin proxy to the upstream API. Strips `Domain=` from Set-Cookie so the
 // browser binds the upstream's HttpOnly auth cookies to this host.
 
-const DEFAULT_UPSTREAM = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '')
+import { SERVER_API_BASE_URL, SERVER_TASKCOPER_API_BASE_URL } from '@/lib/api-upstream'
+
+const DEFAULT_UPSTREAM = SERVER_API_BASE_URL
 
 // Prefix-based routing: `/api/<prefix>/...` is stripped and forwarded to the
 // matching upstream. Anything else falls through to the default upstream.
 const PREFIXED_UPSTREAMS: Record<string, string | undefined> = {
-  taskcoper: process.env.NEXT_PUBLIC_TASKCOPER_API_BASE_URL?.replace(/\/+$/, '')
+  taskcoper: SERVER_TASKCOPER_API_BASE_URL
 }
 
 const HOP_BY_HOP = new Set(['host', 'connection', 'content-length', 'transfer-encoding'])
+
+const TIMEOUT_CODES = new Set(['ETIMEDOUT', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT'])
+
+// A thrown fetch means the request never got a response from the backend (DNS,
+// connect timeout, reset), so the backend has no trace of it - log it here and
+// answer with a gateway status in the backend's error envelope instead of
+// letting Next.js turn it into an opaque 500.
+const upstreamUnavailable = (method: string, target: string, error: unknown) => {
+  const cause = (error as { cause?: { code?: string } }).cause
+  const code = cause?.code ?? (error instanceof Error ? error.name : 'UnknownError')
+  const status = TIMEOUT_CODES.has(code) ? 504 : 502
+
+  console.error(`[API-PROXY] ${method} ${target} failed: ${code}`)
+
+  return Response.json(
+    {
+      title: status === 504 ? 'Gateway Timeout' : 'Bad Gateway',
+      status,
+      detail: 'The upstream API could not be reached.',
+      messageCode: 'UpstreamUnavailable',
+      errors: null,
+      timestampUtc: new Date().toISOString()
+    },
+    { status }
+  )
+}
 
 async function proxy(req: Request, ctx: { params: Promise<{ path: string[] }> }) {
   const { path } = await ctx.params
@@ -24,7 +52,8 @@ async function proxy(req: Request, ctx: { params: Promise<{ path: string[] }> })
   }
 
   const { search } = new URL(req.url)
-  const targetUrl = `${upstreamBaseUrl}/${forwardedPath.join('/')}${search}`
+  const targetPath = `${upstreamBaseUrl}/${forwardedPath.join('/')}`
+  const targetUrl = `${targetPath}${search}`
 
   const forwardHeaders = new Headers()
   req.headers.forEach((value, key) => {
@@ -36,13 +65,20 @@ async function proxy(req: Request, ctx: { params: Promise<{ path: string[] }> })
   })
 
   const hasBody = req.method !== 'GET' && req.method !== 'HEAD'
+  const body = hasBody ? await req.arrayBuffer() : undefined
 
-  const upstream = await fetch(targetUrl, {
-    method: req.method,
-    headers: forwardHeaders,
-    body: hasBody ? await req.arrayBuffer() : undefined,
-    redirect: 'manual'
-  })
+  let upstream: Response
+  try {
+    upstream = await fetch(targetUrl, {
+      method: req.method,
+      headers: forwardHeaders,
+      body,
+      redirect: 'manual'
+    })
+  } catch (error) {
+    // Query string left out of the log: it can carry user input.
+    return upstreamUnavailable(req.method, targetPath, error)
+  }
 
   const STRIP_RESPONSE_HEADERS = new Set(['set-cookie', 'content-encoding', 'content-length', 'transfer-encoding'])
 
