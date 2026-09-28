@@ -48,7 +48,14 @@ export default function AccountShell({ active, onSelectSection, slug: slugFromRo
     { key: 'orders', label: t('account.nav.orders'), icon: PackageIcon, href: buildAccountHref(slug, 'orders') },
     { key: 'studio', label: t('account.nav.studio'), icon: AiMagicIcon, href: buildAccountHref(slug, 'studio') },
     ...(ARE_CARDS_ENABLED
-      ? [{ key: 'cards' as const, label: t('account.nav.cards'), icon: Mail01Icon, href: buildAccountHref(slug, 'cards') }]
+      ? [
+          {
+            key: 'cards' as const,
+            label: t('account.nav.cards'),
+            icon: Mail01Icon,
+            href: buildAccountHref(slug, 'cards')
+          }
+        ]
       : []),
     { key: 'info', label: t('account.nav.profile'), icon: User03Icon, href: buildAccountHref(slug, 'info') },
     { key: 'address', label: t('account.nav.addresses'), icon: Home01Icon, href: buildAccountHref(slug, 'address') },
@@ -65,6 +72,7 @@ export default function AccountShell({ active, onSelectSection, slug: slugFromRo
   ]
 
   const fullName = me ? `${me.lastName} ${me.firstName}`.trim() : ''
+  const contactLine = me?.email?.trim() || me?.phoneNumber?.trim() || ''
 
   return (
     <section className='relative px-4 pt-4 pb-12 sm:pt-6 md:pt-8 lg:pt-10'>
@@ -85,15 +93,19 @@ export default function AccountShell({ active, onSelectSection, slug: slugFromRo
           ) : me ? (
             <p className='flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground sm:text-sm'>
               <span className='font-semibold text-foreground'>{fullName || t('profile.notProvided')}</span>
-              <span aria-hidden='true' className='text-foreground/30'>
-                •
-              </span>
-              <span className='wrap-break-word'>{me.email}</span>
+              {contactLine ? (
+                <>
+                  <span aria-hidden='true' className='text-foreground/30'>
+                    •
+                  </span>
+                  <span className='wrap-break-word'>{contactLine}</span>
+                </>
+              ) : null}
             </p>
           ) : null}
         </header>
 
-        <div className='grid gap-4 lg:grid-cols-[15rem_minmax(0,1fr)]'>
+        <div className='grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-4'>
           <AccountNav
             active={active}
             primaryItems={primaryItems}
@@ -105,7 +117,9 @@ export default function AccountShell({ active, onSelectSection, slug: slugFromRo
             isSigningOut={isSigningOut}
           />
 
-          <div className='flex min-w-0 flex-col gap-4'>{children}</div>
+          <div className='flex min-w-0 flex-col gap-3 border-t border-border/60 pt-5 lg:gap-4 lg:border-0 lg:pt-0'>
+            {children}
+          </div>
         </div>
       </div>
     </section>
@@ -178,7 +192,7 @@ function AccountNav({
         </li>
       </ul>
 
-      <div className='-mx-4 overflow-x-auto px-4 lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+      <div className='rail-x -mx-4 px-4 lg:hidden'>
         <ul className='flex w-max items-center gap-2 pb-1'>
           {[...primaryItems, ...secondaryItems].map((item) => (
             <li key={item.key}>

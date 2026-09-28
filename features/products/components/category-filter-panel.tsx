@@ -29,8 +29,7 @@ const collectParentIds = (nodes: FilterChild[]): string[] =>
 type CategoryFilterPanelProps = {
   sectionId: string
   className?: string
-  /** 'vertical' renders a sidebar; 'horizontal' renders a top filter bar. */
-  orientation?: 'vertical' | 'horizontal'
+  orientation?: 'vertical' | 'horizontal' | 'plain'
   hasActiveFilters: boolean
   onReset: () => void
   // name
@@ -257,6 +256,16 @@ export default function CategoryFilterPanel({
       {t('products.filter.reset')}
     </button>
   ) : null
+
+  if (orientation === 'plain') {
+    return (
+      <div className={cn('space-y-6', className)}>
+        {nameBlock}
+        {catsBlock}
+        {priceBlock}
+      </div>
+    )
+  }
 
   if (isHorizontal) {
     return (

@@ -116,8 +116,13 @@ export default function StudioResult({
             ]}
           />
 
-          <dl className={cn(studioSummaryRuleClass, 'flex flex-wrap items-end justify-between gap-x-8 gap-y-4')}>
-            <div className='flex flex-wrap items-start gap-x-8 gap-y-4'>
+          <dl
+            className={cn(
+              studioSummaryRuleClass,
+              'space-y-3 sm:flex sm:flex-wrap sm:items-end sm:justify-between sm:gap-x-8 sm:space-y-0'
+            )}
+          >
+            <div className='flex flex-wrap items-start justify-between gap-x-8 gap-y-4 sm:justify-start'>
               <div>
                 <dt className={studioSummaryLabelClass}>{t('result.status')}</dt>
                 <dd className={cn(factValueClass, 'mt-1')}>
@@ -133,16 +138,18 @@ export default function StudioResult({
               </div>
 
               {version?.createdAt ? (
-                <div>
+                <div className='text-right sm:text-left'>
                   <dt className={studioSummaryLabelClass}>{t('result.createdAt')}</dt>
-                  <dd className={cn(factValueClass, 'mt-1')}>{formatDateTime(version.createdAt, 'dateTimeMedium')}</dd>
+                  <dd className={cn(factValueClass, 'mt-1 justify-end sm:justify-start')}>
+                    {formatDateTime(version.createdAt, 'dateTimeMedium')}
+                  </dd>
                 </div>
               ) : null}
             </div>
 
-            <div className='text-right'>
+            <div className='flex items-baseline justify-between gap-4 border-t border-border/60 pt-3 sm:block sm:border-0 sm:pt-0 sm:text-right'>
               <dt className={studioSummaryLabelClass}>{t('result.price')}</dt>
-              <dd className={cn(studioSummaryAmountClass, 'mt-1.5')}>{formatStudioPrice(bouquet.totalAmount)}</dd>
+              <dd className={cn(studioSummaryAmountClass, 'sm:mt-1.5')}>{formatStudioPrice(bouquet.totalAmount)}</dd>
             </div>
           </dl>
         </div>
@@ -176,15 +183,18 @@ export default function StudioResult({
             description={t('review.flowersNote', { count: flowers.length, name: product.name })}
           />
 
-          <div className='mt-6 flex flex-col gap-8'>
+          <div className='mt-6 flex flex-col gap-4 sm:gap-8'>
             {flowers.map((flower) => (
-              <article key={flower.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
+              <article
+                key={flower.id}
+                className='grid grid-cols-[3.5rem_1fr] gap-3 sm:grid-cols-[minmax(0,4rem)_1fr] sm:gap-4'
+              >
                 <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
                   <StudioImage
                     src={flower.imageUrl}
                     alt={flower.name}
                     fill
-                    sizes='(min-width: 1024px) 11rem, (min-width: 640px) 30vw, 100vw'
+                    sizes='(min-width: 640px) 4rem, 3.5rem'
                     loading='lazy'
                     className='object-cover'
                     pendingIconClassName='size-6'
@@ -192,7 +202,9 @@ export default function StudioResult({
                 </div>
 
                 <div className='flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5'>
-                  <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>{flower.name}</h3>
+                  <h3 className='font-title text-base leading-snug font-bold text-pretty text-primary sm:text-lg'>
+                    {flower.name}
+                  </h3>
                   {flower.isCore ? <Badge variant='secondary'>{t('result.core')}</Badge> : null}
 
                   <div className='ml-auto shrink-0 text-right'>
@@ -229,7 +241,9 @@ export default function StudioResult({
             </div>
             <figcaption className='mt-4'>
               <p className={microLabelClass}>{tScene('selectedScene')}</p>
-              <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>{mockup.name}</h3>
+              <h3 className='font-title text-base leading-snug font-bold text-pretty text-primary sm:text-lg'>
+                {mockup.name}
+              </h3>
             </figcaption>
           </figure>
         </section>

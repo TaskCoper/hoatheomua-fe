@@ -26,42 +26,76 @@ export const CHECKOUT_STEPS: CheckoutStep[] = STEPS.map(({ step }) => step)
 export default function CheckoutStepper({ current }: { current: CheckoutStep }) {
   const { t } = useTranslation()
 
+  const currentIndex = Math.max(
+    0,
+    STEPS.findIndex(({ step }) => step === current)
+  )
+  const currentLabel = STEPS[currentIndex]?.labelKey
+  const progress = ((currentIndex + 1) / STEPS.length) * 100
+
   return (
-    <div className='flex items-center justify-center gap-2 sm:gap-4'>
-      {STEPS.map(({ step, labelKey }, index) => {
-        const isCompleted = current > step
-        const isActive = current === step
-        const isReached = isCompleted || isActive
+    <>
+      <div className='sm:hidden'>
+        <div className='flex items-baseline justify-between gap-3'>
+          <p className='min-w-0 truncate text-sm font-semibold text-foreground'>
+            {currentLabel ? t(currentLabel) : null}
+          </p>
+          <p className='shrink-0 text-xs font-medium text-muted-foreground tabular-nums'>
+            {t('orders.checkout.stepCounter', { current: currentIndex + 1, total: STEPS.length })}
+          </p>
+        </div>
+        <div
+          role='progressbar'
+          aria-valuemin={1}
+          aria-valuemax={STEPS.length}
+          aria-valuenow={currentIndex + 1}
+          aria-label={t('orders.checkout.title')}
+          className='mt-2 h-1.5 overflow-hidden rounded-full bg-muted'
+        >
+          <span
+            className='block h-full rounded-full bg-primary transition-[width] duration-300'
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
 
-        return (
-          <div key={step} className='flex items-center gap-2 sm:gap-4'>
-            <div className='flex items-center gap-2'>
-              <span
-                aria-current={isActive ? 'step' : undefined}
-                className={cn(
-                  'grid size-7 shrink-0 place-items-center rounded-full text-xs font-semibold transition-colors',
-                  isReached ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-                )}
-              >
-                {isCompleted ? <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-3.5' /> : index + 1}
-              </span>
+      <div className='hidden items-center justify-center gap-2 sm:flex sm:gap-4'>
+        {STEPS.map(({ step, labelKey }, index) => {
+          const isCompleted = current > step
+          const isActive = current === step
+          const isReached = isCompleted || isActive
 
-              <span
-                className={cn(
-                  'text-sm font-medium transition-colors sm:inline',
-                  isActive ? 'inline' : 'hidden',
-                  isReached ? 'text-foreground' : 'text-muted-foreground'
-                )}
-              >
-                {t(labelKey)}
-              </span>
+          return (
+            <div key={step} className='flex items-center gap-2 sm:gap-4'>
+              <div className='flex items-center gap-2'>
+                <span
+                  aria-current={isActive ? 'step' : undefined}
+                  className={cn(
+                    'grid size-7 shrink-0 place-items-center rounded-full text-xs font-semibold transition-colors',
+                    isReached ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                  )}
+                >
+                  {isCompleted ? <HugeiconsIcon icon={Tick02Icon} strokeWidth={2.5} className='size-3.5' /> : index + 1}
+                </span>
+
+                <span
+                  className={cn(
+                    'text-sm font-medium transition-colors',
+                    isReached ? 'text-foreground' : 'text-muted-foreground'
+                  )}
+                >
+                  {t(labelKey)}
+                </span>
+              </div>
+              {index < STEPS.length - 1 ? (
+                <span
+                  className={cn('h-px w-4 transition-colors sm:w-8', current > step ? 'bg-primary' : 'bg-border')}
+                />
+              ) : null}
             </div>
-            {index < STEPS.length - 1 ? (
-              <span className={cn('h-px w-4 sm:w-8 transition-colors', current > step ? 'bg-primary' : 'bg-border')} />
-            ) : null}
-          </div>
-        )
-      })}
-    </div>
+          )
+        })}
+      </div>
+    </>
   )
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { ProductDetail } from '@/features/products/types'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -47,19 +46,19 @@ export default function ProductCard({
       whileHover={{ y: -10, scale: 1.025 }}
       transition={{ type: 'spring', stiffness: 240, damping: 18 }}
       onHoverStart={onHoverStart}
-      className='group relative'
+      className='group relative @container'
     >
       {isActive ? (
         <div
           aria-hidden='true'
-          className='pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-4xl border border-primary'
+          className='pointer-events-none absolute inset-0 hidden translate-x-1.5 translate-y-1.5 rounded-4xl border border-primary fine-pointer:block'
         />
       ) : null}
 
       <div className='relative z-10 flex flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'>
         <Link
           href={`/products/${product.id}`}
-          className='relative isolate flex h-80 items-center justify-center overflow-hidden bg-secondary/40'
+          className='relative isolate flex aspect-square items-center justify-center overflow-hidden bg-secondary/40 @[13rem]:aspect-4/5 @[18rem]:aspect-3/4'
         >
           {avatar ? (
             <Image
@@ -68,7 +67,7 @@ export default function ProductCard({
               fill
               loading={eager ? 'eager' : 'lazy'}
               priority={eager}
-              sizes='(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw'
+              sizes='(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 360px) 50vw, 100vw'
               quality={65}
               className='object-cover transition-transform duration-700 ease-out group-hover:scale-105'
             />
@@ -126,31 +125,18 @@ export default function ProductCard({
           ) : null}
         </Link>
 
-        <div className='flex flex-1 flex-col gap-1.5 p-4 sm:p-3 md:p-4 lg:p-5'>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <h2 className='font-title text-base font-bold leading-tight text-primary line-clamp-2 sm:text-base md:text-lg truncate'>
-                  {name}
-                </h2>
-              </TooltipTrigger>
+        <div className='flex flex-1 flex-col gap-1.5 p-3 @[13rem]:p-4 @[18rem]:p-5'>
+          <h2 className='line-clamp-2 font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
+            {name}
+          </h2>
 
-              <TooltipContent
-                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                iconClassName=' bg-white fill-white'
-              >
-                {name}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <div className='-space-y-0.5 mt-1'>
+          <div className='mt-auto -space-y-0.5 pt-1'>
             {hasDiscount ? (
               <p className='text-[0.625rem] text-muted-foreground line-through'>{formatVnd(oldPrice)}</p>
             ) : (
               <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>
             )}
-            <p className='font-title text-sm font-bold text-primary sm:text-base'>{formatVnd(retail)}</p>
+            <p className='font-title text-sm font-bold text-primary @[13rem]:text-base'>{formatVnd(retail)}</p>
           </div>
         </div>
       </div>

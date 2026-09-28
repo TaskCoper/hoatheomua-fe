@@ -86,11 +86,13 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
             ))}
           </div>
 
-          <h2 className='font-title text-2xl font-bold leading-tight text-primary sm:text-3xl lg:text-4xl'>
+          <h2 className='font-title text-xl leading-tight font-bold text-primary sm:text-3xl lg:text-4xl'>
             {strings.headline}
           </h2>
 
-          <p className='text-xs leading-relaxed text-foreground sm:text-sm'>{strings.body}</p>
+          <p className='line-clamp-3 text-xs leading-relaxed text-foreground sm:line-clamp-none sm:text-sm'>
+            {strings.body}
+          </p>
 
           <div className='flex flex-wrap items-center gap-3'>
             <motion.div
@@ -167,10 +169,10 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
         <div className='relative flex items-center justify-center lg:col-span-5'>
           <div
             aria-hidden='true'
-            className='absolute inset-0 m-auto h-48 w-48 rounded-full bg-secondary/40 blur-3xl sm:h-60 sm:w-60 lg:h-72 lg:w-72'
+            className='absolute inset-0 m-auto h-32 w-32 rounded-full bg-secondary/40 blur-3xl sm:h-60 sm:w-60 lg:h-72 lg:w-72'
           />
 
-          <div className='bob-tilt-lg relative grid size-56 place-items-center rounded-full bg-card shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] ring-1 ring-foreground/5 sm:size-68 lg:size-80'>
+          <div className='bob-tilt-lg relative grid size-40 place-items-center rounded-full bg-card shadow-[0_1.2rem_3rem_rgb(81_108_108/14%)] ring-1 ring-foreground/5 sm:size-68 lg:size-80'>
             <div
               aria-hidden='true'
               className='spin-loop absolute inset-2 rounded-full border border-dashed border-primary/15 sm:inset-3'
@@ -180,8 +182,8 @@ export default function ProductsHeroMotion({ strings }: { strings: HeroStrings }
               <Image
                 src={flower}
                 alt={strings.imageAlt}
-                className='h-48 w-auto object-contain sm:h-60 lg:h-68'
-                sizes='(min-width: 1024px) 17rem, (min-width: 640px) 15rem, 12rem'
+                className='h-32 w-auto object-contain sm:h-60 lg:h-68'
+                sizes='(min-width: 1024px) 17rem, (min-width: 640px) 15rem, 8rem'
                 priority
                 fetchPriority='high'
                 quality={75}

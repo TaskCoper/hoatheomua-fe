@@ -9,7 +9,7 @@ import ProductGridSkeleton from '@/features/products/components/product-grid-ske
 export default function HomeSkeleton() {
   return (
     <div>
-      <Skeleton className='aspect-[64/27] w-full rounded-none' />
+      <Skeleton className='aspect-3/2 w-full rounded-none sm:aspect-2/1 lg:aspect-[64/27]' />
       <div className='mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8'>
         {Array.from({ length: 2 }).map((_, idx) => (
           <section key={idx} className='mb-12'>

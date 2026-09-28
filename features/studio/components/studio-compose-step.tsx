@@ -152,8 +152,8 @@ export default function StudioComposeStep({
         }
       />
 
-      <div role='radiogroup' aria-label={label} className='mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5 sm:gap-3'>
-        {loading ? <StudioOptionSkeletons count={5} className='aspect-square w-full rounded-xl' /> : null}
+      <div role='radiogroup' aria-label={label} className='mt-2 grid max-w-lg grid-cols-3 gap-2 sm:gap-3'>
+        {loading ? <StudioOptionSkeletons count={6} className='aspect-square w-full rounded-xl' /> : null}
 
         {options.map((option, index) => {
           const isSelected = option.id === selectedId
@@ -173,8 +173,8 @@ export default function StudioComposeStep({
                   src={option.imageUrl}
                   alt=''
                   fill
-                  sizes='(min-width: 640px) 12vw, 28vw'
-                  loading={index < 5 ? 'eager' : 'lazy'}
+                  sizes='(min-width: 640px) 22vw, 31vw'
+                  loading={index < 6 ? 'eager' : 'lazy'}
                   className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]'
                   pendingIconClassName='size-5'
                 />
@@ -315,13 +315,16 @@ export default function StudioComposeStep({
                     })
 
             return (
-              <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
+              <article
+                key={ingredient.id}
+                className='grid grid-cols-[3.5rem_1fr] gap-3 sm:grid-cols-[minmax(0,4rem)_1fr] sm:gap-4'
+              >
                 <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
                   <StudioImage
                     src={ingredient.imageUrl}
                     alt=''
                     fill
-                    sizes='(min-width: 640px) 4rem, 100vw'
+                    sizes='(min-width: 640px) 4rem, 3.5rem'
                     loading={index === 0 ? 'eager' : 'lazy'}
                     className='object-cover'
                     pendingIconClassName='size-6'
@@ -330,7 +333,9 @@ export default function StudioComposeStep({
 
                 <div className='flex min-w-0 items-center justify-between gap-4'>
                   <div className='min-w-0'>
-                    <h3 className='text-pretty font-title text-lg font-bold leading-snug text-primary'>{name}</h3>
+                    <h3 className='font-title text-base leading-snug font-bold text-pretty text-primary sm:text-lg'>
+                      {name}
+                    </h3>
                     {extraNote ? <p className='text-xs leading-relaxed text-muted-foreground'>{extraNote}</p> : null}
                   </div>
 
@@ -366,9 +371,9 @@ export default function StudioComposeStep({
       <section className='mt-14'>
         <StudioStepHeading title={t('style.label')} description={t('style.note')} />
 
-        <div role='radiogroup' aria-label={t('style.label')} className='mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4'>
+        <div role='radiogroup' aria-label={t('style.label')} className='mt-4 grid max-w-2xl grid-cols-3 gap-2 sm:gap-3'>
           {isGettingStyleOptions ? (
-            <StudioOptionSkeletons count={4} className='aspect-[3/4] w-full rounded-2xl' />
+            <StudioOptionSkeletons count={6} className='aspect-[3/4] w-full rounded-2xl' />
           ) : null}
           {styleOptions.map((style, index) => {
             const selected = style.id === bouquet.style?.id

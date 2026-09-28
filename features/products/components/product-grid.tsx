@@ -54,7 +54,7 @@ export default function ProductGrid({
   pageSize = PRODUCTS_PAGE_SIZE,
   isCustomizable = false,
   className,
-  columnsClassName = 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+  columnsClassName = '[grid-template-columns:repeat(auto-fill,minmax(min(8.5rem,100%),1fr))] sm:grid-cols-2 lg:grid-cols-4',
   columnsStyle
 }: {
   categoryIds: string[]
@@ -168,13 +168,18 @@ export default function ProductGrid({
               onClick={handlePreviousPage}
             />
           </PaginationItem>
+          <PaginationItem className='sm:hidden'>
+            <span className='px-3 text-xs font-medium text-muted-foreground tabular-nums'>
+              {t('products.grid.page', { page, total: totalPages })}
+            </span>
+          </PaginationItem>
           {pageNumbers.map((entry, index) =>
             entry === 'ellipsis' ? (
-              <PaginationItem key={`ellipsis-${index}`}>
+              <PaginationItem key={`ellipsis-${index}`} className='hidden sm:block'>
                 <PaginationEllipsis />
               </PaginationItem>
             ) : (
-              <PaginationItem key={entry}>
+              <PaginationItem key={entry} className='hidden sm:block'>
                 <PaginationLink
                   href={hrefFor(entry)}
                   isActive={entry === page}

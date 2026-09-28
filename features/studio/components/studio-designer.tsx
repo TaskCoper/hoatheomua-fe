@@ -125,7 +125,7 @@ export default function StudioDesigner({ family }: { family: ProductFamily }) {
           ref={formColumn}
           className='relative bg-background lg:order-1 lg:flex lg:h-[calc(100dvh-5rem)] lg:flex-col lg:overflow-y-auto lg:border-r lg:border-secondary/40'
         >
-          <div className='mx-auto flex w-full max-w-4xl grow flex-col px-4 pb-28 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
+          <div className='mx-auto flex w-full max-w-4xl grow flex-col px-4 pb-28 sm:px-6 sm:pt-10 lg:px-8 lg:pb-10 xl:px-10'>
             {step === 1 ? (
               <StudioIngredientsStep
                 control={control}

@@ -8,6 +8,7 @@ import {
   roundStudioQuantity,
   STUDIO_COMPOSE_STEP,
   STUDIO_LAST_STEP,
+  STUDIO_OPTION_PAGE_SIZE,
   STUDIO_RIBBON_LABELS,
   STUDIO_SCENE_STEP,
   STUDIO_WRAP_LABELS
@@ -73,28 +74,44 @@ export function useStudioDesigner(family: ProductFamily) {
     isGettingMoreReferenceFlowers: isGettingMoreBundles,
     hasMoreReferenceFlowers: hasMoreBundles,
     loadMoreReferenceFlowers: loadMoreBundles
-  } = useGetInfiniteReferenceFlowers({ type: 'bundle', enabled: needsComposeOptions })
+  } = useGetInfiniteReferenceFlowers({
+    type: 'bundle',
+    enabled: needsComposeOptions,
+    pageSize: STUDIO_OPTION_PAGE_SIZE
+  })
   const {
     referenceFlowers: sceneFlowers,
     isGettingReferenceFlowers: isGettingScenes,
     isGettingMoreReferenceFlowers: isGettingMoreScenes,
     hasMoreReferenceFlowers: hasMoreScenes,
     loadMoreReferenceFlowers: loadMoreScenes
-  } = useGetInfiniteReferenceFlowers({ type: 'flower', enabled: needsSceneOptions })
+  } = useGetInfiniteReferenceFlowers({
+    type: 'flower',
+    enabled: needsSceneOptions,
+    pageSize: STUDIO_OPTION_PAGE_SIZE
+  })
   const {
     products: ribbonProducts,
     isGettingProducts: isGettingRibbons,
     isGettingMoreProducts: isGettingMoreRibbons,
     hasMoreProducts: hasMoreRibbons,
     loadMoreProducts: loadMoreRibbons
-  } = useGetInfiniteProducts({ labels: STUDIO_RIBBON_LABELS, enabled: needsComposeOptions })
+  } = useGetInfiniteProducts({
+    labels: STUDIO_RIBBON_LABELS,
+    enabled: needsComposeOptions,
+    pageSize: STUDIO_OPTION_PAGE_SIZE
+  })
   const {
     products: wrapProducts,
     isGettingProducts: isGettingWraps,
     isGettingMoreProducts: isGettingMoreWraps,
     hasMoreProducts: hasMoreWraps,
     loadMoreProducts: loadMoreWraps
-  } = useGetInfiniteProducts({ labels: STUDIO_WRAP_LABELS, enabled: needsComposeOptions })
+  } = useGetInfiniteProducts({
+    labels: STUDIO_WRAP_LABELS,
+    enabled: needsComposeOptions,
+    pageSize: STUDIO_OPTION_PAGE_SIZE
+  })
 
   const styleOptions = useMemo(() => toStudioReferenceOptions(bundles), [bundles])
   const sceneOptions = useMemo(() => toStudioReferenceOptions(sceneFlowers), [sceneFlowers])

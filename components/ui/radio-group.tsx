@@ -6,7 +6,13 @@ import * as React from 'react'
 import { cn } from '@/shared/utils'
 
 function RadioGroup({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
-  return <RadioGroupPrimitive.Root data-slot='radio-group' className={cn('grid w-full gap-3', className)} {...props} />
+  return (
+    <RadioGroupPrimitive.Root
+      data-slot='radio-group'
+      className={cn('grid w-full gap-3 [&>*]:min-w-0', className)}
+      {...props}
+    />
+  )
 }
 
 function RadioGroupItem({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {

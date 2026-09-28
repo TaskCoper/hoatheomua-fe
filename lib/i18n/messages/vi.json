@@ -107,7 +107,10 @@
       "optional": "tuỳ chọn",
       "selectDate": "Chọn ngày",
       "downloadOpenedInNewTab": "Đã mở ảnh trong tab mới để bạn tự lưu lại",
-      "backToHome": "Về trang chủ"
+      "backToHome": "Về trang chủ",
+      "filters": "Bộ lọc",
+      "showResults": "Xem {count} sản phẩm",
+      "activeFilters": "{count} đang lọc"
     },
     "button": {
       "clearAll": "Xóa tất cả",
@@ -116,7 +119,8 @@
       "save": "Lưu",
       "upload": "Tải lên",
       "remove": "Gỡ bỏ",
-      "download": "Tải xuống"
+      "download": "Tải xuống",
+      "close": "Đóng"
     },
     "error": {
       "uploadNoUrlReturned": "Tải lên thất bại: không có URL trả về",
@@ -888,7 +892,8 @@
         "stepDescription": "Bước này không bắt buộc - bạn có thể bỏ qua để tiếp tục thanh toán."
       },
       "stepCards": "Thiệp",
-      "stepReview": "Xác nhận"
+      "stepReview": "Xác nhận",
+      "stepCounter": "Bước {current}/{total}"
     },
     "cards": {
       "heading": "Thiệp AI theo yêu cầu",
@@ -1145,7 +1150,18 @@
       "openCart": "Mở giỏ hàng",
       "openAccount": "Mở tài khoản",
       "search": "Tìm kiếm",
-      "openMenu": "Mở menu"
+      "openMenu": "Mở menu",
+      "cartCount": "{count} sản phẩm trong giỏ",
+      "closeMenu": "Đóng menu"
+    },
+    "menu": {
+      "title": "Menu",
+      "browse": "Mua sắm",
+      "company": "Về chúng tôi",
+      "account": "Tài khoản của bạn",
+      "guestTitle": "Chào bạn",
+      "guestSubtitle": "Đăng nhập để mua sắm, theo dõi đơn hàng và lưu địa chỉ.",
+      "language": "Ngôn ngữ"
     }
   },
   "footer": {
@@ -1600,7 +1616,9 @@
       "empty": {
         "title": "Chưa có sản phẩm",
         "description": "Bộ sưu tập đang được nghệ nhân chuẩn bị. Hãy quay lại sau để khám phá những bó hoa tươi mới nhất."
-      }
+      },
+      "loading": "Đang tải…",
+      "page": "Trang {page} / {total}"
     },
     "card": {
       "addToFavorites": "Thêm {name} vào yêu thích",

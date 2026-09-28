@@ -3,6 +3,7 @@
 import { Badge } from '@/components/ui/badge'
 import { availableOf, useProductVariant } from '@/features/products/components/product-variant-context'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { cn } from '@/shared/utils'
 import { DeliveryTruck01Icon, Flower2Icon, HandHeartIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 
@@ -28,6 +29,10 @@ export default function ProductSummary({
   const available = availableOf(selected)
   const inStock = available > 0
 
+  const availabilityLabel = inStock
+    ? t('products.summary.specs.inStock', { count: available })
+    : t('products.summary.specs.outOfStock')
+
   const specs: { label: string; value: string }[] = []
 
   if (brand) {
@@ -37,14 +42,13 @@ export default function ProductSummary({
     specs.push({ label: t('products.summary.specs.type'), value: type })
   }
 
-  specs.push({
-    label: t('products.summary.specs.status'),
-    value: inStock ? t('products.summary.specs.inStock', { count: available }) : t('products.summary.specs.outOfStock')
-  })
+  specs.push({ label: t('products.summary.specs.status'), value: availabilityLabel })
 
   return (
     <div className='space-y-4'>
-      <h1 className='font-title text-3xl font-bold text-primary lg:text-4xl xl:text-5xl'>{name}</h1>
+      <h1 className='font-title text-[clamp(1.5rem,6vw,3rem)] leading-tight font-bold text-pretty text-primary'>
+        {name}
+      </h1>
 
       <div className='flex flex-wrap gap-2'>
         {TRUST_BADGES.map((item) => (
@@ -59,11 +63,24 @@ export default function ProductSummary({
         ))}
       </div>
 
-      <dl className='divide-y divide-border/70 rounded-2xl bg-card ring-1 ring-foreground/5'>
+      <p
+        className={cn(
+          'inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold lg:hidden',
+          inStock ? 'bg-leaf/12 text-leaf' : 'bg-destructive/10 text-destructive'
+        )}
+      >
+        <span
+          aria-hidden='true'
+          className={cn('inline-block size-1.5 rounded-full', inStock ? 'bg-leaf' : 'bg-destructive')}
+        />
+        {availabilityLabel}
+      </p>
+
+      <dl className='hidden divide-y divide-border/70 rounded-2xl bg-card ring-1 ring-foreground/5 lg:block'>
         {specs.map((spec) => (
           <div key={spec.label} className='grid grid-cols-[8rem_1fr] items-center gap-3 px-4 py-3'>
             <dt className='text-xs font-medium text-muted-foreground'>{spec.label}</dt>
-            <dd className='font-medium text-xs text-primary'>{spec.value}</dd>
+            <dd className='text-xs font-medium text-primary'>{spec.value}</dd>
           </div>
         ))}
       </dl>

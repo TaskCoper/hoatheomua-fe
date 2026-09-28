@@ -1,6 +1,5 @@
 'use client'
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { Article } from '@/features/articles/types'
 import { useDynamicLineClamp } from '@/hooks/use-dynamic-line-clamp'
 import { formatDate } from '@/lib/date'
@@ -55,22 +54,9 @@ export function ArticleStandardCard({ item, image, locale }: ArticleStandardCard
             {formatDate(item.createdAt, 'dateLong', { locale })}
           </p>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <h3 className='line-clamp-2 font-title text-base font-bold leading-snug text-primary transition group-hover:text-foreground lg:text-lg'>
-                  {item.title}
-                </h3>
-              </TooltipTrigger>
-
-              <TooltipContent
-                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                iconClassName=' bg-white fill-white'
-              >
-                {item.title}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <h3 className='line-clamp-2 font-title text-base leading-snug font-bold text-primary transition group-hover:text-foreground lg:text-lg'>
+            {item.title}
+          </h3>
 
           <div ref={descriptionRef} className='min-h-[3.75rem] flex-1 text-xs leading-relaxed text-foreground'>
             <p style={descriptionStyle}>{getFirstParagraphTextFromHtml(item.description)}</p>

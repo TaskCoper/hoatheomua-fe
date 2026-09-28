@@ -49,9 +49,8 @@ export function AccountOrders() {
         title={t('orders.list.title')}
         description={isLoadingOrders ? t('orders.list.loading') : t('orders.list.count', { count: totalCount })}
       />
-
       <Tabs value={filter} onValueChange={(value) => setFilter(value as OrderFilter)}>
-        <TabsList className='h-auto w-full flex-wrap justify-start gap-1 rounded-full bg-muted p-1 sm:w-fit'>
+        <TabsList className='rail-x h-auto w-full justify-start gap-1 rounded-full bg-muted p-1 sm:w-fit sm:flex-wrap'>
           {FILTERS.map((value) => (
             <TabsTrigger
               key={value}
@@ -70,7 +69,6 @@ export function AccountOrders() {
           ))}
         </TabsList>
       </Tabs>
-
       {isLoadingOrders ? (
         <OrdersLoading />
       ) : orders.length === 0 ? (

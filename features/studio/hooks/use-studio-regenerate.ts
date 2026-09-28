@@ -4,6 +4,7 @@ import { useRegenerateAiFlower } from '@/features/studio/hooks/use-regenerate-ai
 import {
   STUDIO_SESSION_LAST_STEP,
   STUDIO_SESSION_SCENE_STEP,
+  STUDIO_OPTION_PAGE_SIZE,
   STUDIO_SESSION_STYLE_STEP
 } from '@/features/studio/studio-data'
 import { toStudioReferenceOptions } from '@/features/studio/studio-mappers'
@@ -41,14 +42,22 @@ export const useStudioRegenerate = ({ activeVersion, onRegenerated }: StudioRege
     isGettingMoreReferenceFlowers: isGettingMoreStyleOptions,
     hasMoreReferenceFlowers: hasMoreStyleOptions,
     loadMoreReferenceFlowers: loadMoreStyleOptions
-  } = useGetInfiniteReferenceFlowers({ type: 'bundle', enabled: openedStep >= STUDIO_SESSION_STYLE_STEP })
+  } = useGetInfiniteReferenceFlowers({
+    type: 'bundle',
+    enabled: openedStep >= STUDIO_SESSION_STYLE_STEP,
+    pageSize: STUDIO_OPTION_PAGE_SIZE
+  })
   const {
     referenceFlowers: sceneFlowers,
     isGettingReferenceFlowers: isGettingSceneOptions,
     isGettingMoreReferenceFlowers: isGettingMoreSceneOptions,
     hasMoreReferenceFlowers: hasMoreSceneOptions,
     loadMoreReferenceFlowers: loadMoreSceneOptions
-  } = useGetInfiniteReferenceFlowers({ type: 'flower', enabled: openedStep >= STUDIO_SESSION_SCENE_STEP })
+  } = useGetInfiniteReferenceFlowers({
+    type: 'flower',
+    enabled: openedStep >= STUDIO_SESSION_SCENE_STEP,
+    pageSize: STUDIO_OPTION_PAGE_SIZE
+  })
 
   const styleOptions = useMemo(() => toStudioReferenceOptions(bundles), [bundles])
   const sceneOptions = useMemo(() => toStudioReferenceOptions(sceneFlowers), [sceneFlowers])

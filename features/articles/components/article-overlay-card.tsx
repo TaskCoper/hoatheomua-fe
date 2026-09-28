@@ -1,6 +1,5 @@
 'use client'
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { Article } from '@/features/articles/types'
 import { formatDate } from '@/lib/date'
 import { Link } from '@/lib/i18n/navigation'
@@ -62,24 +61,9 @@ export function ArticleOverlayCard({
             <span>{formatDate(item.createdAt, 'dateLong', { locale })}</span>
           </div>
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <h3
-                  className={`line-clamp-2 font-title font-bold leading-tight text-primary-foreground ${titleClassName}`}
-                >
-                  {item.title}
-                </h3>
-              </TooltipTrigger>
-
-              <TooltipContent
-                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                iconClassName=' bg-white fill-white'
-              >
-                {item.title}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <h3 className={`line-clamp-2 font-title leading-tight font-bold text-primary-foreground ${titleClassName}`}>
+            {item.title}
+          </h3>
           <p className='line-clamp-2 text-xs text-primary-foreground/90 sm:text-sm'>
             {getFirstParagraphTextFromHtml(item.description)}
           </p>

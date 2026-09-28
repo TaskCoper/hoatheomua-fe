@@ -121,12 +121,12 @@ export default async function ProductDetailsTabs({
           {specs.map((spec, index) => (
             <div
               key={spec.label}
-              className={`grid grid-cols-[10rem_1fr] gap-4 px-4 py-3 text-sm ${
+              className={`grid gap-0.5 px-4 py-3 text-sm sm:grid-cols-[10rem_1fr] sm:gap-4 ${
                 index % 2 === 0 ? 'bg-card' : 'bg-secondary/20'
               }`}
             >
               <dt className='text-xs font-medium text-muted-foreground'>{spec.label}</dt>
-              <dd className='font-medium text-xs text-primary truncate'>{spec.value}</dd>
+              <dd className='text-xs font-medium wrap-break-word text-primary'>{spec.value}</dd>
             </div>
           ))}
         </dl>

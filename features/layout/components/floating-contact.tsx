@@ -192,7 +192,10 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
         />
       ) : null}
 
-      <div className='pointer-events-none fixed bottom-4 right-4 z-[10000] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6'>
+      <div
+        className='below-modals pointer-events-none fixed right-4 bottom-[calc(1rem+var(--app-bottom-bar-height))] z-[10000] flex flex-col items-end gap-3 transition-[bottom] duration-200 sm:right-6 sm:bottom-[calc(1.5rem+var(--app-bottom-bar-height))]'
+        style={{ paddingRight: 'env(safe-area-inset-right, 0px)' }}
+      >
         <div
           className={cn(
             'flex flex-col items-end gap-3 transition-opacity duration-300',

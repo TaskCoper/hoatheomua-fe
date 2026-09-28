@@ -88,7 +88,7 @@ export function OrderCard({ order }: OrderCardProps) {
         </div>
       </header>
 
-      <dl className='grid grid-cols-[minmax(6rem,auto)_minmax(0,1fr)] gap-x-6 gap-y-2 py-3 text-sm'>
+      <dl className='grid grid-cols-[minmax(4.5rem,auto)_minmax(0,1fr)] gap-x-3 gap-y-2 py-3 text-xs sm:grid-cols-[minmax(6rem,auto)_minmax(0,1fr)] sm:gap-x-6 sm:text-sm'>
         <MetaRow label={t('orders.checkout.orderTime')} value={deliveryDate} />
         <MetaRow label={t('orders.list.deliveredTo')} value={deliveryAddress ?? t('orders.list.detail.noValue')} />
         <MetaRow

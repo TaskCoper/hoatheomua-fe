@@ -11,6 +11,7 @@ import {
 } from '@/features/categories/utils'
 import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
 import ProductGrid from '@/features/products/components/product-grid'
+import ProductsToolbar from '@/features/products/components/products-toolbar'
 import { CUSTOMIZABLE_CATEGORY_ID } from '@/features/products/constants'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
@@ -74,6 +75,11 @@ export default function SectionView({
   const showPrice = Boolean(meta.filterByPrice)
   const hasFilters = showName || showPrice || filterableChildren.length > 0
 
+  const activeFilterCount =
+    (state.search.trim() !== '' ? 1 : 0) +
+    (state.priceFrom !== undefined || state.priceTo !== undefined ? 1 : 0) +
+    state.checkedCats.length
+
   const { cols, pageSize } = useMemo(
     () => resolveSectionGrid(category, state.checkedCats),
     [category, state.checkedCats]
@@ -134,8 +140,35 @@ export default function SectionView({
       <div className='mx-auto mt-6 w-full max-w-7xl'>
         {hasFilters ? (
           <div className='grid grid-cols-1 gap-6 lg:grid-cols-12'>
+            <ProductsToolbar
+              sectionId={category.categoryId}
+              activeFilterCount={activeFilterCount}
+              onReset={handlers.onReset}
+              showSearch={showName}
+              searchValue={state.nameValue}
+              onSearchChange={handlers.onNameChange}
+              showName={showName}
+              nameValue={state.nameValue}
+              onNameChange={handlers.onNameChange}
+              showPrice={showPrice}
+              priceMax={state.priceCeil}
+              priceValue={state.priceValue}
+              onPriceChange={handlers.onPriceChange}
+              onPriceCommit={handlers.onPriceCommit}
+              filterChildren={filterableChildren}
+              checkedCats={state.checkedCats}
+              onCatsChange={handlers.onCatsChange}
+              resultQuery={{
+                categoryIds: state.effectiveCategoryIds,
+                search: state.search,
+                priceFrom: state.priceFrom,
+                priceTo: state.priceTo,
+                pageSize
+              }}
+            />
+
             <CategoryFilterPanel
-              className='lg:col-span-3'
+              className='hidden lg:col-span-3 lg:block'
               orientation='vertical'
               sectionId={category.categoryId}
               hasActiveFilters={state.hasActiveFilters}

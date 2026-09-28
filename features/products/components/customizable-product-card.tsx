@@ -1,6 +1,5 @@
 'use client'
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   buildBouquetComposition,
   getGatherOffset,
@@ -194,12 +193,12 @@ export default function CustomizableProductCard({
       whileHover={{ y: -10, scale: 1.025 }}
       transition={{ type: 'spring', stiffness: 240, damping: 18 }}
       onHoverStart={onHoverStart}
-      className='group relative h-full'
+      className='group relative h-full @container'
     >
       {isActive ? (
         <div
           aria-hidden='true'
-          className='pointer-events-none absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-4xl border border-primary'
+          className='pointer-events-none absolute inset-0 hidden translate-x-1.5 translate-y-1.5 rounded-4xl border border-primary fine-pointer:block'
         />
       ) : null}
 
@@ -208,7 +207,7 @@ export default function CustomizableProductCard({
         className='relative z-10 flex h-full flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-[box-shadow,transform] duration-300 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.995]'
       >
         <div className='p-2 pb-0'>
-          <div className='relative h-[19.5rem] overflow-hidden rounded-2xl bg-secondary/55'>
+          <div className='relative aspect-square overflow-hidden rounded-2xl bg-secondary/55 @[13rem]:aspect-4/5 @[18rem]:aspect-3/4'>
             <div
               aria-hidden='true'
               className='pointer-events-none absolute inset-0 bg-[radial-gradient(85%_65%_at_50%_30%,rgb(255_255_255/62%),transparent_74%)]'
@@ -324,7 +323,7 @@ export default function CustomizableProductCard({
               <span
                 aria-hidden='true'
                 className={cn(
-                  'inline-flex items-center rounded-full bg-white/70 py-1 pl-1 shadow-[0_0.25rem_0.75rem_rgb(28_43_43/10%)] backdrop-blur-md',
+                  'inline-flex min-w-0 items-center overflow-hidden rounded-full bg-white/70 py-1 pl-1 shadow-[0_0.25rem_0.75rem_rgb(28_43_43/10%)] backdrop-blur-md',
                   overflowCount > 0 ? 'pr-2.5' : 'pr-1'
                 )}
               >
@@ -350,37 +349,28 @@ export default function CustomizableProductCard({
                   </span>
                 ) : null}
               </span>
-              <span className='inline-flex items-center gap-1 rounded-full bg-white/70 px-2 py-1 text-[0.625rem] font-medium text-primary shadow-[0_0.25rem_0.75rem_rgb(28_43_43/10%)] backdrop-blur-md'>
-                <HugeiconsIcon icon={SparklesIcon} className='size-3' />
-                {t('products.card.aiPreview')}
+              <span
+                title={t('products.card.aiPreview')}
+                className='inline-flex shrink-0 items-center gap-1 rounded-full bg-white/70 px-2 py-1 text-[0.625rem] font-medium whitespace-nowrap text-primary shadow-[0_0.25rem_0.75rem_rgb(28_43_43/10%)] backdrop-blur-md'
+              >
+                <HugeiconsIcon icon={SparklesIcon} className='size-3 shrink-0' />
+                <span className='hidden @[15rem]:inline'>{t('products.card.aiPreview')}</span>
+                <span className='sr-only @[15rem]:hidden'>{t('products.card.aiPreview')}</span>
               </span>
             </div>
           </div>
         </div>
 
-        <div className='flex flex-1 flex-col gap-1 p-4 sm:p-3 md:p-4 lg:p-5'>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <h2 className='line-clamp-2 font-title text-base font-bold leading-tight text-primary sm:text-base md:text-lg'>
-                  {name}
-                </h2>
-              </TooltipTrigger>
+        <div className='flex flex-1 flex-col gap-1 p-3 @[13rem]:p-4 @[18rem]:p-5'>
+          <h2 className='line-clamp-2 font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
+            {name}
+          </h2>
 
-              <TooltipContent
-                className='max-w-[220px] rounded-2xl border border-border/50 bg-white px-3 py-2 text-xs font-medium text-primary shadow-[0_0.45rem_1.4rem_rgb(81_108_108/12%)] backdrop-blur-sm'
-                iconClassName=' bg-white fill-white'
-              >
-                {name}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          <p className='text-xs font-medium text-muted-foreground'>
+          <p className='hidden text-xs font-medium text-muted-foreground @[11rem]:block'>
             {t('products.card.madeToOrder')} · {t('products.card.ingredientCount', { count: stems.length })}
           </p>
 
-          <div className='mt-auto flex items-end justify-between gap-3 pt-3.5'>
+          <div className='mt-auto flex items-end justify-between gap-2 pt-3'>
             <div className='-space-y-0.5'>
               <div className='flex items-center gap-1.5'>
                 <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>

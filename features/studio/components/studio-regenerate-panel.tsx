@@ -67,10 +67,10 @@ export default function StudioRegeneratePanel({
           <div
             role='radiogroup'
             aria-label={tCompose('style.label')}
-            className='mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4'
+            className='mt-6 grid max-w-2xl grid-cols-3 gap-2 sm:gap-3'
           >
             {isGettingStyleOptions ? (
-              <StudioOptionSkeletons count={4} className='aspect-[3/4] w-full rounded-2xl' />
+              <StudioOptionSkeletons count={6} className='aspect-[3/4] w-full rounded-2xl' />
             ) : null}
             {styleOptions.map((style, index) => {
               const selected = style.id === selectedStyleId
