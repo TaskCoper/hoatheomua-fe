@@ -48,7 +48,7 @@ export const useStudioPurchase = ({
 
   const isReady = Boolean(productId && flowerId)
 
-  const { isGettingMe, me } = useGetMe()
+  const { isGettingMe, isAuthenticated, canUseStorefront } = useGetMe()
   const { hasPhoneNumber, isLoading: isLoadingPhoneNumber } = useAccountPhoneNumber({ enabled: isReady })
   const { verifySellableQuantity, isVerifyingSellableQuantity } = useVerifySellableQuantity()
 
@@ -83,9 +83,13 @@ export const useStudioPurchase = ({
   const guardPurchase = () => {
     if (!isReady || isGettingMe) return false
 
-    if (me && !me.isEmailVerified) {
-      const verifyParams = me.email ? `?${new URLSearchParams({ email: me.email }).toString()}` : ''
-      router.push(`/verify-sent${verifyParams}`)
+    if (!isAuthenticated) {
+      router.push('/sign-in')
+      return false
+    }
+
+    if (!canUseStorefront) {
+      toast.error(t('auth.phone.storefrontUnavailable'))
       return false
     }
 

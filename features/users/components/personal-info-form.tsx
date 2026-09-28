@@ -45,8 +45,9 @@ interface PersonalInfoFormInnerProps {
 
 export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInfoFormInnerProps) {
   const { t } = useTranslation()
-  const schema = useMemo(() => createUpdateMeSchema(t), [t])
   const { me, isGettingMe } = useGetMe()
+  const isPhone = me?.registrationMethod === 'Phone'
+  const schema = useMemo(() => createUpdateMeSchema(t, isPhone), [t, isPhone])
   const { user, isLoading: isLoadingUser } = useGetUser(slug ?? me?.slug)
   const { updateMe, isUpdatingMe } = useUpdateMe()
   const { uploadFileWithToast: uploadAvatar, isUploading: isUploadingAvatar } = useUploadFileWithToast()
@@ -135,6 +136,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
 
   return (
     <form className='space-y-4' onSubmit={onSubmit}>
+      {isPhone && <p className='text-sm text-muted-foreground'>{t('auth.phone.profileNote')}</p>}
       <div className='grid gap-3 md:grid-cols-2'>
         <Controller
           name='firstName'
@@ -170,7 +172,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className='gap-0.5'>
             <FieldLabel htmlFor={field.name}>{t('profile.email')}</FieldLabel>
-            <Input {...field} id={field.name} aria-invalid={fieldState.invalid} autoComplete='email' />
+            <Input {...field} id={field.name} aria-invalid={fieldState.invalid} autoComplete='email' readOnly={isPhone} />
             <div className='min-h-4'>
               {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
             </div>
@@ -184,7 +186,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className='gap-0.5'>
             <FieldLabel htmlFor={field.name}>{t('profile.phoneNumber')}</FieldLabel>
-            <Input {...field} id={field.name} type='tel' aria-invalid={fieldState.invalid} autoComplete='tel' />
+            <Input {...field} id={field.name} type='tel' aria-invalid={fieldState.invalid} autoComplete='tel' readOnly={isPhone} />
             <div className='min-h-4'>
               {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
             </div>
@@ -215,6 +217,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
                   ref={avatarInputRef}
                   id={field.name}
                   type='file'
+                  disabled={isPhone}
                   accept='image/*'
                   className='hidden'
                   onChange={(e) => {
@@ -229,7 +232,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
                   variant='outline'
                   size='sm'
                   onClick={() => avatarInputRef.current?.click()}
-                  disabled={isPending}
+                  disabled={isPending || isPhone}
                 >
                   <HugeiconsIcon icon={CloudUploadIcon} size={16} strokeWidth={1.5} />
                   {t('common.button.upload')}
@@ -243,7 +246,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
                       setPendingAvatar(null)
                       field.onChange('')
                     }}
-                    disabled={isPending}
+                    disabled={isPending || isPhone}
                   >
                     {t('common.button.remove')}
                   </Button>
@@ -287,6 +290,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
                   ref={coverInputRef}
                   id={field.name}
                   type='file'
+                  disabled={isPhone}
                   accept='image/*'
                   className='hidden'
                   onChange={(e) => {
@@ -302,7 +306,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
                     variant='outline'
                     size='sm'
                     onClick={() => coverInputRef.current?.click()}
-                    disabled={isPending}
+                    disabled={isPending || isPhone}
                   >
                     <HugeiconsIcon icon={CloudUploadIcon} size={16} strokeWidth={1.5} />
                     {t('common.button.upload')}
@@ -317,7 +321,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
                         setPendingCover(null)
                         field.onChange('')
                       }}
-                      disabled={isPending}
+                      disabled={isPending || isPhone}
                     >
                       {t('common.button.remove')}
                     </Button>

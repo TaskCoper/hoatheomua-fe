@@ -1,11 +1,18 @@
 {
   "auth": {
+    "phone": {
+      "placeholder": "0901234567",
+      "invalidPhone": "Nhập số di động Việt Nam, ví dụ 0901234567.",
+      "profileNote": "Không thể đổi số điện thoại đăng nhập. Tài khoản SĐT chưa hỗ trợ bổ sung email hoặc tải ảnh hồ sơ.",
+      "recoveryNote": "Nếu quên mật khẩu, vui lòng liên hệ Hoa Theo Mùa để được hướng dẫn hỗ trợ tài khoản.",
+      "contactSupport": "Liên hệ hỗ trợ",
+      "storefrontUnavailable": "Tài khoản này chưa thể mua hàng. Vui lòng liên hệ hỗ trợ.",
+      "recruitmentUnavailable": "Tạm thời chưa hỗ trợ ứng tuyển với tài khoản này"
+    },
     "signIn": {
       "label": "Đăng nhập",
       "title": "Đăng nhập",
-      "description": "Nhập thông tin tài khoản của bạn để tiếp tục.",
-      "email": "Email",
-      "emailPlaceholder": "example@gmail.com",
+      "description": "Nhập số điện thoại và mật khẩu để tiếp tục.",
       "password": "Mật khẩu",
       "validation": {
         "password": {
@@ -21,64 +28,25 @@
     "signUp": {
       "label": "Đăng ký",
       "title": "Đăng ký",
-      "description": "Tạo tài khoản để bắt đầu.",
+      "description": "Đăng ký bằng số điện thoại và sử dụng ngay, không cần mã xác thực.",
       "firstName": "Tên",
       "firstNamePlaceholder": "Nhập tên",
       "lastName": "Họ",
       "lastNamePlaceholder": "Nhập họ",
-      "email": "Email",
-      "emailPlaceholder": "example@gmail.com",
       "password": "Mật khẩu",
       "passwordPlaceholder": "Nhập mật khẩu",
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
       "submit": "Đăng ký",
       "success": "Đăng kí thành công",
-      "signUpPrompt": "Đã có tài khoản? Đăng nhập",
-      "emailDescription": "Vui lòng kiểm tra email để xác thực tài khoản."
+      "signUpPrompt": "Đã có tài khoản? Đăng nhập"
     },
     "signOut": {
       "submit": "Đăng xuất"
     },
-    "verifyEmail": {
-      "title": "Xác thực email",
-      "description": "Nhập mã 6 chữ số chúng tôi đã gửi đến",
-      "sentTo": "Đã gửi đến",
-      "submit": "Xác thực",
-      "resend": "Gửi lại mã",
-      "changeEmail": "Đổi email",
-      "success": "Xác thực thành công",
-      "codeLength": "Mã xác thực phải gồm 6 chữ số."
-    },
     "forgotPassword": {
       "title": "Quên mật khẩu",
-      "description": "Nhập email để nhận mã xác thực.",
-      "submit": "Gửi mã"
-    },
-    "resetPassword": {
-      "title": "Đặt lại mật khẩu",
-      "description": "Tạo mật khẩu mới.",
-      "submit": "Đặt lại mật khẩu"
-    },
-    "verifyEmailPending": {
-      "changedMind": "Đổi ý rồi?",
-      "goBack": "Quay lại",
-      "title": "Kiểm tra email của bạn",
-      "verifyTitle": "Đang xác thực tài khoản",
-      "sentTo": "Chúng tôi hiện đang xác thực tài khoản bạn vui lòng chờ trong giây lát",
-      "fallbackEmail": "email của bạn",
-      "instruction": "Vui lòng mở hộp thư và nhấn vào liên kết để xác thực tài khoản của bạn.",
-      "resend": "Gửi lại liên kết xác thực",
-      "spamHint": "Không thấy email? ",
-      "changeEmail": "Dùng email khác",
-      "quoteLabel": "HOA THEO MÙA",
-      "quote": "Nơi những đóa hoa\nkể thay lời yêu thương",
-      "footer": "© 2026 Hoa Theo Mùa",
-      "success": "Xác thực thành công",
-      "verifying": "Đang xác thực...",
-      "preInstruct": "Chúng tôi đã gửi email đến ",
-      "postInstruct": " để xác nhận tính hợp lệ của địa chỉ email của bạn. Sau khi nhận được email, vui lòng nhấn vào liên kết được cung cấp để hoàn tất đăng ký.",
-      "tokenNoteFound": "Không tìm thấy token"
+      "description": "Hỗ trợ tài khoản đăng nhập bằng số điện thoại."
     }
   },
   "account": {
@@ -2922,7 +2890,9 @@
     "newPassword": "Mật khẩu mới",
     "confirmNewPassword": "Xác nhận mật khẩu mới",
     "changePassword": "Đổi mật khẩu",
-    "passwordUpdated": "Đã cập nhật mật khẩu"
+    "passwordUpdated": "Đã cập nhật mật khẩu",
+    "newPasswordMustDiffer": "Mật khẩu mới phải khác mật khẩu hiện tại.",
+    "currentPasswordIncorrect": "Mật khẩu hiện tại không đúng."
   },
   "notFound": {
     "metaTitle": "Không tìm thấy trang",

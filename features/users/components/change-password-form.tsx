@@ -1,5 +1,8 @@
 'use client'
 
+import { clearSessionHint } from '@/shared/session-hint'
+import { useRouter } from '@/lib/i18n/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
@@ -10,6 +13,8 @@ import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { isAxiosError } from 'axios'
+import type { ErrorResponse } from '@/lib/axios'
 import { useChangePassword } from '../hooks/use-change-password'
 import { createChangePasswordSchema, type ChangePasswordFormValues } from '../validations'
 
@@ -21,6 +26,8 @@ const defaultValues: ChangePasswordFormValues = {
 
 export function ChangePasswordForm() {
   const { t } = useTranslation()
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const [isCurrentVisible, setIsCurrentVisible] = useState(false)
   const [isNewVisible, setIsNewVisible] = useState(false)
   const [isConfirmVisible, setIsConfirmVisible] = useState(false)
@@ -36,14 +43,19 @@ export function ChangePasswordForm() {
     const { confirmPassword, ...values } = formValues
     void confirmPassword
 
-    resetPassword(
-      { body: values },
-      {
-        onSuccess: () => {
-          methods.reset(defaultValues)
-        }
+    try {
+      await resetPassword(values)
+      methods.reset(defaultValues)
+      clearSessionHint()
+      queryClient.clear()
+      router.replace('/sign-in')
+    } catch (error) {
+      if (isAxiosError<ErrorResponse>(error) && error.response?.data?.messageCode === 'OldPasswordNotMatched') {
+        methods.setError('currentPassword', { message: t('profile.currentPasswordIncorrect') }, { shouldFocus: true })
+        return
       }
-    )
+      // Other errors are reported by the mutation hook.
+    }
   })
 
   return (

@@ -1,14 +1,14 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import { createEmailSchema, createOptionalPhoneNumberSchema, createPasswordSchema } from '@/shared/validations'
 import z from 'zod'
+import { normalizePhoneNumber } from './phone-number'
 
 export const createSignInSchema = (t: TranslationFunction) =>
   z
     .object({
-      email: createEmailSchema(t),
+      phoneNumber: z.string().trim().refine(value => normalizePhoneNumber(value) !== null, { error: t('auth.phone.invalidPhone') }),
       password: z
         .string()
-        .trim()
         .min(6, {
           error: t('common.validation.minLength', {
             field: t('auth.signIn.password'),
@@ -36,10 +36,10 @@ export const createSignUpSchema = (t: TranslationFunction) =>
             min: 1
           })
         })
-        .max(100, {
+        .max(50, {
           error: t('common.validation.maxLength', {
             field: t('auth.signUp.firstName'),
-            max: 100
+            max: 50
           })
         }),
       lastName: z
@@ -51,17 +51,13 @@ export const createSignUpSchema = (t: TranslationFunction) =>
             min: 1
           })
         })
-        .max(100, {
+        .max(50, {
           error: t('common.validation.maxLength', {
             field: t('auth.signUp.lastName'),
-            max: 100
+            max: 50
           })
         }),
-      email: z
-        .email({
-          error: t('common.validation.email')
-        })
-        .toLowerCase(),
+      phoneNumber: z.string().trim().refine(value => normalizePhoneNumber(value) !== null, { error: t('auth.phone.invalidPhone') }),
       password: createPasswordSchema(t, t('auth.signUp.password')),
       confirmPassword: z.string().min(1, {
         error: t('common.validation.required', { field: t('auth.signUp.confirmPassword') })
@@ -73,25 +69,7 @@ export const createSignUpSchema = (t: TranslationFunction) =>
     })
     .strict()
 
-export const createVerifyEmailSchema = (t: TranslationFunction) =>
-  z
-    .object({
-      email: z
-        .email({
-          error: t('common.validation.email')
-        })
-        .trim()
-        .toLowerCase(),
-      code: z
-        .string()
-        .trim()
-        .length(6, {
-          error: t('auth.verifyEmail.codeLength')
-        })
-    })
-    .strict()
-
-export const createUpdateMeSchema = (t: TranslationFunction) =>
+export const createUpdateMeSchema = (t: TranslationFunction, isPhone = false) =>
   z
     .object({
       firstName: z
@@ -100,8 +78,8 @@ export const createUpdateMeSchema = (t: TranslationFunction) =>
         .min(1, {
           error: t('common.validation.required', { field: t('profile.firstName') })
         })
-        .max(100, {
-          error: t('common.validation.maxLength', { field: t('profile.firstName'), max: 100 })
+        .max(50, {
+          error: t('common.validation.maxLength', { field: t('profile.firstName'), max: 50 })
         }),
       lastName: z
         .string()
@@ -109,10 +87,10 @@ export const createUpdateMeSchema = (t: TranslationFunction) =>
         .min(1, {
           error: t('common.validation.required', { field: t('profile.lastName') })
         })
-        .max(100, {
-          error: t('common.validation.maxLength', { field: t('profile.lastName'), max: 100 })
+        .max(50, {
+          error: t('common.validation.maxLength', { field: t('profile.lastName'), max: 50 })
         }),
-      email: createEmailSchema(t),
+      email: isPhone ? z.string() : createEmailSchema(t),
       avatar: z
         .string()
         .trim()
@@ -163,48 +141,16 @@ export const createChangePasswordSchema = (t: TranslationFunction) =>
         error: t('common.validation.required', { field: t('profile.confirmNewPassword') })
       })
     })
+    .refine((data) => data.newPassword !== data.currentPassword, {
+      path: ['newPassword'],
+      error: t('profile.newPasswordMustDiffer')
+    })
     .refine((data) => data.newPassword === data.confirmPassword, {
       path: ['confirmPassword'],
       error: t('common.validation.passwordMismatch')
     })
     .strict()
-export const forgotPasswordFormValues = (t: TranslationFunction) =>
-  z
-    .object({
-      email: z
-        .email({
-          error: t('common.validation.email')
-        })
-        .trim()
-        .toLowerCase()
-    })
-    .strict()
-
-export const resetPassWordFormValue = (t: TranslationFunction) => {
-  return z
-    .object({
-      newPassword: createPasswordSchema(t, t('profile.newPassword'))
-    })
-    .strict()
-}
-
-export const verifyCodeSchema = (t: TranslationFunction) => {
-  return z
-    .object({
-      email: z.email({ error: t('common.validation.email') }).trim(),
-      code: z
-        .string()
-        .trim()
-        .min(6, { error: t('common.validation.code') })
-    })
-    .strict()
-}
-
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>
 export type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>
-export type ForgotPasswordFormValues = z.infer<ReturnType<typeof forgotPasswordFormValues>>
-export type ResetPassWordFormValue = z.infer<ReturnType<typeof resetPassWordFormValue>>
-export type VerifyEmailFormValues = z.infer<ReturnType<typeof createVerifyEmailSchema>>
 export type UpdateMeFormValues = z.infer<ReturnType<typeof createUpdateMeSchema>>
 export type ChangePasswordFormValues = z.infer<ReturnType<typeof createChangePasswordSchema>>
-export type VerifyCodeFormValues = z.infer<ReturnType<typeof verifyCodeSchema>>

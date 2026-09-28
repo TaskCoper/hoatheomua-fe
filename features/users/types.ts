@@ -5,8 +5,12 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 export interface Me {
+  registrationMethod?: 'Email' | 'Phone'
+  canUseStorefront?: boolean
+  canChangePhoneNumber?: boolean
+  phoneNumber?: string | null
   avatar: string | null
-  email: string
+  email: string | null
   firstName: string
   id: string
   isEmailVerified: boolean
@@ -19,7 +23,7 @@ export interface Me {
 export interface UserProfile {
   id: string
   slug: string
-  email: string
+  email: string | null
   firstName: string
   lastName: string
   isEmailVerified: boolean

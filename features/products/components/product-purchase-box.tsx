@@ -62,8 +62,8 @@ export default function ProductPurchaseBox() {
     (state) => state.items.find((item) => item.lineId === targetLineId)?.quantity ?? 0
   )
 
-  const isVerified = !!me?.isEmailVerified
-  const isQualifiedBuyer = mounted && isAuthenticated && isVerified
+  const canUseStorefront = !!(me?.canUseStorefront || me?.isEmailVerified)
+  const isQualifiedBuyer = mounted && isAuthenticated && canUseStorefront
   const remainingStock = Math.max(0, Math.min(available, MAX_QUANTITY) - inCartQuantity)
   const hasRoomInCart = remainingStock > 0
   const canAdd = isQualifiedBuyer && inStock && hasRoomInCart
@@ -96,9 +96,8 @@ export default function ProductPurchaseBox() {
       return false
     }
 
-    if (!isVerified) {
-      const verifyParams = me?.email ? `?${new URLSearchParams({ email: me.email }).toString()}` : ''
-      router.push(`/verify-sent${verifyParams}`)
+    if (!canUseStorefront) {
+      toast.error(t('auth.phone.storefrontUnavailable'))
       return false
     }
 

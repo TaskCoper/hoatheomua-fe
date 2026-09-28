@@ -20,7 +20,6 @@ import logo from '@/public/images/logo.png'
 import {
   GlobalIcon,
   LoginCircle01Icon,
-  MailValidation01Icon,
   Menu01Icon,
   Settings01Icon,
   ShoppingBasket03Icon
@@ -48,7 +47,7 @@ const CART_BUTTON_CLASS = 'border-none ring ring-primary ring-inset'
 const CART_BUTTON_CLASS_MOBILE = `flex-1 ${CART_BUTTON_CLASS}`
 
 export default function NavBar() {
-  const { isAuthenticated, me, isGettingMe, isVerificationRequired } = useGetMe()
+  const { isAuthenticated, me, isGettingMe, canUseStorefront } = useGetMe()
   const accountHref = useAccountHref()
 
   const { t } = useTranslation()
@@ -118,14 +117,7 @@ export default function NavBar() {
           <>
             <NavUser user={me} />
 
-            {isVerificationRequired ? (
-              <Button asChild>
-                <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
-                  {t('auth.verifyEmail.title')}
-                  <HugeiconsIcon icon={MailValidation01Icon} />
-                </Link>
-              </Button>
-            ) : (
+            {canUseStorefront && (
               <>
                 <Button asChild variant='outline' size='icon-sm' className={CART_BUTTON_CLASS}>
                   <Link href='/cart' aria-label={t('header.aria.openCart')}>
@@ -204,16 +196,7 @@ export default function NavBar() {
                   <NavUser user={me} />
                 </div>
 
-                {isVerificationRequired ? (
-                  <SheetClose asChild>
-                    <Button asChild className='w-full'>
-                      <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
-                        {t('auth.verifyEmail.title')}
-                        <HugeiconsIcon icon={MailValidation01Icon} />
-                      </Link>
-                    </Button>
-                  </SheetClose>
-                ) : (
+                {canUseStorefront && (
                   <div className='flex items-center gap-2'>
                     <SheetClose asChild>
                       <Button asChild variant='outline' size='sm' className={CART_BUTTON_CLASS_MOBILE}>

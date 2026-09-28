@@ -12,7 +12,7 @@ import authService from '../services'
 import { createSignInSchema, SignInFormValues } from '../validations'
 
 const defaultValues: SignInFormValues = {
-  email: '',
+  phoneNumber: '',
   password: ''
 }
 

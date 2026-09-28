@@ -45,6 +45,13 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+`pnpm dev` binds to `localhost`. Keep this hostname when testing: Next normalizes
+loopback rewrite URLs to `localhost`; binding explicitly to `127.0.0.1` can make
+i18n rewrites re-enter the proxy and cause redirects on the default locale.
+
+`pnpm check` includes phone-authentication regression checks (validation, v2
+payloads, and stale-cookie redirects).
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
