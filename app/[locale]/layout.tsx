@@ -1,10 +1,12 @@
 import { Toaster } from '@/components/ui/sonner'
-import ConfirmDialog from '@/shared/components/confirm-dialog'
 import { routing } from '@/lib/i18n/routing'
 import ReactQueryProvider from '@/lib/react-query'
+import ConfirmDialog from '@/shared/components/confirm-dialog'
 import RouteScrollReset from '@/shared/components/route-scroll-reset'
+import ViewportInsets from '@/shared/components/viewport-insets'
+import { IS_UNDER_DEVELOPMENT } from '@/shared/feature-flags'
 import { GoogleAnalytics } from '@next/third-parties/google'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { Be_Vietnam_Pro, Lora } from 'next/font/google'
@@ -80,6 +82,14 @@ export const metadata: Metadata = {
   }
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  interactiveWidget: 'resizes-content',
+  themeColor: '#eef3f0'
+}
+
 export async function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
@@ -104,9 +114,15 @@ export default async function RootLayout({
   const clientMessages = pickClientMessages(messages as Record<string, unknown>)
 
   return (
-    <html lang={locale} className={`${beVietnamPro.variable} ${lora.variable} font-sans h-full antialiased`}>
+    <html
+      lang={locale}
+      className={`${beVietnamPro.variable} ${lora.variable} font-sans h-full antialiased ${
+        IS_UNDER_DEVELOPMENT ? 'has-dev-banner' : ''
+      }`}
+    >
       <body className='min-h-full flex flex-col'>
         <RouteScrollReset />
+        <ViewportInsets />
 
         <NuqsAdapter>
           <NextIntlClientProvider messages={clientMessages}>

@@ -22,8 +22,10 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
 import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
+import StickyActionBar from '@/shared/components/sticky-action-bar'
 import { ThumbnailImage } from '@/shared/components/thumbnail-image'
 import { isFeatureEnabled } from '@/shared/feature-flags'
+import { cn } from '@/shared/utils'
 import { type CartItem, useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import {
@@ -354,6 +356,27 @@ export default function CartPage() {
     )
   }
 
+  const checkoutAction =
+    !noneChecked && isPhoneMissing && mySlug ? (
+      <Button asChild className='w-full' size='lg' variant='outline'>
+        <Link href={`/users/${mySlug}`}>{t('profile.editPersonalInfo')}</Link>
+      </Button>
+    ) : (
+      <Button
+        disabled={!canCheckout || noneChecked || isVerifyingSellableQuantity || isCheckingCoreProducts}
+        className='w-full'
+        size='lg'
+        onClick={handleCheckout}
+      >
+        <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
+        <span className='truncate'>
+          {isVerifyingSellableQuantity || isCheckingCoreProducts
+            ? t('products.stock.checking')
+            : t('cart.actions.checkout')}
+        </span>
+      </Button>
+    )
+
   return (
     <section className='relative px-4 pt-4 pb-12 sm:pt-6 md:pt-8 lg:pt-10'>
       <CartHeading title={t('cart.title')} subtitle={t('cart.summary.shippingNote')} />
@@ -454,27 +477,12 @@ export default function CartPage() {
             {canCheckout ? null : <FeatureUnavailableNotice />}
 
             <motion.div
+              className='hidden lg:block'
               whileHover={!noneChecked && canCheckout ? { y: -2, scale: 1.02 } : undefined}
               whileTap={!noneChecked && canCheckout ? { scale: 0.97 } : undefined}
               transition={{ type: 'spring', stiffness: 320, damping: 14 }}
             >
-              {!noneChecked && isPhoneMissing && mySlug ? (
-                <Button asChild className='w-full' size='lg' variant='outline'>
-                  <Link href={`/users/${mySlug}`}>{t('profile.editPersonalInfo')}</Link>
-                </Button>
-              ) : (
-                <Button
-                  disabled={!canCheckout || noneChecked || isVerifyingSellableQuantity || isCheckingCoreProducts}
-                  className='w-full'
-                  size='lg'
-                  onClick={handleCheckout}
-                >
-                  <HugeiconsIcon icon={ShoppingBasket02Icon} className='size-4' />
-                  {isVerifyingSellableQuantity || isCheckingCoreProducts
-                    ? t('products.stock.checking')
-                    : t('cart.actions.checkout')}
-                </Button>
-              )}
+              {checkoutAction}
             </motion.div>
 
             {noneChecked && <p className='text-center text-xs text-muted-foreground'>{t('cart.summary.empty')}</p>}
@@ -485,6 +493,18 @@ export default function CartPage() {
           </motion.div>
         </aside>
       </div>
+
+      <StickyActionBar aria-label={t('cart.summary.title')}>
+        <div className='flex items-center gap-3'>
+          <div className='min-w-0 shrink-0'>
+            <p className='truncate text-[0.625rem] leading-none font-medium text-muted-foreground'>
+              {t('cart.summary.selected', { count: selectedLines.length, total: mergedLines.length })}
+            </p>
+            <p className='truncate font-title text-lg leading-tight font-bold text-primary'>{formatVnd(subtotal)}</p>
+          </div>
+          <div className='ml-auto min-w-0 flex-1'>{checkoutAction}</div>
+        </div>
+      </StickyActionBar>
     </section>
   )
 }
@@ -526,7 +546,10 @@ function CartHeading({ title, subtitle }: { title: string; subtitle?: string }) 
 const MAX_VISIBLE_CHIPS = 3
 
 function ChipRow({ label, items }: { label: string; items: string[] }) {
-  const visible = items.slice(0, MAX_VISIBLE_CHIPS)
+  const { t } = useTranslation()
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const visible = isExpanded ? items : items.slice(0, MAX_VISIBLE_CHIPS)
   const hiddenCount = items.length - visible.length
 
   return (
@@ -535,17 +558,32 @@ function ChipRow({ label, items }: { label: string; items: string[] }) {
       {visible.map((item, index) => (
         <span
           key={`${item}-${index}`}
-          title={item}
-          className='max-w-28 truncate rounded-full bg-secondary/30 px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground'
+          className={cn(
+            'rounded-full bg-secondary/30 px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground',
+            !isExpanded && 'max-w-28 truncate'
+          )}
         >
           {item}
         </span>
       ))}
-      {hiddenCount > 0 && (
-        <span className='rounded-full bg-secondary/30 px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground'>
-          +{hiddenCount}
-        </span>
-      )}
+      {hiddenCount > 0 ? (
+        <button
+          type='button'
+          onClick={() => setIsExpanded(true)}
+          className='cursor-pointer rounded-full bg-secondary/50 px-2 py-0.5 text-[0.6875rem] font-semibold text-primary transition-colors hover:bg-secondary'
+        >
+          {t('products.filter.more', { count: hiddenCount })}
+        </button>
+      ) : null}
+      {isExpanded && items.length > MAX_VISIBLE_CHIPS ? (
+        <button
+          type='button'
+          onClick={() => setIsExpanded(false)}
+          className='cursor-pointer px-1 text-[0.6875rem] font-medium text-primary underline-offset-2 hover:underline'
+        >
+          {t('orders.checkout.sidebar.viewLess')}
+        </button>
+      ) : null}
     </div>
   )
 }
@@ -592,11 +630,11 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
       variants={cardItem}
       whileHover={!isUnavailable ? { y: -3 } : undefined}
       transition={{ type: 'spring', stiffness: 240, damping: 20 }}
-      className={`group relative flex flex-col gap-5 overflow-hidden rounded-3xl bg-card p-5 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow duration-300 hover:shadow-[0_1rem_2.4rem_rgb(81_108_108/14%)] sm:flex-row sm:items-stretch ${
+      className={`group relative flex flex-col gap-3 overflow-hidden rounded-3xl bg-card p-3 shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-shadow duration-300 hover:shadow-[0_1rem_2.4rem_rgb(81_108_108/14%)] sm:gap-5 sm:p-5 sm:flex-row sm:items-stretch ${
         isUnavailable ? 'opacity-60' : ''
       }`}
     >
-      <div className='flex items-start gap-4 sm:flex-1'>
+      <div className='flex items-start gap-3 sm:flex-1 sm:gap-4'>
         <Checkbox
           checked={checked}
           disabled={!isSelectable}
@@ -608,13 +646,13 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
         {hasDetails && href ? (
           <Link
             href={href}
-            className='relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-foreground/8 sm:size-28'
+            className='relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary/30 ring-1 ring-foreground/8 sm:size-28'
           >
             <ThumbnailImage
               src={image}
               alt={name}
               fill
-              sizes='112px'
+              sizes='(min-width: 640px) 112px, 80px'
               quality={65}
               className='object-cover transition-transform duration-500 ease-out group-hover:scale-105'
               fallback={
@@ -623,9 +661,9 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
             />
           </Link>
         ) : isResolving ? (
-          <Skeleton className='size-24 shrink-0 sm:size-28' />
+          <Skeleton className='size-20 shrink-0 rounded-2xl sm:size-28' />
         ) : (
-          <div className='flex size-24 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 ring-1 ring-foreground/8 sm:size-28'>
+          <div className='flex size-20 shrink-0 items-center justify-center rounded-2xl bg-secondary/30 ring-1 ring-foreground/8 sm:size-28'>
             <HugeiconsIcon icon={FlowerIcon} className='size-9 text-muted-foreground/50' />
           </div>
         )}
@@ -713,7 +751,7 @@ function CartLineRow({ line, checked, onToggle, onIncrement, onDecrement, onRemo
         </div>
       </div>
 
-      <div className='flex items-center justify-between gap-4 border-t border-border/60 pt-4 sm:w-32 sm:flex-none sm:flex-col sm:items-end sm:justify-between sm:border-t-0 sm:border-l sm:border-border/60 sm:pt-0 sm:pl-6'>
+      <div className='flex items-center justify-between gap-3 border-t border-border/60 pt-3 sm:w-32 sm:flex-none sm:flex-col sm:items-end sm:justify-between sm:gap-4 sm:border-t-0 sm:border-l sm:border-border/60 sm:pt-0 sm:pl-6'>
         <div className='inline-flex items-center divide-x divide-border/70 rounded-full border border-border/70'>
           <Button
             type='button'

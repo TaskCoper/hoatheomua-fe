@@ -40,7 +40,7 @@ function PartyCardBody({ icon, title, lines, badge, emptyHint, selected, action 
         ) : (
           <>
             <span className='flex flex-wrap items-center gap-2'>
-              <span className='truncate text-sm font-medium'>{title}</span>
+              <span className='min-w-0 truncate text-sm font-medium'>{title}</span>
               {badge}
             </span>
 

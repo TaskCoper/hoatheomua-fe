@@ -107,7 +107,10 @@
       "optional": "optional",
       "selectDate": "Select a date",
       "downloadOpenedInNewTab": "Opened the image in a new tab so you can save it manually",
-      "backToHome": "Back to home"
+      "backToHome": "Back to home",
+      "filters": "Filters",
+      "showResults": "Show {count} results",
+      "activeFilters": "{count} active"
     },
     "button": {
       "clearAll": "Clear all",
@@ -116,7 +119,8 @@
       "save": "Save",
       "upload": "Upload",
       "remove": "Remove",
-      "download": "Download"
+      "download": "Download",
+      "close": "Close"
     },
     "error": {
       "uploadNoUrlReturned": "Upload failed: no URL returned",
@@ -888,7 +892,8 @@
         "stepDescription": "This step is optional - you can skip it and continue to payment."
       },
       "stepCards": "Cards",
-      "stepReview": "Review"
+      "stepReview": "Review",
+      "stepCounter": "Step {current} of {total}"
     },
     "cards": {
       "heading": "AI custom cards",
@@ -1145,7 +1150,18 @@
       "openCart": "Open cart",
       "openAccount": "Open account",
       "search": "Search",
-      "openMenu": "Open menu"
+      "openMenu": "Open menu",
+      "cartCount": "{count} items in cart",
+      "closeMenu": "Close menu"
+    },
+    "menu": {
+      "title": "Menu",
+      "browse": "Shop",
+      "company": "Company",
+      "account": "Your account",
+      "guestTitle": "Welcome",
+      "guestSubtitle": "Sign in to shop, follow your orders and save addresses.",
+      "language": "Language"
     }
   },
   "footer": {
@@ -1600,7 +1616,9 @@
       "empty": {
         "title": "No products yet",
         "description": "The collection is being prepared by our artisans. Check back soon to discover our freshest bouquets."
-      }
+      },
+      "loading": "Loading…",
+      "page": "Page {page} of {total}"
     },
     "card": {
       "addToFavorites": "Add {name} to favorites",

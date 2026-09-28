@@ -8,8 +8,9 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
+import CartNavButton from '@/features/layout/components/cart-nav-button'
+import MobileNavSheet from '@/features/layout/components/mobile-nav-sheet'
 import NavUser from '@/features/layout/components/nav-user'
 import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
@@ -17,13 +18,7 @@ import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
 import logo from '@/public/images/logo.png'
-import {
-  GlobalIcon,
-  LoginCircle01Icon,
-  Menu01Icon,
-  Settings01Icon,
-  ShoppingBasket03Icon
-} from '@hugeicons/core-free-icons'
+import { GlobalIcon, LoginCircle01Icon, Settings01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
@@ -44,7 +39,6 @@ const LOCALE_OPTIONS = [
 ] as const
 
 const CART_BUTTON_CLASS = 'border-none ring ring-primary ring-inset'
-const CART_BUTTON_CLASS_MOBILE = `flex-1 ${CART_BUTTON_CLASS}`
 
 export default function NavBar() {
   const { isAuthenticated, me, isGettingMe, canUseStorefront } = useGetMe()
@@ -69,7 +63,7 @@ export default function NavBar() {
       <Link
         href='/'
         aria-label={t('header.brand')}
-        className='flex flex-col items-center gap-0.5 lg:justify-self-start cursor-pointer'
+        className='flex cursor-pointer flex-col items-center gap-0.5 lg:justify-self-start'
       >
         <Image
           src={logo}
@@ -77,13 +71,13 @@ export default function NavBar() {
           sizes='(min-width: 1024px) 56px, (min-width: 640px) 48px, 40px'
           quality={80}
           loading='eager'
-          className='h-10 sm:h-12 lg:h-14 w-auto'
+          className='h-10 w-auto sm:h-12 lg:h-14'
         />
       </Link>
 
       <nav
         aria-label={t('header.aria.mainNav')}
-        className='relative isolate justify-self-center rounded-full bg-primary p-1 shadow-md hidden lg:block'
+        className='relative isolate hidden justify-self-center rounded-full bg-primary p-1 shadow-md lg:block'
       >
         <ul className='relative z-10 flex items-center gap-2'>
           {NAV_ITEMS.map((item) => {
@@ -110,7 +104,7 @@ export default function NavBar() {
         </ul>
       </nav>
 
-      <div className='hidden items-center gap-2 lg:flex lg:justify-self-end z-10'>
+      <div className='z-10 hidden items-center gap-2 lg:flex lg:justify-self-end'>
         {isGettingMe ? (
           <Skeleton className='h-9 w-32 rounded-full' />
         ) : isAuthenticated ? (
@@ -119,11 +113,7 @@ export default function NavBar() {
 
             {canUseStorefront && (
               <>
-                <Button asChild variant='outline' size='icon-sm' className={CART_BUTTON_CLASS}>
-                  <Link href='/cart' aria-label={t('header.aria.openCart')}>
-                    <HugeiconsIcon icon={ShoppingBasket03Icon} />
-                  </Link>
-                </Button>
+                <CartNavButton />
 
                 <Button asChild variant='outline' size='icon-sm' className={CART_BUTTON_CLASS}>
                   <Link href={accountHref} aria-label={t('header.aria.openAccount')}>
@@ -147,94 +137,22 @@ export default function NavBar() {
         )}
       </div>
 
-      <Sheet>
-        <SheetTrigger asChild className='lg:hidden'>
-          <Button
-            size='icon-sm'
-            className='border-none ring ring-primary ring-inset'
-            aria-label={t('header.aria.openMenu')}
-          >
-            <HugeiconsIcon icon={Menu01Icon} />
-          </Button>
-        </SheetTrigger>
+      <div className='flex items-center gap-2 lg:hidden'>
+        {isGettingMe ? (
+          <Skeleton className='size-11 rounded-full' />
+        ) : canUseStorefront ? (
+          <CartNavButton size='lg' className='size-11' />
+        ) : null}
 
-        <SheetContent side='right' className='w-72 sm:w-80 sm:max-w-none gap-0'>
-          <SheetHeader className='border-b border-secondary'>
-            <SheetTitle asChild>
-              <Link href='/' aria-label={t('header.brand')} className='flex items-center'>
-                <Image src={logo} alt={t('header.logoAlt')} sizes='32px' quality={80} className='h-8 w-auto' />
-              </Link>
-            </SheetTitle>
-          </SheetHeader>
-
-          <nav aria-label={t('header.aria.mobileNav')} className='flex flex-col gap-1 p-4'>
-            {NAV_ITEMS.map((item) => {
-              const active = isActive(item.href)
-              return (
-                <SheetClose asChild key={item.id}>
-                  <Link
-                    href={item.href}
-                    aria-current={active ? 'page' : undefined}
-                    className={[
-                      'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-                      active ? 'bg-primary text-background' : 'text-foreground hover:bg-secondary hover:text-primary'
-                    ].join(' ')}
-                  >
-                    {t(item.labelKey)}
-                  </Link>
-                </SheetClose>
-              )
-            })}
-          </nav>
-
-          <div className='mt-auto flex flex-col gap-3 border-t border-secondary p-4'>
-            {isGettingMe ? (
-              <Skeleton className='h-9 w-full rounded-full' />
-            ) : isAuthenticated ? (
-              <>
-                <div className='flex items-center justify-end'>
-                  <NavUser user={me} />
-                </div>
-
-                {canUseStorefront && (
-                  <div className='flex items-center gap-2'>
-                    <SheetClose asChild>
-                      <Button asChild variant='outline' size='sm' className={CART_BUTTON_CLASS_MOBILE}>
-                        <Link href='/cart'>
-                          <HugeiconsIcon icon={ShoppingBasket03Icon} />
-                          {t('header.nav.cart')}
-                        </Link>
-                      </Button>
-                    </SheetClose>
-
-                    <SheetClose asChild>
-                      <Button asChild variant='outline' size='sm' className={CART_BUTTON_CLASS_MOBILE}>
-                        <Link href={accountHref}>
-                          <HugeiconsIcon icon={Settings01Icon} />
-                          {t('header.nav.account')}
-                        </Link>
-                      </Button>
-                    </SheetClose>
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                <SheetClose asChild>
-                  <Button asChild className='w-full'>
-                    <Link href='/sign-in'>
-                      {t('auth.signIn.title')}
-                      <HugeiconsIcon icon={LoginCircle01Icon} />
-                    </Link>
-                  </Button>
-                </SheetClose>
-
-                <LanguageSwitcher className='w-full' />
-              </>
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
+        <MobileNavSheet
+          me={me}
+          isGettingMe={isGettingMe}
+          isAuthenticated={isAuthenticated}
+          canUseStorefront={canUseStorefront}
+          isActive={isActive}
+          languageSwitcher={<LanguageSwitcher />}
+        />
+      </div>
     </div>
   )
 }
@@ -263,7 +181,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
           aria-label={t('account.language')}
         >
           <HugeiconsIcon icon={GlobalIcon} />
-          <span className='text-[0.625rem] font-bold uppercase leading-none'>{locale}</span>
+          <span className='text-[0.625rem] leading-none font-bold uppercase'>{locale}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' sideOffset={8}>

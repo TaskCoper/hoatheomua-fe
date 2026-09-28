@@ -23,7 +23,7 @@ import { useTranslations } from 'next-intl'
 const microLabelClass = 'text-[0.625rem] font-medium text-muted-foreground'
 const detailValueClass = 'text-xs leading-relaxed text-muted-foreground'
 const panelClass = 'rounded-3xl bg-secondary/20 p-5 sm:p-6'
-const headingClass = 'text-pretty font-title text-lg font-bold leading-snug text-primary'
+const headingClass = 'font-title text-base leading-snug font-bold text-pretty text-primary sm:text-lg'
 const quantityButtonClass =
   'flex size-8 cursor-pointer items-center justify-center rounded-full bg-secondary/60 text-secondary-foreground transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
 
@@ -77,13 +77,16 @@ export default function StudioReview({
                     })
 
             return (
-              <article key={ingredient.id} className='grid gap-4 sm:grid-cols-[minmax(0,4rem)_1fr]'>
+              <article
+                key={ingredient.id}
+                className='grid grid-cols-[3.5rem_1fr] gap-3 sm:grid-cols-[minmax(0,4rem)_1fr] sm:gap-4'
+              >
                 <div className='relative aspect-square overflow-hidden rounded-full bg-secondary/40 ring-1 ring-foreground/5'>
                   <StudioImage
                     src={ingredient.imageUrl}
                     alt=''
                     fill
-                    sizes='(min-width: 640px) 4rem, 100vw'
+                    sizes='(min-width: 640px) 4rem, 3.5rem'
                     loading={index === 0 ? 'eager' : 'lazy'}
                     className='object-cover'
                     pendingIconClassName='size-6'

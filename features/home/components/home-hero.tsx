@@ -8,7 +8,7 @@ interface HomeHeroProps {
 
 export default function HomeHero({ videoSrc }: HomeHeroProps) {
   return (
-    <div className='relative isolate aspect-[64/27] w-full overflow-hidden bg-background'>
+    <div className='relative isolate aspect-3/2 w-full overflow-hidden bg-background sm:aspect-2/1 lg:aspect-[64/27]'>
       <Image src={heroPoster} alt='Hoa Theo Mùa' priority fill sizes='100vw' unoptimized className='object-cover' />
 
       {videoSrc ? <HomeHeroVideo videoSrc={videoSrc} /> : null}

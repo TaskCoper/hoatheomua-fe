@@ -12,6 +12,7 @@ import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
+import StickyActionBar from '@/shared/components/sticky-action-bar'
 import { isFeatureEnabled } from '@/shared/feature-flags'
 import { cn } from '@/shared/utils'
 import { buildLineId, MAX_QUANTITY, useCartStore, type CartItem } from '@/stores/cart.store'
@@ -49,6 +50,9 @@ export default function ProductPurchaseBox() {
   const inStock = available > 0
 
   const [quantity, setQuantity] = useState(1)
+
+  const [variantPicker, setVariantPicker] = useState<HTMLDivElement | null>(null)
+  const focusVariantPicker = () => variantPicker?.scrollIntoView({ block: 'start', behavior: 'smooth' })
 
   const mounted = useHasMounted()
 
@@ -164,8 +168,31 @@ export default function ProductPurchaseBox() {
       className='space-y-5 rounded-3xl bg-card px-4 py-5 shadow-[0_0.8rem_2rem_rgb(81_108_108/10%)] ring-1 ring-foreground/5'
     >
       <div className='grid gap-4'>
+        <div className='space-y-1'>
+          <p className='text-sm font-semibold text-muted-foreground'>{t('products.detail.purchase.priceLabel')}</p>
+          <div className='flex flex-wrap items-baseline gap-2'>
+            <motion.span
+              key={retail}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+              className='font-title text-3xl font-bold text-primary sm:text-4xl'
+            >
+              {formatVnd(retail)}
+            </motion.span>
+            {hasDiscount ? (
+              <span className='text-sm text-muted-foreground line-through'>{formatVnd(oldPrice)}</span>
+            ) : null}
+          </div>
+          {hasDiscount ? (
+            <p className='text-xs font-semibold text-rose-500'>
+              {t('products.detail.purchase.savings', { percent: discountPercent })}
+            </p>
+          ) : null}
+        </div>
+
         {hasVariants ? (
-          <div className='space-y-2'>
+          <div ref={setVariantPicker} className='scroll-mt-header space-y-2'>
             <p className='text-sm font-semibold text-muted-foreground'>{t('products.detail.purchase.variant')}</p>
             <div className='flex flex-wrap gap-2'>
               {variants.map((child) => {
@@ -178,7 +205,7 @@ export default function ProductPurchaseBox() {
                     onClick={() => setSelectedId(child.id)}
                     aria-pressed={isSelected}
                     className={cn(
-                      'cursor-pointer rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors',
+                      'flex min-h-11 cursor-pointer items-center rounded-full border px-4 text-sm font-medium transition-colors',
                       isSelected
                         ? 'border-primary bg-primary/10 text-primary'
                         : 'border-foreground/10 bg-secondary/20 text-secondary-foreground hover:border-primary/40',
@@ -234,62 +261,41 @@ export default function ProductPurchaseBox() {
           ) : null}
           {!inStock ? <p className='text-xs text-rose-500'>{t('products.detail.purchase.outOfStock')}</p> : null}
         </div>
-
-        <div className='space-y-1'>
-          <p className='text-sm font-semibold text-muted-foreground'>{t('products.detail.purchase.priceLabel')}</p>
-          <div className='flex items-baseline gap-2'>
-            <motion.span
-              key={retail}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className='font-title text-4xl font-bold text-primary'
-            >
-              {formatVnd(retail)}
-            </motion.span>
-            {hasDiscount ? (
-              <span className='text-sm text-muted-foreground line-through'>{formatVnd(oldPrice)}</span>
-            ) : null}
-          </div>
-          {hasDiscount ? (
-            <p className='text-xs font-semibold text-rose-500'>
-              {t('products.detail.purchase.savings', { percent: discountPercent })}
-            </p>
-          ) : null}
-        </div>
       </div>
 
       <div className='flex flex-wrap items-center gap-3'>
-        <motion.div
-          whileHover={isAddToCartDisabled ? undefined : { y: -3, scale: 1.03 }}
-          whileTap={isAddToCartDisabled ? undefined : { scale: 0.97 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-          className='min-w-40 flex-1'
-        >
-          <Button type='button' size='lg' disabled={isAddToCartDisabled} className='w-full' onClick={handleAddToCart}>
-            <HugeiconsIcon icon={ShoppingBasket02Icon} />
-            {t('products.detail.purchase.addToCart')}
-          </Button>
-        </motion.div>
-
-        <motion.div
-          whileHover={isBuyNowDisabled ? undefined : { y: -3, scale: 1.03 }}
-          whileTap={isBuyNowDisabled ? undefined : { scale: 0.97 }}
-          transition={{ type: 'spring', stiffness: 320, damping: 14 }}
-          className='min-w-32 flex-1'
-        >
-          <Button
-            type='button'
-            size='lg'
-            variant='secondary'
-            className='w-full'
-            disabled={isBuyNowDisabled}
-            onClick={handleBuyNow}
+        <div className='hidden lg:contents'>
+          <motion.div
+            whileHover={isAddToCartDisabled ? undefined : { y: -3, scale: 1.03 }}
+            whileTap={isAddToCartDisabled ? undefined : { scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+            className='min-w-40 flex-1'
           >
-            <HugeiconsIcon icon={FlashIcon} />
-            {t('products.detail.purchase.buyNow')}
-          </Button>
-        </motion.div>
+            <Button type='button' size='lg' disabled={isAddToCartDisabled} className='w-full' onClick={handleAddToCart}>
+              <HugeiconsIcon icon={ShoppingBasket02Icon} />
+              {t('products.detail.purchase.addToCart')}
+            </Button>
+          </motion.div>
+
+          <motion.div
+            whileHover={isBuyNowDisabled ? undefined : { y: -3, scale: 1.03 }}
+            whileTap={isBuyNowDisabled ? undefined : { scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 14 }}
+            className='min-w-32 flex-1'
+          >
+            <Button
+              type='button'
+              size='lg'
+              variant='secondary'
+              className='w-full'
+              disabled={isBuyNowDisabled}
+              onClick={handleBuyNow}
+            >
+              <HugeiconsIcon icon={FlashIcon} />
+              {t('products.detail.purchase.buyNow')}
+            </Button>
+          </motion.div>
+        </div>
 
         {!canBuyNow ? <FeatureUnavailableNotice className='w-full' /> : null}
 
@@ -302,6 +308,58 @@ export default function ProductPurchaseBox() {
           </div>
         ) : null}
       </div>
+
+      <StickyActionBar aria-label={t('products.detail.purchase.addToCart')}>
+        <div className='flex items-center gap-3'>
+          <div className='min-w-0 shrink-0'>
+            <p className='text-[0.625rem] leading-none font-medium text-muted-foreground'>
+              {t('products.detail.purchase.priceLabel')}
+            </p>
+            <p className='truncate font-title text-lg leading-tight font-bold text-primary'>{formatVnd(retail)}</p>
+          </div>
+
+          {!inStock && hasVariants ? (
+            <Button type='button' size='lg' variant='secondary' className='ml-auto flex-1' onClick={focusVariantPicker}>
+              {t('products.detail.purchase.variant')}
+            </Button>
+          ) : canBuyNow ? (
+            <div className='ml-auto flex min-w-0 flex-1 items-center gap-2'>
+              <Button
+                type='button'
+                size='icon-lg'
+                variant='outline'
+                className='size-11 shrink-0'
+                disabled={isAddToCartDisabled}
+                onClick={handleAddToCart}
+                aria-label={t('products.detail.purchase.addToCart')}
+              >
+                <HugeiconsIcon icon={ShoppingBasket02Icon} />
+              </Button>
+              <Button
+                type='button'
+                size='lg'
+                className='min-w-0 flex-1'
+                disabled={isBuyNowDisabled}
+                onClick={handleBuyNow}
+              >
+                <HugeiconsIcon icon={FlashIcon} />
+                <span className='truncate'>{t('products.detail.purchase.buyNow')}</span>
+              </Button>
+            </div>
+          ) : (
+            <Button
+              type='button'
+              size='lg'
+              className='ml-auto min-w-0 flex-1'
+              disabled={isAddToCartDisabled}
+              onClick={handleAddToCart}
+            >
+              <HugeiconsIcon icon={ShoppingBasket02Icon} />
+              <span className='truncate'>{t('products.detail.purchase.addToCart')}</span>
+            </Button>
+          )}
+        </div>
+      </StickyActionBar>
     </div>
   )
 }

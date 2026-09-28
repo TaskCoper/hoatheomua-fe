@@ -3,14 +3,6 @@
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -20,6 +12,16 @@ import { AddressMapField } from '@/features/orders/components/address-map-field'
 import { useGetShippingLocations } from '@/features/orders/hooks/use-get-shipping-locations'
 import { matchShippingLocation } from '@/features/orders/utils/match-shipping-location'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import {
+  ResponsiveDialog,
+  ResponsiveDialogBody,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger
+} from '@/shared/components/responsive-dialog'
 import { cn } from '@/shared/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowDown01Icon } from '@hugeicons/core-free-icons'
@@ -173,139 +175,75 @@ export function AddressFormDialog({
   const description = isEditMode ? t('profile.editAddressDescription') : t('profile.addAddressDescription')
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
-      <DialogContent position='top-center' className='overflow-hidden p-0 sm:max-w-2xl' showCloseButton>
-        <div className='flex max-h-[calc(100vh-2rem)] flex-col'>
-          <DialogHeader className='border-b p-4'>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
-          </DialogHeader>
+    <ResponsiveDialog open={open} onOpenChange={setOpen}>
+      {trigger ? <ResponsiveDialogTrigger asChild>{trigger}</ResponsiveDialogTrigger> : null}
+      <ResponsiveDialogContent
+        variant='fullscreen'
+        closeLabel={t('common.button.close')}
+        className='sm:max-w-2xl'
+        onOpenAutoFocus={(event) => event.preventDefault()}
+      >
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>{title}</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>{description}</ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
 
-          <form className='flex min-h-0 flex-1 flex-col' onSubmit={onSubmit}>
-            <div className='profile-scrollbar flex-1 overflow-y-auto scroll-smooth overscroll-contain p-4'>
-              <FieldGroup className='gap-3'>
+        <form className='flex min-h-0 flex-1 flex-col' onSubmit={onSubmit}>
+          <ResponsiveDialogBody className='profile-scrollbar scroll-smooth'>
+            <FieldGroup className='gap-3'>
+              <Controller
+                name='receiverName'
+                control={methods.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                    <FieldLabel htmlFor={field.name}>{t('profile.addressReceiverName')}</FieldLabel>
+                    <Input {...field} id={field.name} autoComplete='name' aria-invalid={fieldState.invalid} />
+                    <div className='min-h-4'>
+                      {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                    </div>
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name='phoneNumber'
+                control={methods.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                    <FieldLabel htmlFor={field.name}>{t('profile.addressPhoneNumber')}</FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type='tel'
+                      inputMode='tel'
+                      autoComplete='tel'
+                      aria-invalid={fieldState.invalid}
+                    />
+                    <div className='min-h-4'>
+                      {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                    </div>
+                  </Field>
+                )}
+              />
+
+              <div className='grid gap-3 md:grid-cols-2'>
                 <Controller
-                  name='receiverName'
+                  name='city'
                   control={methods.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                      <FieldLabel htmlFor={field.name}>{t('profile.addressReceiverName')}</FieldLabel>
-                      <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
-                      <div className='min-h-4'>
-                        {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                      </div>
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name='phoneNumber'
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                      <FieldLabel htmlFor={field.name}>{t('profile.addressPhoneNumber')}</FieldLabel>
-                      <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
-                      <div className='min-h-4'>
-                        {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                      </div>
-                    </Field>
-                  )}
-                />
-
-                <div className='grid gap-3 md:grid-cols-2'>
-                  <Controller
-                    name='city'
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                        <FieldLabel htmlFor={field.name}>{t('profile.addressCity')}</FieldLabel>
-                        <LocationCombobox
-                          value={field.value}
-                          onChange={(value) => {
-                            methods.setValue('city', value, { shouldDirty: true, shouldValidate: true })
-                            methods.setValue('ward', '', { shouldDirty: true, shouldValidate: true })
-                          }}
-                          options={cities.map((city) => ({ label: city.name, value: city.name }))}
-                          placeholder={t('orders.checkout.cityPlaceholder')}
-                          searchPlaceholder={t('orders.checkout.citySearchPlaceholder')}
-                          emptyMessage={t('orders.checkout.comboboxEmpty')}
-                          disabled={isLoadingCities || cities.length === 0}
-                          invalid={fieldState.invalid}
-                        />
-                        <div className='min-h-4'>
-                          {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                        </div>
-                      </Field>
-                    )}
-                  />
-
-                  <Controller
-                    name='ward'
-                    control={methods.control}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                        <FieldLabel htmlFor={field.name}>{t('profile.addressWard')}</FieldLabel>
-                        <LocationCombobox
-                          value={field.value}
-                          onChange={(value) =>
-                            methods.setValue('ward', value, { shouldDirty: true, shouldValidate: true })
-                          }
-                          options={wards.map((ward) => ({ label: ward.name, value: ward.name }))}
-                          placeholder={t('orders.checkout.wardPlaceholder')}
-                          searchPlaceholder={t('orders.checkout.wardSearchPlaceholder')}
-                          emptyMessage={t('orders.checkout.comboboxEmpty')}
-                          disabled={isLoadingWards || wards.length === 0 || !selectedCity}
-                          invalid={fieldState.invalid}
-                        />
-                        <div className='min-h-4'>
-                          {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-                        </div>
-                      </Field>
-                    )}
-                  />
-                </div>
-
-                <Controller
-                  name='addressLine'
-                  control={methods.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-                      <FieldLabel htmlFor={field.name}>{t('profile.addressLine')}</FieldLabel>
-                      <AddressAutocomplete
-                        id={field.name}
-                        value={field.value ?? ''}
-                        onValueChange={field.onChange}
-                        onResolve={({ latitude, longitude, mapId, ward, city }) => {
-                          methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
-                          methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
-                          methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
-                          // Anchor the map pin to this newly resolved point.
-                          setResolvedAnchor({ latitude, longitude })
-
-                          // Lift the resolved ward/city into their own selectors.
-                          const matchedCity = matchShippingLocation(cities, city)
-                          const cityChanged = Boolean(matchedCity && matchedCity.name !== cityValue)
-                          if (cityChanged && matchedCity) {
-                            methods.setValue('city', matchedCity.name, { shouldDirty: true, shouldValidate: true })
-                            methods.setValue('ward', '', { shouldDirty: true, shouldValidate: true })
-                          }
-                          pendingWardRef.current = ward || null
-                          // Same city → its ward list is already loaded, resolve now;
-                          // a changed city resolves via the effect once wards reload.
-                          if (!cityChanged) resolvePendingWard()
+                      <FieldLabel htmlFor={field.name}>{t('profile.addressCity')}</FieldLabel>
+                      <LocationCombobox
+                        value={field.value}
+                        onChange={(value) => {
+                          methods.setValue('city', value, { shouldDirty: true, shouldValidate: true })
+                          methods.setValue('ward', '', { shouldDirty: true, shouldValidate: true })
                         }}
-                        onClear={() => {
-                          methods.setValue('latitude', 0, { shouldDirty: true, shouldValidate: true })
-                          methods.setValue('longitude', 0, { shouldDirty: true, shouldValidate: true })
-                          methods.setValue('mapId', '', { shouldDirty: true, shouldValidate: true })
-                          setResolvedAnchor(null)
-                        }}
-                        ward={wardValue}
-                        city={cityValue}
-                        placeholder={t('profile.addressLinePlaceholder')}
-                        searchingLabel={t('profile.addressLineSearching')}
-                        emptyLabel={t('profile.addressLineEmpty')}
+                        options={cities.map((city) => ({ label: city.name, value: city.name }))}
+                        placeholder={t('orders.checkout.cityPlaceholder')}
+                        searchPlaceholder={t('orders.checkout.citySearchPlaceholder')}
+                        emptyMessage={t('orders.checkout.comboboxEmpty')}
+                        disabled={isLoadingCities || cities.length === 0}
                         invalid={fieldState.invalid}
                       />
                       <div className='min-h-4'>
@@ -315,75 +253,149 @@ export function AddressFormDialog({
                   )}
                 />
 
-                {/* The "use my location" button is always available; the map
-                    itself appears once a point exists (typed, picked, or located). */}
-                <AddressMapField
-                  latitude={latitudeValue}
-                  longitude={longitudeValue}
-                  onResolve={({ latitude, longitude, mapId, addressLine, ward, city }) => {
-                    // Sync every field to whatever the reverse geocode landed on:
-                    // coordinate, address line, and the ward/city headers.
-                    methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
-                    methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
-                    methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
-                    if (addressLine) {
-                      methods.setValue('addressLine', addressLine, { shouldDirty: true, shouldValidate: true })
-                    }
-
-                    // Lift the resolved ward/city into their own selectors.
-                    const matchedCity = matchShippingLocation(cities, city)
-                    const cityChanged = Boolean(matchedCity && matchedCity.name !== cityValue)
-                    if (cityChanged && matchedCity) {
-                      methods.setValue('city', matchedCity.name, { shouldDirty: true, shouldValidate: true })
-                      methods.setValue('ward', '', { shouldDirty: true, shouldValidate: true })
-                    }
-                    pendingWardRef.current = ward || null
-                    // Same city → its ward list is already loaded, resolve now;
-                    // a changed city resolves via the effect once wards reload.
-                    if (!cityChanged) resolvePendingWard()
-                  }}
-                  anchorLatitude={mapAnchor?.latitude}
-                  anchorLongitude={mapAnchor?.longitude}
-                  hint={t('profile.addressMapHint')}
-                  useLocationLabel={t('profile.addressMapUseLocation')}
-                  resolvingLabel={t('profile.addressMapResolving')}
-                  locationErrorLabel={t('profile.addressMapLocationError')}
-                  tooFarLabel={t('profile.addressMapTooFar')}
-                />
-
                 <Controller
-                  name='isDefault'
+                  name='ward'
                   control={methods.control}
-                  render={({ field }) => (
-                    <Field orientation='horizontal' className='items-center gap-2.5'>
-                      <Checkbox
-                        id={field.name}
-                        checked={field.value}
-                        onCheckedChange={(checked) => field.onChange(checked === true)}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                      <FieldLabel htmlFor={field.name}>{t('profile.addressWard')}</FieldLabel>
+                      <LocationCombobox
+                        value={field.value}
+                        onChange={(value) =>
+                          methods.setValue('ward', value, { shouldDirty: true, shouldValidate: true })
+                        }
+                        options={wards.map((ward) => ({ label: ward.name, value: ward.name }))}
+                        placeholder={t('orders.checkout.wardPlaceholder')}
+                        searchPlaceholder={t('orders.checkout.wardSearchPlaceholder')}
+                        emptyMessage={t('orders.checkout.comboboxEmpty')}
+                        disabled={isLoadingWards || wards.length === 0 || !selectedCity}
+                        invalid={fieldState.invalid}
                       />
-                      <FieldLabel htmlFor={field.name} className='w-auto p-0'>
-                        {t('profile.addressIsDefault')}
-                      </FieldLabel>
+                      <div className='min-h-4'>
+                        {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                      </div>
                     </Field>
                   )}
                 />
-              </FieldGroup>
-            </div>
+              </div>
 
-            <div className='flex items-center justify-end gap-3 border-t p-4'>
-              <Button type='button' variant='outline' onClick={close} disabled={isPending}>
-                {t('common.button.cancel')}
-              </Button>
+              <Controller
+                name='addressLine'
+                control={methods.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                    <FieldLabel htmlFor={field.name}>{t('profile.addressLine')}</FieldLabel>
+                    <AddressAutocomplete
+                      id={field.name}
+                      value={field.value ?? ''}
+                      onValueChange={field.onChange}
+                      onResolve={({ latitude, longitude, mapId, ward, city }) => {
+                        methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
+                        methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
+                        methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
+                        // Anchor the map pin to this newly resolved point.
+                        setResolvedAnchor({ latitude, longitude })
 
-              <Button type='submit' disabled={isPending}>
-                {isPending ? <Spinner /> : null}
-                {isEditMode ? t('profile.updateAddress') : t('profile.createAddress')}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </DialogContent>
-    </Dialog>
+                        // Lift the resolved ward/city into their own selectors.
+                        const matchedCity = matchShippingLocation(cities, city)
+                        const cityChanged = Boolean(matchedCity && matchedCity.name !== cityValue)
+                        if (cityChanged && matchedCity) {
+                          methods.setValue('city', matchedCity.name, { shouldDirty: true, shouldValidate: true })
+                          methods.setValue('ward', '', { shouldDirty: true, shouldValidate: true })
+                        }
+                        pendingWardRef.current = ward || null
+                        // Same city → its ward list is already loaded, resolve now;
+                        // a changed city resolves via the effect once wards reload.
+                        if (!cityChanged) resolvePendingWard()
+                      }}
+                      onClear={() => {
+                        methods.setValue('latitude', 0, { shouldDirty: true, shouldValidate: true })
+                        methods.setValue('longitude', 0, { shouldDirty: true, shouldValidate: true })
+                        methods.setValue('mapId', '', { shouldDirty: true, shouldValidate: true })
+                        setResolvedAnchor(null)
+                      }}
+                      ward={wardValue}
+                      city={cityValue}
+                      placeholder={t('profile.addressLinePlaceholder')}
+                      searchingLabel={t('profile.addressLineSearching')}
+                      emptyLabel={t('profile.addressLineEmpty')}
+                      invalid={fieldState.invalid}
+                    />
+                    <div className='min-h-4'>
+                      {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                    </div>
+                  </Field>
+                )}
+              />
+
+              {/* The "use my location" button is always available; the map
+                    itself appears once a point exists (typed, picked, or located). */}
+              <AddressMapField
+                latitude={latitudeValue}
+                longitude={longitudeValue}
+                onResolve={({ latitude, longitude, mapId, addressLine, ward, city }) => {
+                  // Sync every field to whatever the reverse geocode landed on:
+                  // coordinate, address line, and the ward/city headers.
+                  methods.setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
+                  methods.setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
+                  methods.setValue('mapId', mapId, { shouldDirty: true, shouldValidate: true })
+                  if (addressLine) {
+                    methods.setValue('addressLine', addressLine, { shouldDirty: true, shouldValidate: true })
+                  }
+
+                  // Lift the resolved ward/city into their own selectors.
+                  const matchedCity = matchShippingLocation(cities, city)
+                  const cityChanged = Boolean(matchedCity && matchedCity.name !== cityValue)
+                  if (cityChanged && matchedCity) {
+                    methods.setValue('city', matchedCity.name, { shouldDirty: true, shouldValidate: true })
+                    methods.setValue('ward', '', { shouldDirty: true, shouldValidate: true })
+                  }
+                  pendingWardRef.current = ward || null
+                  // Same city → its ward list is already loaded, resolve now;
+                  // a changed city resolves via the effect once wards reload.
+                  if (!cityChanged) resolvePendingWard()
+                }}
+                anchorLatitude={mapAnchor?.latitude}
+                anchorLongitude={mapAnchor?.longitude}
+                hint={t('profile.addressMapHint')}
+                useLocationLabel={t('profile.addressMapUseLocation')}
+                resolvingLabel={t('profile.addressMapResolving')}
+                locationErrorLabel={t('profile.addressMapLocationError')}
+                tooFarLabel={t('profile.addressMapTooFar')}
+              />
+
+              <Controller
+                name='isDefault'
+                control={methods.control}
+                render={({ field }) => (
+                  <Field orientation='horizontal' className='items-center gap-2.5'>
+                    <Checkbox
+                      id={field.name}
+                      checked={field.value}
+                      onCheckedChange={(checked) => field.onChange(checked === true)}
+                    />
+                    <FieldLabel htmlFor={field.name} className='w-auto p-0'>
+                      {t('profile.addressIsDefault')}
+                    </FieldLabel>
+                  </Field>
+                )}
+              />
+            </FieldGroup>
+          </ResponsiveDialogBody>
+
+          <ResponsiveDialogFooter className='grid grid-cols-2 gap-3 sm:flex sm:justify-end'>
+            <Button type='button' variant='outline' size='lg' onClick={close} disabled={isPending}>
+              {t('common.button.cancel')}
+            </Button>
+
+            <Button type='submit' size='lg' disabled={isPending}>
+              {isPending ? <Spinner /> : null}
+              {isEditMode ? t('profile.updateAddress') : t('profile.createAddress')}
+            </Button>
+          </ResponsiveDialogFooter>
+        </form>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   )
 }
 

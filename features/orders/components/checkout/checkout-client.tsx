@@ -1,17 +1,21 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useGetUser } from '@/features/users/hooks/use-get-user'
 import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
 import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
+import StickyActionBar from '@/shared/components/sticky-action-bar'
 import { isFeatureEnabled } from '@/shared/feature-flags'
-import { Alert02Icon, ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
+import { cn } from '@/shared/utils'
+import { Alert02Icon, ArrowDown01Icon, ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
@@ -34,7 +38,7 @@ import { resolveShippingFee } from '../../shipping-fee'
 import type { TaxBusinessInfo } from '../../types'
 import CheckoutCards from './cards/checkout-cards'
 import { CheckoutPanel } from './checkout-section'
-import CheckoutSidebar from './checkout-sidebar'
+import CheckoutSidebar, { CheckoutTerms } from './checkout-sidebar'
 import CheckoutStepper, { CHECKOUT_CARDS_STEP } from './checkout-stepper'
 import StepComplete from './step-complete'
 import StepPayment from './step-payment'
@@ -95,6 +99,9 @@ export default function CheckoutClient() {
     createOrder,
     contact
   })
+
+  const [termsAccepted, setTermsAccepted] = useState(true)
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false)
 
   const [manualAddress, setManualAddress] = useState(false)
   const [isLoadingShippingLocations, setIsLoadingShippingLocations] = useState(false)
@@ -261,6 +268,9 @@ export default function CheckoutClient() {
                 onClick: () => router.push(ordersHref)
               }
 
+  const isActionDisabled =
+    sidebarAction.disabled || sidebarAction.loading || (step === 4 && !termsAccepted) || isBlockedByStock
+
   const sidebarProps = {
     lines: summaryLines,
     totalItems,
@@ -282,7 +292,9 @@ export default function CheckoutClient() {
     grandTotal,
     action: sidebarAction,
     showTerms: step === 4,
-    cards
+    cards,
+    termsAccepted,
+    onTermsAcceptedChange: setTermsAccepted
   }
 
   return (
@@ -352,7 +364,47 @@ export default function CheckoutClient() {
                 </Button>
               </div>
             ) : null}
+            {step < 5 ? (
+              <div className='mb-3 overflow-hidden rounded-3xl border border-border bg-card lg:hidden'>
+                <button
+                  type='button'
+                  onClick={() => setIsSummaryOpen((open) => !open)}
+                  aria-expanded={isSummaryOpen}
+                  aria-controls='checkout-compact-summary'
+                  className='flex min-h-14 w-full cursor-pointer items-center gap-3 px-4 text-left'
+                >
+                  <HugeiconsIcon
+                    icon={ArrowDown01Icon}
+                    strokeWidth={2}
+                    className={cn(
+                      'size-4 shrink-0 text-muted-foreground transition-transform',
+                      isSummaryOpen && 'rotate-180'
+                    )}
+                  />
+                  <span className='min-w-0 flex-1 truncate text-sm font-semibold'>
+                    {t('orders.checkout.sidebar.summaryTitle')}
+                    <span className='ml-1.5 font-normal text-muted-foreground'>
+                      {t('orders.checkout.sidebar.itemsCount', { count: totalItems })}
+                    </span>
+                  </span>
+                  <span className='shrink-0 font-title text-base font-bold text-primary tabular-nums'>
+                    {formatVnd(grandTotal)}
+                  </span>
+                </button>
 
+                {isSummaryOpen ? (
+                  <div id='checkout-compact-summary' className='border-t border-dashed border-border p-1'>
+                    <CheckoutSidebar
+                      {...sidebarProps}
+                      showRecap={step !== 4}
+                      sticky={false}
+                      showAction={false}
+                      notice={null}
+                    />
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             <div className='grid grid-cols-1 gap-2 lg:grid-cols-12'>
               <div className='space-y-2 lg:col-span-8'>
                 {step === 1 ? (
@@ -398,9 +450,16 @@ export default function CheckoutClient() {
                 ) : (
                   <StepComplete />
                 )}
+
+                {step === 4 ? (
+                  <CheckoutPanel className='p-4 lg:hidden'>
+                    {isStepBlockedByFlag ? <FeatureUnavailableNotice className='mb-3' /> : null}
+                    <CheckoutTerms accepted={termsAccepted} onAcceptedChange={setTermsAccepted} />
+                  </CheckoutPanel>
+                ) : null}
               </div>
 
-              <div className='lg:col-span-4 lg:sticky lg:top-23 lg:self-start'>
+              <div className='top-below-header hidden lg:sticky lg:col-span-4 lg:block lg:self-start'>
                 <CheckoutSidebar
                   {...sidebarProps}
                   showRecap={step !== 4}
@@ -408,6 +467,31 @@ export default function CheckoutClient() {
                 />
               </div>
             </div>
+            {step < 5 ? (
+              <StickyActionBar aria-label={t('orders.checkout.title')}>
+                <div className='flex items-center gap-3'>
+                  <div className='min-w-0 shrink-0'>
+                    <p className='text-[0.625rem] leading-none font-medium text-muted-foreground'>
+                      {t('orders.checkout.total')}
+                    </p>
+                    <p className='truncate font-title text-lg leading-tight font-bold text-primary tabular-nums'>
+                      {formatVnd(grandTotal)}
+                    </p>
+                  </div>
+
+                  <Button
+                    type='button'
+                    size='lg'
+                    className='ml-auto min-w-0 flex-1'
+                    onClick={sidebarAction.onClick}
+                    disabled={isActionDisabled}
+                  >
+                    {sidebarAction.loading ? <Spinner /> : null}
+                    <span className='truncate'>{sidebarAction.label}</span>
+                  </Button>
+                </div>
+              </StickyActionBar>
+            ) : null}
           </>
         )}
       </div>

@@ -37,16 +37,18 @@ export default function StudioHeader({
   const historyHref = useAccountHref('studio')
 
   return (
-    <header className='relative z-40 flex h-18 shrink-0 items-center border-b border-secondary/40 bg-background/85 px-2 backdrop-blur-md sm:px-4 lg:h-20 lg:px-6'>
+    <header className='relative z-40 flex h-16 shrink-0 items-center gap-1 border-b border-secondary/40 bg-background/85 px-2 backdrop-blur-md sm:h-18 sm:gap-2 sm:px-4 lg:h-20 lg:px-6'>
       <Link
         href='/'
         aria-label={t('homeAriaLabel')}
         className='shrink-0 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
       >
-        <Image src={logo} alt={t('logoAlt')} priority sizes='48px' className='h-10 w-auto lg:h-12' />
+        <Image src={logo} alt={t('logoAlt')} priority sizes='48px' className='h-8 w-auto sm:h-10 lg:h-12' />
       </Link>
-
-      <nav aria-label={t('progressAriaLabel')} className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
+      <nav
+        aria-label={t('progressAriaLabel')}
+        className='rail-x min-w-0 flex-1 justify-start sm:justify-center lg:absolute lg:top-1/2 lg:left-1/2 lg:flex-none lg:-translate-x-1/2 lg:-translate-y-1/2'
+      >
         <ol className='flex items-center'>
           {steps.map((item, index) => {
             const complete = item.step < step
@@ -63,7 +65,7 @@ export default function StudioHeader({
                   aria-current={active ? 'step' : undefined}
                   aria-label={t('stepAriaLabel', { step: item.step, label })}
                   className={cn(
-                    'flex min-h-10 cursor-pointer items-center gap-2 rounded-full px-1.5 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none sm:px-2.5',
+                    'flex min-h-10 cursor-pointer items-center gap-2 rounded-full px-1 text-xs font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:pointer-events-none sm:px-2.5',
                     active
                       ? 'text-primary'
                       : available
@@ -88,7 +90,7 @@ export default function StudioHeader({
                   <span
                     aria-hidden='true'
                     className={cn(
-                      'mx-0.5 h-px w-3 transition-colors sm:w-5',
+                      'mx-0.5 hidden h-px w-5 transition-colors sm:block',
                       item.step < step ? 'bg-primary/40' : 'bg-border'
                     )}
                   />
@@ -98,8 +100,7 @@ export default function StudioHeader({
           })}
         </ol>
       </nav>
-
-      <div className='flex flex-1 items-center justify-end gap-0.5 sm:gap-1'>
+      <div className='flex shrink-0 items-center justify-end gap-0.5 sm:gap-1 lg:flex-1'>
         <HeaderAction
           href='/cart'
           icon={ShoppingBasket03Icon}
@@ -115,10 +116,11 @@ export default function StudioHeader({
             label={t('historyLabel')}
             description={t('historyAriaLabel')}
             locked={locked}
+            className='hidden sm:inline-flex'
           />
         )}
 
-        <span aria-hidden='true' className='mx-1 h-6 w-px bg-border' />
+        <span aria-hidden='true' className='mx-1 hidden h-6 w-px bg-border sm:block' />
 
         <HeaderAction href='/products' icon={Cancel01Icon} description={t('exitAriaLabel')} locked={locked} />
       </div>
@@ -137,17 +139,19 @@ function HeaderAction({
   icon,
   label,
   description,
-  locked
+  locked,
+  className: classNameProp
 }: {
   href: string
   icon: typeof Cancel01Icon
   label?: string
   description: string
   locked: boolean
+  className?: string
 }) {
   // `icon-lg` is already the square 2.5rem button; a captioned one needs room to grow.
   const size = label ? 'lg' : 'icon-lg'
-  const className = cn('text-primary', label && 'px-2.5 xl:px-4')
+  const className = cn('text-primary', label && 'px-2.5 xl:px-4', classNameProp)
 
   const body = (
     <>

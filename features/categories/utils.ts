@@ -78,10 +78,12 @@ export const resolveSectionGrid = (
   return getCategoryGrid(parseCategoryMetadata(root.metaData))
 }
 
+const MIN_CARD_WIDTH = '8.5rem'
+
 /**
  * Responsive `grid-template-columns` for an arbitrary column count. The target
  * count is fed through CSS variables so Tailwind's JIT never sees a dynamic class
- * name, and the count ramps up across breakpoints (1 → 2 → 3 → target) so any
+ * name, and the count ramps up across breakpoints (auto → 2 → 3 → target) so any
  * configured value still reads well on smaller screens.
  */
 export const getResponsiveGridColumns = (cols: number): { className: string; style: CSSProperties } => {
@@ -89,8 +91,9 @@ export const getResponsiveGridColumns = (cols: number): { className: string; sty
   const track = (n: number) => `repeat(${n},minmax(0,1fr))`
   return {
     className:
-      'grid-cols-1 sm:[grid-template-columns:var(--grid-cols-sm)] md:[grid-template-columns:var(--grid-cols-md)] lg:[grid-template-columns:var(--grid-cols-lg)]',
+      '[grid-template-columns:var(--grid-cols-base)] sm:[grid-template-columns:var(--grid-cols-sm)] md:[grid-template-columns:var(--grid-cols-md)] lg:[grid-template-columns:var(--grid-cols-lg)]',
     style: {
+      '--grid-cols-base': `repeat(auto-fill,minmax(min(${MIN_CARD_WIDTH},100%),1fr))`,
       '--grid-cols-sm': track(Math.min(target, 2)),
       '--grid-cols-md': track(Math.min(target, 3)),
       '--grid-cols-lg': track(target)

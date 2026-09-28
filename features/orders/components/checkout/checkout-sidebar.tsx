@@ -76,6 +76,9 @@ interface CheckoutSidebarProps {
   showRecap?: boolean
   /** Cards already added, listed under the product each one is attached to. */
   cards?: CheckoutCardField[]
+  showAction?: boolean
+  termsAccepted?: boolean
+  onTermsAcceptedChange?: (accepted: boolean) => void
 }
 
 export default function CheckoutSidebar({
@@ -103,10 +106,12 @@ export default function CheckoutSidebar({
   showTerms = true,
   sticky = true,
   showRecap = true,
-  cards = EMPTY_CARDS
+  cards = EMPTY_CARDS,
+  showAction = true,
+  termsAccepted = true,
+  onTermsAcceptedChange
 }: CheckoutSidebarProps) {
   const { t } = useTranslation()
-  const [termsAccepted, setTermsAccepted] = useState(true)
   const isActionDisabled = action.disabled || action.loading || (showTerms && !termsAccepted)
 
   const isPricingLoading = lines.some((line) => line.isResolving)
@@ -190,36 +195,52 @@ export default function CheckoutSidebar({
         </div>
       </section>
 
-      <section className='space-y-3 rounded-3xl border border-border bg-card p-5'>
-        {showTerms ? (
-          <label className='flex items-start gap-2 text-xs leading-relaxed text-muted-foreground'>
-            <Checkbox
-              checked={termsAccepted}
-              onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-              className='mt-0.5'
-            />
-            <span>
-              {t('orders.checkout.sidebar.termsPrefix')}{' '}
-              <Link href='/terms' className='text-primary underline underline-offset-2'>
-                {t('orders.checkout.sidebar.termsLink')}
-              </Link>{' '}
-              {t('orders.checkout.sidebar.termsAnd')}{' '}
-              <Link href='/privacy' className='text-primary underline underline-offset-2'>
-                {t('orders.checkout.sidebar.privacyLink')}
-              </Link>
-              .
-            </span>
-          </label>
-        ) : null}
+      {showAction ? (
+        <section className='space-y-3 rounded-3xl border border-border bg-card p-5'>
+          {showTerms ? <CheckoutTerms accepted={termsAccepted} onAcceptedChange={onTermsAcceptedChange} /> : null}
 
-        {notice}
+          {notice}
 
-        <Button type='button' size='lg' className='w-full' onClick={action.onClick} disabled={isActionDisabled}>
-          {action.loading ? <Spinner /> : null}
-          {action.label}
-        </Button>
-      </section>
+          <Button type='button' size='lg' className='w-full' onClick={action.onClick} disabled={isActionDisabled}>
+            {action.loading ? <Spinner /> : null}
+            {action.label}
+          </Button>
+        </section>
+      ) : null}
     </aside>
+  )
+}
+
+export function CheckoutTerms({
+  accepted,
+  onAcceptedChange,
+  className
+}: {
+  accepted: boolean
+  onAcceptedChange?: (accepted: boolean) => void
+  className?: string
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <label className={cn('flex items-start gap-2 text-xs leading-relaxed text-muted-foreground', className)}>
+      <Checkbox
+        checked={accepted}
+        onCheckedChange={(checked) => onAcceptedChange?.(checked === true)}
+        className='mt-0.5'
+      />
+      <span>
+        {t('orders.checkout.sidebar.termsPrefix')}{' '}
+        <Link href='/terms' className='text-primary underline underline-offset-2'>
+          {t('orders.checkout.sidebar.termsLink')}
+        </Link>{' '}
+        {t('orders.checkout.sidebar.termsAnd')}{' '}
+        <Link href='/privacy' className='text-primary underline underline-offset-2'>
+          {t('orders.checkout.sidebar.privacyLink')}
+        </Link>
+        .
+      </span>
+    </label>
   )
 }
 

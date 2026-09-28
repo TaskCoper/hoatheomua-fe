@@ -18,7 +18,11 @@ export default function ProductDetailsTabsShell({
 
   return (
     <div className='mt-8'>
-      <div role='tablist' aria-label={ariaLabel} className='flex flex-wrap gap-1 border-b border-border'>
+      <div
+        role='tablist'
+        aria-label={ariaLabel}
+        className='rail-x -mx-4 items-center gap-1 border-b border-border px-4 sm:mx-0 sm:flex-wrap sm:px-0'
+      >
         {tabs.map((tab) => {
           const isActive = active === tab.key
 
@@ -29,7 +33,7 @@ export default function ProductDetailsTabsShell({
               role='tab'
               aria-selected={isActive}
               onClick={() => setActive(tab.key)}
-              className='cursor-pointer relative px-4 py-3 text-sm font-semibold transition-colors'
+              className='relative cursor-pointer px-4 py-3 text-sm font-semibold whitespace-nowrap transition-colors'
               style={{ color: isActive ? 'var(--primary)' : 'var(--muted-foreground)' }}
             >
               {tab.label}
