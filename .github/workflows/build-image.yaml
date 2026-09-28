@@ -28,6 +28,8 @@ jobs:
       TAG: ${{ inputs.environment }}-latest
       API_BASE_URL: ${{ secrets.API_BASE_URL }}
       TASKCOPER_API_BASE_URL: ${{ secrets.TASKCOPER_API_BASE_URL }}
+      API_INTERNAL_BASE_URL: ${{ secrets.API_INTERNAL_BASE_URL }}
+      TASKCOPER_API_INTERNAL_BASE_URL: ${{ secrets.TASKCOPER_API_INTERNAL_BASE_URL }}
       FILE_BASE_URL: ${{ secrets.FILE_BASE_URL }}
       SITE_URL: ${{ secrets.SITE_URL }}
       GOONG_MAP_API_KEY: ${{ secrets.GOONG_MAP_API_KEY }}

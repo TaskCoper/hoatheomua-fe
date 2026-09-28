@@ -1,3 +1,4 @@
+import { SERVER_API_BASE_URL, SERVER_TASKCOPER_API_BASE_URL } from '@/lib/api-upstream'
 import { isPublicRoutePath } from '@/shared/constants'
 import { clearSessionHint } from '@/shared/session-hint'
 import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios'
@@ -333,7 +334,7 @@ export const localeHeaders = (locale: string) => ({ 'Accept-Language': locale })
 
 export const api = createApiClient('/api', {
   refreshTokenPath: TASKCOPER_REFRESH_TOKEN_PATH,
-  serverBaseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  serverBaseURL: SERVER_API_BASE_URL,
   ...AUTH_TOKEN_CODES
 })
 
@@ -352,7 +353,7 @@ api.interceptors.request.use((config) => {
 
 export const apiTaskcoper = createApiClient('/api/taskcoper', {
   refreshTokenPath: '/v1/users/refresh_token',
-  serverBaseURL: process.env.NEXT_PUBLIC_TASKCOPER_API_BASE_URL,
+  serverBaseURL: SERVER_TASKCOPER_API_BASE_URL,
   ...AUTH_TOKEN_CODES
 })
 

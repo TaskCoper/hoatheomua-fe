@@ -25,6 +25,11 @@ not load `.docker/.env.demo` or `.docker/.env.prod` automatically; those files
 use Docker build argument names such as `API_BASE_URL` instead.
 The production build fetches public API data while prerendering, so the backend
 must also be reachable when running `pnpm build`.
+The optional server-only `API_INTERNAL_BASE_URL` and
+`TASKCOPER_API_INTERNAL_BASE_URL` build args are set only in the Dockerfile's
+runtime stage, where they override the public URLs for server-side calls (the
+`/api` proxy and Server Components), so the container reaches the gateway over the
+Docker network instead of going out through Cloudflare.
 
 First, run the development server:
 

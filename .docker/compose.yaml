@@ -15,6 +15,10 @@ x-hoatheomua-fe-base: &hoatheomua-fe-base
       ENABLE_ORDERING: ${ENABLE_ORDERING:-true}
       ENABLE_PAYMENT: ${ENABLE_PAYMENT:-true}
       ENABLE_EXTERNAL_SERVICES: ${ENABLE_EXTERNAL_SERVICES:-true}
+      # Optional: server-side API calls go straight to the gateway over the Docker
+      # network. Empty falls back to the public API_BASE_URL / TASKCOPER_API_BASE_URL.
+      API_INTERNAL_BASE_URL: ${API_INTERNAL_BASE_URL:-}
+      TASKCOPER_API_INTERNAL_BASE_URL: ${TASKCOPER_API_INTERNAL_BASE_URL:-}
   environment:
     TZ: UTC
     HOSTNAME: 0.0.0.0

@@ -48,9 +48,17 @@ FROM node:24-alpine AS runner
 
 WORKDIR /usr/src/app
 
+# Server-only upstreams read at runtime by lib/api-upstream.ts. Declared in this
+# stage only: `pnpm build` runs where Docker hostnames don't resolve, so
+# prerendering keeps using the public API URLs. Empty falls back to them too.
+ARG API_INTERNAL_BASE_URL
+ARG TASKCOPER_API_INTERNAL_BASE_URL
+
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ENV API_INTERNAL_BASE_URL=${API_INTERNAL_BASE_URL}
+ENV TASKCOPER_API_INTERNAL_BASE_URL=${TASKCOPER_API_INTERNAL_BASE_URL}
 
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
