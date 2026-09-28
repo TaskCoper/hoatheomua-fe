@@ -1,6 +1,7 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
+import { ARE_CARDS_ENABLED } from '@/features/orders/cards/card-feature'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
@@ -46,7 +47,9 @@ export default function AccountShell({ active, onSelectSection, slug: slugFromRo
   const primaryItems: AccountNavItem[] = [
     { key: 'orders', label: t('account.nav.orders'), icon: PackageIcon, href: buildAccountHref(slug, 'orders') },
     { key: 'studio', label: t('account.nav.studio'), icon: AiMagicIcon, href: buildAccountHref(slug, 'studio') },
-    { key: 'cards', label: t('account.nav.cards'), icon: Mail01Icon, href: buildAccountHref(slug, 'cards') },
+    ...(ARE_CARDS_ENABLED
+      ? [{ key: 'cards' as const, label: t('account.nav.cards'), icon: Mail01Icon, href: buildAccountHref(slug, 'cards') }]
+      : []),
     { key: 'info', label: t('account.nav.profile'), icon: User03Icon, href: buildAccountHref(slug, 'info') },
     { key: 'address', label: t('account.nav.addresses'), icon: Home01Icon, href: buildAccountHref(slug, 'address') },
     {

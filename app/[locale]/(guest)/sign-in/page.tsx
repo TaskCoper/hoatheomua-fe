@@ -1,3 +1,4 @@
+import AuthPageShell from '@/features/users/components/auth-page-shell'
 import SignInProvider from '@/features/users/components/sign-in-provider'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
@@ -23,7 +24,7 @@ export default async function SignInPage({ params }: SignInPageProps) {
   const t = await getTranslations({ locale, namespace: 'auth.signIn' })
 
   return (
-    <main className='mx-auto flex min-h-svh w-full max-w-sm flex-col justify-center px-4'>
+    <AuthPageShell locale={locale}>
       <div className='space-y-6'>
         <div className='space-y-1'>
           <h1 className='text-2xl font-semibold'>{t('title')}</h1>
@@ -34,6 +35,6 @@ export default async function SignInPage({ params }: SignInPageProps) {
           <SignInProvider />
         </Suspense>
       </div>
-    </main>
+    </AuthPageShell>
   )
 }

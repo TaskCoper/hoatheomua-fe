@@ -106,7 +106,8 @@
       "uploadSuccess": "Upload successful",
       "optional": "optional",
       "selectDate": "Select a date",
-      "downloadOpenedInNewTab": "Opened the image in a new tab so you can save it manually"
+      "downloadOpenedInNewTab": "Opened the image in a new tab so you can save it manually",
+      "backToHome": "Back to home"
     },
     "button": {
       "clearAll": "Clear all",

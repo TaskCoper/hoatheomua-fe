@@ -1,6 +1,7 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
+import { ARE_CARDS_ENABLED } from '@/features/orders/cards/card-feature'
 import { AccountOrders } from '@/features/orders/components/account-orders'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import dynamic from 'next/dynamic'
@@ -53,7 +54,12 @@ export default function AccountPage({ slug }: { slug: string }) {
 
   const paramSection = searchParams.get('section') ?? undefined
   const requestedSection = isAccountSection(paramSection) ? paramSection : undefined
-  const activeSection: AccountSection = isOwnAccount ? (requestedSection ?? 'orders') : 'info'
+  const isRequestedSectionAvailable = requestedSection !== 'cards' || ARE_CARDS_ENABLED
+  const activeSection: AccountSection = isOwnAccount
+    ? isRequestedSectionAvailable
+      ? (requestedSection ?? 'orders')
+      : 'orders'
+    : 'info'
 
   const handleSelectSection = useCallback(
     (next: AccountSection) => {
