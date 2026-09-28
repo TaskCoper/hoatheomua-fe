@@ -133,15 +133,17 @@ export default function OrderCardStudio({ card, isOpen, onDone }: OrderCardStudi
       onSuccess: () => {
         toast.success(t('orders.cards.toast.applied', { index: activeVersion.label }))
         onDone()
-      },
-      onError: () => toast.error(t('orders.cards.toast.applyError'))
+      }
     })
   }
 
   const handleGenerate = () => {
     generate({
       onSuccess: () => toast.success(t('orders.cards.toast.generated')),
-      onError: () => toast.error(t('orders.cards.toast.generateError'))
+      onError: (error) =>
+        toast.error(t('orders.cards.toast.generateError'), {
+          description: error?.response?.data?.detail
+        })
     })
   }
 

@@ -161,6 +161,8 @@ export default function Footer() {
                   href={social.href}
                   aria-label={social.label}
                   className='grid size-9 place-items-center rounded-full border border-foreground text-foreground transition-colors hover:bg-primary hover:text-primary-foreground sm:size-10'
+                  target='_blank'
+                  rel='noopener noreferrer'
                 >
                   <HugeiconsIcon icon={social.icon} className='size-4 sm:size-5' />
                 </a>

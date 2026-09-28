@@ -1,6 +1,6 @@
 import { invalidateSellableQuantity } from '@/features/products/invalidate-stock'
 import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
+import { persist, type PersistStorage, type StorageValue } from 'zustand/middleware'
 
 export const CART_STORAGE_KEY = 'shopping-cart-v1'
 export const CART_PERSIST_VERSION = 2
@@ -222,6 +222,55 @@ export function toCheckoutPayload(items: CartItem[]): { items: CheckoutCartItem[
   }
 }
 
+type CartPersistedState = Pick<CartState, 'items'>
+
+/**
+ * `createJSONStorage` lets `JSON.parse` throw straight through, and persist answers a
+ * throwing `getItem` by calling the `onRehydrateStorage` callback with `undefined` - so
+ * `setHasHydrated` never runs and every cart screen sits on its skeleton for good. An
+ * entry that was hand-edited, truncated or emptied has to read as "no cart", not as a
+ * fatal error.
+ *
+ * `localStorage` is touched up front, exactly as `createJSONStorage` does it: on the
+ * server (and wherever site data is blocked) it throws, persist is left without storage
+ * and skips hydration, so SSR keeps rendering the skeleton instead of an empty cart.
+ */
+const cartStorage = ((): PersistStorage<CartPersistedState> | undefined => {
+  let storage: Storage
+
+  try {
+    storage = localStorage
+  } catch {
+    return undefined
+  }
+
+  return {
+    getItem: (name) => {
+      try {
+        const raw = storage.getItem(name)
+        return raw ? (JSON.parse(raw) as StorageValue<CartPersistedState>) : null
+      } catch {
+        return null
+      }
+    },
+    setItem: (name, value) => {
+      try {
+        storage.setItem(name, JSON.stringify(value))
+      } catch {
+        // A full or blocked storage costs the buyer their cart on the next visit;
+        // it must not take the running page down as well.
+      }
+    },
+    removeItem: (name) => {
+      try {
+        storage.removeItem(name)
+      } catch {
+        // Same: nothing to do, and nothing worth throwing over.
+      }
+    }
+  }
+})()
+
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
@@ -265,11 +314,6 @@ export const useCartStore = create<CartState>()(
         set({ items: [...get().items, created] })
         return created
       },
-
-      // `addItem` is deliberately not invalidating: every caller runs
-      // `verifySellableQuantity` first, which already fetches fresh numbers and
-      // pushes them into every stock cache. A second pass here would refetch what
-      // just landed.
 
       removeItem: (lineId) => {
         set({ items: get().items.filter((item) => item.lineId !== lineId) })
@@ -331,7 +375,7 @@ export const useCartStore = create<CartState>()(
     {
       name: CART_STORAGE_KEY,
       version: CART_PERSIST_VERSION,
-      storage: createJSONStorage(() => localStorage),
+      storage: cartStorage,
       partialize: (state) => ({ items: state.items }),
       merge: (persisted, current) => {
         const persistedItems =
@@ -343,8 +387,12 @@ export const useCartStore = create<CartState>()(
           items: sanitizeItems(persistedItems)
         }
       },
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true)
+      onRehydrateStorage: (currentState) => (state, error) => {
+        if (error) {
+          console.error('[cart] failed to restore the persisted cart', error)
+        }
+
+        ;(state ?? currentState).setHasHydrated(true)
       }
     }
   )

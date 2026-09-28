@@ -117,11 +117,7 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
       setPendingCover(null)
       toast.success(t('profile.personalInfoUpdated'))
       onSuccess?.()
-    } catch (error) {
-      toast.error(t('error.somethingWentWrong'), {
-        description: error instanceof Error ? error.message : undefined
-      })
-    }
+    } catch {}
   })
 
   const isLoading = isGettingMe || isLoadingUser

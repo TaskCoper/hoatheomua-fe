@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { apiErrorJson } from '@/lib/api-envelope'
+
 /**
  * VietMap Reverse v4 proxy - resolves a `lat`/`lng` (e.g. from a map pin) to
  * the nearest address. Called once per map pick, never per drag frame. Uses
@@ -8,7 +10,9 @@ import { z } from 'zod'
  *
  * Response: { result: { latitude, longitude, mapId, addressLine, ward, city } | null }
  * `result` is null when no address is near the point (a data-quality signal,
- * not an error). Upstream/config failures return a 4xx/5xx with a short reason.
+ * not an error). Upstream/config failures return a 4xx/5xx carrying the backend's
+ * error envelope alongside `result: null` - note the caller keeps the picked
+ * coordinates regardless and never surfaces these, by design.
  */
 
 const VIETMAP_BASE_URL = 'https://maps.vietmap.vn/api'
@@ -38,7 +42,14 @@ const ReverseResultSchema = z.object({
 export async function GET(req: Request) {
   const apikey = process.env.VIETMAP_API_KEY
   if (!apikey) {
-    return Response.json({ result: null, reason: 'server-not-configured' }, { status: 503 })
+    return apiErrorJson(
+      {
+        status: 503,
+        detail: 'Tính năng tìm địa chỉ chưa được cấu hình trên máy chủ.',
+        messageCode: 'ServerNotConfigured'
+      },
+      { result: null }
+    )
   }
 
   const { searchParams } = new URL(req.url)
@@ -48,7 +59,10 @@ export async function GET(req: Request) {
   })
 
   if (!parsed.success) {
-    return Response.json({ result: null, reason: 'invalid-query' }, { status: 400 })
+    return apiErrorJson(
+      { status: 400, detail: 'Vĩ độ hoặc kinh độ không hợp lệ.', messageCode: 'InvalidQuery' },
+      { result: null }
+    )
   }
 
   const { lat, lng } = parsed.data
@@ -62,7 +76,14 @@ export async function GET(req: Request) {
 
     const res = await fetch(url, { headers: { Accept: 'application/json' } })
     if (!res.ok) {
-      return Response.json({ result: null, reason: 'reverse-upstream-error' }, { status: 502 })
+      return apiErrorJson(
+        {
+          status: 502,
+          detail: 'Nhà cung cấp bản đồ đã từ chối yêu cầu tra cứu địa chỉ.',
+          messageCode: 'ReverseUpstreamError'
+        },
+        { result: null }
+      )
     }
 
     const results = z
@@ -89,6 +110,13 @@ export async function GET(req: Request) {
       }
     })
   } catch {
-    return Response.json({ result: null, reason: 'upstream-unreachable' }, { status: 502 })
+    return apiErrorJson(
+      {
+        status: 502,
+        detail: 'Không thể kết nối tới nhà cung cấp bản đồ. Vui lòng thử lại.',
+        messageCode: 'UpstreamUnreachable'
+      },
+      { result: null }
+    )
   }
 }

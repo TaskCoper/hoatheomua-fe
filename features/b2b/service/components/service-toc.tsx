@@ -11,9 +11,7 @@ export default function ServiceToc({ sections }: { sections: ServiceSection[] })
 
   return (
     <nav aria-label={t('b2b.serviceDetails.common.tocTitle')}>
-      <p className='mb-3 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-primary/60'>
-        {t('b2b.serviceDetails.common.tocTitle')}
-      </p>
+      <p className='mb-3 text-xs font-semibold text-primary/60'>{t('b2b.serviceDetails.common.tocTitle')}</p>
       <ul className='space-y-0.5'>
         {sections.map((section) => {
           const isActive = activeId === section.id

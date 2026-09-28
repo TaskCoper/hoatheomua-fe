@@ -33,7 +33,7 @@ export interface ErrorResponse {
   messageCode: string
   errors: {
     detail: string
-  }
+  } | null
   traceId: string
   timestampUtc: string
 }

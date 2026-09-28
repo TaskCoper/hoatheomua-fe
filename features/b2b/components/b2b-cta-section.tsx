@@ -52,7 +52,7 @@ export default function B2BCtaSection({ cta, locale }: { cta: OverviewCta; local
 
             <motion.h2
               variants={fadeUp}
-              className='font-title text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl'
+              className='font-title text-white text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl'
             >
               {pick(cta.title, locale)}
             </motion.h2>
@@ -97,7 +97,7 @@ export default function B2BCtaSection({ cta, locale }: { cta: OverviewCta; local
                 <HugeiconsIcon icon={PhoneCheckIcon} className='size-5' />
               </span>
               <span className='min-w-0 -space-y-0.5'>
-                <span className='block text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground/70'>
+                <span className='block text-xs font-semibold text-primary-foreground/70'>
                   {pick(cta.callLabel, locale)}
                 </span>
                 <span className='block truncate font-title text-base font-bold text-primary-foreground sm:text-lg'>
@@ -117,7 +117,7 @@ export default function B2BCtaSection({ cta, locale }: { cta: OverviewCta; local
                 <HugeiconsIcon icon={Mail01Icon} className='size-5' />
               </span>
               <span className='min-w-0 -space-y-0.5'>
-                <span className='block text-[0.625rem] font-semibold uppercase tracking-widest text-primary-foreground/70'>
+                <span className='block text-xs font-semibold text-primary-foreground/70'>
                   {pick(cta.emailLabel, locale)}
                 </span>
                 <span className='block truncate font-title text-base font-bold text-primary-foreground sm:text-lg'>

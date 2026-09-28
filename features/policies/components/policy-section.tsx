@@ -36,7 +36,7 @@ export default function PolicySection({ section }: { section: PolicySectionData 
       {section.number ? (
         <span
           aria-hidden='true'
-          className='pointer-events-none absolute -top-2 right-2 font-title text-5xl font-bold leading-none text-secondary/35 transition-colors group-hover:text-secondary/55 sm:-top-3 sm:text-6xl lg:text-7xl'
+          className='pointer-events-none absolute top-1 right-2 font-title text-5xl font-bold leading-none text-secondary/35 transition-colors group-hover:text-secondary/55 sm:text-6xl lg:text-7xl'
         >
           {section.number}
         </span>
