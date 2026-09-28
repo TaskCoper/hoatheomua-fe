@@ -26,3 +26,18 @@ export const getSectionDefaultParams = (category: SortableCategory): GetProducts
   pageSize: getCategoryGrid(parseCategoryMetadata(category.metaData)).pageSize,
   categoryIds: getSectionBaseCategoryIds(category)
 })
+
+// The home carousel walks the category with a sliding window rather than a single page:
+// `CAROUSEL_MAX_PAGES` pages of `CAROUSEL_PAGE_SIZE` stay resident (~100 products) however
+// deep the catalog is. Page one is prefetched under this exact key, so the opening slides
+// ship inside the ISR HTML and every later page is fetched only as the deck approaches it.
+export const CAROUSEL_PAGE_SIZE = 20
+export const CAROUSEL_MAX_PAGES = 5
+
+export type CarouselProductsParams = Omit<GetProductsParams, 'pageIndex'> & { maxPages: number }
+
+export const getCarouselProductsParams = (category: SortableCategory): CarouselProductsParams => ({
+  pageSize: CAROUSEL_PAGE_SIZE,
+  maxPages: CAROUSEL_MAX_PAGES,
+  categoryIds: getSectionBaseCategoryIds(category)
+})

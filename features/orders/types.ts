@@ -93,19 +93,50 @@ export const GatewayPaymentMethods: Record<PaymentGateway, PaymentMethod[]> = {
   [PaymentGateway.Sepay]: [PaymentMethod[6]]
 }
 
+export interface GetOrdersParams {
+  pageIndex?: number
+  pageSize?: number
+  status?: OrderStatus
+}
+
+export interface OrderSummaryItem {
+  productId: string
+  name: string
+  coverImage: string | null
+  quantity: number
+  price: number
+  parent: OrderSummaryItemParent | null
+}
+
+export interface OrderSummaryItemParent {
+  productId?: string | null
+  name?: string | null
+}
+
 export interface Order {
   orderId: string
   status: OrderStatus
   orderTime: number
   trackNumber: string
-  nhanhOrderId: string | null
-  nhanhTrackingUrl: string | null
   paymentGateway: PaymentGatewayCode
   shippingGateway: ShippingGateway
   shippingPartyOrderId: string | null
   shippingTrackingUrl: string | null
+  address: string
+  remark: string | null
+  taxcode: string | null
+  tagsId: number[]
+  identityNumber: string | null
+  invoiceType: InvoiceType | null
+  isExportInvoice: boolean
+  receiptAddress: string | null
+  receiptEmail: string | null
+  receiptFullName: string | null
+  receiptPhoneNumber: string | null
+  totalFee: number
+  items: OrderSummaryItem[]
   createAt: string
-  updateAt: null
+  updateAt: string | null
 }
 
 export interface OrderTransaction {
@@ -136,10 +167,8 @@ export interface OrderDetail {
   receiptEmail: string | null
   receiptFullName: string | null
   receiptPhoneNumber: string | null
-  // Buyer (account holder) as captured at checkout.
   fullName: string | null
   phone: string | null
-  // Whoever actually receives the bouquet - often not the buyer.
   fullNameReceiver: string | null
   phoneReceiver: string | null
   address: string | null
@@ -159,9 +188,79 @@ export interface OrderDetail {
   details: OrderItem[]
 }
 
+/** Response spelling of the card kinds. Only `'ai'` is ever seen; `'handmade'` is inferred. */
+export const OrderSnapshotCardType = {
+  Ai: 'ai',
+  Handmade: 'handmade'
+} as const
+
+export type OrderSnapshotCardType = (typeof OrderSnapshotCardType)[keyof typeof OrderSnapshotCardType]
+
+/** Response spelling of the form types. `'go_may'` is confirmed, `'calligraphy'` is inferred. */
+export const OrderSnapshotFormType = {
+  GoMay: 'go_may',
+  Calligraphy: 'calligraphy'
+} as const
+
+export type OrderSnapshotFormType = (typeof OrderSnapshotFormType)[keyof typeof OrderSnapshotFormType]
+
+export interface OrderSnapshotCardTemplate {
+  templateId: string | null
+  templateName: string | null
+  templateImageUrl: string | null
+  templateType: string | null
+}
+
+export interface OrderSnapshotCardSize {
+  name: string | null
+  width: number
+  height: number
+  basePrice: number
+  maxWords: number
+}
+
+export interface OrderSnapshotCardConfig {
+  minWords: number | null
+  maxWords: number | null
+  extraPrice: number | null
+}
+
+export interface OrderSnapshotCard {
+  virtualId: string | null
+  cardId: string | null
+  cardType: OrderSnapshotCardType | string | null
+  formType: OrderSnapshotFormType | string | null
+  messageContent: string | null
+  attachedImageUrl: string | null
+  rawImage: string | null
+  cardTemplate: OrderSnapshotCardTemplate | null
+  cardSize: OrderSnapshotCardSize | null
+  cardConfig: OrderSnapshotCardConfig | null
+  wordCount: number | null
+  quantity: number | null
+  basePrice: number | null
+  extraPrice: number | null
+  totalPrice: number | null
+  status: string | null
+  /** TODO(backend): where the generated artwork lands; empty while `status` is `'not yet'`. */
+  idResult: string[] | null
+  finalGeneratedCardId: string | null
+}
+
+export interface OrderProductMetadata {
+  name: string | null
+  subId: string | null
+  snapShotCard: OrderSnapshotCard | null
+}
+
+export interface OrderItemSnapshot {
+  productMetadata: OrderProductMetadata[] | null
+}
+
 export interface OrderItem {
   orderDetailsId: string
   name: string
+  /** TODO(backend): typed as a string but the order response sends the Nhanh id as a number. Nothing reads it yet. */
   itemId: string
   number: number
   price: number
@@ -173,6 +272,41 @@ export interface OrderItem {
   coverImage: string | null
   parentProductId: string | null
   parentProductName: string | null
+  snapshot: OrderItemSnapshot | null
+}
+
+export interface OrderDetailCardItem {
+  id: string
+  name: string
+  imageUrl: string
+  formType: OrderSnapshotFormType
+  messageContent: string
+  templateId: string
+}
+
+export interface OrderDetailCardsResponse {
+  cards: OrderDetailCardItem[]
+}
+
+export interface GetOrderDetailCardsParams {
+  orderDetailsId: string
+  virtualId: string
+}
+
+export type RegenerateAiCardPayload =
+  | { orderDetailId: string; virtualId: string; sourceCardId?: never; cardTemplateId?: never; messageContent?: never }
+  | {
+      sourceCardId: string
+      cardTemplateId?: string | null
+      messageContent?: string | null
+      orderDetailId?: never
+      virtualId?: never
+    }
+
+export interface SetFinalGeneratedCardPayload {
+  orderDetailId: string
+  virtualId: string
+  generatedCardId: string
 }
 
 export const InvoiceType = {
@@ -189,6 +323,12 @@ export const InvoiceTypeLabel: Record<InvoiceType, I18nKey> = {
 
 export type InvoiceTypeLabel = (typeof InvoiceTypeLabel)[keyof typeof InvoiceTypeLabel]
 
+export interface EstimateItemPayload {
+  itemId: string
+  productId: string
+  number: number
+}
+
 export interface EstimatePayload {
   latitude: number
   longitude: number
@@ -198,17 +338,51 @@ export interface EstimatePayload {
   phone: string
   remarks: string
   orderTime: number
-  items: { itemId: string; productId: string; number: number }[]
+  items: EstimateItemPayload[]
   tagIds: number[]
 }
 
-// `products` is only ever echoed back by Ahamove.
+export const OrderCardType = {
+  Ai: 0,
+  Handmade: 1
+} as const
+
+export type OrderCardType = (typeof OrderCardType)[keyof typeof OrderCardType]
+
+export const OrderCardFormType = {
+  GoMay: 0,
+  Calligraphy: 1
+} as const
+
+export type OrderCardFormType = (typeof OrderCardFormType)[keyof typeof OrderCardFormType]
+
+export interface OrderCardPayload {
+  cardType: OrderCardType
+  cardTemplateId: string | null
+  sizeName: string
+  formType: OrderCardFormType
+  messageContent: string
+  attachedImageUrl: string | null
+  /** TODO(backend): the reused generation's id comes from the card API; not wired yet. */
+  sourceGeneratedCardId: string | null
+}
+
+export interface OrderBouquetPayload {
+  generatedFlowerId?: string
+  card: OrderCardPayload | null
+}
+
+export interface CheckoutItemPayload extends EstimateItemPayload {
+  bouquets: OrderBouquetPayload[]
+}
+
 export interface EstimateResult {
   quotes: ShippingQuote[]
   products: EstimateProduct[]
 }
 
-export interface CheckoutPayload extends EstimatePayload {
+export interface CheckoutPayload extends Omit<EstimatePayload, 'items'> {
+  items: CheckoutItemPayload[]
   fullNameReceiver: string
   phoneReceiver: string
   taxCode: string | null

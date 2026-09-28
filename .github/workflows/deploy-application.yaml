@@ -36,7 +36,8 @@ jobs:
     env:
       REGISTRY: ghcr.io/${{ inputs.repository }}
       TAG: ${{ inputs.tag }}
-      NETWORK: hoatheomua-network-${{ inputs.profile }}
+      # The demo service uses the existing dev network in .docker/compose.yaml.
+      NETWORK: hoatheomua-network-${{ inputs.profile == 'demo' && 'dev' || inputs.profile }}
       API_BASE_URL: ${{ secrets.API_BASE_URL }}
       TASKCOPER_API_BASE_URL: ${{ secrets.TASKCOPER_API_BASE_URL }}
       FILE_BASE_URL: ${{ secrets.FILE_BASE_URL }}

@@ -17,6 +17,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useSignOut } from '@/features/users/hooks/use-sign-out'
 import { Me } from '@/features/users/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -38,6 +39,7 @@ export default function NavUser({ user }: NavUserProps) {
   const { t, locale } = useTranslation()
 
   const { signOut, isSigningOut } = useSignOut()
+  const accountHref = useAccountHref('info')
 
   const handleLanguageChange = (value: string) => {
     const nextLocale = value as (typeof routing.locales)[number]
@@ -96,7 +98,7 @@ export default function NavUser({ user }: NavUserProps) {
           <DropdownMenuItem
             className='px-2 py-1.5 cursor-pointer'
             disabled={!user?.isEmailVerified}
-            onSelect={() => router.push(`/users/${user?.slug}`)}
+            onSelect={() => router.push(accountHref)}
           >
             <HugeiconsIcon icon={UserCircle02Icon} className='shrink-0 size-4.5' />
             {t('account.account')}

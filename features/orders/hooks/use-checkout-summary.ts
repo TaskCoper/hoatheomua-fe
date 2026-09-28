@@ -1,6 +1,7 @@
 import { useGetProductSummary } from '@/features/products/hooks/use-get-product-summary'
 import { useGetProductsSellableQuantity } from '@/features/products/hooks/use-get-products-sellable-quantity'
 import { toSellableQuantity } from '@/features/products/stock'
+import { useGetFlowerCompositions } from '@/features/studio/hooks/use-get-flower-composition'
 import type { CartItem } from '@/stores/cart.store'
 import { useMemo } from 'react'
 import type { CheckoutLineIssue, CheckoutSummaryLine } from '../components/checkout/checkout-sidebar'
@@ -11,6 +12,7 @@ interface UseCheckoutSummaryArgs {
   items: CartItem[]
   hasTaxCode: boolean
   shippingFee: number
+  cardsTotal?: number
   /** Products the last check-core verdict blamed for a material shortage. */
   materialBlockedProductIds?: ReadonlySet<string>
 }
@@ -19,19 +21,27 @@ export const useCheckoutSummary = ({
   items,
   hasTaxCode,
   shippingFee,
+  cardsTotal = 0,
   materialBlockedProductIds = NO_BLOCKED_PRODUCTS
 }: UseCheckoutSummaryArgs) => {
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.productId))), [items])
-  const { productSummaryById } = useGetProductSummary({ productIds })
 
-  // Checkout is entered with a stock verdict taken back on the cart, and a buyer can
-  // sit on this page for minutes. Stock is re-read on mount and on window focus so a
-  // product that sold out or was switched off meanwhile surfaces before payment.
+  // A studio bouquet is named and pictured by its composition, not by the catalogue
+  // row it is assembled from - that row only carries its stock.
+  const catalogueProductIds = useMemo(
+    () => Array.from(new Set(items.filter((item) => !item.aiFlower).map((item) => item.productId))),
+    [items]
+  )
+  const flowerIds = useMemo(
+    () => items.flatMap((item) => (item.aiFlower ? [item.aiFlower.generatedFlowerId] : [])),
+    [items]
+  )
+
+  const { productSummaryById } = useGetProductSummary({ productIds: catalogueProductIds })
+  const { compositionByFlowerId } = useGetFlowerCompositions({ flowerIds })
+
   const { sellableQuantities, sellableQuantityById } = useGetProductsSellableQuantity({ productIds })
 
-  // `sellableQuantityById` already reports an inactive product as 0, which is right
-  // for arithmetic but reads as "sold out" - the raw rows keep the two apart so the
-  // line can say which one it is.
   const inactiveIds = useMemo(() => {
     const ids = new Set<string>()
     sellableQuantities?.forEach((row) => {
@@ -43,22 +53,26 @@ export const useCheckoutSummary = ({
   const summaryLines: CheckoutSummaryLine[] = useMemo(
     () =>
       items.map((item) => {
-        const state = productSummaryById.get(item.productId)
+        const aiFlower = item.aiFlower
+        const compositionState = aiFlower ? compositionByFlowerId.get(aiFlower.generatedFlowerId) : undefined
+        const composition = compositionState?.composition ?? null
+
+        const state = aiFlower ? undefined : productSummaryById.get(item.productId)
         const product = state?.product ?? null
-        const isResolving = state?.isResolving ?? true
-        const unitPrice = product?.price ?? 0
+
+        const isResolving = aiFlower ? (compositionState?.isResolving ?? true) : (state?.isResolving ?? true)
+        const exists = aiFlower ? Boolean(composition) : Boolean(product)
+        // The composition prices nothing: a design costs what the studio quoted.
+        const unitPrice = aiFlower ? aiFlower.unitPrice : (product?.price ?? 0)
 
         const liveStock = sellableQuantityById.get(item.productId)
-        const rawStock = liveStock ?? product?.sellableQuantity
+        const rawStock = liveStock ?? (aiFlower ? undefined : product?.sellableQuantity)
         const isStockKnown = typeof rawStock === 'number' && Number.isFinite(rawStock)
         const available = isStockKnown ? toSellableQuantity(rawStock) : null
 
-        // A line still loading is not a problem yet, and a product the stock endpoint
-        // said nothing about is unknown rather than sold out - blocking on either
-        // would turn a slow response into a dead checkout.
         const issue: CheckoutLineIssue | null = isResolving
           ? null
-          : !product
+          : !exists
             ? 'missing'
             : inactiveIds.has(item.productId)
               ? 'inactive'
@@ -66,18 +80,19 @@ export const useCheckoutSummary = ({
                 ? 'sold-out'
                 : available !== null && item.quantity > available
                   ? 'over-stock'
-                  : // Last, because a stock reason is concrete where this one is only
-                    // "the workshop is short on something" - a buyer can act on the former.
-                    materialBlockedProductIds.has(item.productId)
+                  : materialBlockedProductIds.has(item.productId)
                     ? 'materials'
                     : null
 
         return {
           lineId: item.lineId,
-          // Empty while in flight; the sidebar shows a skeleton instead of a raw id.
-          name: product?.parent?.productName ?? product?.productName ?? '',
-          variantName: product?.parent ? product.productName : null,
-          image: product?.coverImage ?? null,
+          productId: item.productId,
+          name: aiFlower
+            ? (composition?.name?.trim() ?? '')
+            : (product?.parent?.productName ?? product?.productName ?? ''),
+          variantName: aiFlower ? null : product?.parent ? product.productName : null,
+          image: aiFlower ? composition?.coverImage || null : (product?.coverImage ?? null),
+          trims: [aiFlower?.ribbon, aiFlower?.wrap].flatMap((trim) => (trim?.name ? [trim.name] : [])),
           quantity: item.quantity,
           unitPrice,
           subtotal: unitPrice * item.quantity,
@@ -86,7 +101,7 @@ export const useCheckoutSummary = ({
           available
         }
       }),
-    [items, productSummaryById, sellableQuantityById, inactiveIds, materialBlockedProductIds]
+    [items, productSummaryById, compositionByFlowerId, sellableQuantityById, inactiveIds, materialBlockedProductIds]
   )
 
   const unavailableLines = useMemo(() => summaryLines.filter((line) => line.issue !== null), [summaryLines])
@@ -94,7 +109,7 @@ export const useCheckoutSummary = ({
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
   const productsSubtotal = summaryLines.reduce((sum, line) => sum + line.subtotal, 0)
   const vatAmount = hasTaxCode ? Math.round(productsSubtotal * 0.08) : 0
-  const grandTotal = productsSubtotal + vatAmount + shippingFee
+  const grandTotal = productsSubtotal + vatAmount + shippingFee + cardsTotal
 
   return {
     summaryLines,
@@ -103,6 +118,7 @@ export const useCheckoutSummary = ({
     totalItems,
     productsSubtotal,
     vatAmount,
+    cardsTotal,
     grandTotal
   }
 }

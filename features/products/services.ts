@@ -1,6 +1,12 @@
 import api, { BasePaginationResponse, BaseResponse } from '@/lib/axios'
 import { GetProductsParams } from './hooks/use-get-products'
-import type { CoreMaterialShortage, ProductDetail, ProductSellableQuantity, ProductSummary } from './types'
+import type {
+  CoreMaterialShortage,
+  ProductDetail,
+  ProductFamily,
+  ProductSellableQuantity,
+  ProductSummary
+} from './types'
 
 export interface CoreProductCheckItem {
   productId: string
@@ -10,7 +16,16 @@ export interface CoreProductCheckItem {
 class ProductService {
   private readonly baseUrl = 'products'
 
-  getProducts = async ({ pageIndex, pageSize, categoryIds, priceFrom, priceTo, search, sortBy }: GetProductsParams) => {
+  getProducts = async ({
+    pageIndex,
+    pageSize,
+    categoryIds,
+    priceFrom,
+    priceTo,
+    search,
+    sortBy,
+    labels
+  }: GetProductsParams) => {
     const { data } = await api.get<BasePaginationResponse<ProductDetail>>(`/v1/${this.baseUrl}`, {
       params: {
         pageIndex,
@@ -19,7 +34,8 @@ class ProductService {
         priceFrom,
         priceTo,
         search,
-        sortBy
+        sortBy,
+        labels
       }
     })
 
@@ -36,6 +52,12 @@ class ProductService {
 
   getProduct = async ({ id }: { id: string }) => {
     const { data } = await api.get<BaseResponse<ProductDetail>>(`/v1/${this.baseUrl}/${id}`)
+
+    return data.value
+  }
+
+  getProductFamily = async ({ id }: { id: string }) => {
+    const { data } = await api.get<BaseResponse<ProductFamily>>(`/v1/${this.baseUrl}/${id}/family`)
 
     return data.value
   }

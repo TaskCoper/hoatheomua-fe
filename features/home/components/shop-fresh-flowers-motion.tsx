@@ -1,6 +1,7 @@
 'use client'
 
 import FlowersCarousel from '@/features/home/components/flowers-carousel'
+import type { CarouselProductsParams } from '@/features/products/section-defaults'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { motion, type Variants } from 'motion/react'
 
@@ -9,7 +10,15 @@ const fadeUp: Variants = {
   visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 120, damping: 18 } }
 }
 
-export default function ShopFreshFlowersMotion({ title, description }: { title: string; description: string }) {
+export default function ShopFreshFlowersMotion({
+  title,
+  description,
+  productsParams
+}: {
+  title: string
+  description: string
+  productsParams: CarouselProductsParams | null
+}) {
   return (
     <>
       <motion.div
@@ -41,7 +50,7 @@ export default function ShopFreshFlowersMotion({ title, description }: { title: 
         </p>
       </motion.div>
 
-      <FlowersCarousel />
+      <FlowersCarousel params={productsParams} />
     </>
   )
 }

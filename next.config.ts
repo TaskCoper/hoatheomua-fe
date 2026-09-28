@@ -23,6 +23,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'taskcoper.hcm.ss.bfcplatform.vn'
+      },
+      // Same bucket, path-style: the card and flower APIs hand back this form.
+      {
+        protocol: 'https',
+        hostname: 'hcm.ss.bfcplatform.vn',
+        pathname: '/taskcoper/**'
       }
     ],
     formats: ['image/avif', 'image/webp'],
@@ -37,6 +43,8 @@ const nextConfig: NextConfig = {
   experimental: {
     useCache: true,
     optimizeCss: true,
+    staticGenerationMaxConcurrency: 3,
+    staticGenerationRetryCount: 2,
     optimizePackageImports: [
       'motion',
       '@hugeicons/react',

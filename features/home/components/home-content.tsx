@@ -17,12 +17,24 @@ const bannerWrapperClass =
 
 const bannerImageClass = 'w-full h-auto rounded-xl sm:rounded-2xl md:rounded-3xl lg:rounded-4xl shadow-lg'
 
-export default function HomeContent({ categories }: { categories: SortableCategory[] }) {
+export default function HomeContent({
+  categories,
+  customizableCategory
+}: {
+  categories: SortableCategory[]
+  customizableCategory: SortableCategory | null
+}) {
   return (
     <div className='relative overflow-hidden'>
       <CriteriaSection />
 
-      <ShopFreshFlowersSection />
+      {/* {customizableCategory && (
+        <Suspense fallback={<CategorySectionDefault category={customizableCategory} />}>
+          <CategoryFilterSection category={customizableCategory} />
+        </Suspense>
+      )} */}
+
+      <ShopFreshFlowersSection category={customizableCategory} />
 
       <ConfigurableBanner
         slot={BANNER_SLOTS.homeCollection}

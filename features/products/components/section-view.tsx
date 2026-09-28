@@ -11,6 +11,7 @@ import {
 } from '@/features/categories/utils'
 import CategoryFilterPanel, { type FilterChild } from '@/features/products/components/category-filter-panel'
 import ProductGrid from '@/features/products/components/product-grid'
+import { CUSTOMIZABLE_CATEGORY_ID } from '@/features/products/constants'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
 import { motion, type Variants } from 'motion/react'
@@ -41,11 +42,6 @@ export type SectionHandlers = {
   onCatsChange: (ids: string[]) => void
   onReset: () => void
   onPageChange: (page: number) => void
-  /**
-   * Builds a real URL for a given page so the grid's pagination links work as
-   * anchors (open-in-new-tab, crawlable). Scoped per section by the caller so
-   * sibling sections on the same page keep their own params.
-   */
   pageHref: (page: number) => string
 }
 
@@ -62,9 +58,6 @@ export default function SectionView({
 
   const meta = useMemo(() => parseCategoryMetadata(category.metaData), [category.metaData])
   const filterableChildren = useMemo<FilterChild[]>(() => {
-    // Recurse the category tree so nested facets (up to 3+ levels) are preserved,
-    // keeping only nodes flagged as filterable and currently within their
-    // startTime/endTime window (unset bounds are unconstrained) at each level.
     const now = new Date()
     const build = (cats: SortableCategory[]): FilterChild[] =>
       cats
@@ -92,6 +85,7 @@ export default function SectionView({
 
   const grid = (
     <ProductGrid
+      isCustomizable={category.categoryId === CUSTOMIZABLE_CATEGORY_ID}
       className='w-full'
       columnsClassName={gridColumns.className}
       columnsStyle={gridColumns.style}

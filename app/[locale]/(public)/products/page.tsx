@@ -5,8 +5,8 @@ import ProductsPromiseSection from '@/features/products/components/products-prom
 import { productsQueryKey } from '@/features/products/hooks/use-get-products'
 import { getCachedProducts } from '@/features/products/queries.server'
 import { getSectionDefaultParams } from '@/features/products/section-defaults'
-import type { ProductDetail } from '@/features/products/types'
 import { buildProductsCollectionJsonLd, generateProductsListMetadata } from '@/features/products/seo'
+import type { ProductDetail } from '@/features/products/types'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
 import { JsonLd } from '@/shared/seo'
@@ -18,8 +18,6 @@ import { Suspense } from 'react'
 
 export const revalidate = 300
 
-// Google reads the first ~20-30 entries of an ItemList; beyond that it is payload
-// on every response for no crawl benefit.
 const JSON_LD_ITEM_LIMIT = 30
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
@@ -35,25 +33,12 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
 
   const categoryPage = [CategoryProductPage.Products]
 
-  // Categories are read straight down as props by the (server) section list, so we
-  // fetch them directly instead of through the query cache - that keeps them out of
-  // the dehydrated payload the client hydrates.
   let categories: SortableCategory[] = []
-
-  // Products shown on the page, in render order, for the `ItemList` in the
-  // structured data. Collected from the same prefetch below so the JSON-LD can
-  // never drift from what the grids actually display.
   const jsonLdItems: ProductDetail[] = []
 
   try {
     categories = await getCachedCategories({ page: categoryPage })
 
-    // Fetch each section's first page of products here on the server and store it
-    // under the same cache key the grid will look for. The product data then ships
-    // inside the prerendered HTML, so the grids show up instantly on load instead
-    // of every section firing its own request after the page hydrates.
-    // Indexed results rather than pushing from the concurrent callbacks, so the
-    // ItemList order matches the on-page section order deterministically.
     const sectionItems = await Promise.all(
       categories.map(async (category) => {
         const params = getSectionDefaultParams(category)
