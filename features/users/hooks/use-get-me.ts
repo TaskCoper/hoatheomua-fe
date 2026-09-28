@@ -1,7 +1,7 @@
 import { readSessionHint, subscribeToSessionHint } from '@/shared/session-hint'
 import { useQuery } from '@tanstack/react-query'
 import { useSyncExternalStore } from 'react'
-import authService from '../services'
+import { getMeQuery } from '../queries'
 
 const serverSessionHint = () => false
 
@@ -13,15 +13,15 @@ export const useGetMe = () => {
     isLoading,
     isFetching
   } = useQuery({
-    queryKey: ['me'],
-    queryFn: authService.getMe,
+    ...getMeQuery(),
     enabled: hasSessionHint
   })
 
   const isGettingMe = isLoading || (isFetching && !me)
 
   const isAuthenticated = hasSessionHint && !!me
-  const isVerificationRequired = isAuthenticated && me?.isEmailVerified === false
+  // Keep existing eligible sessions usable; new sign-ins only use phone authentication.
+  const canUseStorefront = isAuthenticated && !!(me?.canUseStorefront || me?.isEmailVerified)
 
-  return { me, isGettingMe, isAuthenticated, isVerificationRequired }
+  return { me, isGettingMe, isAuthenticated, canUseStorefront }
 }

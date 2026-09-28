@@ -1,7 +1,8 @@
-import VerifySentContent from '@/components/verfiy-sent-content'
+import { redirect } from '@/lib/i18n/navigation'
+import type { Locale } from '@/lib/i18n/routing'
 
-export default async function EmailPendingPage({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
-  const { email } = await searchParams
-
-  return <VerifySentContent email={email} />
+// Keep old bookmarks usable without rendering an email verification flow.
+export default async function LegacyVerificationPage({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params
+  redirect({ href: '/sign-in', locale })
 }

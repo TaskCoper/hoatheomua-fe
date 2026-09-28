@@ -56,7 +56,7 @@ export default function ForgotPasswordModalPage() {
           </DialogDescription>
         </DialogHeader>
 
-        <ForgotPasswordFlow onCompleted={() => handleOpenChange(false)} />
+        <ForgotPasswordFlow />
       </DialogContent>
     </Dialog>
   )

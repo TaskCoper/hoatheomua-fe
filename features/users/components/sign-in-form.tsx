@@ -21,16 +21,19 @@ export default function SignInForm() {
   return (
     <FieldGroup className='gap-2'>
       <Controller
-        name='email'
+        name='phoneNumber'
         control={control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className='gap-1'>
-            <FieldLabel htmlFor={field.name}>{t('auth.signIn.email')}</FieldLabel>
+            <FieldLabel htmlFor={field.name}>{t('profile.phoneNumber')}</FieldLabel>
             <Input
               {...field}
               id={field.name}
+              type='tel'
+              inputMode='tel'
+              autoComplete='username'
               aria-invalid={fieldState.invalid}
-              placeholder={t('auth.signIn.emailPlaceholder')}
+              placeholder={t('auth.phone.placeholder')}
             />
             <div className='min-h-4'>
               {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}

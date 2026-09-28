@@ -20,9 +20,8 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
   const userHomePath = useGetUserHomePath()
   const hasMounted = useHasMounted()
 
-  const { me, isGettingMe, isAuthenticated, isVerificationRequired } = useGetMe()
+  const { isGettingMe, isAuthenticated } = useGetMe()
 
-  const isOnVerifyPage = pathname.startsWith('/verify')
   const isOnGuestAuthPage = isGuestAuthPath(pathname)
 
   const isModalOverlay = requiresAuth && isOnGuestAuthPage
@@ -34,19 +33,11 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
     }
   }, [pathname, isOnGuestAuthPage])
 
-  const shouldRedirectToVerify = isVerificationRequired && !isOnVerifyPage
-  const shouldRedirectAuthedAway = isAuthenticated && !isVerificationRequired && isOnGuestAuthPage
-  const shouldRedirectToSignIn = requiresAuth && !isAuthenticated && !isVerificationRequired && !isOnGuestAuthPage
+  const shouldRedirectAuthedAway = isAuthenticated && isOnGuestAuthPage
+  const shouldRedirectToSignIn = requiresAuth && !isAuthenticated && !isOnGuestAuthPage
 
   useEffect(() => {
     if (!hasMounted || isGettingMe) return
-
-    if (shouldRedirectToVerify) {
-      const email = me?.email
-      const params = email ? `?${new URLSearchParams({ email }).toString()}` : ''
-      router.replace(`/verify-sent${params}`)
-      return
-    }
 
     if (shouldRedirectToSignIn) {
       const from = fromRef.current ?? pathname
@@ -62,16 +53,14 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
   }, [
     hasMounted,
     isGettingMe,
-    shouldRedirectToVerify,
     shouldRedirectToSignIn,
     shouldRedirectAuthedAway,
-    me,
     pathname,
     router,
     userHomePath
   ])
 
-  if (shouldRedirectToVerify || shouldRedirectToSignIn || shouldRedirectAuthedAway || isModalOverlay) {
+  if (shouldRedirectToSignIn || shouldRedirectAuthedAway || isModalOverlay) {
     return <AuthGuardLoading />
   }
 

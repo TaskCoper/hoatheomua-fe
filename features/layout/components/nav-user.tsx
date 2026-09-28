@@ -65,7 +65,7 @@ export default function NavUser({ user }: NavUserProps) {
     <DropdownMenu>
       <DropdownMenuTrigger aria-label={t('account.account')}>
         <Avatar className='size-7 ring-2 ring-primary ring-offset-1 rounded-full cursor-pointer mr-0.5'>
-          <AvatarImage src={user?.avatar || undefined} alt={user?.email} />
+          <AvatarImage src={user?.avatar || undefined} alt={user?.email ?? user?.phoneNumber ?? ''} />
           <AvatarFallback className='rounded-full text-xs'>
             {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
           </AvatarFallback>
@@ -80,7 +80,7 @@ export default function NavUser({ user }: NavUserProps) {
         <DropdownMenuLabel className='px-3 font-normal'>
           <div className='flex items-center gap-3 text-left text-sm'>
             <Avatar className='size-6 border ring-primary ring-offset-2 ring-2 rounded-full'>
-              <AvatarImage src={user?.avatar || undefined} alt={user?.email} />
+              <AvatarImage src={user?.avatar || undefined} alt={user?.email ?? user?.phoneNumber ?? ''} />
               <AvatarFallback className='rounded-lg text-xs'>
                 {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
               </AvatarFallback>
@@ -89,7 +89,7 @@ export default function NavUser({ user }: NavUserProps) {
               <span className='truncate font-medium'>
                 {user?.firstName} {user?.lastName}
               </span>
-              <span className='truncate text-xs'>{user?.email}</span>
+              <span className='truncate text-xs'>{user?.email ?? user?.phoneNumber}</span>
             </div>
           </div>
         </DropdownMenuLabel>
@@ -97,7 +97,7 @@ export default function NavUser({ user }: NavUserProps) {
         <DropdownMenuGroup>
           <DropdownMenuItem
             className='px-2 py-1.5 cursor-pointer'
-            disabled={!user?.isEmailVerified}
+            disabled={!(user?.canUseStorefront || user?.isEmailVerified)}
             onSelect={() => router.push(accountHref)}
           >
             <HugeiconsIcon icon={UserCircle02Icon} className='shrink-0 size-4.5' />

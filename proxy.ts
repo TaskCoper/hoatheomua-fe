@@ -1,7 +1,7 @@
 import createIntlMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './lib/i18n/routing'
-import { GUEST_ONLY_ROUTES, isPublicRoutePath, SESSION_HINT_COOKIE } from './shared/constants'
+import { isPublicRoutePath, SESSION_HINT_COOKIE } from './shared/constants'
 import { isOrderingBlockedPath, ORDERING_DISABLED_REDIRECT_PATH } from './shared/feature-flags'
 
 const ACCESS_TOKEN_COOKIE = 'accessToken'
@@ -71,9 +71,8 @@ export default function proxy(request: NextRequest) {
   const pathname = stripLocale(request.nextUrl.pathname)
   const isPrefetch = isPrefetchRequest(request)
 
-  if (GUEST_ONLY_ROUTES.has(pathname) && isProbablyAuthed && !isPrefetch) {
-    return withSessionHint(buildRedirect(request, '/'), isProbablyAuthed)
-  }
+  // A cookie can be expired or revoked. AuthGuard redirects signed-in visitors
+  // only after /me succeeds, so stale cookies cannot bounce sign-in back home.
 
   if (isOrderingBlockedPath(pathname) && !isPrefetch) {
     return withSessionHint(buildRedirect(request, ORDERING_DISABLED_REDIRECT_PATH), isProbablyAuthed)

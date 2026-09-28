@@ -67,17 +67,19 @@ export default function SignUpForm() {
       </div>
 
       <Controller
-        name='email'
+        name='phoneNumber'
         control={control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid} className='gap-1'>
-            <FieldLabel htmlFor={field.name}>{t('auth.signUp.email')}</FieldLabel>
+            <FieldLabel htmlFor={field.name}>{t('profile.phoneNumber')}</FieldLabel>
             <Input
               {...field}
               id={field.name}
               aria-invalid={fieldState.invalid}
-              placeholder={t('auth.signUp.emailPlaceholder')}
-              autoComplete='email'
+              placeholder={t('auth.phone.placeholder')}
+              autoComplete='tel'
+              type='tel'
+              inputMode='tel'
             />
             <div className='min-h-4'>
               {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}

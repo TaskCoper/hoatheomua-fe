@@ -22,7 +22,6 @@ import {
   Flower2Icon,
   Location01Icon,
   LoginCircle01Icon,
-  MailValidation01Icon,
   Money03Icon,
   SentIcon,
   User02Icon,
@@ -55,7 +54,7 @@ export default function JobDetail({ job, detailHref }: JobDetailProps) {
   const [showDescriptionToggle, setShowDescriptionToggle] = useState(false)
   const [descriptionElement, setDescriptionElement] = useState<HTMLDivElement | null>(null)
 
-  const { me, isAuthenticated, isVerificationRequired, isGettingMe } = useGetMe()
+  const { me, isAuthenticated, isGettingMe } = useGetMe()
 
   // The apply CTA depends on `me`, which SSR doesn't have but the client's
   // persisted React Query cache does. Because this card renders inside the
@@ -159,13 +158,8 @@ export default function JobDetail({ job, detailHref }: JobDetailProps) {
           <div className='flex-1'>
             {!isMounted || isGettingMe ? (
               <Skeleton className='h-10 w-full rounded-4xl' />
-            ) : isVerificationRequired ? (
-              <Button asChild size='lg' className='w-full'>
-                <Link href={{ pathname: '/verify-sent', query: { email: me!.email } }}>
-                  {t('auth.verifyEmail.title')}
-                  <HugeiconsIcon icon={MailValidation01Icon} strokeWidth={1.8} className='size-4' />
-                </Link>
-              </Button>
+            ) : isAuthenticated && (me?.registrationMethod === 'Phone' || !me?.isEmailVerified) ? (
+              <Button disabled size='lg' className='w-full'>{t('auth.phone.recruitmentUnavailable')}</Button>
             ) : isAuthenticated ? (
               <ApplyJobDialog job={job}>
                 <Button
