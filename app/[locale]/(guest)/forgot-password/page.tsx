@@ -1,3 +1,4 @@
+import AuthPageShell from '@/features/users/components/auth-page-shell'
 import ForgotPasswordFlow from '@/features/users/components/forgot-password-flow'
 import type { Locale } from '@/lib/i18n/routing'
 import { LockPasswordIcon } from '@hugeicons/core-free-icons'
@@ -24,7 +25,7 @@ export default async function ForgotPasswordPage({ params }: ForgotPasswordPageP
   const t = await getTranslations({ locale, namespace: 'auth.forgotPassword' })
 
   return (
-    <main className='mx-auto flex min-h-svh w-full max-w-sm flex-col justify-center px-4'>
+    <AuthPageShell locale={locale}>
       <div className='text-center items-center'>
         <div className='mb-1 mx-auto flex size-11 items-center justify-center rounded-full bg-primary/10'>
           <HugeiconsIcon icon={LockPasswordIcon} className='text-primary' />
@@ -36,6 +37,6 @@ export default async function ForgotPasswordPage({ params }: ForgotPasswordPageP
 
         <ForgotPasswordFlow />
       </div>
-    </main>
+    </AuthPageShell>
   )
 }

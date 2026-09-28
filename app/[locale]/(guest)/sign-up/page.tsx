@@ -1,3 +1,4 @@
+import AuthPageShell from '@/features/users/components/auth-page-shell'
 import SignUpProvider from '@/features/users/components/sign-up-provider'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
@@ -22,7 +23,7 @@ export default async function SignUpPage({ params }: SignUpPageProps) {
   const t = await getTranslations({ locale, namespace: 'auth.signUp' })
 
   return (
-    <main className='mx-auto flex min-h-svh w-full max-w-sm flex-col justify-center px-4'>
+    <AuthPageShell locale={locale}>
       <div className='space-y-6'>
         <div className='space-y-1'>
           <h1 className='text-2xl font-semibold'>{t('title')}</h1>
@@ -31,6 +32,6 @@ export default async function SignUpPage({ params }: SignUpPageProps) {
 
         <SignUpProvider />
       </div>
-    </main>
+    </AuthPageShell>
   )
 }

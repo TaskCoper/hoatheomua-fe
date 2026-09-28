@@ -106,7 +106,8 @@
       "uploadSuccess": "Tải lên thành công",
       "optional": "tuỳ chọn",
       "selectDate": "Chọn ngày",
-      "downloadOpenedInNewTab": "Đã mở ảnh trong tab mới để bạn tự lưu lại"
+      "downloadOpenedInNewTab": "Đã mở ảnh trong tab mới để bạn tự lưu lại",
+      "backToHome": "Về trang chủ"
     },
     "button": {
       "clearAll": "Xóa tất cả",
