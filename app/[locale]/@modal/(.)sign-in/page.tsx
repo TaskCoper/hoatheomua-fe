@@ -43,7 +43,7 @@ export default function SignInModalPage() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent showCloseButton={false} onInteractOutside={() => handleOpenChange(false)}>
+      <DialogContent showCloseButton={false}>
         <DialogHeader>
           <div className='p-2 rounded-full bg-primary/10 w-fit mb-2'>
             <HugeiconsIcon icon={LockPasswordIcon} className='text-primary' />

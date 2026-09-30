@@ -1,3 +1,5 @@
+import { AUTH_MODAL_PATHS } from '@/features/promotions/constants'
+
 /**
  * Route scoping for the promotional popup. Not a glob library - patterns are
  * typed by a marketing admin into a JSON textarea, so the language is three
@@ -62,4 +64,10 @@ export const matchesPages = (patterns: readonly string[], path: string): boolean
   if (includes.length === 0) return true
 
   return includes.some((pattern) => matchesPattern(pattern, target))
+}
+
+export const isAuthModalPath = (path: string): boolean => {
+  const target = normalize(path) || '/'
+
+  return AUTH_MODAL_PATHS.some((base) => target === base || target.startsWith(`${base}/`))
 }

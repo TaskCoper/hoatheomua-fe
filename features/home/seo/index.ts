@@ -29,9 +29,9 @@ const HOME_OG_IMAGE_PATH = '/images/hero-poster.jpg'
 
 export const HOME_COPY = {
   vi: {
-    title: 'Hoa Theo Mùa - Hoa tươi cao cấp, giao tận nơi trong 2 giờ tại TP.HCM',
+    title: 'Hoa Theo Mùa: Shop Hoa Tươi TPHCM, Đặt Hoa Online Nhanh Freeship',
     description:
-      'Hoa Theo Mùa - Hệ thống hoa tươi online tại TP. Hồ Chí Minh, chuyên cung cấp hoa tươi cao cấp và giao hoa tận nơi siêu nhanh trong 2 giờ. Hoa sinh nhật, hoa khai trương, hoa 8/3, 20/10, 20/11, lan hồ điệp và nhiều bộ sưu tập theo mùa.',
+      'Hoa Theo Mùa là thương hiệu hoa tươi đẹp hơn 7 năm. Shop đặt hoa online HCM, giao nhanh tận nơi 2H miễn phí giao hàng. Shop đặt hoa tươi tphcm uy tín.',
     keywords: [
       'hoa tươi',
       'hoa theo mùa',

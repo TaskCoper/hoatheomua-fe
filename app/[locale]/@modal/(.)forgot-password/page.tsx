@@ -40,11 +40,7 @@ export default function ForgotPasswordModalPage() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent
-        showCloseButton={false}
-        className='gap-5 rounded-4xl p-6 sm:max-w-[28rem] sm:p-7'
-        onInteractOutside={() => handleOpenChange(false)}
-      >
+      <DialogContent showCloseButton={false}>
         <DialogHeader className='items-center text-center'>
           <div className='mb-1 flex size-11 items-center justify-center rounded-full bg-primary/10'>
             <HugeiconsIcon icon={LockPasswordIcon} className='text-primary' />

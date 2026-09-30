@@ -1,5 +1,5 @@
 import { ALLOWED_IMAGE_HOSTS, BUSINESS_TIMEZONE, MAX_VISIBLE_CAMPAIGNS } from '@/features/promotions/constants'
-import { matchesPages } from '@/features/promotions/match-page'
+import { isAuthModalPath, matchesPages } from '@/features/promotions/match-page'
 import type { PromotionPopupCollection, PromotionPopupItem } from '@/types/config.type'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
@@ -53,6 +53,8 @@ export const selectActiveCampaigns = (
   path: string,
   max: number = MAX_VISIBLE_CAMPAIGNS
 ): readonly PromotionPopupItem[] => {
+  if (isAuthModalPath(path)) return EMPTY
+
   // Fails closed: a missing or garbage section shows nothing rather than showing anyway.
   if (!collection || collection.section?.enabled !== true) return EMPTY
   if (!Array.isArray(collection.items)) return EMPTY
