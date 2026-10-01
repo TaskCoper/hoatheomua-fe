@@ -50,9 +50,9 @@ export const HOME_COPY = {
     ogAlt: 'Hoa Theo Mùa - Bộ sưu tập hoa tươi cao cấp'
   },
   en: {
-    title: 'Hoa Theo Mùa - Premium Seasonal Flowers, Delivered in 2 Hours in HCMC',
+    title: 'Hoa Theo Mùa: Fresh Flower Shop in HCMC, Order Online, Free Delivery',
     description:
-      'Hoa Theo Mùa is a Ho Chi Minh City florist offering premium seasonal bouquets with same-day flower delivery within 2 hours. Birthday, opening, and gift flowers arranged by hand.',
+      'Hoa Theo Mùa has been a trusted fresh flower brand for over 7 years. Order flowers online in HCMC with fast 2-hour delivery to your door, free of charge.',
     keywords: [
       'fresh flowers Vietnam',
       'flower delivery HCMC',
