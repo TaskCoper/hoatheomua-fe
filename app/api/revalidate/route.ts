@@ -61,6 +61,10 @@ type EntityBody = z.infer<typeof EntityBodySchema>
 // Mirrors the `configs:${group}` tag produced inside the config query loaders.
 const configTag = (group: string) => `configs:${group}`
 
+// The 20/10 campaign page bakes in a category-filtered product grid and the
+// feedbacks testimonials, so it follows both of those entities.
+const WOMEN_DAY_PATH = '/women-day-20-10'
+
 // Which storefront pages a config group is baked into. A group not listed here
 // only needs its data tag purged (e.g. `ahamove`, which feeds the dynamic,
 // non-ISR checkout). Bases are locale-agnostic; `expandPaths` adds the prefix.
@@ -69,7 +73,7 @@ const CONFIG_GROUP_PATHS: Record<string, string[]> = {
   // Banners are prefetched in the `(public)` layout and dehydrated into every
   // page beneath it, so a banner edit is not a home-only change.
   banners: ['/', '/products'],
-  feedbacks: ['/'],
+  feedbacks: ['/', WOMEN_DAY_PATH],
   company: ['/', '/contact'],
   contact: ['/contact', '/b2b'],
   b2bServices: ['/b2b']
@@ -97,16 +101,19 @@ const planForEntity = (body: EntityBody): { basePaths: string[]; tags: string[];
       const ids = Array.isArray(body.id) ? body.id : [body.id]
 
       return {
-        basePaths: [...new Set(ids.map((id) => `/products/${id}`)), '/products', '/'],
+        basePaths: [...new Set(ids.map((id) => `/products/${id}`)), '/products', '/', WOMEN_DAY_PATH],
         tags: [PRODUCTS_CACHE_TAG]
       }
     }
     case 'productList':
-      return { basePaths: ['/products', '/'], tags: [PRODUCTS_CACHE_TAG] }
+      return { basePaths: ['/products', '/', WOMEN_DAY_PATH], tags: [PRODUCTS_CACHE_TAG] }
     case 'category':
       // Category membership drives which products appear in each grid, so purge
       // both the category tree and the product lists.
-      return { basePaths: ['/products', '/'], tags: [CATEGORIES_CACHE_TAG, PRODUCTS_CACHE_TAG] }
+      return {
+        basePaths: ['/products', '/', WOMEN_DAY_PATH],
+        tags: [CATEGORIES_CACHE_TAG, PRODUCTS_CACHE_TAG]
+      }
     case 'news':
       return {
         basePaths: body.slug ? [`/news/${body.slug}`, '/news'] : ['/news'],
