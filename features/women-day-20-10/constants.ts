@@ -1,0 +1,2 @@
+export const WOMEN_DAY_CATEGORY_ID = 'aa55a273-0773-4ce6-98ea-5c367a97b208'
+export const WOMEN_DAY_PAGE_SIZE = 4
