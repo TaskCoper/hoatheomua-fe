@@ -1,6 +1,7 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { ProductDetail } from '@/features/products/types'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -24,12 +25,14 @@ export default function ProductCard({
   product,
   eager = false,
   isActive = false,
-  onHoverStart
+  onHoverStart,
+  singleLineTitle = false
 }: {
   product: ProductDetail
   eager?: boolean
   isActive?: boolean
   onHoverStart?: () => void
+  singleLineTitle?: boolean
 }) {
   const { t } = useTranslation()
   const name = product.productName ?? ''
@@ -126,9 +129,29 @@ export default function ProductCard({
         </Link>
 
         <div className='flex flex-1 flex-col gap-1.5 p-3 @[13rem]:p-4 @[18rem]:p-5'>
-          <h2 className='line-clamp-2 font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
-            {name}
-          </h2>
+          {singleLineTitle ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <h2 className='truncate font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
+                    {name}
+                  </h2>
+                </TooltipTrigger>
+                <TooltipContent
+                  side='top'
+                  sideOffset={8}
+                  className='rounded-xl border border-secondary/80 bg-card px-3 py-2 text-xs font-medium text-primary shadow-[0_0.6rem_1.4rem_rgb(81_108_108/16%)]'
+                  iconClassName='bg-card fill-card text-card'
+                >
+                  {name}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <h2 className='line-clamp-2 font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
+              {name}
+            </h2>
+          )}
 
           <div className='mt-auto -space-y-0.5 pt-1'>
             {hasDiscount ? (

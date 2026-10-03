@@ -83,6 +83,7 @@ export default function WomenDayProductsSection() {
             eager={page === DEFAULT_PAGE_INDEX && index < 4}
             isActive={index === activeIndex}
             onHoverStart={() => setActiveIndex(index)}
+            singleLineTitle
           />
         ))}
       </motion.div>
