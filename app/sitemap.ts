@@ -4,6 +4,7 @@ import { getAllMainlineIds } from '@/features/mainline/queries.server'
 import { getAllOccasionIds } from '@/features/occasions/queries.server'
 import { getAllProductIdsForSitemap } from '@/features/products/queries.server'
 import { getAllJobSlugs } from '@/features/recruitment/queries.server'
+import { WOMEN_DAY_PATH } from '@/features/women-day-20-10/constants'
 import { routing, type Locale } from '@/lib/i18n/routing'
 import { SITE_URL } from '@/shared/seo'
 import type { MetadataRoute } from 'next'
@@ -17,6 +18,7 @@ const PUBLIC_PATHS = [
   { path: '/about', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/b2b', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/contact', priority: 0.7, changeFrequency: 'monthly' },
+  { path: WOMEN_DAY_PATH, priority: 0.7, changeFrequency: 'weekly' },
   { path: '/recruitment', priority: 0.6, changeFrequency: 'weekly' }
 ] as const satisfies ReadonlyArray<{ path: string; priority: number; changeFrequency: ChangeFrequency }>
 

@@ -9,7 +9,8 @@ const ROOT_STRIPPED_NAMESPACES = new Set([
   'careers',
   'dataTable',
   'recruitment',
-  'richTextEditor'
+  'richTextEditor',
+  'womenDay'
 ])
 
 interface ScopedIntlProviderProps {

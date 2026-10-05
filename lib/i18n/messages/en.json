@@ -1466,6 +1466,82 @@
       }
     }
   },
+  "womenDay": {
+    "hero": {
+      "eyebrow": "Special collection · Vietnamese Women’s Day",
+      "title": "A little season of love for the women you cherish",
+      "intro": "A gentle bouquet for mother, a signature bloom for someone special, or a thank-you for the woman beside you every day.",
+      "primary": "Shop the collection",
+      "secondary": "Find your flowers",
+      "dateMark": "20 · 10",
+      "brandLine": "fresh flowers",
+      "brandLabel": "in season",
+      "seasonsLabel": "seasons",
+      "naturalLabel": "natural",
+      "founded": "Founded 12/11/2020"
+    },
+    "collection": {
+      "eyebrow": "Flowers made for her",
+      "title": "Say what flowers cannot leave unsaid",
+      "intro": "Seasonal designs selected by color, feeling and recipient — so your gift feels as thoughtful as it is beautiful.",
+      "productsTitle": "The 20/10 collection",
+      "productsIntro": "Fresh seasonal flowers, hand-tied and delivered across Ho Chi Minh City.",
+      "readMore": "Explore more"
+    },
+    "stories": {
+      "title": "A day worth remembering",
+      "author": "Hoa Theo Mùa",
+      "items": {
+        "gratitude": {
+          "date": "October 15, 2026",
+          "title": "20/10 — a gentle reason to say thank you",
+          "lead": "Flowers cannot say everything for us, but they can begin a beautiful conversation.",
+          "body": "Vietnamese Women’s Day is a small invitation to pause and remember the women who make our everyday life warmer."
+        },
+        "mother": {
+          "date": "October 16, 2026",
+          "title": "A season of gratitude for mother",
+          "lead": "For mother, the most beautiful gift often begins with a thoughtful gesture.",
+          "body": "Choose warm, graceful flowers and pair them with a small note — sometimes that is all it takes to make her day feel special."
+        },
+        "choose": {
+          "date": "October 17, 2026",
+          "title": "Choose flowers by what you want to say",
+          "lead": "Every color carries its own feeling: soft, bright, heartfelt or romantic.",
+          "body": "When you are unsure where to begin, think about the person receiving the flowers. A design that feels like her is always memorable."
+        },
+        "delivery": {
+          "date": "October 18, 2026",
+          "title": "A beautiful wish deserves a beautiful delivery",
+          "lead": "From the first stem to the little note, every detail becomes part of your message.",
+          "body": "Hoa Theo Mùa prepares each bouquet with care and delivers it across the city, so your feeling arrives beautifully."
+        }
+      }
+    },
+    "guide": {
+      "eyebrow": "A guide by recipient",
+      "title": "Choose flowers by feeling",
+      "intro": "Every woman has her own season. Begin with the story of the person you are gifting.",
+      "mother": {
+        "title": "For mother",
+        "text": "Soft, warm and full of gratitude."
+      },
+      "lover": {
+        "title": "For someone special",
+        "text": "Romantic, refined and made just for her."
+      },
+      "colleague": {
+        "title": "For sisters & colleagues",
+        "text": "Bright, graceful and full of energy."
+      }
+    },
+    "promise": {
+      "eyebrow": "A note from Hoa Theo Mùa",
+      "title": "Let your feeling arrive beautifully",
+      "text": "From flowers selected that day to the final wrap, every detail is cared for like a personal message.",
+      "order": "Order flowers"
+    }
+  },
   "products": {
     "hero": {
       "title": "Fresh Flower Collection",

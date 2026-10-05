@@ -12,50 +12,52 @@ const priceValidUntil = () => {
 // `items` are the products the page actually renders above the fold. Google uses
 // the ItemList to decide whether a collection page is eligible for the product
 // carousel in the SERP, so passing an empty array silently drops that eligibility.
+// `listPath` is the locale-prefixed path of the page that owns the list; it anchors the `@id`.
+export const buildProductItemList = (locale: Locale, listPath: string, items: ProductDetail[]) =>
+  items.length > 0
+    ? {
+        '@type': 'ItemList' as const,
+        '@id': `${SITE_URL}${listPath}#itemlist`,
+        numberOfItems: items.length,
+        itemListElement: items.map((product, index) => {
+          const productUrl = getProductUrl(locale, product.id)
+          const available = (product.sellableQuantity ?? 0) > 0
+          const price = product.price ?? 0
+          return {
+            '@type': 'ListItem' as const,
+            position: index + 1,
+            url: productUrl,
+            item: {
+              '@type': 'Product' as const,
+              '@id': `${productUrl}#product`,
+              name: product.productName,
+              url: productUrl,
+              sku: product.id,
+              ...(product.coverImage ? { image: product.coverImage } : {}),
+              ...(Number.isFinite(price) && price > 0
+                ? {
+                    offers: {
+                      '@type': 'Offer',
+                      url: productUrl,
+                      priceCurrency: 'VND',
+                      price,
+                      availability: available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                      itemCondition: 'https://schema.org/NewCondition'
+                    }
+                  }
+                : {})
+            }
+          }
+        })
+      }
+    : null
+
 export const buildProductsCollectionJsonLd = (locale: Locale, items: ProductDetail[]) => {
   const copy = PRODUCTS_LIST_COPY[locale]
   const path = getProductsListPath(locale)
   const url = getProductsListUrl(locale)
   const breadcrumb = buildBreadcrumbList(locale, `${SITE_URL}${path}#breadcrumb`, [{ name: copy.breadcrumb, url }])
-
-  const itemList =
-    items.length > 0
-      ? {
-          '@type': 'ItemList' as const,
-          '@id': `${SITE_URL}${path}#itemlist`,
-          numberOfItems: items.length,
-          itemListElement: items.map((product, index) => {
-            const productUrl = getProductUrl(locale, product.id)
-            const available = (product.sellableQuantity ?? 0) > 0
-            const price = product.price ?? 0
-            return {
-              '@type': 'ListItem' as const,
-              position: index + 1,
-              url: productUrl,
-              item: {
-                '@type': 'Product' as const,
-                '@id': `${productUrl}#product`,
-                name: product.productName,
-                url: productUrl,
-                sku: product.id,
-                ...(product.coverImage ? { image: product.coverImage } : {}),
-                ...(Number.isFinite(price) && price > 0
-                  ? {
-                      offers: {
-                        '@type': 'Offer',
-                        url: productUrl,
-                        priceCurrency: 'VND',
-                        price,
-                        availability: available ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-                        itemCondition: 'https://schema.org/NewCondition'
-                      }
-                    }
-                  : {})
-              }
-            }
-          })
-        }
-      : null
+  const itemList = buildProductItemList(locale, path, items)
 
   return {
     '@context': 'https://schema.org',

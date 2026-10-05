@@ -1466,6 +1466,82 @@
       }
     }
   },
+  "womenDay": {
+    "hero": {
+      "eyebrow": "Bộ sưu tập đặc biệt · 20 tháng 10",
+      "title": "Gửi một mùa thương đến những người phụ nữ mình yêu",
+      "intro": "Một bó hoa dịu dàng cho mẹ, một sắc hoa thật riêng cho người thương, hay một lời cảm ơn gửi đến người đồng hành cùng bạn mỗi ngày.",
+      "primary": "Chọn hoa tặng nàng",
+      "secondary": "Xem cách chọn hoa",
+      "dateMark": "20 · 10",
+      "brandLine": "Hoa tươi",
+      "brandLabel": "theo mùa",
+      "seasonsLabel": "mùa hoa",
+      "naturalLabel": "tự nhiên",
+      "founded": "Thành lập 12/11/2020"
+    },
+    "collection": {
+      "eyebrow": "Những đóa hoa dành riêng cho nàng",
+      "title": "Trao hoa, trao điều chưa nói",
+      "intro": "Các thiết kế được tuyển chọn theo sắc hoa, cảm xúc và người nhận — để món quà của bạn vừa đẹp vừa thật lòng.",
+      "productsTitle": "Bộ sưu tập 20/10",
+      "productsIntro": "Hoa tươi theo mùa, được bó thủ công và giao tận nơi tại TP.HCM.",
+      "readMore": "Khám phá thêm"
+    },
+    "stories": {
+      "title": "Một ngày để nhớ",
+      "author": "Hoa Theo Mùa",
+      "items": {
+        "gratitude": {
+          "date": "15 tháng 10, 2026",
+          "title": "20/10 — dịp để nói lời cảm ơn bằng những điều thật dịu dàng",
+          "lead": "Một bó hoa không thay cho tất cả yêu thương, nhưng có thể bắt đầu một cuộc trò chuyện đẹp.",
+          "body": "Ngày Phụ nữ Việt Nam là lời nhắc để ta dừng lại một chút, nhớ về những người phụ nữ đã làm cuộc sống của mình trở nên ấm áp hơn."
+        },
+        "mother": {
+          "date": "16 tháng 10, 2026",
+          "title": "Tặng mẹ một mùa hoa của lòng biết ơn",
+          "lead": "Với mẹ, món quà đẹp nhất luôn bắt đầu từ sự quan tâm thật lòng.",
+          "body": "Hãy chọn những sắc hoa ấm áp, thanh nhã và gửi kèm một lời nhắn nhỏ — đôi khi chỉ vậy cũng đủ làm ngày của mẹ trở nên đặc biệt."
+        },
+        "choose": {
+          "date": "17 tháng 10, 2026",
+          "title": "Chọn hoa theo điều bạn muốn nói",
+          "lead": "Mỗi sắc hoa mang một nhịp cảm xúc riêng: dịu dàng, rạng rỡ, sâu sắc hay nồng nhiệt.",
+          "body": "Nếu chưa biết bắt đầu từ đâu, hãy nghĩ về tính cách của người nhận. Một thiết kế đúng với nàng luôn đáng nhớ hơn một món quà thật lớn."
+        },
+        "delivery": {
+          "date": "18 tháng 10, 2026",
+          "title": "Một lời chúc đẹp cũng cần một cách trao thật đẹp",
+          "lead": "Từ cành hoa đầu tiên đến tấm thiệp nhỏ, từng chi tiết đều là một phần của lời yêu thương.",
+          "body": "Hoa Theo Mùa chuẩn bị từng bó hoa trong ngày, gói ghém cẩn thận và giao tận nơi để cảm xúc của bạn đến tay người nhận thật trọn vẹn."
+        }
+      }
+    },
+    "guide": {
+      "eyebrow": "Gợi ý cho từng người nhận",
+      "title": "Chọn hoa theo điều bạn muốn nói",
+      "intro": "Mỗi người phụ nữ là một mùa hoa riêng. Hãy bắt đầu từ câu chuyện của người bạn muốn tặng.",
+      "mother": {
+        "title": "Tặng mẹ",
+        "text": "Nhẹ nhàng, ấm áp và đầy biết ơn."
+      },
+      "lover": {
+        "title": "Tặng người thương",
+        "text": "Lãng mạn, tinh tế, chỉ dành riêng cho nàng."
+      },
+      "colleague": {
+        "title": "Tặng chị em, đồng nghiệp",
+        "text": "Tươi sáng, thanh lịch và nhiều năng lượng."
+      }
+    },
+    "promise": {
+      "eyebrow": "Hoa Theo Mùa gửi bạn",
+      "title": "Để lời yêu thương đến nơi thật đẹp",
+      "text": "Từ những cành hoa được chọn trong ngày đến cách gói ghém cuối cùng, mọi chi tiết đều được chăm chút như một lời nhắn gửi.",
+      "order": "Đặt hoa ngay"
+    }
+  },
   "products": {
     "hero": {
       "title": "Bộ Sưu Tập Hoa Tươi",
