@@ -2,6 +2,7 @@ import { ARTICLES_CACHE_TAG } from '@/features/articles/queries.server'
 import { CATEGORIES_CACHE_TAG } from '@/features/categories/queries.server'
 import { PRODUCTS_CACHE_TAG } from '@/features/products/queries.server'
 import { RECRUITMENT_CACHE_TAG } from '@/features/recruitment/queries.server'
+import { WOMEN_DAY_PATH } from '@/features/women-day-20-10/constants'
 import { routing } from '@/lib/i18n/routing'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { z } from 'zod'
@@ -61,10 +62,6 @@ type EntityBody = z.infer<typeof EntityBodySchema>
 // Mirrors the `configs:${group}` tag produced inside the config query loaders.
 const configTag = (group: string) => `configs:${group}`
 
-// The 20/10 campaign page bakes in a category-filtered product grid and the
-// feedbacks testimonials, so it follows both of those entities.
-const WOMEN_DAY_PATH = '/women-day-20-10'
-
 // Which storefront pages a config group is baked into. A group not listed here
 // only needs its data tag purged (e.g. `ahamove`, which feeds the dynamic,
 // non-ISR checkout). Bases are locale-agnostic; `expandPaths` adds the prefix.
@@ -73,6 +70,8 @@ const CONFIG_GROUP_PATHS: Record<string, string[]> = {
   // Banners are prefetched in the `(public)` layout and dehydrated into every
   // page beneath it, so a banner edit is not a home-only change.
   banners: ['/', '/products'],
+  // The 20/10 page bakes in the testimonials (and a category-filtered product grid,
+  // see the product/productList/category plans below).
   feedbacks: ['/', WOMEN_DAY_PATH],
   company: ['/', '/contact'],
   contact: ['/contact', '/b2b'],

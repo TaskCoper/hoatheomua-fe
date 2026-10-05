@@ -6,6 +6,7 @@ import type { ProductDetail } from '@/features/products/types'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
+import { cn } from '@/shared/utils'
 import { FlowerIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion, type Variants } from 'motion/react'
@@ -42,6 +43,19 @@ export default function ProductCard({
   const discountPercent = hasDiscount ? Math.round(((oldPrice - retail) / oldPrice) * 100) : 0
   const avatar = product.coverImage
   const isOutOfStock = (product.sellableQuantity ?? 0) <= 0
+
+  // Narrow cards (2-up on phones) keep two lines: with no hover on touch there is
+  // no tooltip to read a clipped name from, so only wider cards truncate to one.
+  const title = (
+    <h2
+      className={cn(
+        'font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg',
+        singleLineTitle ? 'line-clamp-2 @[13rem]:line-clamp-none @[13rem]:truncate' : 'line-clamp-2'
+      )}
+    >
+      {name}
+    </h2>
+  )
 
   return (
     <motion.article
@@ -132,11 +146,7 @@ export default function ProductCard({
           {singleLineTitle ? (
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <h2 className='truncate font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
-                    {name}
-                  </h2>
-                </TooltipTrigger>
+                <TooltipTrigger asChild>{title}</TooltipTrigger>
                 <TooltipContent
                   side='top'
                   sideOffset={8}
@@ -148,9 +158,7 @@ export default function ProductCard({
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <h2 className='line-clamp-2 font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
-              {name}
-            </h2>
+            title
           )}
 
           <div className='mt-auto -space-y-0.5 pt-1'>

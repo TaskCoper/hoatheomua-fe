@@ -1,16 +1,23 @@
-import WomenDayPage from '@/features/women-day-20-10/components/women-day-page'
-import { WOMEN_DAY_CATEGORY_ID, WOMEN_DAY_PAGE_SIZE } from '@/features/women-day-20-10/constants'
+import ScopedIntlProvider from '@/components/scoped-intl-provider'
 import TestimonialSection from '@/features/home/components/testimonial-section'
-import { generateWomenDayMetadata } from '@/features/women-day-20-10/seo'
-import { getCachedProducts } from '@/features/products/queries.server'
 import { productsQueryKey } from '@/features/products/hooks/use-get-products'
-import { routing, type Locale } from '@/lib/i18n/routing'
+import { getCachedProducts } from '@/features/products/queries.server'
+import type { ProductDetail } from '@/features/products/types'
+import WomenDayCollectionSection from '@/features/women-day-20-10/components/women-day-collection-section'
+import WomenDayGuideSection from '@/features/women-day-20-10/components/women-day-guide-section'
+import WomenDayHeroSection from '@/features/women-day-20-10/components/women-day-hero-section'
+import WomenDayJumpButton from '@/features/women-day-20-10/components/women-day-jump-button'
+import WomenDayPromiseSection from '@/features/women-day-20-10/components/women-day-promise-section'
+import WomenDayStoriesSection from '@/features/women-day-20-10/components/women-day-stories-section'
+import { WOMEN_DAY_CATEGORY_IDS, WOMEN_DAY_PAGE_SIZE } from '@/features/women-day-20-10/constants'
+import { buildWomenDayJsonLd, generateWomenDayMetadata } from '@/features/women-day-20-10/seo'
+import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
+import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { JsonLd } from '@/shared/seo'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import type { Metadata } from 'next'
-import { hasLocale } from 'next-intl'
-import { notFound } from 'next/navigation'
+import { setRequestLocale } from 'next-intl/server'
 
 export const revalidate = 300
 
@@ -19,33 +26,42 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return generateWomenDayMetadata(locale)
 }
 
-export default async function WomenDayRoute({ params }: { params: Promise<{ locale: string }> }) {
+export default async function WomenDayRoute({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
-  if (!hasLocale(routing.locales, locale)) notFound()
+  setRequestLocale(locale)
 
   const queryClient = getQueryClient()
-  const categoryIds = [WOMEN_DAY_CATEGORY_ID]
+  const productsParams = {
+    pageIndex: DEFAULT_PAGE_INDEX,
+    pageSize: WOMEN_DAY_PAGE_SIZE,
+    categoryIds: WOMEN_DAY_CATEGORY_IDS
+  }
+  let items: ProductDetail[] = []
 
-  const productsParams = { pageIndex: 1, pageSize: WOMEN_DAY_PAGE_SIZE, categoryIds }
   try {
     const products = await getCachedProducts(productsParams)
     queryClient.setQueryData(productsQueryKey(productsParams), products)
+    items = products.value.items
   } catch (error) {
     console.error('[SSR] women-day products prefetch failed:', error)
   }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: locale === 'vi' ? 'Bộ sưu tập hoa 20/10 Hoa Theo Mùa' : 'Hoa Theo Mùa Vietnamese Women’s Day collection',
-    url: `/women-day-20-10`,
-    isPartOf: { '@type': 'WebSite', name: 'Hoa Theo Mùa' }
-  }
-
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <JsonLd data={jsonLd} />
-      <WomenDayPage testimonials={<TestimonialSection />} />
-    </HydrationBoundary>
+    <ScopedIntlProvider namespaces={['womenDay']}>
+      <JsonLd data={buildWomenDayJsonLd(locale, items)} />
+
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <div className='relative isolate overflow-hidden'>
+          <WomenDayHeroSection />
+          <WomenDayCollectionSection />
+          <WomenDayStoriesSection />
+          <WomenDayGuideSection />
+          <WomenDayPromiseSection />
+          <TestimonialSection />
+        </div>
+
+        <WomenDayJumpButton />
+      </HydrationBoundary>
+    </ScopedIntlProvider>
   )
 }
