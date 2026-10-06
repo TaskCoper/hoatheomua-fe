@@ -19,6 +19,8 @@ import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
 import { toOrderTimestamp } from '../payloads'
 import { matchShippingLocation } from '../utils/match-shipping-location'
 import type { CheckoutFormValues } from '../validations'
+import { getMockSlotRemaining } from '../slots/mock-data'
+import { cn } from '@/shared/utils'
 import { AddressAutocomplete } from './address-autocomplete'
 import { AddressMapField } from './address-map-field'
 import CheckoutSection from './checkout/checkout-section'
@@ -500,11 +502,33 @@ export default function CheckoutFields({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value={ORDER_TAG_NONE}>{t('orders.checkout.tagNone')}</SelectItem>
-                      {tagOptions.map((option) => (
-                        <SelectItem key={option.value} value={String(option.value)}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
+                      {tagOptions.map((option, index) => {
+                        const remaining = getMockSlotRemaining(index)
+
+                        return (
+                          <SelectItem
+                            key={option.value}
+                            value={String(option.value)}
+                            disabled={remaining === 0}
+                            textValue={option.label}
+                            className='relative'
+                          >
+                            <span className='block w-full pr-24'>
+                              <span className='block truncate'>{option.label}</span>
+                              <span
+                                className={cn(
+                                  'absolute right-7 top-1/2 -translate-y-1/2 text-right text-xs',
+                                  remaining === 0 ? 'text-muted-foreground/60' : 'text-muted-foreground'
+                                )}
+                              >
+                                {remaining === 0
+                                  ? t('orders.checkout.slot.full')
+                                  : t('orders.checkout.slot.available', { count: remaining })}
+                              </span>
+                            </span>
+                          </SelectItem>
+                        )
+                      })}
                     </SelectContent>
                   </Select>
                 </Field>
