@@ -33,6 +33,7 @@ import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
+import { MOCK_VOUCHERS, type MockVoucher } from '../../vouchers/mock-data'
 import type { OrderContact } from '../../payloads'
 import { resolveShippingFee } from '../../shipping-fee'
 import type { TaxBusinessInfo } from '../../types'
@@ -108,6 +109,7 @@ export default function CheckoutClient() {
   const [pickedPaymentMethodId, setPickedPaymentMethodId] = useState<string | null>(null)
   const [pickedDeliveryMethodId, setPickedDeliveryMethodId] = useState<string | null>(null)
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
+  const [selectedVoucher, setSelectedVoucher] = useState<MockVoucher | null>(null)
 
   const handleSelectedAddressRevised = () => {
     toast.info(invalidateEstimate() ? t('orders.checkout.addressRevisedReprice') : t('orders.checkout.addressRevised'))
@@ -197,6 +199,13 @@ export default function CheckoutClient() {
       cardsTotal,
       materialBlockedProductIds
     })
+
+  const voucherDiscount = selectedVoucher
+    ? selectedVoucher.kind === 'percent'
+      ? Math.floor((productsSubtotal * selectedVoucher.value) / 100)
+      : Math.min(selectedVoucher.value, productsSubtotal)
+    : 0
+  const displayGrandTotal = Math.max(0, grandTotal - voucherDiscount)
 
   const isLoading =
     isEstimatingOrder ||
@@ -289,7 +298,11 @@ export default function CheckoutClient() {
     shippingFee: rawShippingFee,
     shippingDiscount,
     showShipping: step >= 2,
-    grandTotal,
+    grandTotal: displayGrandTotal,
+    voucherDiscount,
+    voucherVouchers: MOCK_VOUCHERS,
+    selectedVoucher,
+    onSelectVoucher: setSelectedVoucher,
     action: sidebarAction,
     showTerms: step === 4,
     cards,

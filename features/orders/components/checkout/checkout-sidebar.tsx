@@ -16,6 +16,8 @@ import { getCheckoutCardPrice } from '../../cards/card-data'
 import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
 import type { CheckoutCardField } from '../../cards/types'
 import { useCardConfig } from '../../hooks/use-card-config'
+import type { MockVoucher } from '../../vouchers/mock-data'
+import VoucherPicker from './voucher-picker'
 
 const EMPTY_CARDS: CheckoutCardField[] = []
 
@@ -62,6 +64,10 @@ interface CheckoutSidebarProps {
   shippingDiscount?: number
   showShipping?: boolean
   grandTotal: number
+  voucherDiscount?: number
+  voucherVouchers?: MockVoucher[]
+  selectedVoucher?: MockVoucher | null
+  onSelectVoucher?: (voucher: MockVoucher | null) => void
   action: {
     label: string
     onClick: () => void
@@ -101,6 +107,10 @@ export default function CheckoutSidebar({
   shippingDiscount = 0,
   showShipping = true,
   grandTotal,
+  voucherDiscount = 0,
+  voucherVouchers = [],
+  selectedVoucher = null,
+  onSelectVoucher,
   action,
   notice,
   showTerms = true,
@@ -180,6 +190,9 @@ export default function CheckoutSidebar({
                 ) : null}
               </>
             ) : null}
+            {voucherDiscount > 0 ? (
+              <SidebarRow label={t('orders.checkout.voucher.discountLabel')} value={formatVnd(-voucherDiscount)} />
+            ) : null}
           </dl>
           <div className='mt-4 flex items-center justify-between border-t border-dashed border-border pt-3'>
             <span className='text-sm font-semibold'>{t('orders.checkout.total')}</span>
@@ -194,6 +207,15 @@ export default function CheckoutSidebar({
           </div>
         </div>
       </section>
+
+      {voucherVouchers.length > 0 && onSelectVoucher ? (
+        <VoucherPicker
+          vouchers={voucherVouchers}
+          selectedVoucher={selectedVoucher}
+          productsSubtotal={productsSubtotal}
+          onSelect={onSelectVoucher}
+        />
+      ) : null}
 
       {showAction ? (
         <section className='space-y-3 rounded-3xl border border-border bg-card p-5'>
