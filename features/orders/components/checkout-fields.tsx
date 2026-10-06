@@ -511,13 +511,13 @@ export default function CheckoutFields({
                             value={String(option.value)}
                             disabled={remaining === 0}
                             textValue={option.label}
-                            className='relative'
+                            className='*:last:w-full'
                           >
-                            <span className='block w-full pr-24'>
-                              <span className='block truncate'>{option.label}</span>
+                            <span className='flex w-full items-center gap-4 pr-1'>
+                              <span className='min-w-0 flex-1 truncate'>{option.label}</span>
                               <span
                                 className={cn(
-                                  'absolute right-7 top-1/2 -translate-y-1/2 text-right text-xs',
+                                  'ml-auto shrink-0 text-right text-xs',
                                   remaining === 0 ? 'text-muted-foreground/60' : 'text-muted-foreground'
                                 )}
                               >
