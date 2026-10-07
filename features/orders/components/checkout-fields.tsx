@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { Address } from '@/features/addresses/types'
-import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { useGetDeliverySlotAvailability } from '@/hooks/use-get-delivery-slot-availability'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Calendar03Icon, DeliveryTruck02Icon, LocationUser01Icon } from '@hugeicons/core-free-icons'
@@ -18,17 +18,15 @@ import type { CheckoutDeliveryOption } from '../checkout-methods'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
 import { toOrderTimestamp } from '../payloads'
 import { matchShippingLocation } from '../utils/match-shipping-location'
-import type { CheckoutFormValues } from '../validations'
-import { getMockSlotRemaining } from '../slots/mock-data'
 import { cn } from '@/shared/utils'
+import type { DeliverySlot } from '@/types/config.type'
+import type { CheckoutFormValues } from '../validations'
 import { AddressAutocomplete } from './address-autocomplete'
 import { AddressMapField } from './address-map-field'
 import CheckoutSection from './checkout/checkout-section'
 import DeliveryMethodPicker from './checkout/delivery-method-picker'
 import { LocationCombobox } from './location-combobox'
 import { SavedAddressPicker } from './saved-address-picker'
-
-const ORDER_TAG_NONE = '__none__'
 
 // Slots are published as "17h - 19h" (minutes optional, e.g. "17h30 - 19h").
 // Anything that does not parse has no time we can trust, so it is dropped
@@ -38,6 +36,14 @@ const slotEndMinutes = (label: string) => {
   if (!match) return null
 
   return Number(match[1]) * 60 + Number(match[2] ?? 0)
+}
+
+const getSlotRemaining = (slot: DeliverySlot) =>
+  slot.limit === null ? null : Math.max(0, slot.limit - Math.max(0, slot.occupied))
+
+const isSlotSelectable = (slot: DeliverySlot) => {
+  const remaining = getSlotRemaining(slot)
+  return remaining !== null && remaining > 0
 }
 
 interface CheckoutFieldsProps {
@@ -109,41 +115,51 @@ export default function CheckoutFields({
     }
   }
 
-  const { orderTags, isGettingOrderTags } = useGetOrderTags()
-
   const orderTimeForm = watch('orderTime')
   const selectedTagId = watch('tagIds')?.[0]
   const hasDeliverySlot = selectedTagId !== undefined
   const isScheduledDate = toOrderTimestamp(orderTimeForm) !== 0
   const effectiveOrderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
+  const {
+    slots: deliverySlots,
+    isGettingDeliverySlotAvailability,
+    isDeliverySlotAvailabilityError
+  } = useGetDeliverySlotAvailability(effectiveOrderDate)
 
   // Only today can have windows that already closed - a later date keeps every
-  // slot. A slot stays bookable until its end hour passes.
+  // slot. Availability and limits come from the user-facing availability API.
   const tagOptions = useMemo(() => {
-    const options = orderTags?.options ?? []
     const now = new Date()
     const orderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
     const isToday = orderDate.toDateString() === now.toDateString()
     const minutesNow = now.getHours() * 60 + now.getMinutes()
 
-    return options.filter((option) => {
-      const endMinutes = slotEndMinutes(option.label)
+    return deliverySlots.filter((slot) => {
+      const endMinutes = slotEndMinutes(slot.label)
       if (endMinutes === null) return false
 
       return !isToday || endMinutes > minutesNow
     })
-  }, [orderTags?.options, orderTimeForm, minOrderDate])
+  }, [deliverySlots, orderTimeForm, minOrderDate])
 
   // A slot can fall out of the list when the date moves back to today, so the
   // picked one never survives as a window that already passed.
   useEffect(() => {
-    if (selectedTagId === undefined || !orderTags?.options?.length) return
-    if (tagOptions.some((option) => option.value === selectedTagId)) return
+    if (selectedTagId === undefined || isGettingDeliverySlotAvailability || isDeliverySlotAvailabilityError) return
+    const selectedSlot = deliverySlots.find((slot) => slot.tagId === selectedTagId)
+    if (selectedSlot && tagOptions.some((slot) => slot.tagId === selectedTagId) && isSlotSelectable(selectedSlot)) return
 
     setValue('tagIds', [], { shouldDirty: true, shouldValidate: true })
-  }, [selectedTagId, tagOptions, orderTags?.options?.length, setValue])
+  }, [
+    selectedTagId,
+    deliverySlots,
+    tagOptions,
+    isGettingDeliverySlotAvailability,
+    isDeliverySlotAvailabilityError,
+    setValue
+  ])
 
-  const selectedTagLabel = orderTags?.options?.find((option) => option.value === selectedTagId)?.label
+  const selectedTagLabel = deliverySlots.find((slot) => slot.tagId === selectedTagId)?.label
   const deliveryTimingLabel = hasDeliverySlot
     ? isScheduledDate
       ? t('orders.checkout.tagWithDate', {
@@ -487,43 +503,45 @@ export default function CheckoutFields({
                 <Field data-invalid={fieldState.invalid} className='gap-1'>
                   <FieldLabel htmlFor={field.name}>{t('orders.checkout.tag')}</FieldLabel>
                   <Select
-                    value={selected !== undefined ? String(selected) : ORDER_TAG_NONE}
+                    value={selected !== undefined ? String(selected) : undefined}
                     onValueChange={(value) => {
-                      field.onChange(value === ORDER_TAG_NONE ? [] : [Number(value)])
+                      field.onChange([Number(value)])
                     }}
-                    disabled={isGettingOrderTags || !tagOptions.length}
+                    disabled={isGettingDeliverySlotAvailability || !tagOptions.length}
                   >
                     <SelectTrigger id={field.name} className='w-full' aria-invalid={fieldState.invalid}>
-                      {isGettingOrderTags || tagOptions.length ? (
+                      {isGettingDeliverySlotAvailability || tagOptions.length ? (
                         <SelectValue placeholder={t('orders.checkout.tagPlaceholder')} />
                       ) : (
                         <span className='text-muted-foreground'>{t('orders.checkout.tagEmpty')}</span>
                       )}
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value={ORDER_TAG_NONE}>{t('orders.checkout.tagNone')}</SelectItem>
-                      {tagOptions.map((option, index) => {
-                        const remaining = getMockSlotRemaining(index)
+                      {tagOptions.map((slot) => {
+                        const remaining = getSlotRemaining(slot)
+                        const isAvailable = isSlotSelectable(slot)
 
                         return (
                           <SelectItem
-                            key={option.value}
-                            value={String(option.value)}
-                            disabled={remaining === 0}
-                            textValue={option.label}
+                            key={slot.tagId}
+                            value={String(slot.tagId)}
+                            disabled={!isAvailable}
+                            textValue={slot.label}
                             className='*:last:w-full'
                           >
                             <span className='flex w-full items-center gap-4 pr-1'>
-                              <span className='min-w-0 flex-1 truncate'>{option.label}</span>
+                              <span className='min-w-0 flex-1 truncate'>{slot.label}</span>
                               <span
                                 className={cn(
                                   'ml-auto shrink-0 text-right text-xs',
-                                  remaining === 0 ? 'text-muted-foreground/60' : 'text-muted-foreground'
+                                  !isAvailable ? 'text-muted-foreground/60' : 'text-muted-foreground'
                                 )}
                               >
-                                {remaining === 0
-                                  ? t('orders.checkout.slot.full')
-                                  : t('orders.checkout.slot.available', { count: remaining })}
+                                {slot.limit === null
+                                  ? t('orders.checkout.slot.unavailable')
+                                  : remaining === 0
+                                    ? t('orders.checkout.slot.full')
+                                    : t('orders.checkout.slot.available', { count: remaining })}
                               </span>
                             </span>
                           </SelectItem>
@@ -531,6 +549,7 @@ export default function CheckoutFields({
                       })}
                     </SelectContent>
                   </Select>
+                  {fieldState.invalid ? <FieldError className='text-xs' errors={[fieldState.error]} /> : null}
                 </Field>
               )
             }}

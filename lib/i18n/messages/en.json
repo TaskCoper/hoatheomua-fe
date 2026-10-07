@@ -676,7 +676,8 @@
       "tagWithDate": "{date} at {tag}",
       "slot": {
         "available": "Available for {count} orders",
-        "full": "Full"
+        "full": "Full",
+        "unavailable": "Unavailable"
       },
       "deliveryNoteHeading": "Delivery timing",
       "comboboxEmpty": "No results",

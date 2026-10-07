@@ -323,10 +323,16 @@ export interface ProductSignatureMap {
 
 export type ProductsSignatureConfigItem = JsonConfigItem<'products.signature', 'products', true>
 
-// Order tags
-export interface OrderTag {
-  value: number[]
-  options: { label: string; value: number }[]
+export interface DeliverySlotAvailability {
+  date: string
+  slots: DeliverySlot[]
+}
+
+export interface DeliverySlot {
+  tagId: number
+  label: string
+  limit: number | null
+  occupied: number
 }
 
 // Banners

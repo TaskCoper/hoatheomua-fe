@@ -676,7 +676,8 @@
       "tagWithDate": "{date} lúc {tag}",
       "slot": {
         "available": "Khả dụng {count} đơn",
-        "full": "Đã đầy"
+        "full": "Đã đầy",
+        "unavailable": "Chưa khả dụng"
       },
       "deliveryNoteHeading": "Thời gian giao dự kiến",
       "comboboxEmpty": "Không có kết quả",
