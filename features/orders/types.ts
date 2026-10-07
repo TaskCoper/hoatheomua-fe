@@ -383,6 +383,7 @@ export interface EstimateResult {
 
 export interface CheckoutPayload extends Omit<EstimatePayload, 'items'> {
   items: CheckoutItemPayload[]
+  voucherCode?: string | null
   fullNameReceiver: string
   phoneReceiver: string
   taxCode: string | null
@@ -405,6 +406,7 @@ export interface CheckoutSelection {
   gateway: PaymentGateway
   shippingGateway: ShippingGateway
   shippingFee: number
+  voucherCode?: string | null
 }
 
 export interface UpdateShippingRequest {

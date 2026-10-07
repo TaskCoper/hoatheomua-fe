@@ -732,6 +732,8 @@
         "ticketPercent": "Giảm %",
         "ticketFixed": "Giảm tiền",
         "demoNote": "Demo UI: voucher hiện chưa được gửi lên API đặt hàng.",
+        "apiOffer": "Ưu đãi voucher",
+        "apiDescription": "Voucher áp dụng cho đơn hàng của bạn",
         "mock": {
           "octoberOffer": "Ưu đãi tháng 10",
           "percent20": "Giảm 20% cho đơn hàng",

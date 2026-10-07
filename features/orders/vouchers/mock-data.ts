@@ -1,17 +1,23 @@
 import type { I18nKey } from '@/lib/i18n/types'
 
+import type { VoucherVisibility } from './types'
+
 export type MockVoucherKind = 'fixed' | 'percent'
-export type MockVoucherVisibility = 'public' | 'private'
+export type MockVoucherVisibility = VoucherVisibility
 
 export interface MockVoucher {
   id: string
   code: string
   nameKey: I18nKey
   descriptionKey: I18nKey
+  name?: string
+  description?: string | null
   kind: MockVoucherKind
   value: number
   visibility: MockVoucherVisibility
   expiresAt: string
+  discountAmount?: number
+  maxDiscountAmount?: number | null
 }
 
 export const MOCK_PUBLIC_VOUCHERS: MockVoucher[] = [

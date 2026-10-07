@@ -732,6 +732,8 @@
         "ticketPercent": "% discount",
         "ticketFixed": "Cashback",
         "demoNote": "Demo UI: the voucher is not sent to the order API yet.",
+        "apiOffer": "Voucher offer",
+        "apiDescription": "Voucher available for your order",
         "mock": {
           "octoberOffer": "October offer",
           "percent20": "20% off your order",

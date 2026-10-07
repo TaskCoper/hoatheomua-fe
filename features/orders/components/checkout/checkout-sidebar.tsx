@@ -68,6 +68,8 @@ interface CheckoutSidebarProps {
   voucherVouchers?: MockVoucher[]
   selectedVoucher?: MockVoucher | null
   onSelectVoucher?: (voucher: MockVoucher | null) => void
+  onEstimatePrivateVoucher?: (code: string) => Promise<MockVoucher>
+  isEstimatingPrivate?: boolean
   action: {
     label: string
     onClick: () => void
@@ -111,6 +113,8 @@ export default function CheckoutSidebar({
   voucherVouchers = [],
   selectedVoucher = null,
   onSelectVoucher,
+  onEstimatePrivateVoucher,
+  isEstimatingPrivate = false,
   action,
   notice,
   showTerms = true,
@@ -208,12 +212,14 @@ export default function CheckoutSidebar({
         </div>
       </section>
 
-      {voucherVouchers.length > 0 && onSelectVoucher ? (
+      {onSelectVoucher && onEstimatePrivateVoucher ? (
         <VoucherPicker
           vouchers={voucherVouchers}
           selectedVoucher={selectedVoucher}
           productsSubtotal={productsSubtotal}
           onSelect={onSelectVoucher}
+          onEstimatePrivateVoucher={onEstimatePrivateVoucher}
+          isEstimatingPrivate={isEstimatingPrivate}
         />
       ) : null}
 

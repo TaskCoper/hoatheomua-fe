@@ -17,12 +17,36 @@ interface VoucherPickerProps {
   selectedVoucher: MockVoucher | null
   productsSubtotal: number
   onSelect: (voucher: MockVoucher | null) => void
+  onEstimatePrivateVoucher: (code: string) => Promise<MockVoucher>
+  isEstimatingPrivate?: boolean
 }
 
-const getDiscount = (voucher: MockVoucher, subtotal: number) =>
-  voucher.kind === 'percent' ? Math.floor((subtotal * voucher.value) / 100) : Math.min(voucher.value, subtotal)
+const getDiscount = (voucher: MockVoucher, subtotal: number) => {
+  if (voucher.discountAmount !== undefined) return voucher.discountAmount
 
-export default function VoucherPicker({ vouchers, selectedVoucher, productsSubtotal, onSelect }: VoucherPickerProps) {
+  const discount = voucher.kind === 'percent' ? Math.floor((subtotal * voucher.value) / 100) : voucher.value
+  const cappedDiscount =
+    voucher.kind === 'percent' && voucher.maxDiscountAmount !== undefined && voucher.maxDiscountAmount !== null
+      ? Math.min(discount, voucher.maxDiscountAmount)
+      : discount
+
+  return Math.min(cappedDiscount, subtotal)
+}
+
+const getVoucherName = (voucher: MockVoucher, t: ReturnType<typeof useTranslation>['t']) =>
+  voucher.name ?? t(voucher.nameKey)
+
+const getVoucherDescription = (voucher: MockVoucher, t: ReturnType<typeof useTranslation>['t']) =>
+  voucher.description ?? t(voucher.descriptionKey)
+
+export default function VoucherPicker({
+  vouchers,
+  selectedVoucher,
+  productsSubtotal,
+  onSelect,
+  onEstimatePrivateVoucher,
+  isEstimatingPrivate = false
+}: VoucherPickerProps) {
   const { t } = useTranslation()
   const [privateCode, setPrivateCode] = useState('')
   const [privateError, setPrivateError] = useState(false)
@@ -37,19 +61,18 @@ export default function VoucherPicker({ vouchers, selectedVoucher, productsSubto
     onSelect(checked ? voucher : null)
   }
 
-  const applyPrivate = () => {
+  const applyPrivate = async () => {
     const normalized = privateCode.trim().toUpperCase()
-    const voucher = vouchers.find((item) => item.visibility === 'private' && item.code === normalized)
 
-    if (!voucher) {
+    try {
+      const voucher = await onEstimatePrivateVoucher(normalized)
+      setPrivateError(false)
+      setPrivateApplied(true)
+      onSelect(voucher)
+    } catch {
       setPrivateApplied(false)
       setPrivateError(true)
-      return
     }
-
-    setPrivateError(false)
-    setPrivateApplied(true)
-    onSelect(voucher)
   }
 
   const clearPrivate = () => {
@@ -123,19 +146,19 @@ export default function VoucherPicker({ vouchers, selectedVoucher, productsSubto
                           <span className='truncate text-base font-semibold text-foreground'>
                             {voucher.kind === 'percent' ? `${voucher.value}%` : formatVnd(voucher.value)}
                           </span>
-                          <span className='truncate text-xs font-medium text-muted-foreground'>{t(voucher.nameKey)}</span>
+                          <span className='truncate text-xs font-medium text-muted-foreground'>{getVoucherName(voucher, t)}</span>
                         </span>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span className='mt-1 block truncate text-xs text-muted-foreground'>
-                              {t(voucher.descriptionKey)}
+                              {getVoucherDescription(voucher, t)}
                             </span>
                           </TooltipTrigger>
                           <TooltipContent
                             className='border border-border bg-card text-foreground shadow-lg'
                             iconClassName='bg-card fill-card'
                           >
-                            {t(voucher.descriptionKey)}
+                            {getVoucherDescription(voucher, t)}
                           </TooltipContent>
                         </Tooltip>
                       </span>
@@ -187,7 +210,13 @@ export default function VoucherPicker({ vouchers, selectedVoucher, productsSubto
           aria-label={t('orders.checkout.voucher.inputLabel')}
           className='h-10 rounded-xl bg-background/60 text-sm uppercase'
         />
-        <Button type='button' variant='outline' className='h-10 shrink-0 rounded-xl' onClick={privateApplied ? clearPrivate : applyPrivate} disabled={publicSelected || !privateCode.trim()}>
+        <Button
+          type='button'
+          variant='outline'
+          className='h-10 shrink-0 rounded-xl'
+          onClick={privateApplied ? clearPrivate : applyPrivate}
+          disabled={publicSelected || isEstimatingPrivate || !privateCode.trim()}
+        >
           {privateApplied ? t('orders.checkout.voucher.clear') : t('orders.checkout.voucher.apply')}
         </Button>
       </div>

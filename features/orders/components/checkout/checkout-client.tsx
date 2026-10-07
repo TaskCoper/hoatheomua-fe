@@ -33,7 +33,9 @@ import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
-import { MOCK_VOUCHERS, type MockVoucher } from '../../vouchers/mock-data'
+import { USE_MOCK_VOUCHERS } from '../../vouchers/config'
+import { useCheckoutVouchers } from '../../vouchers/hooks/use-checkout-vouchers'
+import type { MockVoucher } from '../../vouchers/mock-data'
 import type { OrderContact } from '../../payloads'
 import { resolveShippingFee } from '../../shipping-fee'
 import type { TaxBusinessInfo } from '../../types'
@@ -200,6 +202,8 @@ export default function CheckoutClient() {
       materialBlockedProductIds
     })
 
+  const { vouchers, estimatePrivateVoucher, isEstimatingPrivate } = useCheckoutVouchers(productsSubtotal)
+
   const voucherDiscount = selectedVoucher
     ? selectedVoucher.kind === 'percent'
       ? Math.floor((productsSubtotal * selectedVoucher.value) / 100)
@@ -262,7 +266,8 @@ export default function CheckoutClient() {
                     paymentMethod: selectedPaymentMethod.paymentMethod,
                     gateway: selectedPaymentMethod.gateway,
                     shippingGateway: selectedDeliveryMethod.shippingGateway,
-                    shippingFee
+                    shippingFee,
+                    voucherCode: USE_MOCK_VOUCHERS ? null : selectedVoucher?.code ?? null
                   }),
                 disabled:
                   !selectedPaymentMethod ||
@@ -300,9 +305,11 @@ export default function CheckoutClient() {
     showShipping: step >= 2,
     grandTotal: displayGrandTotal,
     voucherDiscount,
-    voucherVouchers: MOCK_VOUCHERS,
+    voucherVouchers: vouchers,
     selectedVoucher,
     onSelectVoucher: setSelectedVoucher,
+    onEstimatePrivateVoucher: estimatePrivateVoucher,
+    isEstimatingPrivate,
     action: sidebarAction,
     showTerms: step === 4,
     cards,
