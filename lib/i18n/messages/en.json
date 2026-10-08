@@ -720,6 +720,7 @@
       "voucher": {
         "title": "Voucher offers",
         "description": "Choose one voucher to apply to your order",
+        "empty": "There are no promotions for this order",
         "expiresAt": "Expires {date}",
         "orEnter": "Or enter a voucher code",
         "inputPlaceholder": "Enter voucher code",
@@ -731,7 +732,6 @@
         "discountLabel": "Voucher",
         "ticketPercent": "% discount",
         "ticketFixed": "Cashback",
-        "demoNote": "Demo UI: the voucher is not sent to the order API yet.",
         "apiOffer": "Voucher offer",
         "apiDescription": "Voucher available for your order",
         "mock": {

@@ -54,6 +54,7 @@ export default function VoucherPicker({
 
   const publicSelected = selectedVoucher?.visibility === 'public'
   const privateSelected = selectedVoucher?.visibility === 'private'
+  const hasVouchers = vouchers.length > 0
 
   const selectPublic = (voucher: MockVoucher, checked: boolean) => {
     setPrivateApplied(false)
@@ -95,6 +96,8 @@ export default function VoucherPicker({
         </div>
       </div>
 
+      {hasVouchers ? (
+        <>
       <div className='mt-4 max-h-72 space-y-2 overflow-y-auto pr-1 [scrollbar-color:var(--color-border)_transparent] [scrollbar-width:thin]'>
         {vouchers
           .filter((voucher) => voucher.visibility === 'public')
@@ -224,7 +227,10 @@ export default function VoucherPicker({
       {privateApplied && selectedVoucher ? (
         <p className='mt-2 text-xs font-medium text-primary'>{t('orders.checkout.voucher.applied', { code: selectedVoucher.code })}</p>
       ) : null}
-      <p className='mt-3 text-[0.68rem] leading-relaxed text-muted-foreground'>{t('orders.checkout.voucher.demoNote')}</p>
+        </>
+      ) : (
+        <p className='mt-5 text-center text-sm text-muted-foreground'>{t('orders.checkout.voucher.empty')}</p>
+      )}
       </section>
     </TooltipProvider>
   )

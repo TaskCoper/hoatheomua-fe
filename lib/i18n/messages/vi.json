@@ -720,6 +720,7 @@
       "voucher": {
         "title": "Voucher ưu đãi",
         "description": "Chọn một voucher để áp dụng cho đơn hàng",
+        "empty": "Chưa có chương trình khuyến mãi cho đơn hàng này",
         "expiresAt": "HSD {date}",
         "orEnter": "Hoặc nhập mã voucher",
         "inputPlaceholder": "Nhập mã giảm giá",
@@ -731,7 +732,6 @@
         "discountLabel": "Voucher",
         "ticketPercent": "Giảm %",
         "ticketFixed": "Giảm tiền",
-        "demoNote": "Demo UI: voucher hiện chưa được gửi lên API đặt hàng.",
         "apiOffer": "Ưu đãi voucher",
         "apiDescription": "Voucher áp dụng cho đơn hàng của bạn",
         "mock": {
