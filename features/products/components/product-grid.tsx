@@ -53,7 +53,6 @@ export default function ProductGrid({
   pageHref,
   pageSize = PRODUCTS_PAGE_SIZE,
   isCustomizable = false,
-  singleLineTitle = false,
   className,
   columnsClassName = '[grid-template-columns:repeat(auto-fill,minmax(min(8.5rem,100%),1fr))] sm:grid-cols-2 lg:grid-cols-4',
   columnsStyle
@@ -67,8 +66,6 @@ export default function ProductGrid({
   pageHref?: (page: number) => string
   pageSize?: number
   isCustomizable?: boolean
-  /** Truncate card titles to one line (with a tooltip) instead of clamping to two. */
-  singleLineTitle?: boolean
   className?: string
   columnsClassName?: string
   columnsStyle?: CSSProperties
@@ -158,7 +155,7 @@ export default function ProductGrid({
           return isCustomizable ? (
             <CustomizableProductCard key={product.id} {...cardProps} />
           ) : (
-            <ProductCard key={product.id} {...cardProps} singleLineTitle={singleLineTitle} />
+            <ProductCard key={product.id} {...cardProps} />
           )
         })}
       </motion.div>
