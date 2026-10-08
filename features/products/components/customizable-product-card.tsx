@@ -6,6 +6,8 @@ import {
   type BouquetIngredient,
   type BouquetPlacement
 } from '@/features/products/bouquet-composition'
+import ProductTitle from '@/features/products/components/product-title'
+import { PRODUCT_CARD_MEDIA_HEIGHT } from '@/features/products/constants'
 import type { ProductDetail, ProductMaterial } from '@/features/products/types'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -207,7 +209,7 @@ export default function CustomizableProductCard({
         className='relative z-10 flex h-full flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 transition-[box-shadow,transform] duration-300 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-[0.995]'
       >
         <div className='p-2 pb-0'>
-          <div className='relative aspect-square overflow-hidden rounded-2xl bg-secondary/55 @[13rem]:aspect-4/5 @[18rem]:aspect-3/4'>
+          <div className={cn('relative overflow-hidden rounded-2xl bg-secondary/55', PRODUCT_CARD_MEDIA_HEIGHT)}>
             <div
               aria-hidden='true'
               className='pointer-events-none absolute inset-0 bg-[radial-gradient(85%_65%_at_50%_30%,rgb(255_255_255/62%),transparent_74%)]'
@@ -361,12 +363,10 @@ export default function CustomizableProductCard({
           </div>
         </div>
 
-        <div className='flex flex-1 flex-col gap-1 p-3 @[13rem]:p-4 @[18rem]:p-5'>
-          <h2 className='line-clamp-2 font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg'>
-            {name}
-          </h2>
+        <div className='flex flex-1 flex-col gap-1 p-3 sm:p-4'>
+          <ProductTitle name={name} />
 
-          <p className='hidden text-xs font-medium text-muted-foreground @[11rem]:block'>
+          <p className='truncate text-xs font-medium text-muted-foreground'>
             {t('products.card.madeToOrder')} · {t('products.card.ingredientCount', { count: stems.length })}
           </p>
 

@@ -29,7 +29,7 @@ export default function WomenDayCollectionSection() {
           <div><h3 className='font-title text-xl font-bold text-primary sm:text-2xl'>{t('womenDay.collection.productsTitle')}</h3><p className='mt-1 text-xs text-muted-foreground sm:text-sm'>{t('womenDay.collection.productsIntro')}</p></div>
           <Link href='/products' className='inline-flex items-center gap-1 text-xs font-semibold text-primary transition-transform hover:translate-x-1 sm:text-sm'>{t('womenDay.collection.readMore')}<HugeiconsIcon icon={ArrowRight01Icon} className='size-4' /></Link>
         </div>
-        <ProductGrid categoryIds={WOMEN_DAY_CATEGORY_IDS} pageSize={WOMEN_DAY_PAGE_SIZE} page={page} onPageChange={setPage} pageHref={() => COLLECTION_ANCHOR} singleLineTitle columnsClassName='[grid-template-columns:repeat(auto-fill,minmax(min(8.5rem,100%),1fr))] sm:grid-cols-2 lg:grid-cols-5' />
+        <ProductGrid categoryIds={WOMEN_DAY_CATEGORY_IDS} pageSize={WOMEN_DAY_PAGE_SIZE} page={page} onPageChange={setPage} pageHref={() => COLLECTION_ANCHOR} columnsClassName='[grid-template-columns:repeat(auto-fill,minmax(min(8.5rem,100%),1fr))] sm:grid-cols-2 lg:grid-cols-5' />
       </motion.div>
     </section>
   )
