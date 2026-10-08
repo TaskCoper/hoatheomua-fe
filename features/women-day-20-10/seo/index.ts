@@ -1,7 +1,18 @@
 import type { ProductDetail } from '@/features/products/types'
 import { WOMEN_DAY_PATH } from '@/features/women-day-20-10/constants'
 import type { Locale } from '@/lib/i18n/routing'
-import { buildBreadcrumbList, buildOgImageUrl, buildPageMetadata, inLanguage, ORGANIZATION_ID, SITE_NAME, SITE_URL, WEBSITE_ID, type LocaleCopy, type SeoCopy } from '@/shared/seo'
+import {
+  buildBreadcrumbList,
+  buildOgImageUrl,
+  buildPageMetadata,
+  inLanguage,
+  ORGANIZATION_ID,
+  SITE_NAME,
+  SITE_URL,
+  WEBSITE_ID,
+  type LocaleCopy,
+  type SeoCopy
+} from '@/shared/seo'
 import { localePath, localeUrl } from '@/shared/seo/url'
 import type { Metadata } from 'next'
 
@@ -41,7 +52,17 @@ export const buildWomenDayJsonLd = (locale: Locale, items: ProductDetail[]) => {
   return {
     '@context': 'https://schema.org',
     '@graph': [
-      { '@type': 'CollectionPage', '@id': `${SITE_URL}${path}#webpage`, url, name: `${copy.title} - ${SITE_NAME}`, description: copy.description, inLanguage: inLanguage(locale), isPartOf: { '@id': WEBSITE_ID }, about: { '@id': ORGANIZATION_ID }, primaryImageOfPage: { '@type': 'ImageObject', url: buildOgImageUrl(WOMEN_DAY_OG_IMAGE_PATH) } },
+      {
+        '@type': 'CollectionPage',
+        '@id': `${SITE_URL}${path}#webpage`,
+        url,
+        name: `${copy.title} - ${SITE_NAME}`,
+        description: copy.description,
+        inLanguage: inLanguage(locale),
+        isPartOf: { '@id': WEBSITE_ID },
+        about: { '@id': ORGANIZATION_ID },
+        primaryImageOfPage: { '@type': 'ImageObject', url: buildOgImageUrl(WOMEN_DAY_OG_IMAGE_PATH) }
+      },
       buildBreadcrumbList(locale, `${SITE_URL}${path}#breadcrumb`, [{ name: copy.breadcrumb, url }])
     ]
   }

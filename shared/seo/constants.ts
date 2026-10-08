@@ -1,6 +1,6 @@
 import { routing, type Locale } from '@/lib/i18n/routing'
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.net'
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.com'
 export const SITE_NAME = 'Hoa Theo Mùa'
 
 export const DEFAULT_OG_IMAGE = '/images/flower.png'

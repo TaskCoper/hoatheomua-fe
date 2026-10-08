@@ -67,6 +67,7 @@ export default function ProductGrid({
   pageHref?: (page: number) => string
   pageSize?: number
   isCustomizable?: boolean
+  /** Truncate card titles to one line (with a tooltip) instead of clamping to two. */
   singleLineTitle?: boolean
   className?: string
   columnsClassName?: string
@@ -146,26 +147,20 @@ export default function ProductGrid({
         style={columnsStyle}
         className={cn('grid w-full gap-3 sm:gap-4 lg:gap-5', columnsClassName)}
       >
-        {items.map((product, index) => (
-          isCustomizable ? (
-            <CustomizableProductCard
-              key={product.id}
-              product={product}
-              eager={page === DEFAULT_PAGE_INDEX && index < 4}
-              isActive={index === activeIndex}
-              onHoverStart={() => setActiveIndex(index)}
-            />
+        {items.map((product, index) => {
+          const cardProps = {
+            product,
+            eager: page === DEFAULT_PAGE_INDEX && index < 4,
+            isActive: index === activeIndex,
+            onHoverStart: () => setActiveIndex(index)
+          }
+
+          return isCustomizable ? (
+            <CustomizableProductCard key={product.id} {...cardProps} />
           ) : (
-            <ProductCard
-              key={product.id}
-              product={product}
-              eager={page === DEFAULT_PAGE_INDEX && index < 4}
-              isActive={index === activeIndex}
-              onHoverStart={() => setActiveIndex(index)}
-              singleLineTitle={singleLineTitle}
-            />
+            <ProductCard key={product.id} {...cardProps} singleLineTitle={singleLineTitle} />
           )
-        ))}
+        })}
       </motion.div>
 
       <Pagination className='mt-8'>

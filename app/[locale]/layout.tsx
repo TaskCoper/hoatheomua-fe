@@ -25,7 +25,8 @@ const HEAVY_ROUTE_NAMESPACES = [
   'careers',
   'dataTable',
   'recruitment',
-  'richTextEditor'
+  'richTextEditor',
+  'womenDay'
 ] as const
 
 function pickClientMessages(messages: Record<string, unknown>) {
@@ -54,7 +55,7 @@ const lora = Lora({
   fallback: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif']
 })
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.net'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.com'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
