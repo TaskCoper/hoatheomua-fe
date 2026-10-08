@@ -99,7 +99,6 @@ export default function ProductGrid({
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
   const pageNumbers = getPageNumbers(page, totalPages)
   const hrefFor = (target: number) => (pageHref ? pageHref(target) || '#' : '#')
-
   const goToPage = (event: React.MouseEvent<HTMLAnchorElement>, target: number) => {
     if (isModifiedClick(event)) return
     event.preventDefault()

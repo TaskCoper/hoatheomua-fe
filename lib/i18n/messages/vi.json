@@ -717,6 +717,48 @@
       "shippingFee": "Phí vận chuyển",
       "shippingFeeDiscount": "Giảm giá (bán kính miễn phí ship)",
       "total": "Tổng cộng",
+      "voucher": {
+        "title": "Voucher ưu đãi",
+        "description": "Chọn một voucher để áp dụng cho đơn hàng",
+        "empty": "Chưa có chương trình khuyến mãi cho đơn hàng này",
+        "expiresAt": "HSD {date}",
+        "orEnter": "Hoặc nhập mã voucher",
+        "inputPlaceholder": "Nhập mã giảm giá",
+        "inputLabel": "Mã voucher riêng tư",
+        "apply": "Áp dụng",
+        "clear": "Xóa",
+        "invalid": "Mã voucher không hợp lệ hoặc đã hết hạn.",
+        "applied": "Đã áp dụng mã {code}",
+        "discountLabel": "Voucher",
+        "ticketPercent": "Giảm %",
+        "ticketFixed": "Giảm tiền",
+        "apiOffer": "Ưu đãi voucher",
+        "apiDescription": "Voucher áp dụng cho đơn hàng của bạn",
+        "mock": {
+          "octoberOffer": "Ưu đãi tháng 10",
+          "percent20": "Giảm 20% cho đơn hàng",
+          "littleGift": "Món quà nhỏ dành tặng bạn",
+          "fixed50000": "Giảm 50.000đ cho đơn hàng",
+          "newMonth": "Chào tháng mới",
+          "percent10": "Giảm 10% cho đơn hàng",
+          "freshFlowers": "Hoa tươi trao tay",
+          "fixed30000": "Giảm 30.000đ cho đơn hàng",
+          "gentleWeekend": "Cuối tuần dịu dàng",
+          "percent15": "Giảm 15% cho đơn hàng",
+          "seasonOfLove": "Gửi một mùa thương",
+          "fixed80000": "Giảm 80.000đ cho đơn hàng",
+          "inSeason": "Theo mùa yêu thương",
+          "percent12": "Giảm 12% cho đơn hàng",
+          "thankYou": "Cảm ơn bạn đã chọn hoa",
+          "fixed20000": "Giảm 20.000đ cho đơn hàng",
+          "specialOffer": "Ưu đãi đặc biệt",
+          "percent25": "Giảm 25% cho đơn hàng",
+          "bloomingJoy": "Nở rộ niềm vui",
+          "fixed70000": "Giảm 70.000đ cho đơn hàng",
+          "partnerOffer": "Ưu đãi đối tác",
+          "fixed100000": "Giảm 100.000đ cho đơn hàng"
+        }
+      },
       "back": "Quay lại",
       "confirm": "Xác nhận đặt hàng",
       "confirmedToast": "Đã xác nhận đơn hàng",
@@ -1468,23 +1510,21 @@
   },
   "womenDay": {
     "hero": {
-      "eyebrow": "Bộ sưu tập đặc biệt · 20 tháng 10",
-      "title": "Gửi một mùa thương đến những người phụ nữ mình yêu",
-      "intro": "Một bó hoa dịu dàng cho mẹ, một sắc hoa thật riêng cho người thương, hay một lời cảm ơn gửi đến người đồng hành cùng bạn mỗi ngày.",
-      "primary": "Chọn hoa tặng nàng",
-      "secondary": "Xem cách chọn hoa",
-      "dateMark": "20 · 10",
-      "brandLine": "Hoa tươi",
-      "brandLabel": "theo mùa",
-      "seasonsLabel": "mùa hoa",
-      "naturalLabel": "tự nhiên",
-      "founded": "Thành lập 12/11/2020"
+      "eyebrow": "Bộ Sưu Tập Hoa 20 10 Đẹp Nhất",
+      "title": "Hoa 20 10: 99+ Mẫu Hoa Tươi Đẹp, Ý Nghĩa Và Dễ Chọn",
+      "intro": "Hoa 20 10 đẹp và ý nghĩa, hoa tươi 20/10 dành tặng mẹ, vợ, người yêu, bạn bè... Đặt hoa 20-10 TPHCM online ưu đãi ngập tràn tại Hoa Theo Mùa!",
+      "primary": "Đặt hoa tươi 20/10 TẶNG VÍ DA + PHÍ SHIP",
+      "dateBadge": "Hoa tặng vợ/người yêu",
+      "seasonsBadge": "Đặt hoa tươi 20/10 tặng mẹ",
+      "naturalBadge": "Ưu Đãi Lớn",
+      "deliveryBadge": "Giao Nhanh 2H",
+      "brandBadge": "Hoa Theo Mùa"
     },
     "collection": {
-      "eyebrow": "Những đóa hoa dành riêng cho nàng",
-      "title": "Trao hoa, trao điều chưa nói",
-      "intro": "Các thiết kế được tuyển chọn theo sắc hoa, cảm xúc và người nhận — để món quà của bạn vừa đẹp vừa thật lòng.",
-      "productsTitle": "Bộ sưu tập 20/10",
+      "eyebrow": "HOA THEO MÙA - TINH TẾ ĐẾN TỪNG CHI TIẾT",
+      "title": "Dịu Dàng Tháng Mười, Hoa Tươi Tặng Người",
+      "intro": "Tổng hợp những mẫu hoa tươi 20/10 được tuyển chọn dành riêng cho ngày Phụ nữ Việt Nam. Đặt hoa dễ dàng, thanh toán online, tự chọn khung giờ trao đến người thương!",
+      "productsTitle": "Tổng hợp mẫu hoa 20-10",
       "productsIntro": "Hoa tươi theo mùa, được bó thủ công và giao tận nơi tại TP.HCM.",
       "readMore": "Khám phá thêm"
     },
@@ -1536,10 +1576,116 @@
       }
     },
     "promise": {
-      "eyebrow": "Hoa Theo Mùa gửi bạn",
-      "title": "Để lời yêu thương đến nơi thật đẹp",
-      "text": "Từ những cành hoa được chọn trong ngày đến cách gói ghém cuối cùng, mọi chi tiết đều được chăm chút như một lời nhắn gửi.",
-      "order": "Đặt hoa ngay"
+      "eyebrow": "Bộ sưu tập hoa 20 tháng 10",
+      "titleLine1": "ĐẶT NGAY HOA TƯƠI 20/10",
+      "titleLine2": "TẶNG VÍ DA + PHÍ SHIP",
+      "text": "Hoa Theo Mùa: mỗi mùa một đóa hoa dịu dàng, để bạn gửi trọn yêu thương đến người phụ nữ của mình."
+    },
+    "article": {
+      "title": "Hoa 20/10 Đẹp & Ý Nghĩa: Gợi Ý Mẫu Hoa Cho Từng Người [2026]",
+      "intro": "Hoa 20/10 là món quà tuyệt vời để tôn vinh và gửi lời tri ân đến phái đẹp. Cùng Hoa Theo Mùa khám phá những thiết kế hoa ý nghĩa để chúc mừng ngày 20/10 nhé!",
+      "images": {
+        "pastel": "Bó hoa tươi tone hồng pastel ngọt ngào dành tặng phái đẹp trong ngày lễ 20/10",
+        "hydrangea": "Hình ảnh hoa 20/10: bó hoa tú cầu đầy ý nghĩa",
+        "rose": "Giỏ hoa Blooming-rose-Ecuador tone đỏ bày tỏ sự tinh tế",
+        "delivery": "Dịch vụ giao hoa tươi hỏa tốc 2h tại TP.HCM - Hoa Theo Mùa"
+      },
+      "meaning": {
+        "title": "Ý Nghĩa Ngày Phụ Nữ Việt Nam Và Nghệ Thuật Tặng Hoa 20/10",
+        "body": "Ngày 20/10 là dịp đặc biệt để tôn vinh phụ nữ. Đóa hoa tươi thắm chính là sứ giả kết nối sự yêu thương chân thành. Việc chuẩn bị hoa ngày 20-10 thể hiện sự trân trọng sâu sắc. Từng cánh hoa đại diện cho nét đẹp dịu dàng của phái đẹp. Đóa hoa 20 10 giúp bạn ghi điểm tuyệt đối trong mắt người thương.",
+        "gratitudeTitle": "Thông Điệp Tri Ân Dành Cho Phái Đẹp",
+        "gratitude": "Phụ nữ luôn xứng đáng nhận được sự che chở và yêu thương. Đóa hoa tươi thắm tiếp thêm năng lượng tích cực cho họ. Món quà này giúp xua tan mọi mệt mỏi trong cuộc sống.\n\nKhi bạn trao hoa, nụ cười rạng rỡ của họ chính là điều quý giá nhất. Đó là lý do bạn nên chọn đóa hoa chúc mừng thật đẹp và chu đáo.",
+        "spiritTitle": "Giá Trị Tinh Thần Của Hoa Tươi Ngày 20/10",
+        "spirit": "Hoa tươi mang hương sắc mộc mạc và thuần khiết từ thiên nhiên. Ngắm nhìn hoa tươi giúp tâm hồn thêm thư thái và an yên. Không gian sống nhờ đó cũng trở nên bừng sáng hơn.\n\nNhu cầu tìm kiếm các mẫu hoa 20-10 luôn tăng cao mỗi dịp thu về. Ai cũng muốn chọn được tác phẩm hoa tươi ấn tượng nhất. Hoa Theo Mùa luôn sẵn sàng đồng hành cùng bạn để sẻ chia yêu thương."
+      },
+      "choices": {
+        "title": "20/10 Nên Tặng Hoa Gì Để Thể Hiện Sự Tinh Tế?",
+        "intro": "Nhiều người thường băn khoăn 20/10 nên tặng hoa gì để truyền tải đúng tâm tư. Mỗi loài hoa đều sở hữu một nét đẹp và ý nghĩa biểu trưng riêng biệt.",
+        "items": {
+          "rose": {
+            "title": "Hoa Hồng – Tình Yêu Son Sắt Và Lòng Tôn Kính",
+            "body": "Hoa hồng luôn là nữ hoàng kiêu sa của muôn loài hoa. Sắc hồng đỏ tượng trưng cho tình cảm nồng nàn và mãnh liệt. Trong khi đó, tone hồng phấn gợi lên sự dịu dàng và thanh lịch.\n\nNếu muốn bày tỏ lòng biết ơn, hoa hồng vàng là gợi ý tuyệt vời. Mẫu hoa này thể hiện sự ấm áp và niềm tin yêu chân thành. Đóa hoa 20 10 từ hoa hồng luôn tạo nên sức hút khó cưỡng."
+          },
+          "carnation": {
+            "title": "Hoa Cẩm Chướng – Lời Tri Ân Sâu Sắc Dành Cho Mẹ",
+            "body": "Hoa cẩm chướng từ lâu đã đại diện cho tình mẫu tử thiêng liêng. Những cánh hoa mỏng manh xếp lớp tượng trưng cho sự chở che bao la. Đóa hoa này nói thay ngàn lời cảm ơn chân thành gửi đến mẹ.\n\nTặng cẩm chướng mang lại niềm vui lớn cho đấng sinh thành. Mẹ sẽ cảm nhận trọn vẹn tình hiếu thảo của người con thân yêu. Đây là mẫu hoa đẹp 20-10 rất đáng để bạn lựa chọn."
+          },
+          "sunflower": {
+            "title": "Hoa Hướng Dương – Niềm Tin Tươi Sáng Và Nghị Lực",
+            "body": "Hoa hướng dương luôn vươn mình mạnh mẽ về phía mặt trời rực rỡ. Loài hoa này tượng trưng cho lòng kiên định và tinh thần lạc quan. Sắc vàng rạng rỡ mang lại không khí vui tươi cho người nhận.\n\nTặng đóa hướng dương thay cho lời chúc thành công và khởi sắc. Mẫu hoa này rất thích hợp tặng cô giáo, sếp nữ hay đồng nghiệp. Đây cũng là lựa chọn hoàn hảo khi muốn tặng hoa 20-10 đầy ý nghĩa."
+          },
+          "orchid": {
+            "title": "Hoa Lan Hồ Điệp – Đẳng Cấp Sang Trọng Và Quý Phái",
+            "body": "Hoa lan hồ điệp được mệnh danh là biểu tượng của tài lộc và phú quý. Cành hoa uốn lượn mềm mại với độ bền tươi vượt trội nhiều tuần. Tác phẩm hoa này tôn lên vẻ đẹp kiêu sa và đẳng cấp người nhận.\n\nKhi tặng mẹ hoặc đối tác quan trọng, lan hồ điệp là ưu tiên hàng đầu. Món quà cao cấp này khẳng định gu thẩm mỹ tinh tế của người trao tặng. Bạn có thể tham khảo thêm các chậu hoa lan hồ điệp tuyệt đẹp tại shop Hoa Theo Mùa."
+          }
+        }
+      },
+      "recipients": {
+        "title": "Gợi Ý Các Mẫu Hoa Đẹp Cho Từng Đối Tượng",
+        "intro": "Dưới đây là những gợi ý lý tưởng cho từng đối tượng nhận hoa.",
+        "items": {
+          "mother": {
+            "title": "Hoa 20 10 Tặng Mẹ - Gửi Trọn Tình Yêu Thương",
+            "body": "Mẹ là người phụ nữ quan trọng nhất trong cuộc đời mỗi chúng ta. Thiết kế hoa 20-10 tặng mẹ cần hướng đến vẻ trang nhã và ấm cúng. Những gam màu dịu nhẹ như hồng phấn hay vàng kem rất được ưa chuộng.\n\nĐặt hoa 20/10 tặng mẹ, bà nhanh chóng tại Hoa Theo Mùa - thương hiệu phát triển với tinh thần: dịu dàng, nâng niu và gửi trọn yêu thương đến người nhận. Bó hoa chứa đựng lời chúc sức khỏe và bình an. Món quà hiếu nghĩa này sẽ khiến mẹ, bà vô cùng xúc động và tự hào."
+          },
+          "wife": {
+            "title": "Hoa Tặng Vợ 20 10 - Hâm Nóng Tình Cảm Lứa Đôi",
+            "body": "Tình yêu hôn nhân luôn cần những khoảnh khắc lãng mạn để thêm bền chặt. Một đóa hoa tặng vợ 20/10 chu đáo sẽ khiến nàng cảm thấy được yêu thương. Hãy chọn những kiểu dáng hoa thời thượng và mang sắc màu ngọt ngào.\n\nĐừng quên trao tặng kèm theo những lời cảm ơn chân thành nhất. Món quà tinh tế này sẽ giúp hai bạn thêm gắn kết và thấu hiểu."
+          },
+          "lover": {
+            "title": "Hoa Tặng Người Yêu Ngày 20 tháng 10 - Sự Ngọt Ngào Trẻ Trung",
+            "body": "Đối với người yêu, loại hoa tặng 20-10 cần toát lên sự bất ngờ và năng động. Một bó hoa 20 10 phối hoa baby nhỏ xinh sẽ tạo ấn tượng mạnh. Bạn nên tìm hiểu sở thích của nàng để chọn được tone màu chuẩn gu nhất nhé.\n\nMón quà ngọt ngào sẽ giúp chuyện tình cảm đôi lứa thêm phần thăng hoa. Nàng sẽ cảm nhận được sự quan tâm chu đáo và sâu sắc từ bạn."
+          },
+          "colleague": {
+            "title": "Hoa Chúc Mừng Dành Cho Sếp Nữ Và Đồng Nghiệp",
+            "body": "Loại hoa chúc 20-10 nơi công sở cần đảm bảo sự trang trọng và lịch thiệp. Thiết kế hoa tặng 20-10 nên có tông màu tươi sáng hoặc pastel thanh lịch. Những sắc màu này tượng trưng cho sự may mắn và năng lượng dồi dào.\n\nKhi quý công ty cần đặt hoa chúc mừng 20/10, lẵng hoa 20-10 sang trọng luôn là ưu tiên hàng đầu. Với tập thể đồng nghiệp, bạn có thể chọn từng bông hoa hồng gói xinh xắn. Đối với cấp trên, một lẵng hoa 20-10 lộng lẫy sẽ tạo ấn tượng chuyên nghiệp nhất."
+          }
+        },
+        "wifePromo": "Đặt hoa tươi 20-10 sớm tại Hoa Theo Mùa để được áp Voucher tặng ví da đựng son và hỗ trợ ship nhé!"
+      },
+      "table": {
+        "title": "Bảng So Sánh Các Kiểu Dáng Hoa Chúc Mừng 20/10",
+        "intro": "Lựa chọn dáng hoa phù hợp giúp tối ưu thẩm mỹ và không gian trưng bày. Dưới đây là bảng tổng hợp các kiểu hoa 20 10 phổ biến nhất. Giúp bạn dễ dàng đưa ra quyết định phù hợp với nhu cầu của mình.",
+        "type": "Kiểu dáng hoa",
+        "highlight": "Ưu điểm nổi bật",
+        "for": "Dịp tặng phù hợp",
+        "duration": "Độ bền trung bình",
+        "rows": {
+          "bouquet": {
+            "type": "Bó hoa tươi",
+            "highlight": "Gọn nhẹ, trẻ trung, dễ dàng cầm tay check-in chụp hình xinh xắn.",
+            "for": "Tặng bạn gái, tặng vợ, bạn bè thân thiết.",
+            "duration": "3 - 5 ngày"
+          },
+          "basket": {
+            "type": "Giỏ hoa tươi",
+            "highlight": "Tiện lợi để bàn, cắm sẵn xốp giữ nước, sang trọng và lịch sự.",
+            "for": "Tặng mẹ, cô giáo, người lớn tuổi trong nhà.",
+            "duration": "4 - 6 ngày"
+          },
+          "box": {
+            "type": "Hộp hoa tươi",
+            "highlight": "Phong cách hiện đại, giữ form dáng đẹp và bảo vệ hoa rất tốt.",
+            "for": "Tặng vợ yêu, đối tác nữ, sếp nữ công ty.",
+            "duration": "4 - 6 ngày"
+          },
+          "stand": {
+            "type": "Lẵng hoa tươi",
+            "highlight": "Kích thước hoành tráng, sang trọng, nổi bật giữa không gian sự kiện.",
+            "for": "Chúc mừng công ty, hội nghị, sự kiện tập thể.",
+            "duration": "3 - 5 ngày"
+          }
+        }
+      },
+      "why": {
+        "title": "Vì sao nên đặt hoa 20/10 tại Hoa Theo Mùa?",
+        "body": "Dịp lễ ngày 20-10 thường xảy ra tình trạng thiếu hụt hoa đẹp do nhu cầu tăng cao. Do đó, việc tìm kiếm dịch vụ Đặt hoa 20/10 tphcm uy tín là vô cùng cần thiết. Hoa Theo Mùa là thương hiệu hoa tươi được đông đảo khách hàng tin tưởng hơn 7 năm qua.\n\nChúng tôi cam kết mọi đơn hàng đặt hoa 20 10, hoa chúc mừng đều được hoàn thiện tỉ mỉ và giao hàng đúng giờ khách lựa chọn.\n\nƯu đãi lớn khi quý khách hàng đặt hoa trực tiếp trên Website hoatheomua.com dịp lễ 20 tháng 10:",
+        "items": {
+          "gift": "Tặng ví da đựng son cho nàng - chỉ 130 phần. Mỗi đơn 1 phần, tặng đến khi hết. Đóng kèm hộp quà gửi cho người nhận. Áp dụng cho đơn từ 690K hẹn giao ngày 17 hoặc 18/10, cộng dồn giảm phí ship lên đến 50K.",
+          "shipping": "Giảm tối đa 50K phí ship cho đơn từ 490K hẹn giao 17, 18 hoặc 19/10."
+        },
+        "final": "Mọi thủ tục Mua hoa 20/10 tại Hoa Theo Mùa rất nhanh chóng khi bạn đặt hàng trên website. Quý khách chỉ cần chọn mẫu, chọn thời gian giao, nhắn gửi lời chúc trên thiệp và thanh toán. Đội ngũ tư vấn sẽ xử lý đơn hàng và giao đúng khung giờ bạn lựa chọn."
+      }
     }
   },
   "products": {

@@ -4,11 +4,10 @@ import { productsQueryKey } from '@/features/products/hooks/use-get-products'
 import { getCachedProducts } from '@/features/products/queries.server'
 import type { ProductDetail } from '@/features/products/types'
 import WomenDayCollectionSection from '@/features/women-day-20-10/components/women-day-collection-section'
-import WomenDayGuideSection from '@/features/women-day-20-10/components/women-day-guide-section'
 import WomenDayHeroSection from '@/features/women-day-20-10/components/women-day-hero-section'
 import WomenDayJumpButton from '@/features/women-day-20-10/components/women-day-jump-button'
 import WomenDayPromiseSection from '@/features/women-day-20-10/components/women-day-promise-section'
-import WomenDayStoriesSection from '@/features/women-day-20-10/components/women-day-stories-section'
+import WomenDayArticleSection from '@/features/women-day-20-10/components/women-day-article-section'
 import { WOMEN_DAY_CATEGORY_IDS, WOMEN_DAY_PAGE_SIZE } from '@/features/women-day-20-10/constants'
 import { buildWomenDayJsonLd, generateWomenDayMetadata } from '@/features/women-day-20-10/seo'
 import type { Locale } from '@/lib/i18n/routing'
@@ -54,9 +53,8 @@ export default async function WomenDayRoute({ params }: { params: Promise<{ loca
         <div className='relative isolate overflow-hidden'>
           <WomenDayHeroSection />
           <WomenDayCollectionSection />
-          <WomenDayStoriesSection />
-          <WomenDayGuideSection />
           <WomenDayPromiseSection />
+          <WomenDayArticleSection />
           <TestimonialSection />
         </div>
 
