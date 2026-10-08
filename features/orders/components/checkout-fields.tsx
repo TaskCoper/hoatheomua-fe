@@ -38,12 +38,19 @@ const slotEndMinutes = (label: string) => {
   return Number(match[1]) * 60 + Number(match[2] ?? 0)
 }
 
+const slotStartMinutes = (label: string) => {
+  const match = label.match(/^\s*(\d{1,2})h(\d{1,2})?\s*-/)
+  if (!match) return null
+
+  return Number(match[1]) * 60 + Number(match[2] ?? 0)
+}
+
 const getSlotRemaining = (slot: DeliverySlot) =>
   slot.limit === null ? null : Math.max(0, slot.limit - Math.max(0, slot.occupied))
 
 const isSlotSelectable = (slot: DeliverySlot) => {
   const remaining = getSlotRemaining(slot)
-  return remaining !== null && remaining > 0
+  return remaining === null || remaining > 0
 }
 
 interface CheckoutFieldsProps {
@@ -119,7 +126,10 @@ export default function CheckoutFields({
   const selectedTagId = watch('tagIds')?.[0]
   const hasDeliverySlot = selectedTagId !== undefined
   const isScheduledDate = toOrderTimestamp(orderTimeForm) !== 0
-  const effectiveOrderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
+  const effectiveOrderDate = useMemo(
+    () => (orderTimeForm ? new Date(orderTimeForm) : minOrderDate),
+    [orderTimeForm, minOrderDate]
+  )
   const {
     slots: deliverySlots,
     isGettingDeliverySlotAvailability,
@@ -141,6 +151,45 @@ export default function CheckoutFields({
       return !isToday || endMinutes > minutesNow
     })
   }, [deliverySlots, orderTimeForm, minOrderDate])
+
+  useEffect(() => {
+    if (selectedTagId !== undefined || isGettingDeliverySlotAvailability || isDeliverySlotAvailabilityError) return
+
+    const now = new Date()
+    if (effectiveOrderDate.toDateString() !== now.toDateString()) return
+
+    const minutesNow = now.getHours() * 60 + now.getMinutes()
+    const currentSlot = tagOptions.find((slot) => {
+      const startMinutes = slotStartMinutes(slot.label)
+      const endMinutes = slotEndMinutes(slot.label)
+
+      return (
+        startMinutes !== null &&
+        endMinutes !== null &&
+        startMinutes <= minutesNow &&
+        minutesNow < endMinutes &&
+        isSlotSelectable(slot)
+      )
+    })
+    const nextAvailableSlot = tagOptions
+      .filter((slot) => isSlotSelectable(slot))
+      .map((slot) => ({ slot, startMinutes: slotStartMinutes(slot.label) }))
+      .filter((item): item is { slot: DeliverySlot; startMinutes: number } => item.startMinutes !== null)
+      .filter((item) => item.startMinutes > minutesNow)
+      .sort((a, b) => a.startMinutes - b.startMinutes)[0]?.slot
+    const autoSelectedSlot = currentSlot ?? nextAvailableSlot
+
+    if (autoSelectedSlot) {
+      setValue('tagIds', [autoSelectedSlot.tagId], { shouldDirty: false, shouldValidate: true })
+    }
+  }, [
+    selectedTagId,
+    isGettingDeliverySlotAvailability,
+    isDeliverySlotAvailabilityError,
+    effectiveOrderDate,
+    tagOptions,
+    setValue
+  ])
 
   // A slot can fall out of the list when the date moves back to today, so the
   // picked one never survives as a window that already passed.
@@ -537,11 +586,7 @@ export default function CheckoutFields({
                                   !isAvailable ? 'text-muted-foreground/60' : 'text-muted-foreground'
                                 )}
                               >
-                                {slot.limit === null
-                                  ? t('orders.checkout.slot.unavailable')
-                                  : remaining === 0
-                                    ? t('orders.checkout.slot.full')
-                                    : t('orders.checkout.slot.available', { count: remaining })}
+                                {remaining === 0 ? t('orders.checkout.slot.full') : null}
                               </span>
                             </span>
                           </SelectItem>

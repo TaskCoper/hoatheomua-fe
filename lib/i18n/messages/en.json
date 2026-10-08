@@ -675,9 +675,7 @@
       "tagWithinDate": "Delivery within {date}",
       "tagWithDate": "{date} at {tag}",
       "slot": {
-        "available": "Available for {count} orders",
-        "full": "Full",
-        "unavailable": "Unavailable"
+        "full": "Full"
       },
       "deliveryNoteHeading": "Delivery timing",
       "comboboxEmpty": "No results",
