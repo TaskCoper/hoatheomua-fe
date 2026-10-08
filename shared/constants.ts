@@ -34,7 +34,7 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/occasions/[id]',
   '/featured/[id]',
   '/mainline/[id]',
-  '/women-day-20-10'
+  '/hoa-20-10'
 ])
 
 const normalizeRoutePath = (pathname: string) => {

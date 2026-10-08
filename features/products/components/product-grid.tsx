@@ -53,6 +53,7 @@ export default function ProductGrid({
   pageHref,
   pageSize = PRODUCTS_PAGE_SIZE,
   isCustomizable = false,
+  singleLineTitle = false,
   className,
   columnsClassName = '[grid-template-columns:repeat(auto-fill,minmax(min(8.5rem,100%),1fr))] sm:grid-cols-2 lg:grid-cols-4',
   columnsStyle
@@ -66,6 +67,7 @@ export default function ProductGrid({
   pageHref?: (page: number) => string
   pageSize?: number
   isCustomizable?: boolean
+  singleLineTitle?: boolean
   className?: string
   columnsClassName?: string
   columnsStyle?: CSSProperties
@@ -96,8 +98,6 @@ export default function ProductGrid({
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
   const pageNumbers = getPageNumbers(page, totalPages)
   const hrefFor = (target: number) => (pageHref ? pageHref(target) || '#' : '#')
-  const CardComponent = isCustomizable ? CustomizableProductCard : ProductCard
-
   const goToPage = (event: React.MouseEvent<HTMLAnchorElement>, target: number) => {
     if (isModifiedClick(event)) return
     event.preventDefault()
@@ -147,13 +147,24 @@ export default function ProductGrid({
         className={cn('grid w-full gap-3 sm:gap-4 lg:gap-5', columnsClassName)}
       >
         {items.map((product, index) => (
-          <CardComponent
-            key={product.id}
-            product={product}
-            eager={page === DEFAULT_PAGE_INDEX && index < 4}
-            isActive={index === activeIndex}
-            onHoverStart={() => setActiveIndex(index)}
-          />
+          isCustomizable ? (
+            <CustomizableProductCard
+              key={product.id}
+              product={product}
+              eager={page === DEFAULT_PAGE_INDEX && index < 4}
+              isActive={index === activeIndex}
+              onHoverStart={() => setActiveIndex(index)}
+            />
+          ) : (
+            <ProductCard
+              key={product.id}
+              product={product}
+              eager={page === DEFAULT_PAGE_INDEX && index < 4}
+              isActive={index === activeIndex}
+              onHoverStart={() => setActiveIndex(index)}
+              singleLineTitle={singleLineTitle}
+            />
+          )
         ))}
       </motion.div>
 
