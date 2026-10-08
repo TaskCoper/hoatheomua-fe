@@ -717,6 +717,48 @@
       "shippingFee": "Shipping fee",
       "shippingFeeDiscount": "Discount (free-ship radius)",
       "total": "Total",
+      "voucher": {
+        "title": "Voucher offers",
+        "description": "Choose one voucher to apply to your order",
+        "empty": "There are no promotions for this order",
+        "expiresAt": "Expires {date}",
+        "orEnter": "Or enter a voucher code",
+        "inputPlaceholder": "Enter voucher code",
+        "inputLabel": "Private voucher code",
+        "apply": "Apply",
+        "clear": "Clear",
+        "invalid": "This voucher code is invalid or expired.",
+        "applied": "Voucher {code} applied",
+        "discountLabel": "Voucher",
+        "ticketPercent": "% discount",
+        "ticketFixed": "Cashback",
+        "apiOffer": "Voucher offer",
+        "apiDescription": "Voucher available for your order",
+        "mock": {
+          "octoberOffer": "October offer",
+          "percent20": "20% off your order",
+          "littleGift": "A little gift for you",
+          "fixed50000": "50,000đ off your order",
+          "newMonth": "Welcome the new month",
+          "percent10": "10% off your order",
+          "freshFlowers": "Fresh flowers, hand-delivered",
+          "fixed30000": "30,000đ off your order",
+          "gentleWeekend": "A gentle weekend",
+          "percent15": "15% off your order",
+          "seasonOfLove": "A season of love",
+          "fixed80000": "80,000đ off your order",
+          "inSeason": "Flowers in season",
+          "percent12": "12% off your order",
+          "thankYou": "Thank you for choosing flowers",
+          "fixed20000": "20,000đ off your order",
+          "specialOffer": "Special offer",
+          "percent25": "25% off your order",
+          "bloomingJoy": "Blooming joy",
+          "fixed70000": "70,000đ off your order",
+          "partnerOffer": "Partner offer",
+          "fixed100000": "100,000đ off your order"
+        }
+      },
       "back": "Back",
       "confirm": "Confirm order",
       "confirmedToast": "Order confirmed",
@@ -1463,6 +1505,186 @@
           "name": "Báo Tây Ninh",
           "headline": "Order gift flowers quickly and affordably"
         }
+      }
+    }
+  },
+  "womenDay": {
+    "hero": {
+      "eyebrow": "The Best 20/10 Fresh Flower Collection",
+      "title": "20 10 Flowers: 99+ Beautiful, Meaningful and Easy-to-Choose Bouquets",
+      "intro": "Beautiful and meaningful 20/10 flowers for mother, wife, someone special and friends. Order fresh 20/10 flowers online in Ho Chi Minh City with lovely offers from Hoa Theo Mùa!",
+      "primary": "Order 20/10 Flowers — FREE LEATHER WALLET + SHIPPING",
+      "dateBadge": "Flowers for wives and loved ones",
+      "seasonsBadge": "Order 20/10 flowers for mother",
+      "naturalBadge": "Big Offers",
+      "deliveryBadge": "Fast 2H Delivery",
+      "brandBadge": "Hoa Theo Mùa"
+    },
+    "collection": {
+      "eyebrow": "HOA THEO MÙA — ELEGANCE IN EVERY DETAIL",
+      "title": "A Gentle October, Flowers to Give with Love",
+      "intro": "A collection of fresh 20/10 flowers selected especially for Vietnamese Women’s Day. Order easily, pay online and choose a delivery time for someone you love.",
+      "productsTitle": "The 20-10 flower collections",
+      "productsIntro": "Fresh seasonal flowers, hand-tied and delivered across Ho Chi Minh City.",
+      "readMore": "Explore more"
+    },
+    "stories": {
+      "title": "A day worth remembering",
+      "author": "Hoa Theo Mùa",
+      "items": {
+        "gratitude": {
+          "date": "October 15, 2026",
+          "title": "20/10 — a gentle reason to say thank you",
+          "lead": "Flowers cannot say everything for us, but they can begin a beautiful conversation.",
+          "body": "Vietnamese Women’s Day is a small invitation to pause and remember the women who make our everyday life warmer."
+        },
+        "mother": {
+          "date": "October 16, 2026",
+          "title": "A season of gratitude for mother",
+          "lead": "For mother, the most beautiful gift often begins with a thoughtful gesture.",
+          "body": "Choose warm, graceful flowers and pair them with a small note — sometimes that is all it takes to make her day feel special."
+        },
+        "choose": {
+          "date": "October 17, 2026",
+          "title": "Choose flowers by what you want to say",
+          "lead": "Every color carries its own feeling: soft, bright, heartfelt or romantic.",
+          "body": "When you are unsure where to begin, think about the person receiving the flowers. A design that feels like her is always memorable."
+        },
+        "delivery": {
+          "date": "October 18, 2026",
+          "title": "A beautiful wish deserves a beautiful delivery",
+          "lead": "From the first stem to the little note, every detail becomes part of your message.",
+          "body": "Hoa Theo Mùa prepares each bouquet with care and delivers it across the city, so your feeling arrives beautifully."
+        }
+      }
+    },
+    "guide": {
+      "eyebrow": "A guide by recipient",
+      "title": "Choose flowers by feeling",
+      "intro": "Every woman has her own season. Begin with the story of the person you are gifting.",
+      "mother": {
+        "title": "For mother",
+        "text": "Soft, warm and full of gratitude."
+      },
+      "lover": {
+        "title": "For someone special",
+        "text": "Romantic, refined and made just for her."
+      },
+      "colleague": {
+        "title": "For sisters & colleagues",
+        "text": "Bright, graceful and full of energy."
+      }
+    },
+    "promise": {
+      "eyebrow": "The 20/10 flower collection",
+      "titleLine1": "ORDER FRESH 20/10 FLOWERS",
+      "titleLine2": "FREE LEATHER WALLET + SHIPPING",
+      "text": "Hoa Theo Mùa: one gentle flower season at a time, helping you send your love to the woman in your life."
+    },
+    "article": {
+      "title": "Beautiful & Meaningful 20/10 Flowers: Ideas for Everyone [2026]",
+      "intro": "Flowers are a wonderful way to celebrate and appreciate the women in your life. Explore meaningful 20/10 designs from Hoa Theo Mùa.",
+      "images": {
+        "pastel": "A sweet pastel pink bouquet for Vietnamese Women’s Day",
+        "hydrangea": "A meaningful 20/10 hydrangea bouquet",
+        "rose": "A red Blooming-rose-Ecuador basket expressing refined affection",
+        "delivery": "Hoa Theo Mùa 2-hour fresh flower delivery in Ho Chi Minh City"
+      },
+      "meaning": {
+        "title": "The Meaning of Vietnamese Women’s Day and the Art of Gifting Flowers",
+        "body": "October 20 is a special occasion to celebrate women. A fresh bouquet becomes a messenger of sincere affection and a thoughtful way to show appreciation.",
+        "gratitudeTitle": "A Message of Appreciation",
+        "gratitude": "Every woman deserves care and love. A bouquet can turn a simple moment into a warm, memorable smile.",
+        "spiritTitle": "The Emotional Value of Fresh Flowers",
+        "spirit": "Fresh flowers bring natural color and calm into everyday life, helping a space feel brighter and the heart feel lighter."
+      },
+      "choices": {
+        "title": "Which Flowers Should You Give on 20/10?",
+        "intro": "Every flower has its own beauty and meaning. Choose a color and style that says what you want to express.",
+        "items": {
+          "rose": {
+            "title": "Roses - Lasting Love and Respect",
+            "body": "Red roses express passionate affection, while blush tones feel gentle and refined. Yellow roses are also a thoughtful way to show gratitude."
+          },
+          "carnation": {
+            "title": "Carnations - Deep Gratitude for Mother",
+            "body": "Layered petals symbolize tender protection. Carnations can say the heartfelt thanks that words sometimes cannot."
+          },
+          "sunflower": {
+            "title": "Sunflowers - Bright Confidence and Strength",
+            "body": "Radiant yellow brings joyful energy and makes a lovely congratulations gift for a teacher, female leader or colleague."
+          },
+          "orchid": {
+            "title": "Phalaenopsis Orchids - Elegant and Sophisticated",
+            "body": "Orchids represent prosperity and refinement, making them a premium gift for mother or an important partner."
+          }
+        }
+      },
+      "recipients": {
+        "title": "Flower Ideas for Every Recipient",
+        "intro": "Every woman has her own story. The right flower design makes a 20/10 gift feel personal and memorable.",
+        "items": {
+          "mother": {
+            "title": "20/10 Flowers for Mother - With All Your Love",
+            "body": "Soft blush and cream tones feel warm and graceful, carrying wishes of health, peace and happiness to mother or grandmother."
+          },
+          "wife": {
+            "title": "Flowers for Your Wife - Warm Up Your Love",
+            "body": "A thoughtful bouquet and a sincere thank-you make her feel cherished and bring the two of you closer."
+          },
+          "lover": {
+            "title": "Flowers for Someone Special - Young and Sweet",
+            "body": "A playful baby-breath bouquet in her favorite tones creates a lovely surprise and adds a little sparkle to your story."
+          },
+          "colleague": {
+            "title": "Flowers for Female Leaders and Colleagues",
+            "body": "Bright or elegant pastel designs show respect, good wishes and positive energy in the workplace."
+          }
+        },
+        "wifePromo": "Order fresh 20/10 flowers early from Hoa Theo Mùa to receive the lipstick pouch voucher and shipping support!"
+      },
+      "table": {
+        "title": "Comparing Fresh Flower Styles for 20/10",
+        "intro": "Choose the right shape for the occasion, the recipient and the space where it will be displayed.",
+        "type": "Flower style",
+        "highlight": "Key benefit",
+        "for": "Best for",
+        "duration": "Average life",
+        "rows": {
+          "bouquet": {
+            "type": "Fresh bouquet",
+            "highlight": "Light, youthful and easy to carry.",
+            "for": "Girlfriend, wife or close friend.",
+            "duration": "3 - 5 days"
+          },
+          "basket": {
+            "type": "Flower basket",
+            "highlight": "Elegant and convenient for a table.",
+            "for": "Mother, teacher or older family members.",
+            "duration": "4 - 6 days"
+          },
+          "box": {
+            "type": "Flower box",
+            "highlight": "Modern form with beautiful protection.",
+            "for": "Wife, female partner or female manager.",
+            "duration": "4 - 6 days"
+          },
+          "stand": {
+            "type": "Flower stand",
+            "highlight": "Large, impressive and event-ready.",
+            "for": "Company celebrations and conferences.",
+            "duration": "3 - 5 days"
+          }
+        }
+      },
+      "why": {
+        "title": "Why Order 20/10 Flowers from Hoa Theo Mùa?",
+        "body": "Hoa Theo Mùa helps you prepare a thoughtful 20/10 gift and deliver it at the time you choose.",
+        "items": {
+          "gift": "A limited leather makeup pouch gift may apply based on the promotion conditions.",
+          "shipping": "Shipping discounts up to 50K for eligible orders delivered on October 17, 18 or 19."
+        },
+        "final": "Ordering 20/10 flowers from Hoa Theo Mùa is quick and easy. Choose a design, select a delivery time, add a card message and pay online. Our team will prepare the order and deliver it in your chosen time slot."
       }
     }
   },
