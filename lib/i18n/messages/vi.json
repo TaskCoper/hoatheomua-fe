@@ -3062,6 +3062,133 @@
       "subtitle": "Ba cách đặt hoa và hai phương thức thanh toán linh hoạt - Hoa Theo Mùa giúp bạn gửi yêu thương chỉ trong vài phút."
     }
   },
+  "legal": {
+    "privacy": {
+      "appName": "VNZDNA AI Marketing",
+      "metaTitle": "Privacy Policy | VNZDNA AI Marketing",
+      "metaDescription": "Chính sách quyền riêng tư của ứng dụng VNZDNA AI Marketing.",
+      "title": "Privacy Policy",
+      "description": "Chính sách quyền riêng tư của ứng dụng VNZDNA AI Marketing.",
+      "introduction": {
+        "title": "1. Giới thiệu",
+        "paragraphs": {
+          "01": "VNZDNA AI Marketing là công cụ phục vụ hoạt động quản lý nội dung và tiếp thị nội bộ. Ứng dụng hỗ trợ người dùng được ủy quyền kết nối và quản lý các Facebook Page thuộc phạm vi doanh nghiệp.",
+          "02": "Chính sách này giải thích cách ứng dụng có thể truy cập, sử dụng, lưu trữ và xử lý dữ liệu trong phạm vi các quyền được Meta cấp và các chức năng mà người dùng được phép sử dụng."
+        }
+      },
+      "data": {
+        "title": "2. Thông tin được truy cập và xử lý",
+        "intro": "Tùy theo quyền thực tế được Meta cấp và chức năng được kích hoạt, ứng dụng có thể truy cập hoặc xử lý:",
+        "items": {
+          "01": "Thông tin cơ bản về Facebook Page.",
+          "02": "Page ID, tên Page và thông tin cần thiết để quản lý Page.",
+          "03": "Quyền truy cập Page hoặc access token được cấp thông qua Meta.",
+          "04": "Nội dung bài đăng, hình ảnh hoặc dữ liệu liên quan đến việc xuất bản nội dung.",
+          "05": "Các thông tin khác nếu ứng dụng thực tế sử dụng quyền tương ứng."
+        },
+        "outro": "Ứng dụng không chủ động khẳng định hoặc truy cập các loại dữ liệu ngoài phạm vi quyền được cấp và chức năng thực tế đang sử dụng."
+      },
+      "purpose": {
+        "title": "3. Mục đích sử dụng dữ liệu",
+        "items": {
+          "01": "Xác thực và kết nối Facebook Page được cấp quyền.",
+          "02": "Hỗ trợ quản lý, tạo, lên lịch hoặc đăng nội dung nếu có tính năng tương ứng.",
+          "03": "Vận hành các chức năng nội bộ của ứng dụng.",
+          "04": "Hỗ trợ bảo mật, kiểm soát quyền truy cập và duy trì tính ổn định của hệ thống."
+        }
+      },
+      "storage": {
+        "title": "4. Lưu trữ và bảo mật dữ liệu",
+        "paragraphs": {
+          "01": "Thông tin được xử lý trong phạm vi cần thiết cho các chức năng được cấp quyền. Access token và thông tin xác thực cần được bảo vệ phù hợp với vai trò của chúng trong hệ thống.",
+          "02": "Quyền truy cập dữ liệu liên quan được giới hạn cho người dùng có thẩm quyền theo phạm vi vận hành. Chi tiết biện pháp bảo vệ có thể thay đổi theo hạ tầng và cấu hình thực tế của hệ thống."
+        }
+      },
+      "sharing": {
+        "title": "5. Chia sẻ dữ liệu với bên thứ ba",
+        "paragraphs": {
+          "01": "Ứng dụng chỉ truyền hoặc xử lý dữ liệu với các dịch vụ cần thiết cho chức năng được kích hoạt, theo phạm vi quyền được cấp và thỏa thuận áp dụng. Nếu có tích hợp dịch vụ lưu trữ, AI hoặc bên xử lý dữ liệu bên ngoài, dữ liệu liên quan có thể được truyền đến dịch vụ đó để thực hiện chức năng tương ứng.",
+          "02": "Ứng dụng không bán dữ liệu cá nhân cho bên thứ ba."
+        }
+      },
+      "rights": {
+        "title": "6. Quyền của người dùng",
+        "intro": "Người dùng có thể:",
+        "items": {
+          "01": "Thu hồi quyền truy cập của ứng dụng trên Meta/Facebook.",
+          "02": "Yêu cầu cung cấp thông tin về dữ liệu được lưu trữ có liên quan đến mình.",
+          "03": "Yêu cầu xóa dữ liệu theo hướng dẫn tại /data-deletion."
+        }
+      },
+      "retention": {
+        "title": "7. Thời gian lưu trữ dữ liệu",
+        "description": "Dữ liệu chỉ được lưu trong thời gian cần thiết cho mục đích vận hành hoặc theo nghĩa vụ pháp lý áp dụng. Dữ liệu không còn cần thiết sẽ được xóa hoặc xử lý theo cơ chế phù hợp với hoạt động thực tế của hệ thống."
+      },
+      "changes": {
+        "title": "8. Thay đổi chính sách",
+        "description": "Chính sách này có thể được cập nhật khi chức năng của ứng dụng, phạm vi quyền Meta hoặc quy định liên quan thay đổi. Phiên bản cập nhật sẽ được công bố trên trang này."
+      },
+      "contact": {
+        "title": "9. Thông tin liên hệ",
+        "items": {
+          "01": "Tên ứng dụng|VNZDNA AI Marketing",
+          "02": "Đơn vị vận hành|CÔNG TY TNHH HOA THEO MÙA - Hoa Theo Mùa - Hệ thống hoa tươi online tại TP. Hồ Chí Minh chuyên cung cấp các dịch vụ hoa tươi & giao hoa tận nơi siêu nhanh trong 2 giờ.",
+          "03": "Email liên hệ|mkt.hoatheomua@gmail.com",
+          "04": "Ngày cập nhật|09/10/2026"
+        }
+      }
+    },
+    "dataDeletion": {
+      "appName": "VNZDNA AI Marketing",
+      "metaTitle": "Data Deletion Instructions | VNZDNA AI Marketing",
+      "metaDescription": "Hướng dẫn thu hồi quyền truy cập và yêu cầu xóa dữ liệu của ứng dụng VNZDNA AI Marketing.",
+      "title": "Data Deletion Instructions",
+      "description": "Hướng dẫn thu hồi quyền truy cập và yêu cầu xóa dữ liệu của ứng dụng VNZDNA AI Marketing.",
+      "introduction": {
+        "title": "1. Giới thiệu",
+        "description": "VNZDNA AI Marketing tôn trọng quyền kiểm soát dữ liệu của người dùng. Người dùng có thể thu hồi quyền truy cập của ứng dụng và yêu cầu xóa dữ liệu đã được lưu trữ, nếu có."
+      },
+      "revoke": {
+        "title": "2. Cách thu hồi quyền truy cập Facebook",
+        "steps": {
+          "01": "Đăng nhập tài khoản Facebook đã cấp quyền cho ứng dụng.",
+          "02": "Mở phần Cài đặt và quyền riêng tư → Cài đặt.",
+          "03": "Tìm mục quản lý ứng dụng và trang web đã kết nối.",
+          "04": "Tìm ứng dụng VNZDNA AI Marketing nếu ứng dụng xuất hiện trong danh sách.",
+          "05": "Chọn gỡ hoặc thu hồi quyền truy cập theo giao diện Facebook."
+        },
+        "note": "Giao diện và vị trí các mục cài đặt của Facebook có thể thay đổi."
+      },
+      "request": {
+        "title": "3. Yêu cầu xóa dữ liệu đã lưu trữ",
+        "intro": "Nếu muốn xóa dữ liệu mà ứng dụng còn lưu giữ, người dùng có thể liên hệ:",
+        "items": {
+          "01": "Email: mkt.hoatheomua@gmail.com",
+          "02": "Tiêu đề email đề xuất: Yêu cầu xóa dữ liệu - VNZDNA AI Marketing"
+        },
+        "outro": "Trong yêu cầu, người dùng nên cung cấp thông tin đủ để xác minh quyền yêu cầu, chẳng hạn tên Page hoặc Page ID có liên quan. Không gửi mật khẩu hoặc access token qua email."
+      },
+      "process": {
+        "title": "4. Quy trình xử lý yêu cầu",
+        "steps": {
+          "01": "Tiếp nhận yêu cầu.",
+          "02": "Xác minh quyền yêu cầu khi cần thiết.",
+          "03": "Xác định dữ liệu liên quan đang được lưu trữ.",
+          "04": "Xóa hoặc ẩn danh dữ liệu thuộc phạm vi có thể xử lý, ngoại trừ dữ liệu bắt buộc phải giữ theo quy định pháp luật.",
+          "05": "Phản hồi kết quả qua kênh liên hệ phù hợp."
+        },
+        "note": "Thời gian xử lý cụ thể phụ thuộc vào phạm vi yêu cầu và khả năng xác minh, nên không được cam kết cố định."
+      },
+      "notes": {
+        "title": "5. Lưu ý",
+        "items": {
+          "01": "Thu hồi quyền truy cập Facebook không đồng nghĩa với việc mọi dữ liệu đã lưu trên hệ thống tự động bị xóa.",
+          "02": "Việc thu hồi quyền truy cập không tự động xóa các bài đăng đã được xuất bản trên Facebook Page.",
+          "03": "Người dùng có thể liên hệ đơn vị vận hành để yêu cầu xóa những dữ liệu còn được ứng dụng lưu trữ."
+        }
+      }
+    }
+  },
   "profile": {
     "title": "Hồ sơ cá nhân",
     "viewProfile": "Xem hồ sơ",

@@ -31,6 +31,8 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/returns',
   '/delivery',
   '/ordering',
+  '/privacy-policy',
+  '/data-deletion',
   '/occasions/[id]',
   '/featured/[id]',
   '/mainline/[id]',
