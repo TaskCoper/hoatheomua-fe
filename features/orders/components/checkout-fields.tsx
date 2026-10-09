@@ -45,12 +45,11 @@ const slotStartMinutes = (label: string) => {
   return Number(match[1]) * 60 + Number(match[2] ?? 0)
 }
 
-const getSlotRemaining = (slot: DeliverySlot) =>
-  slot.limit === null ? null : Math.max(0, slot.limit - Math.max(0, slot.occupied))
+const getSlotRemaining = (slot: DeliverySlot) => Math.max(0, slot.limit - Math.max(0, slot.occupied))
 
 const isSlotSelectable = (slot: DeliverySlot) => {
   const remaining = getSlotRemaining(slot)
-  return remaining === null || remaining > 0
+  return remaining > 0
 }
 
 interface CheckoutFieldsProps {

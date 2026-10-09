@@ -331,7 +331,7 @@ export interface DeliverySlotAvailability {
 export interface DeliverySlot {
   tagId: number
   label: string
-  limit: number | null
+  limit: number
   occupied: number
 }
 
