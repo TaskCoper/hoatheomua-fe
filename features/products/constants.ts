@@ -6,6 +6,8 @@ export const CUSTOMIZABLE_CATEGORY_ID = '9d3ca2e4-b3bb-47f1-8e65-b0cf71499235'
 /** Product grid page size for the category-driven listing sections. */
 export const PRODUCTS_PAGE_SIZE = 16
 
+export const PRODUCT_CARD_MEDIA_HEIGHT = 'h-48 sm:h-72'
+
 export const PRODUCT_CATEGORIES = [
   { id: 58896, labelKey: 'products.filter.categories.eventFlowers' },
   { id: 58869, labelKey: 'products.filter.categories.daily' },

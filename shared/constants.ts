@@ -31,10 +31,12 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/returns',
   '/delivery',
   '/ordering',
+  '/privacy-policy',
+  '/data-deletion',
   '/occasions/[id]',
   '/featured/[id]',
   '/mainline/[id]',
-  '/women-day-20-10'
+  '/hoa-20-10'
 ])
 
 const normalizeRoutePath = (pathname: string) => {

@@ -1,7 +1,8 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import ProductTitle from '@/features/products/components/product-title'
+import { PRODUCT_CARD_MEDIA_HEIGHT } from '@/features/products/constants'
 import type { ProductDetail } from '@/features/products/types'
 import { formatVnd } from '@/lib/currency'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -26,14 +27,12 @@ export default function ProductCard({
   product,
   eager = false,
   isActive = false,
-  onHoverStart,
-  singleLineTitle = false
+  onHoverStart
 }: {
   product: ProductDetail
   eager?: boolean
   isActive?: boolean
   onHoverStart?: () => void
-  singleLineTitle?: boolean
 }) {
   const { t } = useTranslation()
   const name = product.productName ?? ''
@@ -44,26 +43,13 @@ export default function ProductCard({
   const avatar = product.coverImage
   const isOutOfStock = (product.sellableQuantity ?? 0) <= 0
 
-  // Narrow cards (2-up on phones) keep two lines: with no hover on touch there is
-  // no tooltip to read a clipped name from, so only wider cards truncate to one.
-  const title = (
-    <h2
-      className={cn(
-        'font-title text-sm leading-tight font-bold text-primary @[13rem]:text-base @[18rem]:text-lg',
-        singleLineTitle ? 'line-clamp-2 @[13rem]:line-clamp-none @[13rem]:truncate' : 'line-clamp-2'
-      )}
-    >
-      {name}
-    </h2>
-  )
-
   return (
     <motion.article
       variants={cardItem}
       whileHover={{ y: -10, scale: 1.025 }}
       transition={{ type: 'spring', stiffness: 240, damping: 18 }}
       onHoverStart={onHoverStart}
-      className='group relative @container'
+      className='group relative'
     >
       {isActive ? (
         <div
@@ -72,10 +58,13 @@ export default function ProductCard({
         />
       ) : null}
 
-      <div className='relative z-10 flex flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'>
+      <div className='relative z-10 flex h-full flex-col overflow-hidden rounded-3xl bg-card shadow-[0_0.6rem_1.6rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 hover:shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)]'>
         <Link
           href={`/products/${product.id}`}
-          className='relative isolate flex aspect-square items-center justify-center overflow-hidden bg-secondary/40 @[13rem]:aspect-4/5 @[18rem]:aspect-3/4'
+          className={cn(
+            'relative isolate flex shrink-0 items-center justify-center overflow-hidden bg-secondary/40',
+            PRODUCT_CARD_MEDIA_HEIGHT
+          )}
         >
           {avatar ? (
             <Image
@@ -142,24 +131,8 @@ export default function ProductCard({
           ) : null}
         </Link>
 
-        <div className='flex flex-1 flex-col gap-1.5 p-3 @[13rem]:p-4 @[18rem]:p-5'>
-          {singleLineTitle ? (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>{title}</TooltipTrigger>
-                <TooltipContent
-                  side='top'
-                  sideOffset={8}
-                  className='rounded-xl border border-secondary/80 bg-card px-3 py-2 text-xs font-medium text-primary shadow-[0_0.6rem_1.4rem_rgb(81_108_108/16%)]'
-                  iconClassName='bg-card fill-card text-card'
-                >
-                  {name}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ) : (
-            title
-          )}
+        <div className='flex flex-1 flex-col gap-1.5 p-3 sm:p-4'>
+          <ProductTitle name={name} />
 
           <div className='mt-auto -space-y-0.5 pt-1'>
             {hasDiscount ? (
@@ -167,7 +140,7 @@ export default function ProductCard({
             ) : (
               <p className='text-xs font-medium text-muted-foreground'>{t('products.card.priceFrom')}</p>
             )}
-            <p className='font-title text-sm font-bold text-primary @[13rem]:text-base'>{formatVnd(retail)}</p>
+            <p className='font-title text-sm font-bold text-primary sm:text-base'>{formatVnd(retail)}</p>
           </div>
         </div>
       </div>
