@@ -3062,6 +3062,133 @@
       "subtitle": "Three flexible ways to order and two secure payment options - Hoa Theo Mua helps you send love within minutes."
     }
   },
+  "legal": {
+    "privacy": {
+      "appName": "VNZDNA AI Marketing",
+      "metaTitle": "Privacy Policy | VNZDNA AI Marketing",
+      "metaDescription": "Privacy policy of the VNZDNA AI Marketing application.",
+      "title": "Privacy Policy",
+      "description": "Privacy policy of the VNZDNA AI Marketing application.",
+      "introduction": {
+        "title": "1. Introduction",
+        "paragraphs": {
+          "01": "VNZDNA AI Marketing is a tool for internal content management and marketing activities. The application supports authorized users in connecting and managing Facebook Pages within the business scope.",
+          "02": "This policy explains how the application may access, use, store, and process data within the permissions granted by Meta and the functions users are authorized to use."
+        }
+      },
+      "data": {
+        "title": "2. Information accessed and processed",
+        "intro": "Depending on the permissions actually granted by Meta and the enabled features, the application may access or process:",
+        "items": {
+          "01": "Basic information about a Facebook Page.",
+          "02": "Page ID, Page name, and information necessary to manage the Page.",
+          "03": "Page access permissions or access tokens granted through Meta.",
+          "04": "Post content, images, or data related to publishing content.",
+          "05": "Other information if the application actually uses the corresponding permissions."
+        },
+        "outro": "The application does not claim to access or actively access data outside the granted permissions and the functions actually in use."
+      },
+      "purpose": {
+        "title": "3. Purposes of data use",
+        "items": {
+          "01": "Authenticate and connect authorized Facebook Pages.",
+          "02": "Support content management, creation, scheduling, or publishing where the corresponding feature is available.",
+          "03": "Operate the application's internal functions.",
+          "04": "Support security, access control, and system stability."
+        }
+      },
+      "storage": {
+        "title": "4. Data storage and security",
+        "paragraphs": {
+          "01": "Information is processed only as necessary for authorized functions. Access tokens and authentication information should be protected appropriately for their role in the system.",
+          "02": "Access to related data is limited to authorized users within the operational scope. The details of protection measures may change according to the system's infrastructure and configuration."
+        }
+      },
+      "sharing": {
+        "title": "5. Sharing data with third parties",
+        "paragraphs": {
+          "01": "The application only transfers or processes data with services necessary for an enabled feature, within the granted permissions and applicable agreements. If storage, AI, or external data-processing services are integrated, related data may be sent to those services to perform the corresponding function.",
+          "02": "The application does not sell personal data to third parties."
+        }
+      },
+      "rights": {
+        "title": "6. User rights",
+        "intro": "Users may:",
+        "items": {
+          "01": "Revoke the application's access on Meta/Facebook.",
+          "02": "Request information about stored data related to them.",
+          "03": "Request data deletion according to the instructions at /data-deletion."
+        }
+      },
+      "retention": {
+        "title": "7. Data retention",
+        "description": "Data is retained only for as long as necessary for operational purposes or applicable legal obligations. Data that is no longer necessary will be deleted or handled according to the system's actual operating procedures."
+      },
+      "changes": {
+        "title": "8. Changes to this policy",
+        "description": "This policy may be updated when application features, Meta permissions, or applicable regulations change. Updated versions will be published on this page."
+      },
+      "contact": {
+        "title": "9. Contact information",
+        "items": {
+          "01": "Application name|VNZDNA AI Marketing",
+          "02": "Operating entity|CÔNG TY TNHH HOA THEO MÙA - Hoa Theo Mùa - Hệ thống hoa tươi online tại TP. Hồ Chí Minh chuyên cung cấp các dịch vụ hoa tươi & giao hoa tận nơi siêu nhanh trong 2 giờ.",
+          "03": "Contact email|mkt.hoatheomua@gmail.com",
+          "04": "Last updated|October 9, 2026"
+        }
+      }
+    },
+    "dataDeletion": {
+      "appName": "VNZDNA AI Marketing",
+      "metaTitle": "Data Deletion Instructions | VNZDNA AI Marketing",
+      "metaDescription": "Instructions for revoking access and requesting deletion of data from the VNZDNA AI Marketing application.",
+      "title": "Data Deletion Instructions",
+      "description": "Instructions for revoking access and requesting deletion of data from the VNZDNA AI Marketing application.",
+      "introduction": {
+        "title": "1. Introduction",
+        "description": "VNZDNA AI Marketing respects users' control over their data. Users may revoke the application's access and request deletion of stored data, if any."
+      },
+      "revoke": {
+        "title": "2. How to revoke Facebook access",
+        "steps": {
+          "01": "Log in to the Facebook account that granted access to the application.",
+          "02": "Open Settings & privacy → Settings.",
+          "03": "Find the section for connected apps and websites.",
+          "04": "Find VNZDNA AI Marketing if the application appears in the list.",
+          "05": "Choose the option to remove or revoke access according to Facebook's interface."
+        },
+        "note": "Facebook's interface and the location of settings may change."
+      },
+      "request": {
+        "title": "3. Request deletion of stored data",
+        "intro": "If you want to delete data still retained by the application, you may contact:",
+        "items": {
+          "01": "Email: mkt.hoatheomua@gmail.com",
+          "02": "Suggested subject: Request for data deletion - VNZDNA AI Marketing"
+        },
+        "outro": "The request should include enough information to verify the requester's authority, such as the related Page name or Page ID. Do not send passwords or access tokens by email."
+      },
+      "process": {
+        "title": "4. Request handling process",
+        "steps": {
+          "01": "Receive the request.",
+          "02": "Verify the requester's authority where necessary.",
+          "03": "Identify the related stored data.",
+          "04": "Delete or anonymize data within scope, except data that must be retained by law.",
+          "05": "Respond through an appropriate contact channel."
+        },
+        "note": "The processing time depends on the scope of the request and the ability to verify it, so no fixed timeframe is promised."
+      },
+      "notes": {
+        "title": "5. Notes",
+        "items": {
+          "01": "Revoking Facebook access does not mean that all data stored on the system is automatically deleted.",
+          "02": "Revoking access does not automatically delete posts already published on a Facebook Page.",
+          "03": "Users may contact the operating entity to request deletion of data still retained by the application."
+        }
+      }
+    }
+  },
   "profile": {
     "title": "Profile",
     "viewProfile": "View profile",
