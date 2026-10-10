@@ -14,3 +14,11 @@ export async function getCachedCategories(params: { page?: CategoryProductPage[]
 
   return categoryService.getCategories(params)
 }
+
+export async function getCachedCategory(id: string) {
+  'use cache'
+  cacheTag(CATEGORIES_CACHE_TAG)
+  cacheLife(CONTENT_LIFE)
+
+  return categoryService.getCategory({ id })
+}
