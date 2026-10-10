@@ -4,5 +4,3 @@ export const WOMEN_DAY_PATH = '/hoa-20-10'
 // occasions/mainline cards) once the admin can pick it.
 export const WOMEN_DAY_CATEGORY_ID = '1188c606-df91-46b6-9845-55c7df90c631'
 export const WOMEN_DAY_CATEGORY_IDS = [WOMEN_DAY_CATEGORY_ID]
-
-export const WOMEN_DAY_PAGE_SIZE = 5
