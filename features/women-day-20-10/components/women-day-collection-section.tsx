@@ -2,6 +2,7 @@
 
 import { getResponsiveGridColumns } from '@/features/categories/utils'
 import ProductGrid from '@/features/products/components/product-grid'
+import WomenDayCampaignBanner from '@/features/women-day-20-10/components/women-day-campaign-banner'
 import { WOMEN_DAY_CATEGORY_IDS } from '@/features/women-day-20-10/constants'
 import type { WomenDayGrid } from '@/features/women-day-20-10/grid'
 import { fadeUp, stagger } from '@/features/women-day-20-10/motion'
@@ -39,6 +40,7 @@ export default function WomenDayCollectionSection({ grid }: { grid: WomenDayGrid
           {t('womenDay.collection.intro')}
         </motion.p>
       </motion.div>
+      <WomenDayCampaignBanner />
       <motion.div
         initial='hidden'
         whileInView='visible'
