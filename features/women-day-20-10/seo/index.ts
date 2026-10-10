@@ -20,7 +20,7 @@ type WomenDayCopy = SeoCopy & { ogAlt: string; breadcrumb: string }
 
 const WOMEN_DAY_COPY = {
   vi: {
-    title: 'Hoa 20 10: 99+ Mẫu Hoa Tươi Đẹp, Ý Nghĩa Và Dễ Chọn',
+    title: 'Hoa 20 10: 50+ Mẫu Hoa Tươi Đẹp, Ý Nghĩa Và Dễ Chọn',
     description: 'Hoa 20 10 đẹp và ý nghĩa, hoa tươi 20/10 dành tặng mẹ, vợ, người yêu, bạn bè... Đặt hoa 20-10 TPHCM online ưu đãi ngập tràn tại Hoa Theo Mùa!',
     keywords: ['hoa 20/10', 'hoa tặng mẹ', 'hoa tặng người yêu'],
     ogAlt: 'Bộ sưu tập hoa 20/10 Hoa Theo Mùa',

@@ -1,6 +1,7 @@
 'use client'
 
 import ProductGrid from '@/features/products/components/product-grid'
+import WomenDayCampaignBanner from '@/features/women-day-20-10/components/women-day-campaign-banner'
 import { WOMEN_DAY_CATEGORY_IDS, WOMEN_DAY_PAGE_SIZE } from '@/features/women-day-20-10/constants'
 import { fadeUp, stagger } from '@/features/women-day-20-10/motion'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -24,6 +25,7 @@ export default function WomenDayCollectionSection() {
         <motion.h2 variants={fadeUp} className='mt-2 font-title text-3xl font-bold text-primary sm:text-4xl'>{t('womenDay.collection.title')}</motion.h2>
         <motion.p variants={fadeUp} className='mt-3 text-sm leading-relaxed text-foreground sm:text-base'>{t('womenDay.collection.intro')}</motion.p>
       </motion.div>
+      <WomenDayCampaignBanner />
       <motion.div initial='hidden' whileInView='visible' viewport={{ once: true, margin: '-60px' }} variants={fadeUp} className='mx-auto mt-8 max-w-7xl rounded-3xl bg-card/70 p-4 shadow-[0_0.8rem_2rem_rgb(81_108_108/8%)] ring-1 ring-foreground/5 sm:p-6'>
         <div className='mb-5 flex flex-wrap items-end justify-between gap-3 border-b border-border/70 pb-4'>
           <div><h3 className='font-title text-xl font-bold text-primary sm:text-2xl'>{t('womenDay.collection.productsTitle')}</h3><p className='mt-1 text-xs text-muted-foreground sm:text-sm'>{t('womenDay.collection.productsIntro')}</p></div>
