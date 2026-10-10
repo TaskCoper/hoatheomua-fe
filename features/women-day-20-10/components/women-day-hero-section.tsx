@@ -23,7 +23,7 @@ export default function WomenDayHeroSection() {
           <motion.p variants={fadeUp} className='font-title text-sm font-bold tracking-[0.18em] text-primary uppercase'>{t('womenDay.hero.eyebrow')}</motion.p>
           <motion.h1 variants={fadeUp} className='font-title text-4xl leading-[1.08] font-bold text-primary sm:text-5xl lg:text-6xl'>{t('womenDay.hero.title')}</motion.h1>
           <motion.p variants={fadeUp} className='max-w-lg text-sm leading-relaxed text-foreground sm:text-base'>{t('womenDay.hero.intro')}</motion.p>
-          <motion.div variants={fadeUp} className='flex flex-wrap gap-3 pt-1'><Button asChild size='lg' className='gap-2 shadow-[0_0.7rem_1.5rem_rgb(81_108_108/22%)]'><Link href='#collection'><HugeiconsIcon icon={GiftIcon} className='size-4' />{t('womenDay.hero.primary')}</Link></Button></motion.div>
+          <motion.div variants={fadeUp} className='flex max-w-full flex-wrap gap-3 pt-1'><Button asChild size='lg' className='max-w-full gap-2 whitespace-normal text-center leading-tight shadow-[0_0.7rem_1.5rem_rgb(81_108_108/22%)]'><Link href='#collection'><HugeiconsIcon icon={GiftIcon} className='size-4 shrink-0' />{t('womenDay.hero.primary')}</Link></Button></motion.div>
         </motion.div>
         <motion.div variants={fadeUp} className='relative mx-auto flex w-full max-w-md justify-center lg:max-w-none'>
           <div className='group relative size-64 overflow-hidden rounded-full bg-card/80 shadow-[0_1.2rem_3rem_rgb(81_108_108/18%)] ring-8 ring-card/60 sm:size-80'><Image src={flower} alt='' fill sizes='20rem' className='object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105' /></div>
