@@ -1,5 +1,4 @@
 import ScopedIntlProvider from '@/components/scoped-intl-provider'
-import { getCachedCategory } from '@/features/categories/queries.server'
 import TestimonialSection from '@/features/home/components/testimonial-section'
 import { productsQueryKey } from '@/features/products/hooks/use-get-products'
 import { getCachedProducts } from '@/features/products/queries.server'
@@ -9,8 +8,7 @@ import WomenDayCollectionSection from '@/features/women-day-20-10/components/wom
 import WomenDayHeroSection from '@/features/women-day-20-10/components/women-day-hero-section'
 import WomenDayJumpButton from '@/features/women-day-20-10/components/women-day-jump-button'
 import WomenDayPromiseSection from '@/features/women-day-20-10/components/women-day-promise-section'
-import { WOMEN_DAY_CATEGORY_ID, WOMEN_DAY_CATEGORY_IDS } from '@/features/women-day-20-10/constants'
-import { getWomenDayGrid } from '@/features/women-day-20-10/grid'
+import { WOMEN_DAY_CATEGORY_IDS, WOMEN_DAY_GRID } from '@/features/women-day-20-10/constants'
 import { buildWomenDayJsonLd, generateWomenDayMetadata } from '@/features/women-day-20-10/seo'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
@@ -33,17 +31,9 @@ export default async function WomenDayRoute({ params }: { params: Promise<{ loca
 
   const queryClient = getQueryClient()
 
-  let grid = getWomenDayGrid(null)
-
-  try {
-    grid = getWomenDayGrid(await getCachedCategory(WOMEN_DAY_CATEGORY_ID))
-  } catch (error) {
-    console.error('[SSR] women-day category fetch failed:', error)
-  }
-
   const productsParams = {
     pageIndex: DEFAULT_PAGE_INDEX,
-    pageSize: grid.pageSize,
+    pageSize: WOMEN_DAY_GRID.pageSize,
     categoryIds: WOMEN_DAY_CATEGORY_IDS
   }
   let items: ProductDetail[] = []
@@ -63,7 +53,7 @@ export default async function WomenDayRoute({ params }: { params: Promise<{ loca
       <HydrationBoundary state={dehydrate(queryClient)}>
         <div className='relative isolate overflow-hidden'>
           <WomenDayHeroSection />
-          <WomenDayCollectionSection grid={grid} />
+          <WomenDayCollectionSection grid={WOMEN_DAY_GRID} />
           <WomenDayPromiseSection />
           <WomenDayArticleSection />
           <TestimonialSection />
