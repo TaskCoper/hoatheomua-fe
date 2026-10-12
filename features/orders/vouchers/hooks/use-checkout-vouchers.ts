@@ -3,7 +3,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import voucherService from '../service'
-import type { CheckoutVoucher, EstimateVoucherResponse, PublicVoucherResponse } from '../types'
+import type { CheckoutVoucher, EstimateVoucherResponse, PublicVoucherResponse, VoucherVisibility } from '../types'
 
 const toKind = (type: PublicVoucherResponse['discountType']) => (type === 'cash' ? 'fixed' : 'percent')
 
@@ -16,26 +16,37 @@ const toPublicVoucher = (voucher: PublicVoucherResponse): CheckoutVoucher => ({
   visibility: 'public',
   expiresAt: voucher.endAt ?? '',
   discountAmount: voucher.discountAmount,
-  maxDiscountAmount: voucher.maxDiscountAmount
+  maxDiscountAmount: voucher.maxDiscountAmount,
+  minOrderAmount: voucher.minOrderAmount
 })
 
-const toPrivateVoucher = (voucher: EstimateVoucherResponse): CheckoutVoucher => ({
+const toEstimatedVoucher = (
+  voucher: EstimateVoucherResponse & { minOrderAmount?: number | null },
+  visibility: VoucherVisibility
+): CheckoutVoucher => ({
   id: voucher.voucherId,
   code: voucher.code,
   description: voucher.description,
   kind: toKind(voucher.discountType),
   value: voucher.discountValue,
-  visibility: 'private',
+  visibility,
   expiresAt: '',
   discountAmount: voucher.discountAmount,
-  maxDiscountAmount: voucher.maxDiscountAmount
+  maxDiscountAmount: voucher.maxDiscountAmount,
+  minOrderAmount: voucher.minOrderAmount ?? null
 })
 
-export const useCheckoutVouchers = (productsSubtotal: number) => {
+export const useCheckoutVouchers = (productsSubtotal: number, productIds: string[]) => {
   const publicQuery = useQuery({
     queryKey: ['vouchers', 'public', productsSubtotal],
     queryFn: () => voucherService.getPublicVouchers({ productFee: productsSubtotal }),
     enabled: productsSubtotal > 0
+  })
+
+  const filterQuery = useQuery({
+    queryKey: ['vouchers', 'filter', productIds],
+    queryFn: () => voucherService.filterVouchers({ productIds }),
+    enabled: productIds.length > 0
   })
 
   const privateEstimate = useMutation({
@@ -45,11 +56,21 @@ export const useCheckoutVouchers = (productsSubtotal: number) => {
 
   const vouchers = useMemo(() => (publicQuery.data ?? []).map(toPublicVoucher), [publicQuery.data])
 
+  const unavailableVouchers = useMemo(() => {
+    if (!publicQuery.isSuccess || !filterQuery.data) return []
+
+    const usableIds = new Set(publicQuery.data.map((voucher) => voucher.id))
+    return filterQuery.data
+      .filter((voucher) => !usableIds.has(voucher.voucherId))
+      .map((voucher) => toEstimatedVoucher(voucher, 'public'))
+  }, [publicQuery.isSuccess, publicQuery.data, filterQuery.data])
+
   const estimatePrivateVoucher = async (code: string) =>
-    toPrivateVoucher(await privateEstimate.mutateAsync({ code, productFee: productsSubtotal }))
+    toEstimatedVoucher(await privateEstimate.mutateAsync({ code, productFee: productsSubtotal }), 'private')
 
   return {
     vouchers,
+    unavailableVouchers,
     estimatePrivateVoucher,
     isEstimatingPrivate: privateEstimate.isPending
   }

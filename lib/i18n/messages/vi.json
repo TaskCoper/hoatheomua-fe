@@ -720,13 +720,13 @@
       "voucher": {
         "title": "Voucher ưu đãi",
         "description": "Chọn một voucher để áp dụng cho đơn hàng",
+        "selectPlaceholder": "Chọn voucher ưu đãi",
         "empty": "Chưa có chương trình khuyến mãi cho đơn hàng này",
         "expiresAt": "HSD {date}",
         "noExpiry": "Không giới hạn thời gian",
         "defaultPercent": "Giảm {value}% cho đơn hàng",
         "defaultPercentMax": "Giảm {value}%, tối đa {max}",
         "defaultFixed": "Giảm {amount} cho đơn hàng",
-        "orEnter": "Hoặc nhập mã voucher",
         "inputPlaceholder": "Nhập mã giảm giá",
         "inputLabel": "Mã voucher riêng tư",
         "apply": "Áp dụng",
@@ -736,7 +736,9 @@
         "discountLabel": "Voucher",
         "ticketPercent": "Giảm %",
         "ticketFixed": "Giảm tiền",
-        "apiOffer": "Ưu đãi voucher"
+        "apiOffer": "Ưu đãi voucher",
+        "notEligible": "Đơn hàng chưa đủ điều kiện áp dụng",
+        "minOrder": "Voucher chỉ áp dụng cho đơn hàng từ {amount}"
       },
       "back": "Quay lại",
       "confirm": "Xác nhận đặt hàng",

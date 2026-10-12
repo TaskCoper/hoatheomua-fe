@@ -46,6 +46,7 @@ import StepComplete from './step-complete'
 import StepPayment from './step-payment'
 import StepPersonal from './step-personal'
 import StepReview from './step-review'
+import VoucherPicker from './voucher-picker'
 
 type LookupState = 'idle' | 'loading' | 'found' | 'not_found' | 'error'
 
@@ -201,7 +202,21 @@ export default function CheckoutClient() {
       materialBlockedProductIds
     })
 
-  const { vouchers, estimatePrivateVoucher, isEstimatingPrivate } = useCheckoutVouchers(productsSubtotal)
+  const voucherProductIds = useMemo(
+    () =>
+      [
+        ...new Set(
+          summaryLines
+            .filter((line) => line.issue !== 'missing' && line.issue !== 'inactive')
+            .map((line) => line.productId)
+        )
+      ].sort(),
+    [summaryLines]
+  )
+  const { vouchers, unavailableVouchers, estimatePrivateVoucher, isEstimatingPrivate } = useCheckoutVouchers(
+    productsSubtotal,
+    voucherProductIds
+  )
 
   const voucherDiscount = selectedVoucher?.discountAmount ?? 0
   const displayGrandTotal = Math.max(0, grandTotal - voucherDiscount)
@@ -301,9 +316,10 @@ export default function CheckoutClient() {
     grandTotal: displayGrandTotal,
     voucherDiscount,
     vouchers,
+    unavailableVouchers,
     selectedVoucher,
-    onSelectVoucher: setSelectedVoucher,
-    onEstimatePrivateVoucher: estimatePrivateVoucher,
+    onSelectVoucher: step === 4 ? setSelectedVoucher : undefined,
+    onEstimatePrivateVoucher: step === 4 ? estimatePrivateVoucher : undefined,
     isEstimatingPrivate,
     action: sidebarAction,
     showTerms: step === 4,
@@ -415,6 +431,7 @@ export default function CheckoutClient() {
                       sticky={false}
                       showAction={false}
                       notice={null}
+                      onSelectVoucher={undefined}
                     />
                   </div>
                 ) : null}
@@ -465,6 +482,19 @@ export default function CheckoutClient() {
                 ) : (
                   <StepComplete />
                 )}
+
+                {step === 4 ? (
+                  <VoucherPicker
+                    vouchers={vouchers}
+                    unavailableVouchers={unavailableVouchers}
+                    productsSubtotal={productsSubtotal}
+                    selectedVoucher={selectedVoucher}
+                    onSelect={setSelectedVoucher}
+                    onEstimatePrivateVoucher={estimatePrivateVoucher}
+                    isEstimatingPrivate={isEstimatingPrivate}
+                    className='lg:hidden'
+                  />
+                ) : null}
 
                 {step === 4 ? (
                   <CheckoutPanel className='p-4 lg:hidden'>

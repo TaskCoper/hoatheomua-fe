@@ -67,6 +67,7 @@ interface CheckoutSidebarProps {
   grandTotal: number
   voucherDiscount?: number
   vouchers?: CheckoutVoucher[]
+  unavailableVouchers?: CheckoutVoucher[]
   selectedVoucher?: CheckoutVoucher | null
   onSelectVoucher?: (voucher: CheckoutVoucher | null) => void
   onEstimatePrivateVoucher?: (code: string) => Promise<CheckoutVoucher>
@@ -112,6 +113,7 @@ export default function CheckoutSidebar({
   grandTotal,
   voucherDiscount = 0,
   vouchers = EMPTY_VOUCHERS,
+  unavailableVouchers = EMPTY_VOUCHERS,
   selectedVoucher = null,
   onSelectVoucher,
   onEstimatePrivateVoucher,
@@ -216,6 +218,8 @@ export default function CheckoutSidebar({
       {onSelectVoucher && onEstimatePrivateVoucher ? (
         <VoucherPicker
           vouchers={vouchers}
+          unavailableVouchers={unavailableVouchers}
+          productsSubtotal={productsSubtotal}
           selectedVoucher={selectedVoucher}
           onSelect={onSelectVoucher}
           onEstimatePrivateVoucher={onEstimatePrivateVoucher}

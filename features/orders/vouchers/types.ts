@@ -24,6 +24,7 @@ export interface CheckoutVoucher {
   expiresAt: string
   discountAmount: number
   maxDiscountAmount: number | null
+  minOrderAmount: number | null
 }
 
 export interface EstimateVoucherRequest {
@@ -40,4 +41,9 @@ export interface EstimateVoucherResponse {
   maxDiscountAmount: number | null
   discountAmount: number
   productFeeAfterDiscount: number
+}
+
+export interface FilterVoucherResponse extends EstimateVoucherResponse {
+  minOrderAmount: number | null
+  isValid: boolean
 }

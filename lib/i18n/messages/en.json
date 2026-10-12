@@ -720,13 +720,13 @@
       "voucher": {
         "title": "Voucher offers",
         "description": "Choose one voucher to apply to your order",
+        "selectPlaceholder": "Select a voucher",
         "empty": "There are no promotions for this order",
         "expiresAt": "Expires {date}",
         "noExpiry": "No time limit",
         "defaultPercent": "{value}% off your order",
         "defaultPercentMax": "{value}% off, up to {max}",
         "defaultFixed": "{amount} off your order",
-        "orEnter": "Or enter a voucher code",
         "inputPlaceholder": "Enter voucher code",
         "inputLabel": "Private voucher code",
         "apply": "Apply",
@@ -736,7 +736,9 @@
         "discountLabel": "Voucher",
         "ticketPercent": "% discount",
         "ticketFixed": "Cashback",
-        "apiOffer": "Voucher offer"
+        "apiOffer": "Voucher offer",
+        "notEligible": "Your order isn't eligible yet",
+        "minOrder": "Valid for orders from {amount}"
       },
       "back": "Back",
       "confirm": "Confirm order",
