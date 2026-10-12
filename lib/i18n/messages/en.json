@@ -738,7 +738,8 @@
         "ticketFixed": "Cashback",
         "apiOffer": "Voucher offer",
         "notEligible": "Your order isn't eligible yet",
-        "minOrder": "Valid for orders from {amount}"
+        "minOrder": "Valid for orders from {amount}",
+        "maxOrder": "Valid for orders up to {amount}"
       },
       "back": "Back",
       "confirm": "Confirm order",

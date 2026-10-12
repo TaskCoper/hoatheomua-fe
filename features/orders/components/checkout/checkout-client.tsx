@@ -202,20 +202,17 @@ export default function CheckoutClient() {
       materialBlockedProductIds
     })
 
-  const voucherProductIds = useMemo(
+  const voucherProducts = useMemo(
     () =>
-      [
-        ...new Set(
-          summaryLines
-            .filter((line) => line.issue !== 'missing' && line.issue !== 'inactive')
-            .map((line) => line.productId)
-        )
-      ].sort(),
+      summaryLines
+        .filter((line) => line.issue !== 'missing' && line.issue !== 'inactive' && line.quantity > 0)
+        .map((line) => ({ id: line.productId, quantity: line.quantity }))
+        .sort((a, b) => a.id.localeCompare(b.id) || a.quantity - b.quantity),
     [summaryLines]
   )
   const { vouchers, unavailableVouchers, estimatePrivateVoucher, isEstimatingPrivate } = useCheckoutVouchers(
     productsSubtotal,
-    voucherProductIds
+    voucherProducts
   )
 
   const voucherDiscount = selectedVoucher?.discountAmount ?? 0

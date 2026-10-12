@@ -25,6 +25,7 @@ export interface CheckoutVoucher {
   discountAmount: number
   maxDiscountAmount: number | null
   minOrderAmount: number | null
+  maxOrderAmount: number | null
 }
 
 export interface EstimateVoucherRequest {
@@ -43,7 +44,17 @@ export interface EstimateVoucherResponse {
   productFeeAfterDiscount: number
 }
 
+export interface FilterVoucherProduct {
+  id: string
+  quantity: number
+}
+
+export interface FilterVoucherRequest {
+  products: FilterVoucherProduct[]
+}
+
 export interface FilterVoucherResponse extends EstimateVoucherResponse {
   minOrderAmount: number | null
+  maxOrderAmount: number | null
   isValid: boolean
 }

@@ -3,7 +3,13 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import voucherService from '../service'
-import type { CheckoutVoucher, EstimateVoucherResponse, PublicVoucherResponse, VoucherVisibility } from '../types'
+import type {
+  CheckoutVoucher,
+  EstimateVoucherResponse,
+  FilterVoucherProduct,
+  PublicVoucherResponse,
+  VoucherVisibility
+} from '../types'
 
 const toKind = (type: PublicVoucherResponse['discountType']) => (type === 'cash' ? 'fixed' : 'percent')
 
@@ -17,11 +23,12 @@ const toPublicVoucher = (voucher: PublicVoucherResponse): CheckoutVoucher => ({
   expiresAt: voucher.endAt ?? '',
   discountAmount: voucher.discountAmount,
   maxDiscountAmount: voucher.maxDiscountAmount,
-  minOrderAmount: voucher.minOrderAmount
+  minOrderAmount: voucher.minOrderAmount,
+  maxOrderAmount: null
 })
 
 const toEstimatedVoucher = (
-  voucher: EstimateVoucherResponse & { minOrderAmount?: number | null },
+  voucher: EstimateVoucherResponse & { minOrderAmount?: number | null; maxOrderAmount?: number | null },
   visibility: VoucherVisibility
 ): CheckoutVoucher => ({
   id: voucher.voucherId,
@@ -33,10 +40,11 @@ const toEstimatedVoucher = (
   expiresAt: '',
   discountAmount: voucher.discountAmount,
   maxDiscountAmount: voucher.maxDiscountAmount,
-  minOrderAmount: voucher.minOrderAmount ?? null
+  minOrderAmount: voucher.minOrderAmount ?? null,
+  maxOrderAmount: voucher.maxOrderAmount ?? null
 })
 
-export const useCheckoutVouchers = (productsSubtotal: number, productIds: string[]) => {
+export const useCheckoutVouchers = (productsSubtotal: number, products: FilterVoucherProduct[]) => {
   const publicQuery = useQuery({
     queryKey: ['vouchers', 'public', productsSubtotal],
     queryFn: () => voucherService.getPublicVouchers({ productFee: productsSubtotal }),
@@ -44,9 +52,9 @@ export const useCheckoutVouchers = (productsSubtotal: number, productIds: string
   })
 
   const filterQuery = useQuery({
-    queryKey: ['vouchers', 'filter', productIds],
-    queryFn: () => voucherService.filterVouchers({ productIds }),
-    enabled: productIds.length > 0
+    queryKey: ['vouchers', 'filter', products],
+    queryFn: () => voucherService.filterVouchers({ products }),
+    enabled: products.length > 0
   })
 
   const privateEstimate = useMutation({

@@ -738,7 +738,8 @@
         "ticketFixed": "Giảm tiền",
         "apiOffer": "Ưu đãi voucher",
         "notEligible": "Đơn hàng chưa đủ điều kiện áp dụng",
-        "minOrder": "Voucher chỉ áp dụng cho đơn hàng từ {amount}"
+        "minOrder": "Voucher chỉ áp dụng cho đơn hàng từ {amount}",
+        "maxOrder": "Voucher chỉ áp dụng cho đơn hàng đến {amount}"
       },
       "back": "Quay lại",
       "confirm": "Xác nhận đặt hàng",

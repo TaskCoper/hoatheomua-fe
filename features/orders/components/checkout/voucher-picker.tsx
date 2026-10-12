@@ -50,6 +50,20 @@ const getVoucherDescription = (voucher: CheckoutVoucher, t: ReturnType<typeof us
     : t('orders.checkout.voucher.defaultPercent', { value: voucher.value })
 }
 
+const getUnavailableReason = (
+  voucher: CheckoutVoucher,
+  productsSubtotal: number,
+  t: ReturnType<typeof useTranslation>['t']
+) => {
+  if (voucher.minOrderAmount && productsSubtotal < voucher.minOrderAmount)
+    return t('orders.checkout.voucher.minOrder', { amount: formatVnd(voucher.minOrderAmount) })
+
+  if (voucher.maxOrderAmount && productsSubtotal > voucher.maxOrderAmount)
+    return t('orders.checkout.voucher.maxOrder', { amount: formatVnd(voucher.maxOrderAmount) })
+
+  return t('orders.checkout.voucher.notEligible')
+}
+
 const getVoucherValue = (voucher: CheckoutVoucher) =>
   voucher.kind === 'percent' ? `${voucher.value}%` : formatVnd(voucher.value)
 
@@ -260,9 +274,7 @@ export default function VoucherPicker({
                         <span className='mt-3 border-t border-dashed border-border/80 pt-2 text-[0.7rem] text-muted-foreground'>
                           {unavailable ? (
                             <span className='block truncate font-medium'>
-                              {voucher.minOrderAmount && productsSubtotal < voucher.minOrderAmount
-                                ? t('orders.checkout.voucher.minOrder', { amount: formatVnd(voucher.minOrderAmount) })
-                                : t('orders.checkout.voucher.notEligible')}
+                              {getUnavailableReason(voucher, productsSubtotal, t)}
                             </span>
                           ) : (
                             <span className='flex items-center justify-between gap-3'>

@@ -2,6 +2,7 @@ import api, { BaseResponse } from '@/lib/axios'
 import type {
   EstimateVoucherRequest,
   EstimateVoucherResponse,
+  FilterVoucherRequest,
   FilterVoucherResponse,
   PublicVoucherResponse
 } from './types'
@@ -15,10 +16,8 @@ class VoucherService {
     return data.value
   }
 
-  filterVouchers = async ({ productIds }: { productIds: string[] }) => {
-    const { data } = await api.get<BaseResponse<FilterVoucherResponse[]>>('v1/vouchers/filter', {
-      params: { productIds }
-    })
+  filterVouchers = async ({ products }: FilterVoucherRequest) => {
+    const { data } = await api.post<BaseResponse<FilterVoucherResponse[]>>('v1/vouchers/filter', { products })
 
     return data.value
   }
