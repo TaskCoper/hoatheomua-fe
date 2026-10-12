@@ -1,15 +1,16 @@
 import ScopedIntlProvider from '@/components/scoped-intl-provider'
+import { getCachedCategory } from '@/features/categories/queries.server'
 import TestimonialSection from '@/features/home/components/testimonial-section'
 import { productsQueryKey } from '@/features/products/hooks/use-get-products'
 import { getCachedProducts } from '@/features/products/queries.server'
 import type { ProductDetail } from '@/features/products/types'
+import WomenDayArticleSection from '@/features/women-day-20-10/components/women-day-article-section'
 import WomenDayCollectionSection from '@/features/women-day-20-10/components/women-day-collection-section'
-import WomenDayGuideSection from '@/features/women-day-20-10/components/women-day-guide-section'
 import WomenDayHeroSection from '@/features/women-day-20-10/components/women-day-hero-section'
 import WomenDayJumpButton from '@/features/women-day-20-10/components/women-day-jump-button'
 import WomenDayPromiseSection from '@/features/women-day-20-10/components/women-day-promise-section'
-import WomenDayStoriesSection from '@/features/women-day-20-10/components/women-day-stories-section'
-import { WOMEN_DAY_CATEGORY_IDS, WOMEN_DAY_PAGE_SIZE } from '@/features/women-day-20-10/constants'
+import { WOMEN_DAY_CATEGORY_ID, WOMEN_DAY_CATEGORY_IDS } from '@/features/women-day-20-10/constants'
+import { getWomenDayGrid } from '@/features/women-day-20-10/grid'
 import { buildWomenDayJsonLd, generateWomenDayMetadata } from '@/features/women-day-20-10/seo'
 import type { Locale } from '@/lib/i18n/routing'
 import { getQueryClient } from '@/lib/react-query-client'
@@ -31,9 +32,18 @@ export default async function WomenDayRoute({ params }: { params: Promise<{ loca
   setRequestLocale(locale)
 
   const queryClient = getQueryClient()
+
+  let grid = getWomenDayGrid(null)
+
+  try {
+    grid = getWomenDayGrid(await getCachedCategory(WOMEN_DAY_CATEGORY_ID))
+  } catch (error) {
+    console.error('[SSR] women-day category fetch failed:', error)
+  }
+
   const productsParams = {
     pageIndex: DEFAULT_PAGE_INDEX,
-    pageSize: WOMEN_DAY_PAGE_SIZE,
+    pageSize: grid.pageSize,
     categoryIds: WOMEN_DAY_CATEGORY_IDS
   }
   let items: ProductDetail[] = []
@@ -53,10 +63,9 @@ export default async function WomenDayRoute({ params }: { params: Promise<{ loca
       <HydrationBoundary state={dehydrate(queryClient)}>
         <div className='relative isolate overflow-hidden'>
           <WomenDayHeroSection />
-          <WomenDayCollectionSection />
-          <WomenDayStoriesSection />
-          <WomenDayGuideSection />
+          <WomenDayCollectionSection grid={grid} />
           <WomenDayPromiseSection />
+          <WomenDayArticleSection />
           <TestimonialSection />
         </div>
 

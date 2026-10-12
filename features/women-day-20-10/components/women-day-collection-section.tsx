@@ -1,7 +1,10 @@
 'use client'
 
+import { getResponsiveGridColumns } from '@/features/categories/utils'
 import ProductGrid from '@/features/products/components/product-grid'
-import { WOMEN_DAY_CATEGORY_IDS, WOMEN_DAY_PAGE_SIZE } from '@/features/women-day-20-10/constants'
+import WomenDayCampaignBanner from '@/features/women-day-20-10/components/women-day-campaign-banner'
+import { WOMEN_DAY_CATEGORY_IDS } from '@/features/women-day-20-10/constants'
+import type { WomenDayGrid } from '@/features/women-day-20-10/grid'
 import { fadeUp, stagger } from '@/features/women-day-20-10/motion'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
@@ -9,13 +12,14 @@ import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
 import { ArrowRight01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { motion } from 'motion/react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 const COLLECTION_ANCHOR = '#collection'
 
-export default function WomenDayCollectionSection() {
+export default function WomenDayCollectionSection({ grid }: { grid: WomenDayGrid }) {
   const { t } = useTranslation()
   const [page, setPage] = useState(DEFAULT_PAGE_INDEX)
+  const gridColumns = useMemo(() => getResponsiveGridColumns(grid.cols), [grid.cols])
 
   return (
     <section id='collection' className='scroll-mt-header px-4 py-14 sm:px-6 sm:py-18 lg:py-22'>
@@ -36,7 +40,7 @@ export default function WomenDayCollectionSection() {
           {t('womenDay.collection.intro')}
         </motion.p>
       </motion.div>
-
+      <WomenDayCampaignBanner />
       <motion.div
         initial='hidden'
         whileInView='visible'
@@ -59,14 +63,14 @@ export default function WomenDayCollectionSection() {
             <HugeiconsIcon icon={ArrowRight01Icon} className='size-4' />
           </Link>
         </div>
-
         <ProductGrid
           categoryIds={WOMEN_DAY_CATEGORY_IDS}
-          pageSize={WOMEN_DAY_PAGE_SIZE}
+          pageSize={grid.pageSize}
           page={page}
           onPageChange={setPage}
           pageHref={() => COLLECTION_ANCHOR}
-          singleLineTitle
+          columnsClassName={gridColumns.className}
+          columnsStyle={gridColumns.style}
         />
       </motion.div>
     </section>

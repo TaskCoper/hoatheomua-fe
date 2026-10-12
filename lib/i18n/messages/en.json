@@ -1489,25 +1489,26 @@
   },
   "womenDay": {
     "hero": {
-      "eyebrow": "Special collection · Vietnamese Women’s Day",
-      "title": "A little season of love for the women you cherish",
-      "intro": "A gentle bouquet for mother, a signature bloom for someone special, or a thank-you for the woman beside you every day.",
-      "primary": "Shop the collection",
-      "secondary": "Find your flowers",
-      "dateMark": "20 · 10",
-      "brandLine": "fresh flowers",
-      "brandLabel": "in season",
-      "seasonsLabel": "seasons",
-      "naturalLabel": "natural",
-      "founded": "Founded 12/11/2020"
+      "eyebrow": "The Best 20/10 Fresh Flower Collection",
+      "title": "20 10 Flowers: 50+ Beautiful, Meaningful and Easy-to-Choose Bouquets",
+      "intro": "Beautiful and meaningful 20/10 flowers for mother, wife, someone special and friends. Order fresh 20/10 flowers online in Ho Chi Minh City with lovely offers from Hoa Theo Mùa!",
+      "primary": "Order 20/10 Flowers — FREE LEATHER MAKEUP WALLET + SHIPPING",
+      "dateBadge": "Flowers for wives and loved ones",
+      "seasonsBadge": "Order 20/10 flowers for mother",
+      "naturalBadge": "Big Offers",
+      "deliveryBadge": "Fast 2H Delivery",
+      "brandBadge": "Hoa Theo Mùa"
     },
     "collection": {
-      "eyebrow": "Flowers made for her",
-      "title": "Say what flowers cannot leave unsaid",
-      "intro": "Seasonal designs selected by color, feeling and recipient — so your gift feels as thoughtful as it is beautiful.",
-      "productsTitle": "The 20/10 collection",
+      "eyebrow": "HOA THEO MÙA — ELEGANCE IN EVERY DETAIL",
+      "title": "A Gentle October, Flowers to Give with Love",
+      "intro": "A collection of fresh 20/10 flowers selected especially for Vietnamese Women’s Day. Order easily, pay online and choose a delivery time for someone you love.",
+      "productsTitle": "The 20-10 flower collections",
       "productsIntro": "Fresh seasonal flowers, hand-tied and delivered across Ho Chi Minh City.",
       "readMore": "Explore more"
+    },
+    "campaignBanner": {
+      "alt": "20/10 holiday offer with a free leather makeup wallet and shipping support"
     },
     "stories": {
       "title": "A day worth remembering",
@@ -1557,10 +1558,116 @@
       }
     },
     "promise": {
-      "eyebrow": "A note from Hoa Theo Mùa",
-      "title": "Let your feeling arrive beautifully",
-      "text": "From flowers selected that day to the final wrap, every detail is cared for like a personal message.",
-      "order": "Order flowers"
+      "eyebrow": "The 20/10 flower collection",
+      "titleLine1": "ORDER FRESH 20/10 FLOWERS",
+      "titleLine2": "FREE LEATHER MAKEUP WALLET + SHIPPING",
+      "text": "Hoa Theo Mùa: one gentle flower season at a time, helping you send your love to the woman in your life."
+    },
+    "article": {
+      "title": "Beautiful & Meaningful 20/10 Flowers: Ideas for Everyone [2026]",
+      "intro": "Flowers are a wonderful way to celebrate and appreciate the women in your life. Explore meaningful 20/10 designs from Hoa Theo Mùa.",
+      "images": {
+        "pastel": "A sweet pastel pink bouquet for Vietnamese Women’s Day",
+        "hydrangea": "A meaningful 20/10 hydrangea bouquet",
+        "rose": "A red Blooming-rose-Ecuador basket expressing refined affection",
+        "delivery": "Hoa Theo Mùa 2-hour fresh flower delivery in Ho Chi Minh City"
+      },
+      "meaning": {
+        "title": "The Meaning of Vietnamese Women’s Day and the Art of Gifting Flowers",
+        "body": "October 20 is a special occasion to celebrate women. A fresh bouquet becomes a messenger of sincere affection and a thoughtful way to show appreciation.",
+        "gratitudeTitle": "A Message of Appreciation",
+        "gratitude": "Every woman deserves care and love. A bouquet can turn a simple moment into a warm, memorable smile.",
+        "spiritTitle": "The Emotional Value of Fresh Flowers",
+        "spirit": "Fresh flowers bring natural color and calm into everyday life, helping a space feel brighter and the heart feel lighter."
+      },
+      "choices": {
+        "title": "Which Flowers Should You Give on 20/10?",
+        "intro": "Every flower has its own beauty and meaning. Choose a color and style that says what you want to express.",
+        "items": {
+          "rose": {
+            "title": "Roses - Lasting Love and Respect",
+            "body": "Red roses express passionate affection, while blush tones feel gentle and refined. Yellow roses are also a thoughtful way to show gratitude."
+          },
+          "carnation": {
+            "title": "Carnations - Deep Gratitude for Mother",
+            "body": "Layered petals symbolize tender protection. Carnations can say the heartfelt thanks that words sometimes cannot."
+          },
+          "sunflower": {
+            "title": "Sunflowers - Bright Confidence and Strength",
+            "body": "Radiant yellow brings joyful energy and makes a lovely congratulations gift for a teacher, female leader or colleague."
+          },
+          "orchid": {
+            "title": "Phalaenopsis Orchids - Elegant and Sophisticated",
+            "body": "Orchids represent prosperity and refinement, making them a premium gift for mother or an important partner."
+          }
+        }
+      },
+      "recipients": {
+        "title": "Flower Ideas for Every Recipient",
+        "intro": "Every woman has her own story. The right flower design makes a 20/10 gift feel personal and memorable.",
+        "items": {
+          "mother": {
+            "title": "20/10 Flowers for Mother - With All Your Love",
+            "body": "Soft blush and cream tones feel warm and graceful, carrying wishes of health, peace and happiness to mother or grandmother."
+          },
+          "wife": {
+            "title": "Flowers for Your Wife - Warm Up Your Love",
+            "body": "A thoughtful bouquet and a sincere thank-you make her feel cherished and bring the two of you closer."
+          },
+          "lover": {
+            "title": "Flowers for Someone Special - Young and Sweet",
+            "body": "A playful baby-breath bouquet in her favorite tones creates a lovely surprise and adds a little sparkle to your story."
+          },
+          "colleague": {
+            "title": "Flowers for Female Leaders and Colleagues",
+            "body": "Bright or elegant pastel designs show respect, good wishes and positive energy in the workplace."
+          }
+        },
+        "wifePromo": "Order fresh 20/10 flowers early from Hoa Theo Mùa to receive the lipstick pouch voucher and shipping support!"
+      },
+      "table": {
+        "title": "Comparing Fresh Flower Styles for 20/10",
+        "intro": "Choose the right shape for the occasion, the recipient and the space where it will be displayed.",
+        "type": "Flower style",
+        "highlight": "Key benefit",
+        "for": "Best for",
+        "duration": "Average life",
+        "rows": {
+          "bouquet": {
+            "type": "Fresh bouquet",
+            "highlight": "Light, youthful and easy to carry.",
+            "for": "Girlfriend, wife or close friend.",
+            "duration": "3 - 5 days"
+          },
+          "basket": {
+            "type": "Flower basket",
+            "highlight": "Elegant and convenient for a table.",
+            "for": "Mother, teacher or older family members.",
+            "duration": "4 - 6 days"
+          },
+          "box": {
+            "type": "Flower box",
+            "highlight": "Modern form with beautiful protection.",
+            "for": "Wife, female partner or female manager.",
+            "duration": "4 - 6 days"
+          },
+          "stand": {
+            "type": "Flower stand",
+            "highlight": "Large, impressive and event-ready.",
+            "for": "Company celebrations and conferences.",
+            "duration": "3 - 5 days"
+          }
+        }
+      },
+      "why": {
+        "title": "Why Order 20/10 Flowers from Hoa Theo Mùa?",
+        "body": "Hoa Theo Mùa helps you prepare a thoughtful 20/10 gift and deliver it at the time you choose.",
+        "items": {
+          "gift": "A limited leather makeup pouch gift may apply based on the promotion conditions.",
+          "shipping": "Shipping discounts up to 50K for eligible orders delivered on October 17, 18 or 19."
+        },
+        "final": "Ordering 20/10 flowers from Hoa Theo Mùa is quick and easy. Choose a design, select a delivery time, add a card message and pay online. Our team will prepare the order and deliver it in your chosen time slot."
+      }
     }
   },
   "products": {
@@ -2935,6 +3042,133 @@
       "breadcrumb": "Ordering & payment guide",
       "title": "Ordering & payment guide",
       "subtitle": "Three flexible ways to order and two secure payment options - Hoa Theo Mua helps you send love within minutes."
+    }
+  },
+  "legal": {
+    "privacy": {
+      "appName": "VNZDNA AI Marketing",
+      "metaTitle": "Privacy Policy | VNZDNA AI Marketing",
+      "metaDescription": "Privacy policy of the VNZDNA AI Marketing application.",
+      "title": "Privacy Policy",
+      "description": "Privacy policy of the VNZDNA AI Marketing application.",
+      "introduction": {
+        "title": "1. Introduction",
+        "paragraphs": {
+          "01": "VNZDNA AI Marketing is a tool for internal content management and marketing activities. The application supports authorized users in connecting and managing Facebook Pages within the business scope.",
+          "02": "This policy explains how the application may access, use, store, and process data within the permissions granted by Meta and the functions users are authorized to use."
+        }
+      },
+      "data": {
+        "title": "2. Information accessed and processed",
+        "intro": "Depending on the permissions actually granted by Meta and the enabled features, the application may access or process:",
+        "items": {
+          "01": "Basic information about a Facebook Page.",
+          "02": "Page ID, Page name, and information necessary to manage the Page.",
+          "03": "Page access permissions or access tokens granted through Meta.",
+          "04": "Post content, images, or data related to publishing content.",
+          "05": "Other information if the application actually uses the corresponding permissions."
+        },
+        "outro": "The application does not claim to access or actively access data outside the granted permissions and the functions actually in use."
+      },
+      "purpose": {
+        "title": "3. Purposes of data use",
+        "items": {
+          "01": "Authenticate and connect authorized Facebook Pages.",
+          "02": "Support content management, creation, scheduling, or publishing where the corresponding feature is available.",
+          "03": "Operate the application's internal functions.",
+          "04": "Support security, access control, and system stability."
+        }
+      },
+      "storage": {
+        "title": "4. Data storage and security",
+        "paragraphs": {
+          "01": "Information is processed only as necessary for authorized functions. Access tokens and authentication information should be protected appropriately for their role in the system.",
+          "02": "Access to related data is limited to authorized users within the operational scope. The details of protection measures may change according to the system's infrastructure and configuration."
+        }
+      },
+      "sharing": {
+        "title": "5. Sharing data with third parties",
+        "paragraphs": {
+          "01": "The application only transfers or processes data with services necessary for an enabled feature, within the granted permissions and applicable agreements. If storage, AI, or external data-processing services are integrated, related data may be sent to those services to perform the corresponding function.",
+          "02": "The application does not sell personal data to third parties."
+        }
+      },
+      "rights": {
+        "title": "6. User rights",
+        "intro": "Users may:",
+        "items": {
+          "01": "Revoke the application's access on Meta/Facebook.",
+          "02": "Request information about stored data related to them.",
+          "03": "Request data deletion according to the instructions at /data-deletion."
+        }
+      },
+      "retention": {
+        "title": "7. Data retention",
+        "description": "Data is retained only for as long as necessary for operational purposes or applicable legal obligations. Data that is no longer necessary will be deleted or handled according to the system's actual operating procedures."
+      },
+      "changes": {
+        "title": "8. Changes to this policy",
+        "description": "This policy may be updated when application features, Meta permissions, or applicable regulations change. Updated versions will be published on this page."
+      },
+      "contact": {
+        "title": "9. Contact information",
+        "items": {
+          "01": "Application name|VNZDNA AI Marketing",
+          "02": "Operating entity|CÔNG TY TNHH HOA THEO MÙA - Hoa Theo Mùa - Hệ thống hoa tươi online tại TP. Hồ Chí Minh chuyên cung cấp các dịch vụ hoa tươi & giao hoa tận nơi siêu nhanh trong 2 giờ.",
+          "03": "Contact email|mkt.hoatheomua@gmail.com",
+          "04": "Last updated|October 9, 2026"
+        }
+      }
+    },
+    "dataDeletion": {
+      "appName": "VNZDNA AI Marketing",
+      "metaTitle": "Data Deletion Instructions | VNZDNA AI Marketing",
+      "metaDescription": "Instructions for revoking access and requesting deletion of data from the VNZDNA AI Marketing application.",
+      "title": "Data Deletion Instructions",
+      "description": "Instructions for revoking access and requesting deletion of data from the VNZDNA AI Marketing application.",
+      "introduction": {
+        "title": "1. Introduction",
+        "description": "VNZDNA AI Marketing respects users' control over their data. Users may revoke the application's access and request deletion of stored data, if any."
+      },
+      "revoke": {
+        "title": "2. How to revoke Facebook access",
+        "steps": {
+          "01": "Log in to the Facebook account that granted access to the application.",
+          "02": "Open Settings & privacy → Settings.",
+          "03": "Find the section for connected apps and websites.",
+          "04": "Find VNZDNA AI Marketing if the application appears in the list.",
+          "05": "Choose the option to remove or revoke access according to Facebook's interface."
+        },
+        "note": "Facebook's interface and the location of settings may change."
+      },
+      "request": {
+        "title": "3. Request deletion of stored data",
+        "intro": "If you want to delete data still retained by the application, you may contact:",
+        "items": {
+          "01": "Email: mkt.hoatheomua@gmail.com",
+          "02": "Suggested subject: Request for data deletion - VNZDNA AI Marketing"
+        },
+        "outro": "The request should include enough information to verify the requester's authority, such as the related Page name or Page ID. Do not send passwords or access tokens by email."
+      },
+      "process": {
+        "title": "4. Request handling process",
+        "steps": {
+          "01": "Receive the request.",
+          "02": "Verify the requester's authority where necessary.",
+          "03": "Identify the related stored data.",
+          "04": "Delete or anonymize data within scope, except data that must be retained by law.",
+          "05": "Respond through an appropriate contact channel."
+        },
+        "note": "The processing time depends on the scope of the request and the ability to verify it, so no fixed timeframe is promised."
+      },
+      "notes": {
+        "title": "5. Notes",
+        "items": {
+          "01": "Revoking Facebook access does not mean that all data stored on the system is automatically deleted.",
+          "02": "Revoking access does not automatically delete posts already published on a Facebook Page.",
+          "03": "Users may contact the operating entity to request deletion of data still retained by the application."
+        }
+      }
     }
   },
   "profile": {
