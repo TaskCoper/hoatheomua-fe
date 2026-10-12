@@ -417,6 +417,12 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 {order.vatFee > 0 ? (
                   <SummaryRow label={t('orders.checkout.vat')} value={formatVnd(order.vatFee)} />
                 ) : null}
+                {order.discountAmount && order.discountAmount > 0 ? (
+                  <SummaryRow
+                    label={t('orders.checkout.voucher.discountLabel')}
+                    value={formatVnd(-order.discountAmount)}
+                  />
+                ) : null}
               </dl>
 
               <div className='mt-3 flex items-baseline justify-between gap-2 border-t border-border/60 pt-3'>

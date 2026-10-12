@@ -33,6 +33,8 @@ import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
+import { useCheckoutVouchers } from '../../vouchers/hooks/use-checkout-vouchers'
+import type { CheckoutVoucher } from '../../vouchers/types'
 import type { OrderContact } from '../../payloads'
 import { resolveShippingFee } from '../../shipping-fee'
 import type { TaxBusinessInfo } from '../../types'
@@ -44,6 +46,7 @@ import StepComplete from './step-complete'
 import StepPayment from './step-payment'
 import StepPersonal from './step-personal'
 import StepReview from './step-review'
+import VoucherPicker from './voucher-picker'
 
 type LookupState = 'idle' | 'loading' | 'found' | 'not_found' | 'error'
 
@@ -108,6 +111,7 @@ export default function CheckoutClient() {
   const [pickedPaymentMethodId, setPickedPaymentMethodId] = useState<string | null>(null)
   const [pickedDeliveryMethodId, setPickedDeliveryMethodId] = useState<string | null>(null)
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
+  const [selectedVoucher, setSelectedVoucher] = useState<CheckoutVoucher | null>(null)
 
   const handleSelectedAddressRevised = () => {
     toast.info(invalidateEstimate() ? t('orders.checkout.addressRevisedReprice') : t('orders.checkout.addressRevised'))
@@ -198,6 +202,22 @@ export default function CheckoutClient() {
       materialBlockedProductIds
     })
 
+  const voucherProducts = useMemo(
+    () =>
+      summaryLines
+        .filter((line) => line.issue !== 'missing' && line.issue !== 'inactive' && line.quantity > 0)
+        .map((line) => ({ id: line.productId, quantity: line.quantity }))
+        .sort((a, b) => a.id.localeCompare(b.id) || a.quantity - b.quantity),
+    [summaryLines]
+  )
+  const { vouchers, unavailableVouchers, estimatePrivateVoucher, isEstimatingPrivate } = useCheckoutVouchers(
+    productsSubtotal,
+    voucherProducts
+  )
+
+  const voucherDiscount = selectedVoucher?.discountAmount ?? 0
+  const displayGrandTotal = Math.max(0, grandTotal - voucherDiscount)
+
   const isLoading =
     isEstimatingOrder ||
     isCreatingOrder ||
@@ -253,7 +273,8 @@ export default function CheckoutClient() {
                     paymentMethod: selectedPaymentMethod.paymentMethod,
                     gateway: selectedPaymentMethod.gateway,
                     shippingGateway: selectedDeliveryMethod.shippingGateway,
-                    shippingFee
+                    shippingFee,
+                    voucherCode: selectedVoucher?.code ?? null
                   }),
                 disabled:
                   !selectedPaymentMethod ||
@@ -289,7 +310,14 @@ export default function CheckoutClient() {
     shippingFee: rawShippingFee,
     shippingDiscount,
     showShipping: step >= 2,
-    grandTotal,
+    grandTotal: displayGrandTotal,
+    voucherDiscount,
+    vouchers,
+    unavailableVouchers,
+    selectedVoucher,
+    onSelectVoucher: step === 4 ? setSelectedVoucher : undefined,
+    onEstimatePrivateVoucher: step === 4 ? estimatePrivateVoucher : undefined,
+    isEstimatingPrivate,
     action: sidebarAction,
     showTerms: step === 4,
     cards,
@@ -388,7 +416,7 @@ export default function CheckoutClient() {
                     </span>
                   </span>
                   <span className='shrink-0 font-title text-base font-bold text-primary tabular-nums'>
-                    {formatVnd(grandTotal)}
+                    {formatVnd(displayGrandTotal)}
                   </span>
                 </button>
 
@@ -400,6 +428,7 @@ export default function CheckoutClient() {
                       sticky={false}
                       showAction={false}
                       notice={null}
+                      onSelectVoucher={undefined}
                     />
                   </div>
                 ) : null}
@@ -452,6 +481,19 @@ export default function CheckoutClient() {
                 )}
 
                 {step === 4 ? (
+                  <VoucherPicker
+                    vouchers={vouchers}
+                    unavailableVouchers={unavailableVouchers}
+                    productsSubtotal={productsSubtotal}
+                    selectedVoucher={selectedVoucher}
+                    onSelect={setSelectedVoucher}
+                    onEstimatePrivateVoucher={estimatePrivateVoucher}
+                    isEstimatingPrivate={isEstimatingPrivate}
+                    className='lg:hidden'
+                  />
+                ) : null}
+
+                {step === 4 ? (
                   <CheckoutPanel className='p-4 lg:hidden'>
                     {isStepBlockedByFlag ? <FeatureUnavailableNotice className='mb-3' /> : null}
                     <CheckoutTerms accepted={termsAccepted} onAcceptedChange={setTermsAccepted} />
@@ -475,7 +517,7 @@ export default function CheckoutClient() {
                       {t('orders.checkout.total')}
                     </p>
                     <p className='truncate font-title text-lg leading-tight font-bold text-primary tabular-nums'>
-                      {formatVnd(grandTotal)}
+                      {formatVnd(displayGrandTotal)}
                     </p>
                   </div>
 
