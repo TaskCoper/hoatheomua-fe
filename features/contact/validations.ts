@@ -1,7 +1,7 @@
 import type { TranslationFunction } from '@/lib/i18n/dictionary-provider'
 import z from 'zod'
 
-const VN_PHONE_REGEX = /^(?:\+84|0)[3-9]\d{8}$/
+const VN_PHONE_REGEX = /^(?:\+84\d{9,10}|0\d{9,10})$/
 
 export const createContactSchema = (t: TranslationFunction) =>
   z
