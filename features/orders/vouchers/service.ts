@@ -10,8 +10,10 @@ class VoucherService {
     return data.value
   }
 
-  estimateVoucher = async (body: EstimateVoucherRequest) => {
-    const { data } = await api.post<BaseResponse<EstimateVoucherResponse>>('v1/vouchers/estimate', body)
+  estimateVoucher = async ({ code, productFee }: EstimateVoucherRequest) => {
+    const { data } = await api.get<BaseResponse<EstimateVoucherResponse>>('v1/vouchers/estimate', {
+      params: { code, productFee }
+    })
 
     return data.value
   }

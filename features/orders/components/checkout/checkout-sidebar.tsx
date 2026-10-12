@@ -16,10 +16,11 @@ import { getCheckoutCardPrice } from '../../cards/card-data'
 import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
 import type { CheckoutCardField } from '../../cards/types'
 import { useCardConfig } from '../../hooks/use-card-config'
-import type { MockVoucher } from '../../vouchers/mock-data'
+import type { CheckoutVoucher } from '../../vouchers/types'
 import VoucherPicker from './voucher-picker'
 
 const EMPTY_CARDS: CheckoutCardField[] = []
+const EMPTY_VOUCHERS: CheckoutVoucher[] = []
 
 export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stock' | 'materials'
 
@@ -65,10 +66,10 @@ interface CheckoutSidebarProps {
   showShipping?: boolean
   grandTotal: number
   voucherDiscount?: number
-  voucherVouchers?: MockVoucher[]
-  selectedVoucher?: MockVoucher | null
-  onSelectVoucher?: (voucher: MockVoucher | null) => void
-  onEstimatePrivateVoucher?: (code: string) => Promise<MockVoucher>
+  vouchers?: CheckoutVoucher[]
+  selectedVoucher?: CheckoutVoucher | null
+  onSelectVoucher?: (voucher: CheckoutVoucher | null) => void
+  onEstimatePrivateVoucher?: (code: string) => Promise<CheckoutVoucher>
   isEstimatingPrivate?: boolean
   action: {
     label: string
@@ -110,7 +111,7 @@ export default function CheckoutSidebar({
   showShipping = true,
   grandTotal,
   voucherDiscount = 0,
-  voucherVouchers = [],
+  vouchers = EMPTY_VOUCHERS,
   selectedVoucher = null,
   onSelectVoucher,
   onEstimatePrivateVoucher,
@@ -214,9 +215,8 @@ export default function CheckoutSidebar({
 
       {onSelectVoucher && onEstimatePrivateVoucher ? (
         <VoucherPicker
-          vouchers={voucherVouchers}
+          vouchers={vouchers}
           selectedVoucher={selectedVoucher}
-          productsSubtotal={productsSubtotal}
           onSelect={onSelectVoucher}
           onEstimatePrivateVoucher={onEstimatePrivateVoucher}
           isEstimatingPrivate={isEstimatingPrivate}

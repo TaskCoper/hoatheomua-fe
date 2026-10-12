@@ -181,6 +181,7 @@ export interface OrderDetail {
   productFee: number
   totalFee: number
   vatFee: number
+  discountAmount?: number | null
   paymentUrl: string | null
   sepayUrl: string | null
   paymentMethod: PaymentMethod

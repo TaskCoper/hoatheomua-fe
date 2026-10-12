@@ -33,9 +33,8 @@ import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
-import { USE_MOCK_VOUCHERS } from '../../vouchers/config'
 import { useCheckoutVouchers } from '../../vouchers/hooks/use-checkout-vouchers'
-import type { MockVoucher } from '../../vouchers/mock-data'
+import type { CheckoutVoucher } from '../../vouchers/types'
 import type { OrderContact } from '../../payloads'
 import { resolveShippingFee } from '../../shipping-fee'
 import type { TaxBusinessInfo } from '../../types'
@@ -111,7 +110,7 @@ export default function CheckoutClient() {
   const [pickedPaymentMethodId, setPickedPaymentMethodId] = useState<string | null>(null)
   const [pickedDeliveryMethodId, setPickedDeliveryMethodId] = useState<string | null>(null)
   const [taxBusinessInfo, setTaxBusinessInfo] = useState<TaxBusinessInfo | null>(null)
-  const [selectedVoucher, setSelectedVoucher] = useState<MockVoucher | null>(null)
+  const [selectedVoucher, setSelectedVoucher] = useState<CheckoutVoucher | null>(null)
 
   const handleSelectedAddressRevised = () => {
     toast.info(invalidateEstimate() ? t('orders.checkout.addressRevisedReprice') : t('orders.checkout.addressRevised'))
@@ -204,11 +203,7 @@ export default function CheckoutClient() {
 
   const { vouchers, estimatePrivateVoucher, isEstimatingPrivate } = useCheckoutVouchers(productsSubtotal)
 
-  const voucherDiscount = selectedVoucher
-    ? selectedVoucher.kind === 'percent'
-      ? Math.floor((productsSubtotal * selectedVoucher.value) / 100)
-      : Math.min(selectedVoucher.value, productsSubtotal)
-    : 0
+  const voucherDiscount = selectedVoucher?.discountAmount ?? 0
   const displayGrandTotal = Math.max(0, grandTotal - voucherDiscount)
 
   const isLoading =
@@ -267,7 +262,7 @@ export default function CheckoutClient() {
                     gateway: selectedPaymentMethod.gateway,
                     shippingGateway: selectedDeliveryMethod.shippingGateway,
                     shippingFee,
-                    voucherCode: USE_MOCK_VOUCHERS ? null : selectedVoucher?.code ?? null
+                    voucherCode: selectedVoucher?.code ?? null
                   }),
                 disabled:
                   !selectedPaymentMethod ||
@@ -305,7 +300,7 @@ export default function CheckoutClient() {
     showShipping: step >= 2,
     grandTotal: displayGrandTotal,
     voucherDiscount,
-    voucherVouchers: vouchers,
+    vouchers,
     selectedVoucher,
     onSelectVoucher: setSelectedVoucher,
     onEstimatePrivateVoucher: estimatePrivateVoucher,
@@ -408,7 +403,7 @@ export default function CheckoutClient() {
                     </span>
                   </span>
                   <span className='shrink-0 font-title text-base font-bold text-primary tabular-nums'>
-                    {formatVnd(grandTotal)}
+                    {formatVnd(displayGrandTotal)}
                   </span>
                 </button>
 
@@ -495,7 +490,7 @@ export default function CheckoutClient() {
                       {t('orders.checkout.total')}
                     </p>
                     <p className='truncate font-title text-lg leading-tight font-bold text-primary tabular-nums'>
-                      {formatVnd(grandTotal)}
+                      {formatVnd(displayGrandTotal)}
                     </p>
                   </div>
 
