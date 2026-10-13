@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import * as Sentry from '@sentry/nextjs'
 import { useTranslations } from 'next-intl'
 import { useEffect } from 'react'
 
@@ -8,6 +9,9 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   const t = useTranslations('common.error')
 
   useEffect(() => {
+    // The boundary swallows the error, so Sentry never sees it unless it is reported here. Most
+    // failed React Query fetches end up here too (`throwOnError` in lib/react-query-client.ts).
+    Sentry.captureException(error)
     console.error(error)
   }, [error])
 
