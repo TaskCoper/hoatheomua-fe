@@ -1,4 +1,5 @@
 import { Toaster } from '@/components/ui/sonner'
+import SentryUserContext from '@/features/users/components/sentry-user-context'
 import { routing } from '@/lib/i18n/routing'
 import ReactQueryProvider from '@/lib/react-query'
 import ConfirmDialog from '@/shared/components/confirm-dialog'
@@ -128,6 +129,7 @@ export default async function RootLayout({
         <NuqsAdapter>
           <NextIntlClientProvider messages={clientMessages}>
             <ReactQueryProvider>
+              <SentryUserContext />
               {children}
               {modal}
               <Toaster position='top-center' duration={2000} />

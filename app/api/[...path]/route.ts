@@ -3,6 +3,7 @@
 
 import { apiErrorJson } from '@/lib/api-envelope'
 import { SERVER_API_BASE_URL, SERVER_TASKCOPER_API_BASE_URL } from '@/lib/api-upstream'
+import * as Sentry from '@sentry/nextjs'
 
 const DEFAULT_UPSTREAM = SERVER_API_BASE_URL
 
@@ -16,16 +17,39 @@ const HOP_BY_HOP = new Set(['host', 'connection', 'content-length', 'transfer-en
 
 const TIMEOUT_CODES = new Set(['ETIMEDOUT', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT'])
 
+// During an outage every request fails the same way, so report each error code at
+// most once a minute per instance instead of burning the error quota.
+const REPORT_INTERVAL_MS = 60_000
+const lastReportedAt = new Map<string, number>()
+
+const reportUpstreamFailure = (method: string, error: unknown, code: string) => {
+  const now = Date.now()
+
+  if (now - (lastReportedAt.get(code) ?? 0) < REPORT_INTERVAL_MS) {
+    return
+  }
+
+  lastReportedAt.set(code, now)
+
+  // One issue per failure mode (ETIMEDOUT vs EAI_AGAIN vs ECONNREFUSED), not one per stack.
+  Sentry.captureException(error, {
+    fingerprint: ['api-proxy-upstream-unavailable', code],
+    tags: { 'api.proxy': 'upstream_unavailable', 'api.upstream_code': code, 'http.method': method }
+  })
+}
+
 // A thrown fetch means the request never got a response from the backend (DNS,
-// connect timeout, reset), so the backend has no trace of it - log it here and
-// answer with a gateway status in the backend's error envelope instead of
-// letting Next.js turn it into an opaque 500.
+// connect timeout, reset), so the backend has no trace of it - log it here,
+// report it to Sentry (nothing else will), and answer with a gateway status in
+// the backend's error envelope instead of letting Next.js turn it into an
+// opaque 500.
 const upstreamUnavailable = (method: string, target: string, error: unknown) => {
   const cause = (error as { cause?: { code?: string } }).cause
   const code = cause?.code ?? (error instanceof Error ? error.name : 'UnknownError')
   const status = TIMEOUT_CODES.has(code) ? 504 : 502
 
   console.error(`[API-PROXY] ${method} ${target} failed: ${code}`)
+  reportUpstreamFailure(method, error, code)
 
   return apiErrorJson({
     status,
