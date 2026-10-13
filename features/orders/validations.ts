@@ -41,6 +41,7 @@ const createBaseCheckoutSchema = (t: TranslationFunction) => {
     orderTime: z.string().nullable(),
     tagIds: z
       .array(z.number())
+      .min(1, { error: requiredFor(t('orders.checkout.tag')) })
       .max(1, { error: t('common.validation.arrayMax', { field: t('orders.checkout.tag'), max: 1 }) })
   })
 }

@@ -674,6 +674,9 @@
       "tagEmpty": "No time slot available",
       "tagWithinDate": "Delivery within {date}",
       "tagWithDate": "{date} at {tag}",
+      "slot": {
+        "full": "Full"
+      },
       "deliveryNoteHeading": "Delivery timing",
       "comboboxEmpty": "No results",
       "emptyCart": "Your cart is empty.",

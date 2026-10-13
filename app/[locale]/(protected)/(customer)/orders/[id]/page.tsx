@@ -32,7 +32,7 @@ import {
 } from '@/features/orders/types'
 import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
-import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { useGetDeliverySlotAvailability } from '@/hooks/use-get-delivery-slot-availability'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -219,16 +219,16 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
     )
   }
 
-  const { orderTags } = useGetOrderTags()
+  const deliveryDate = order.orderTime > 0 ? new Date(order.orderTime * 1000) : new Date()
+  const { slots: deliverySlots } = useGetDeliverySlotAvailability(deliveryDate)
   const deliveryTagLabel = useMemo(() => {
-    const options = orderTags?.options
-    if (!options?.length || !order.tagsId?.length) {
+    if (!deliverySlots.length || !order.tagsId?.length) {
       return null
     }
-    const byValue = new Map(options.map((opt) => [opt.value, opt.label]))
+    const byValue = new Map(deliverySlots.map((slot) => [slot.tagId, slot.label]))
     const labels = order.tagsId.map((id) => byValue.get(id)).filter(Boolean) as string[]
     return labels.length ? labels.join(', ') : null
-  }, [orderTags, order.tagsId])
+  }, [deliverySlots, order.tagsId])
 
   const sepayDetails = useMemo(() => parseSepayDetails(order.sepayUrl), [order.sepayUrl])
   const hasSepayQr = isPendingOrder && !order.paymentUrl && Boolean(order.sepayUrl) && Boolean(sepayDetails)

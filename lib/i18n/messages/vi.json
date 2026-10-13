@@ -674,6 +674,9 @@
       "tagEmpty": "Không có khung giờ nào",
       "tagWithinDate": "Giao trong ngày {date}",
       "tagWithDate": "{date} lúc {tag}",
+      "slot": {
+        "full": "Đã đầy"
+      },
       "deliveryNoteHeading": "Thời gian giao dự kiến",
       "comboboxEmpty": "Không có kết quả",
       "emptyCart": "Giỏ hàng của bạn đang trống.",

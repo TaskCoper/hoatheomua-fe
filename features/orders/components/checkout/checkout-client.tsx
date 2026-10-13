@@ -6,7 +6,7 @@ import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useAccountHref } from '@/features/users/hooks/use-account-href'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useGetUser } from '@/features/users/hooks/use-get-user'
-import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { useGetDeliverySlotAvailability } from '@/hooks/use-get-delivery-slot-availability'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -59,8 +59,6 @@ export default function CheckoutClient() {
   const { createOrder, isCreatingOrder } = useCreateOrder()
 
   const { addresses, isLoading: isLoadingAddresses } = useGetAddresses({ enabled: true })
-  const { orderTags } = useGetOrderTags()
-
   const { me, isGettingMe } = useGetMe()
   const ordersHref = useAccountHref('orders')
   const { user, isLoading: isLoadingUser } = useGetUser(me?.slug)
@@ -177,8 +175,10 @@ export default function CheckoutClient() {
   const selectedTagId = watchedTagIds?.[0]
   const summaryRemarks = watchedRemarks?.trim() || undefined
 
+  const { slots: deliverySlots } = useGetDeliverySlotAvailability(watchedOrderTime)
+
   const summaryDeliveryTime =
-    selectedTagId !== undefined ? orderTags?.options?.find((o) => o.value === selectedTagId)?.label : undefined
+    selectedTagId !== undefined ? deliverySlots.find((slot) => slot.tagId === selectedTagId)?.label : undefined
 
   const summaryDeliveryMethodLabel = selectedDeliveryMethod
     ? localizedMethodText(selectedDeliveryMethod.label, locale)
