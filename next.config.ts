@@ -1,5 +1,5 @@
-import { withSentryConfig } from '@sentry/nextjs/config'
 import bundleAnalyzer from '@next/bundle-analyzer'
+import { withSentryConfig } from '@sentry/nextjs/config'
 import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 
@@ -39,7 +39,9 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30
   },
   compress: true,
-  productionBrowserSourceMaps: false,
+  // Not set on purpose: withSentryConfig turns browser source maps on for the
+  // Turbopack build, uploads them, then deletes them (see sourcemaps below).
+  // An explicit `false` here makes it skip client maps entirely.
   poweredByHeader: false,
   experimental: {
     useCache: true,
@@ -73,14 +75,17 @@ export default withSentryConfig(withBundleAnalyzer(withNextIntl(nextConfig)), {
 
   project: 'hoatheomua-fe',
 
-  // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
+  // Print source-map upload logs in CI and in the Docker build (which sets the token but not CI)
+  silent: !process.env.CI && !process.env.SENTRY_AUTH_TOKEN,
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
+
+  // Never serve the maps publicly once they're uploaded
+  sourcemaps: { deleteSourcemapsAfterUpload: true },
 
   // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
