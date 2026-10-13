@@ -37,6 +37,7 @@ jobs:
       PUBLIC_VIETMAP_API_KEY: ${{ secrets.PUBLIC_VIETMAP_API_KEY }}
       VIETMAP_API_KEY: ${{ secrets.VIETMAP_API_KEY }}
       REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       ENABLE_ORDERING: ${{ secrets.ENABLE_ORDERING || 'true' }}
       ENABLE_PAYMENT: ${{ secrets.ENABLE_PAYMENT || 'true' }}
       ENABLE_EXTERNAL_SERVICES: ${{ secrets.ENABLE_EXTERNAL_SERVICES || 'true' }}

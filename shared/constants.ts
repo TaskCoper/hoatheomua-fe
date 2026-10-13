@@ -36,7 +36,9 @@ export const PUBLIC_ROUTE_PATHS = new Set([
   '/occasions/[id]',
   '/featured/[id]',
   '/mainline/[id]',
-  '/hoa-20-10'
+  '/hoa-20-10',
+  // TEMPORARY: Sentry smoke test. Remove with app/[locale]/(public)/sentry-example-page.
+  '/sentry-example-page'
 ])
 
 const normalizeRoutePath = (pathname: string) => {

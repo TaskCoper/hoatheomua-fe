@@ -4,6 +4,7 @@ x-hoatheomua-fe-base: &hoatheomua-fe-base
   build:
     context: ..
     dockerfile: Dockerfile
+    secrets: [sentry_auth_token]
     args:
       API_BASE_URL: ${API_BASE_URL:?API_BASE_URL is required}
       TASKCOPER_API_BASE_URL: ${TASKCOPER_API_BASE_URL:?TASKCOPER_API_BASE_URL is required}
@@ -55,6 +56,10 @@ services:
     hostname: hoatheomua-fe-prod
     networks: [hoatheomua-network-prod]
     profiles: [prod, hoatheomua-fe-prod, hoatheomua-fe]
+
+secrets:
+  sentry_auth_token:
+    environment: SENTRY_AUTH_TOKEN
 
 networks:
   hoatheomua-network-dev:
