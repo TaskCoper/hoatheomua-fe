@@ -14,7 +14,7 @@ class ConfigService {
   }
 
   getDeliverySlotAvailability = async ({ date }: { date: string }) => {
-    const { data } = await api.get<BaseResponse<DeliverySlotAvailability>>('v1/delivery-slots/availability', {
+    const { data } = await api.get<BaseResponse<DeliverySlotAvailability>>('v1/orders/delivery-slots/availability', {
       params: { date }
     })
 
