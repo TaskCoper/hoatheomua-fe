@@ -11,10 +11,11 @@ export const SENTRY_DSN =
   'https://4fdd84fbd6e08161f3161357c5a57f7d@o4512247139794944.ingest.us.sentry.io/4512247162732544'
 
 // Demo and prod are separate image builds that both run with NODE_ENV=production, so NODE_ENV alone
-// cannot tell them apart. The Docker build bakes NEXT_PUBLIC_SENTRY_ENVIRONMENT in (see Dockerfile);
-// it is inlined into the client, server and edge bundles alike. Always resolve a value here: passing
-// `environment: undefined` to init would override the SDK's own fallbacks.
-export const SENTRY_ENVIRONMENT = process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || process.env.NODE_ENV
+// cannot tell them apart. The Docker build bakes NEXT_PUBLIC_SENTRY_ENVIRONMENT in (`development` for
+// demo, `production` for prod, see Dockerfile); it is inlined into the client, server and edge bundles
+// alike. Without it (local `next dev` / `next build`) Sentry stays off, so local noise never lands in
+// the `development` environment.
+export const SENTRY_ENVIRONMENT = process.env.NEXT_PUBLIC_SENTRY_ENVIRONMENT || undefined
 
 // Terms are matched as case-insensitive substrings of the header / cookie / query-param name, on top
 // of the SDK's built-in list (auth, token, secret, session, key, cookie, password, ...).
@@ -40,6 +41,7 @@ export const sentryDataCollection: DataCollection = {
 
 export const sentryBaseOptions = {
   dsn: SENTRY_DSN,
+  enabled: Boolean(SENTRY_ENVIRONMENT),
   environment: SENTRY_ENVIRONMENT,
   // Sampling is parent-based: a browser-sampled trace is always continued by the server.
   tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1,
