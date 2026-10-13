@@ -147,7 +147,7 @@ export default function VoucherPicker({
                     {getVoucherDescription(selectedVoucher, t)}
                   </span>
                   <span className='shrink-0 font-semibold text-primary'>
-                    -{formatVnd(selectedVoucher.discountAmount)}
+                    {formatVnd(selectedVoucher.discountAmount > 0 ? -selectedVoucher.discountAmount : 0)}
                   </span>
                 </span>
               ) : (
@@ -287,8 +287,8 @@ export default function VoucherPicker({
                                 </span>
                               </span>
                               <span className='inline-flex shrink-0 items-center gap-1 font-semibold text-primary'>
-                                <HugeiconsIcon icon={Tag01Icon} className='size-3' />-
-                                {formatVnd(voucher.discountAmount)}
+                                <HugeiconsIcon icon={Tag01Icon} className='size-3' />
+                                {formatVnd(voucher.discountAmount > 0 ? -voucher.discountAmount : 0)}
                               </span>
                             </span>
                           )}
