@@ -42,7 +42,9 @@ ENV NEXT_PUBLIC_ENABLE_PAYMENT=${ENABLE_PAYMENT}
 ENV NEXT_PUBLIC_ENABLE_EXTERNAL_SERVICES=${ENABLE_EXTERNAL_SERVICES}
 ENV HUSKY=0
 
-RUN pnpm build
+# Optional secret: without it the build succeeds but source maps aren't uploaded.
+RUN --mount=type=secret,id=sentry_auth_token \
+  SENTRY_AUTH_TOKEN="$(cat /run/secrets/sentry_auth_token 2>/dev/null || true)" pnpm build
 
 FROM node:24-alpine AS runner
 
