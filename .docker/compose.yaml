@@ -17,7 +17,7 @@ x-hoatheomua-fe-base: &hoatheomua-fe-base
       ENABLE_PAYMENT: ${ENABLE_PAYMENT:-true}
       ENABLE_EXTERNAL_SERVICES: ${ENABLE_EXTERNAL_SERVICES:-true}
       # Optional: Sentry release (commit SHA) and environment. Empty leaves the release unset
-      # and the environment on NODE_ENV.
+      # and turns Sentry off.
       SENTRY_RELEASE: ${SENTRY_RELEASE:-}
       SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-}
       # Optional: server-side API calls go straight to the gateway over the Docker

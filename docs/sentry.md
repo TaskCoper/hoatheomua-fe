@@ -12,7 +12,7 @@ Org `dahn-i7`, project `hoatheomua-fe`, `@sentry/nextjs` 11.x. All runtimes shar
 | Session Replay      | Browser only. 1% of sessions in production, 100% of sessions with an error (dev: errors only). Text and inputs masked, media blocked, no network bodies/headers. Not started for crawlers or Lighthouse/PageSpeed. An error does not get a replay when it is axios offline/timeout/4xx or a ResizeObserver notice (the error itself is still reported).                                                                                   |
 | User context        | `features/users/components/sentry-user-context.tsx`, mounted in `app/[locale]/layout.tsx`. Sets `{ id }` only, follows the `['me']` query cache (no extra request), clears on sign-out / 401. The server sets no user.                                                                                                                                                                                                                    |
 | Release             | The commit SHA: `SENTRY_RELEASE` is passed by `build-image.yaml` -> compose build arg -> Dockerfile, and `withSentryConfig` bakes it into the client and server bundles and the source-map upload.                                                                                                                                                                                                                                        |
-| Environment         | `prod` is reported as `production`, `demo` as `demo` (`NEXT_PUBLIC_SENTRY_ENVIRONMENT`, from the same workflow). Local `next dev` reports `development`.                                                                                                                                                                                                                                                                                  |
+| Environment         | `prod` is reported as `production`, `demo` as `development` (`NEXT_PUBLIC_SENTRY_ENVIRONMENT`, from the same workflow). Only these two exist: when the variable is unset (local `next dev` / `next build`) Sentry is disabled and sends nothing.                                                                                                                                                                                          |
 | Source maps         | `next.config.ts`: uploaded after the Turbopack build with `SENTRY_AUTH_TOKEN` (Docker build secret), then deleted from the image. Upload or release failures log an error but do not fail the build.                                                                                                                                                                                                                                      |
 
 ## Privacy
@@ -34,7 +34,7 @@ Configured in `lib/sentry-options.ts` (`dataCollection`) and `instrumentation-cl
 
 ### Alert rules (production only)
 
-Set **Environment: production** on every rule so demo traffic never pages anyone. Pick the same notification target for all three.
+Set **Environment: production** on every rule so demo (`development`) traffic never pages anyone. Pick the same notification target for all three.
 
 | Rule                 | Type         | Condition                                                                                                                                                                                                                                                          |
 | -------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -44,7 +44,7 @@ Set **Environment: production** on every rule so demo traffic never pages anyone
 
 ## Verify after the first deploy
 
-- Releases shows the commit SHA, with a `production` and a `demo` environment.
+- Releases shows the commit SHA, with a `production` and a `development` (demo) environment.
 - A new error shows a readable stack trace (source maps), the release, the environment, and `user.id` when signed in.
 - An error session has a Replay with masked text and blocked images. The repo has no test page: to check this, temporarily add a button that throws an `Error` in its click handler (not `captureMessage`, not an API 4xx, not a server-only error) and remove it afterwards. Wait ~10 s after the page loads, then stay on the page for ~15 s: replays shorter than ~5 s are held back and lost if you leave first.
 - A sampled trace shows the browser request, the Next `/api/[...path]` transaction and (if the backend runs Sentry) the backend span under one trace id.
