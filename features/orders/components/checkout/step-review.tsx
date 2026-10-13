@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { useGetOrderTags } from '@/hooks/use-get-order-tags'
+import { useGetDeliverySlotAvailability } from '@/hooks/use-get-delivery-slot-availability'
 import { formatVnd } from '@/lib/currency'
 import { useDateFormat } from '@/lib/date'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -45,16 +45,15 @@ export default function StepReview({
   const { t, locale } = useTranslation()
   const { formatDate } = useDateFormat()
   const { control } = useFormContext<CheckoutFormValues>()
-  const { orderTags } = useGetOrderTags()
-
   const values = useWatch({ control })
 
   const address = [values.addressLine, values.ward, values.city].filter(Boolean).join(', ')
   const orderTimeLabel = formatDate(values.orderTime ?? new Date(), 'dateLong')
   const selectedTagId = values.tagIds?.[0]
+  const { slots: deliverySlots } = useGetDeliverySlotAvailability(values.orderTime ?? null)
   const deliveryTimeLabel =
     selectedTagId !== undefined
-      ? orderTags?.options?.find((option) => option.value === selectedTagId)?.label
+      ? deliverySlots.find((slot) => slot.tagId === selectedTagId)?.label
       : undefined
   const deliveryQuote = deliveryMethod?.quote
 

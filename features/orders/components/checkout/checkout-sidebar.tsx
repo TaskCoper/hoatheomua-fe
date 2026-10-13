@@ -16,8 +16,11 @@ import { getCheckoutCardPrice } from '../../cards/card-data'
 import { CARD_WRITING_METHOD_LABEL_KEYS } from '../../cards/card-labels'
 import type { CheckoutCardField } from '../../cards/types'
 import { useCardConfig } from '../../hooks/use-card-config'
+import type { CheckoutVoucher } from '../../vouchers/types'
+import VoucherPicker from './voucher-picker'
 
 const EMPTY_CARDS: CheckoutCardField[] = []
+const EMPTY_VOUCHERS: CheckoutVoucher[] = []
 
 export type CheckoutLineIssue = 'missing' | 'inactive' | 'sold-out' | 'over-stock' | 'materials'
 
@@ -62,6 +65,13 @@ interface CheckoutSidebarProps {
   shippingDiscount?: number
   showShipping?: boolean
   grandTotal: number
+  voucherDiscount?: number
+  vouchers?: CheckoutVoucher[]
+  unavailableVouchers?: CheckoutVoucher[]
+  selectedVoucher?: CheckoutVoucher | null
+  onSelectVoucher?: (voucher: CheckoutVoucher | null) => void
+  onEstimatePrivateVoucher?: (code: string) => Promise<CheckoutVoucher>
+  isEstimatingPrivate?: boolean
   action: {
     label: string
     onClick: () => void
@@ -101,6 +111,13 @@ export default function CheckoutSidebar({
   shippingDiscount = 0,
   showShipping = true,
   grandTotal,
+  voucherDiscount = 0,
+  vouchers = EMPTY_VOUCHERS,
+  unavailableVouchers = EMPTY_VOUCHERS,
+  selectedVoucher = null,
+  onSelectVoucher,
+  onEstimatePrivateVoucher,
+  isEstimatingPrivate = false,
   action,
   notice,
   showTerms = true,
@@ -180,6 +197,9 @@ export default function CheckoutSidebar({
                 ) : null}
               </>
             ) : null}
+            {voucherDiscount > 0 ? (
+              <SidebarRow label={t('orders.checkout.voucher.discountLabel')} value={formatVnd(-voucherDiscount)} />
+            ) : null}
           </dl>
           <div className='mt-4 flex items-center justify-between border-t border-dashed border-border pt-3'>
             <span className='text-sm font-semibold'>{t('orders.checkout.total')}</span>
@@ -194,6 +214,18 @@ export default function CheckoutSidebar({
           </div>
         </div>
       </section>
+
+      {onSelectVoucher && onEstimatePrivateVoucher ? (
+        <VoucherPicker
+          vouchers={vouchers}
+          unavailableVouchers={unavailableVouchers}
+          productsSubtotal={productsSubtotal}
+          selectedVoucher={selectedVoucher}
+          onSelect={onSelectVoucher}
+          onEstimatePrivateVoucher={onEstimatePrivateVoucher}
+          isEstimatingPrivate={isEstimatingPrivate}
+        />
+      ) : null}
 
       {showAction ? (
         <section className='space-y-3 rounded-3xl border border-border bg-card p-5'>

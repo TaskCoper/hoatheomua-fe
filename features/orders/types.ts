@@ -181,6 +181,7 @@ export interface OrderDetail {
   productFee: number
   totalFee: number
   vatFee: number
+  discountAmount?: number | null
   paymentUrl: string | null
   sepayUrl: string | null
   paymentMethod: PaymentMethod
@@ -383,6 +384,7 @@ export interface EstimateResult {
 
 export interface CheckoutPayload extends Omit<EstimatePayload, 'items'> {
   items: CheckoutItemPayload[]
+  voucherCode?: string | null
   fullNameReceiver: string
   phoneReceiver: string
   taxCode: string | null
@@ -405,6 +407,7 @@ export interface CheckoutSelection {
   gateway: PaymentGateway
   shippingGateway: ShippingGateway
   shippingFee: number
+  voucherCode?: string | null
 }
 
 export interface UpdateShippingRequest {

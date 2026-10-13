@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict'
-import { createRequire, registerHooks } from 'node:module'
 import { readFileSync } from 'node:fs'
+import { createRequire, registerHooks } from 'node:module'
 import { dirname, resolve } from 'node:path'
-import vm from 'node:vm'
 import { fileURLToPath } from 'node:url'
+import vm from 'node:vm'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 // Next's bundler resolves this extensionless ESM import; mirror it in Node.
@@ -58,7 +58,7 @@ const signIn = createSignInSchema(t)
 check('email cannot be used as a login number', () =>
   assert.equal(signIn.safeParse({ phoneNumber: 'old@example.com', password: 'Demo123!' }).success, false)
 )
-for (const phoneNumber of ['0901234567', '+84 901234567', '84901234567']) {
+for (const phoneNumber of ['0901234567', '01234567890', '+84 901234567', '84901234567']) {
   check(`phone notation ${phoneNumber} accepted`, () =>
     assert.equal(signIn.safeParse({ phoneNumber, password: 'Demo123!' }).success, true)
   )

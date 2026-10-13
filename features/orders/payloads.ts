@@ -109,7 +109,7 @@ export const buildCheckoutPayload = (
   contact: OrderContact,
   selection: CheckoutSelection
 ): CheckoutPayload => {
-  const { paymentMethod, gateway, shippingGateway, shippingFee } = selection
+  const { paymentMethod, gateway, shippingGateway, shippingFee, voucherCode } = selection
 
   const estimate = buildEstimatePayload(values, items, productById, contact)
   // The last word on cards: while they are off the order carries none, whatever the form holds.
@@ -139,6 +139,7 @@ export const buildCheckoutPayload = (
   const base = {
     ...estimate,
     items: checkoutItems,
+    ...(voucherCode ? { voucherCode } : {}),
     fullNameReceiver: values.fullNameReceiver.trim(),
     phoneReceiver: values.phoneReceiver.trim()
   }
