@@ -45,6 +45,10 @@ Sentry.init({
 
   beforeBreadcrumb: stripRequestQuery,
 
+  // The Zalo in-app browser injects a script that references its own `zaloJSV2` global before its SDK is
+  // ready. The stack trace points at that injected script, not at our bundle, so there is nothing to fix.
+  ignoreErrors: [/zaloJSV2/],
+
   // Session Replay. Quota is only spent on replays that are sent: 1% of sessions, plus every session with
   // an error. Every other session records into memory ("buffer" mode) and sends nothing unless an error
   // occurs, so the on-error rate also covers the sessions that were not sampled.

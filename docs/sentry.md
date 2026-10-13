@@ -46,7 +46,7 @@ Set **Environment: production** on every rule so demo traffic never pages anyone
 
 - Releases shows the commit SHA, with a `production` and a `demo` environment.
 - A new error shows a readable stack trace (source maps), the release, the environment, and `user.id` when signed in.
-- An error session has a Replay with masked text and blocked images. Test with a thrown `Error` in a click handler (not `captureMessage`, not an API 4xx, not a server-only error), wait ~10 s after the page loads, then stay on the page for ~15 s: replays shorter than ~5 s are held back and lost if you leave first.
+- An error session has a Replay with masked text and blocked images. The repo has no test page: to check this, temporarily add a button that throws an `Error` in its click handler (not `captureMessage`, not an API 4xx, not a server-only error) and remove it afterwards. Wait ~10 s after the page loads, then stay on the page for ~15 s: replays shorter than ~5 s are held back and lost if you leave first.
 - A sampled trace shows the browser request, the Next `/api/[...path]` transaction and (if the backend runs Sentry) the backend span under one trace id.
 
 ## Local builds
