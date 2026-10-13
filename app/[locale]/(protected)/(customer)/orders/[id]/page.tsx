@@ -417,10 +417,10 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 {order.vatFee > 0 ? (
                   <SummaryRow label={t('orders.checkout.vat')} value={formatVnd(order.vatFee)} />
                 ) : null}
-                {order.discountAmount && order.discountAmount > 0 ? (
+                {order.discountAmount !== null && order.discountAmount !== undefined ? (
                   <SummaryRow
                     label={t('orders.checkout.voucher.discountLabel')}
-                    value={formatVnd(-order.discountAmount)}
+                    value={formatVnd(order.discountAmount > 0 ? -order.discountAmount : 0)}
                   />
                 ) : null}
               </dl>

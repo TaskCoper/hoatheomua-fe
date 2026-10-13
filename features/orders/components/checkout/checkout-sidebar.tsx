@@ -197,8 +197,11 @@ export default function CheckoutSidebar({
                 ) : null}
               </>
             ) : null}
-            {voucherDiscount > 0 ? (
-              <SidebarRow label={t('orders.checkout.voucher.discountLabel')} value={formatVnd(-voucherDiscount)} />
+            {selectedVoucher ? (
+              <SidebarRow
+                label={t('orders.checkout.voucher.discountLabel')}
+                value={formatVnd(voucherDiscount > 0 ? -voucherDiscount : 0)}
+              />
             ) : null}
           </dl>
           <div className='mt-4 flex items-center justify-between border-t border-dashed border-border pt-3'>
