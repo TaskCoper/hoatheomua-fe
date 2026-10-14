@@ -1,12 +1,14 @@
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { useRouter } from '@/lib/i18n/navigation'
 import { writeSessionHint } from '@/shared/session-hint'
 import { useQueryClient } from '@tanstack/react-query'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
+import { useLocale } from 'next-intl'
+import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { getAuthRedirectTarget, toBrowserPath } from '../auth-redirect'
 import authService from '../services'
 import { createSignUpSchema, type SignUpFormValues } from '../validations'
 
@@ -19,7 +21,8 @@ const defaultValues: SignUpFormValues = {
 }
 
 export const useSignUp = () => {
-  const router = useRouter()
+  const locale = useLocale()
+  const searchParams = useSearchParams()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
 
@@ -35,7 +38,7 @@ export const useSignUp = () => {
     onSuccess: () => {
       writeSessionHint()
       queryClient.invalidateQueries({ queryKey: ['me'] })
-      router.replace('/')
+      window.location.assign(toBrowserPath(getAuthRedirectTarget(searchParams.get('from')), locale))
     },
     onError: (error) => {
       toast.error(t('error.somethingWentWrong'), {

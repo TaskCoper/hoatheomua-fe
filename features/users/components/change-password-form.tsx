@@ -15,6 +15,7 @@ import { useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { isAxiosError } from 'axios'
 import type { ErrorResponse } from '@/lib/axios'
+import { useAuthHref } from '../hooks/use-auth-href'
 import { useChangePassword } from '../hooks/use-change-password'
 import { createChangePasswordSchema, type ChangePasswordFormValues } from '../validations'
 
@@ -27,6 +28,7 @@ const defaultValues: ChangePasswordFormValues = {
 export function ChangePasswordForm() {
   const { t } = useTranslation()
   const router = useRouter()
+  const signInHref = useAuthHref('/sign-in')
   const queryClient = useQueryClient()
   const [isCurrentVisible, setIsCurrentVisible] = useState(false)
   const [isNewVisible, setIsNewVisible] = useState(false)
@@ -48,7 +50,7 @@ export function ChangePasswordForm() {
       methods.reset(defaultValues)
       clearSessionHint()
       queryClient.clear()
-      router.replace('/sign-in')
+      router.replace(signInHref)
     } catch (error) {
       if (isAxiosError<ErrorResponse>(error) && error.response?.data?.messageCode === 'OldPasswordNotMatched') {
         methods.setError('currentPassword', { message: t('profile.currentPasswordIncorrect') }, { shouldFocus: true })

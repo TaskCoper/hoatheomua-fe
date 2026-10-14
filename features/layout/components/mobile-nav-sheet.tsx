@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAccountHref } from '@/features/users/hooks/use-account-href'
+import { useAuthHref } from '@/features/users/hooks/use-auth-href'
 import { useSignOut } from '@/features/users/hooks/use-sign-out'
 import type { Me } from '@/features/users/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -69,6 +70,8 @@ export default function MobileNavSheet({
   const { t } = useTranslation()
   const { signOut, isSigningOut } = useSignOut()
   const router = useRouter()
+  const signInHref = useAuthHref('/sign-in')
+  const signUpHref = useAuthHref('/sign-up')
 
   const [open, setOpen] = useState(false)
   const exitTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -81,7 +84,7 @@ export default function MobileNavSheet({
   )
 
   const navigate = useCallback(
-    (href: string) => (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    (href: Parameters<typeof router.push>[0]) => (event: ReactMouseEvent<HTMLAnchorElement>) => {
       if (isModifiedClick(event)) return
 
       event.preventDefault()
@@ -166,13 +169,13 @@ export default function MobileNavSheet({
               <p className='mt-0.5 text-xs leading-relaxed text-muted-foreground'>{t('header.menu.guestSubtitle')}</p>
               <div className='mt-3 flex flex-col gap-2'>
                 <Button asChild size='lg' className='w-full'>
-                  <Link href='/sign-in' onClick={navigate('/sign-in')}>
+                  <Link href={signInHref} onClick={navigate(signInHref)}>
                     {t('auth.signIn.label')}
                     <HugeiconsIcon icon={LoginCircle01Icon} />
                   </Link>
                 </Button>
                 <Button asChild size='lg' variant='outline' className='w-full'>
-                  <Link href='/sign-up' onClick={navigate('/sign-up')}>
+                  <Link href={signUpHref} onClick={navigate(signUpHref)}>
                     {t('auth.signUp.label')}
                   </Link>
                 </Button>

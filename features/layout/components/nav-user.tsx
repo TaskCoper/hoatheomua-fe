@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useAccountHref } from '@/features/users/hooks/use-account-href'
+import { useAuthHref } from '@/features/users/hooks/use-auth-href'
 import { useSignOut } from '@/features/users/hooks/use-sign-out'
 import { Me } from '@/features/users/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -40,6 +41,8 @@ export default function NavUser({ user }: NavUserProps) {
 
   const { signOut, isSigningOut } = useSignOut()
   const accountHref = useAccountHref('info')
+  const signInHref = useAuthHref('/sign-in')
+  const signUpHref = useAuthHref('/sign-up')
 
   const handleLanguageChange = (value: string) => {
     const nextLocale = value as (typeof routing.locales)[number]
@@ -51,11 +54,11 @@ export default function NavUser({ user }: NavUserProps) {
     return (
       <div className='flex items-center gap-2'>
         <Button asChild variant='ghost' size='sm'>
-          <Link href='/sign-in'>{t('auth.signIn.label')}</Link>
+          <Link href={signInHref}>{t('auth.signIn.label')}</Link>
         </Button>
 
         <Button asChild size='sm'>
-          <Link href='/sign-up'>{t('auth.signUp.label')}</Link>
+          <Link href={signUpHref}>{t('auth.signUp.label')}</Link>
         </Button>
       </div>
     )
