@@ -7,7 +7,7 @@ import { cn } from '@/shared/utils'
 import { Motorbike02Icon } from '@hugeicons/core-free-icons'
 import { localizedMethodText, type CheckoutDeliveryOption } from '../../checkout-methods'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
-import { isWithinFreeShip } from '../../shipping-fee'
+import { calculateShippingFee } from '../../shipping-fee'
 import CheckoutSection from './checkout-section'
 
 interface DeliveryMethodPickerProps {
@@ -37,7 +37,7 @@ export default function DeliveryMethodPicker({ methods, selectedId, onSelect }: 
             const id = `ship-${method.id}`
             const description = localizedMethodText(method.description, locale)
             const quote = method.quote
-            const isFreeShip = isWithinFreeShip(quote, freeShipKm)
+            const shippingFee = calculateShippingFee(quote, freeShipKm)
 
             return (
               <label
@@ -66,11 +66,8 @@ export default function DeliveryMethodPicker({ methods, selectedId, onSelect }: 
                 {quote ? (
                   <div className='shrink-0 text-right'>
                     <p className='text-sm font-semibold text-primary'>
-                      {isFreeShip ? t('orders.checkout.shippingFree') : formatVnd(quote.totalFee)}
+                      {shippingFee === 0 ? t('orders.checkout.shippingFree') : formatVnd(shippingFee)}
                     </p>
-                    {isFreeShip ? (
-                      <p className='text-xs text-muted-foreground line-through'>{formatVnd(quote.totalFee)}</p>
-                    ) : null}
                   </div>
                 ) : null}
               </label>

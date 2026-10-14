@@ -11,6 +11,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { ErrorResponse } from '@/lib/axios'
 import { formatVnd } from '@/lib/currency'
@@ -31,6 +32,8 @@ interface VoucherPickerProps {
   onSelect: (voucher: CheckoutVoucher | null) => void
   onEstimatePrivateVoucher: (code: string) => Promise<CheckoutVoucher>
   isEstimatingPrivate?: boolean
+  /** The offers are asked for on entering the review step, so they can still be on their way. */
+  isLoading?: boolean
   className?: string
 }
 
@@ -75,6 +78,7 @@ export default function VoucherPicker({
   onSelect,
   onEstimatePrivateVoucher,
   isEstimatingPrivate = false,
+  isLoading = false,
   className
 }: VoucherPickerProps) {
   const { t } = useTranslation()
@@ -202,7 +206,11 @@ export default function VoucherPicker({
 
           <div className='mt-4 border-t border-dashed border-border' />
 
-          {listedVouchers.length > 0 ? (
+          {isLoading ? (
+            <div className='mt-5 flex justify-center'>
+              <Spinner className='size-5 text-muted-foreground' />
+            </div>
+          ) : listedVouchers.length > 0 ? (
             <div className='mt-4 max-h-108 space-y-2 overflow-y-auto pr-1 [scrollbar-color:var(--color-border)_transparent] [scrollbar-width:thin]'>
               {listedVouchers.map(({ voucher, unavailable }) => {
                 const checked = selectedVoucher?.id === voucher.id

@@ -23,7 +23,7 @@ import { toast } from 'sonner'
 import { getCardsTotal } from '../../cards/card-data'
 import { ARE_CARDS_ENABLED } from '../../cards/card-feature'
 import { useCheckoutCards } from '../../cards/use-checkout-cards'
-import { localizedMethodText } from '../../checkout-methods'
+import { localizedMethodText, type CheckoutDeliveryOption } from '../../checkout-methods'
 import { useCardConfig } from '../../hooks/use-card-config'
 import { useCheckoutAddressSelection } from '../../hooks/use-checkout-address-selection'
 import { useCheckoutDeliveryMethods } from '../../hooks/use-checkout-delivery-methods'
@@ -31,13 +31,15 @@ import { useCheckoutFlow } from '../../hooks/use-checkout-flow'
 import { useCheckoutPaymentMethods } from '../../hooks/use-checkout-payment-methods'
 import { useCheckoutSummary } from '../../hooks/use-checkout-summary'
 import { useCreateOrder } from '../../hooks/use-create-order'
+import { useDiscardCheckoutQueries } from '../../hooks/use-discard-checkout-queries'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
-import { useCheckoutVouchers } from '../../vouchers/hooks/use-checkout-vouchers'
-import type { CheckoutVoucher } from '../../vouchers/types'
 import { toOrderTimestamp, type OrderContact } from '../../payloads'
 import { resolveShippingFee } from '../../shipping-fee'
-import type { TaxBusinessInfo } from '../../types'
+import type { CheckoutFallback, TaxBusinessInfo } from '../../types'
+import type { CheckoutFormValues } from '../../validations'
+import { useCheckoutVouchers } from '../../vouchers/hooks/use-checkout-vouchers'
+import type { CheckoutVoucher } from '../../vouchers/types'
 import CheckoutCards from './cards/checkout-cards'
 import { CheckoutPanel } from './checkout-section'
 import CheckoutSidebar, { CheckoutTerms } from './checkout-sidebar'
@@ -54,6 +56,8 @@ export default function CheckoutClient() {
   const { t, locale } = useTranslation()
   const { formatDate } = useDateFormat()
   const router = useRouter()
+
+  useDiscardCheckoutQueries()
 
   const { methods, estimateOrder, isEstimatingOrder, estimatedOrder, resetEstimate } = useEstimateOrder()
   const { createOrder, isCreatingOrder } = useCreateOrder()
@@ -80,6 +84,8 @@ export default function CheckoutClient() {
     goBack,
     goNext,
     goToStep,
+    passesCardsStep,
+    passesInvoiceStep,
     items,
     source,
     canPlaceOrder,
@@ -155,7 +161,53 @@ export default function CheckoutClient() {
     }
   }
 
-  const { isFreeShip, rawShippingFee, shippingFee, shippingDiscount } = resolveShippingFee(selectedService, freeShipKm)
+  // A saved address can carry something checkout cannot use (no map pin, a bad phone) and a typed
+  // one may never get resolved on the map - so the toast offers the other way of giving an address.
+  const getAddressFallback = (invalidFields: (keyof CheckoutFormValues)[]): CheckoutFallback | undefined => {
+    if (addresses.length === 0) return undefined
+
+    if (!manualAddress) {
+      return {
+        label: t('orders.checkout.manualAddress'),
+        run: () => {
+          setManualAddress(true)
+          clearAddress()
+        }
+      }
+    }
+
+    // A typo is the user's own to fix; only an address that never resolved is worth swapping out.
+    if (!invalidFields.some((field) => field === 'latitude' || field === 'longitude')) return undefined
+
+    return {
+      label: t('orders.checkout.useSavedAddress'),
+      run: () => {
+        setManualAddress(false)
+        if (selectedAddressId) handleSelectAddress(selectedAddressId)
+      }
+    }
+  }
+
+  // Each carrier prices on its own endpoint, so when one cannot quote the trip the toast offers to
+  // quote with the other straight away rather than leaving the user to find the picker.
+  const quoteWith = (method: CheckoutDeliveryOption | undefined): Promise<void> => {
+    const other = deliveryMethods.find((candidate) => candidate.shippingGateway !== method?.shippingGateway)
+
+    return handleGoToCards(method?.shippingGateway, {
+      forInvalid: getAddressFallback,
+      forQuoteError: other
+        ? {
+            label: t('orders.checkout.tryCarrier', { carrier: localizedMethodText(other.label, locale) }),
+            run: () => {
+              handleSelectDeliveryMethod(other.id)
+              void quoteWith(other)
+            }
+          }
+        : undefined
+    })
+  }
+
+  const { isFreeShip, shippingFee } = resolveShippingFee(selectedService, freeShipKm)
 
   const watchedFullNameReceiver = useWatch({ control: methods.control, name: 'fullNameReceiver' })
   const watchedPhoneReceiver = useWatch({ control: methods.control, name: 'phoneReceiver' })
@@ -193,26 +245,55 @@ export default function CheckoutClient() {
 
   const cardsTotal = useMemo(() => (ARE_CARDS_ENABLED ? getCardsTotal(cards, cardConfig) : 0), [cards, cardConfig])
 
-  const { summaryLines, unavailableLines, hasUnavailableLines, totalItems, productsSubtotal, vatAmount, grandTotal } =
-    useCheckoutSummary({
-      items,
-      hasTaxCode,
-      shippingFee,
-      cardsTotal,
-      materialBlockedProductIds
-    })
+  const {
+    summaryLines,
+    unavailableLines,
+    hasUnavailableLines,
+    totalItems,
+    productsSubtotal,
+    appliedVoucherDiscount,
+    taxableAmount,
+    vatAmount,
+    grandTotal
+  } = useCheckoutSummary({
+    items,
+    hasTaxCode,
+    shippingFee,
+    cardsTotal,
+    voucherDiscount: selectedVoucher?.discountAmount ?? 0,
+    materialBlockedProductIds
+  })
 
-  const voucherProducts = useMemo(
-    () =>
-      summaryLines
-        .filter((line) => line.issue !== 'missing' && line.issue !== 'inactive' && line.quantity > 0)
-        .map((line) => ({ id: line.productId, quantity: line.quantity }))
-        .sort((a, b) => a.id.localeCompare(b.id) || a.quantity - b.quantity),
-    [summaryLines]
-  )
   const voucherOrderTime = toOrderTimestamp(watchedOrderTime ?? null)
-  const { vouchers, isVouchersReady, unavailableVouchers, estimatePrivateVoucher, isEstimatingPrivate } =
-    useCheckoutVouchers(productsSubtotal, voucherProducts, voucherOrderTime)
+  const {
+    vouchers,
+    isVouchersReady,
+    unavailableVouchers,
+    loadVouchers,
+    isLoadingVouchers,
+    estimatePrivateVoucher,
+    isEstimatingPrivate
+  } = useCheckoutVouchers(productsSubtotal, voucherOrderTime)
+
+  // Cards were each validated when saved, but the config they are measured against can change
+  // under them - so the step is re-checked on the way out rather than only at the final submit.
+  const handleGoToPayment = async () => {
+    if (await passesCardsStep()) goNext()
+  }
+
+  // An invoice left half-filled is caught here, not three screens later when paying bounces back.
+  const handleGoToReview = async () => {
+    if (!(await passesInvoiceStep())) return
+
+    loadVouchers({
+      productsSubtotal,
+      products: summaryLines
+        .filter((line) => line.issue !== 'missing' && line.issue !== 'inactive' && line.quantity > 0)
+        .map((line) => ({ id: line.productId, quantity: line.quantity })),
+      orderTime: voucherOrderTime
+    })
+    goNext()
+  }
 
   const [voucherSync, setVoucherSync] = useState({ orderTime: voucherOrderTime, vouchers })
   const [droppedVoucherCount, setDroppedVoucherCount] = useState(0)
@@ -241,9 +322,6 @@ export default function CheckoutClient() {
     if (droppedVoucherCount > 0) toast.info(t('orders.checkout.voucher.expiredForDelivery'))
   }, [droppedVoucherCount, t])
 
-  const voucherDiscount = selectedVoucher?.discountAmount ?? 0
-  const displayGrandTotal = Math.max(0, grandTotal - voucherDiscount)
-
   const isLoading =
     isEstimatingOrder ||
     isCreatingOrder ||
@@ -270,7 +348,7 @@ export default function CheckoutClient() {
           label: isVerifyingAvailability
             ? t('products.stock.checking')
             : t(ARE_CARDS_ENABLED ? 'orders.checkout.sidebar.continueToCards' : 'orders.checkout.sidebar.goToPayment'),
-          onClick: () => handleGoToCards(selectedDeliveryMethod?.shippingGateway),
+          onClick: () => quoteWith(selectedDeliveryMethod),
           disabled:
             items.length === 0 || !selectedDeliveryMethod || isLoading || isBlockedByStock || isStepBlockedByFlag,
           loading: isEstimatingOrder || isVerifyingAvailability
@@ -278,13 +356,13 @@ export default function CheckoutClient() {
       : step === CHECKOUT_CARDS_STEP
         ? {
             label: t('orders.checkout.sidebar.goToPayment'),
-            onClick: goNext,
+            onClick: handleGoToPayment,
             disabled: isLoading || isBlockedByStock
           }
         : step === 3
           ? {
               label: t('orders.checkout.sidebar.goToReview'),
-              onClick: goNext,
+              onClick: handleGoToReview,
               disabled: !selectedPaymentMethod || isLoading || isBlockedByStock
             }
           : step === 4
@@ -332,18 +410,19 @@ export default function CheckoutClient() {
     productsSubtotal,
     vatAmount,
     hasTaxCode,
+    vatTaxableAmount: taxableAmount,
     cardsFee: cardsTotal,
-    shippingFee: rawShippingFee,
-    shippingDiscount,
+    shippingFee,
     showShipping: step >= 2,
-    grandTotal: displayGrandTotal,
-    voucherDiscount,
+    grandTotal,
+    voucherDiscount: appliedVoucherDiscount,
     vouchers,
     unavailableVouchers,
     selectedVoucher,
     onSelectVoucher: step === 4 ? setSelectedVoucher : undefined,
     onEstimatePrivateVoucher: step === 4 ? estimatePrivateVoucher : undefined,
     isEstimatingPrivate,
+    isLoadingVouchers,
     action: sidebarAction,
     showTerms: step === 4,
     cards,
@@ -442,7 +521,7 @@ export default function CheckoutClient() {
                     </span>
                   </span>
                   <span className='shrink-0 font-title text-base font-bold text-primary tabular-nums'>
-                    {formatVnd(displayGrandTotal)}
+                    {formatVnd(grandTotal)}
                   </span>
                 </button>
 
@@ -498,7 +577,7 @@ export default function CheckoutClient() {
                     onRemoveCard={removeCard}
                     deliveryMethod={selectedDeliveryMethod}
                     paymentMethod={selectedPaymentMethod}
-                    rawShippingFee={rawShippingFee}
+                    shippingFee={shippingFee}
                     isFreeShip={isFreeShip}
                     onEditStep={goToStep}
                   />
@@ -515,6 +594,7 @@ export default function CheckoutClient() {
                     onSelect={setSelectedVoucher}
                     onEstimatePrivateVoucher={estimatePrivateVoucher}
                     isEstimatingPrivate={isEstimatingPrivate}
+                    isLoading={isLoadingVouchers}
                     className='lg:hidden'
                   />
                 ) : null}
@@ -543,7 +623,7 @@ export default function CheckoutClient() {
                       {t('orders.checkout.total')}
                     </p>
                     <p className='truncate font-title text-lg leading-tight font-bold text-primary tabular-nums'>
-                      {formatVnd(displayGrandTotal)}
+                      {formatVnd(grandTotal)}
                     </p>
                   </div>
 

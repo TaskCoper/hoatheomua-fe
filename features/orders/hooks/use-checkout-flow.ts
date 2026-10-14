@@ -8,16 +8,42 @@ import { FeatureUnavailableError, isFeatureEnabled, ORDERING_DISABLED_REDIRECT_P
 import { useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { useEffect, useRef, useState } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
+import type { FieldErrors, UseFormReturn } from 'react-hook-form'
 import { toast } from 'sonner'
 import { ARE_CARDS_ENABLED } from '../cards/card-feature'
 import { CHECKOUT_CARDS_STEP, CHECKOUT_STEPS, type CheckoutStep } from '../components/checkout/checkout-stepper'
 import { buildCheckoutPayload, buildEstimatePayload, type OrderContact } from '../payloads'
-import type { CheckoutSelection, ShippingGateway } from '../types'
-import { createEstimateSchema, type CheckoutFormValues } from '../validations'
+import type { CheckoutFallback, CheckoutSelection, ShippingGateway } from '../types'
+import { fallbackToastOptions } from '../utils/fallback-toast'
+import {
+  CARDS_STEP_FIELDS,
+  DELIVERY_STEP_FIELDS,
+  INVOICE_STEP_FIELDS,
+  type CheckoutFormValues
+} from '../validations'
 import { useCreateOrder } from './use-create-order'
 import { useEstimateOrder } from './use-estimate-order'
 import { useProductsByIds } from './use-products-by-ids'
+
+type CheckoutField = keyof CheckoutFormValues
+
+// More than this reads as a wall of text in a toast; the fields themselves show the rest.
+const MAX_TOASTED_ERRORS = 3
+
+/** Every message in a react-hook-form error tree - errors nest by field path, and `ref` is the DOM node, not an error. */
+const collectErrorMessages = (error: unknown): string[] => {
+  if (!error || typeof error !== 'object') return []
+  if ('message' in error && typeof error.message === 'string') return error.message ? [error.message] : []
+
+  return Object.entries(error).flatMap(([key, value]) => (key === 'ref' ? [] : collectErrorMessages(value)))
+}
+
+interface GoToCardsFallbacks {
+  /** Offered when the delivery fields are invalid, given the ones that failed - e.g. swap a saved address for a typed one. */
+  forInvalid?: (invalidFields: CheckoutField[]) => CheckoutFallback | undefined
+  /** Offered when the carrier cannot price the delivery - e.g. quote with the other carrier instead. */
+  forQuoteError?: CheckoutFallback
+}
 
 interface UseCheckoutFlowArgs {
   methods: UseFormReturn<CheckoutFormValues>
@@ -105,7 +131,34 @@ export const useCheckoutFlow = ({
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleGoToCards = async (shippingGateway: ShippingGateway | undefined) => {
+  /** Tells the user what is wrong, in the words of the schema - and offers another way where there is one. */
+  const reportInvalid = (errors: unknown, fallback?: CheckoutFallback) => {
+    const messages = [...new Set(collectErrorMessages(errors))].slice(0, MAX_TOASTED_ERRORS)
+
+    toast.error(t('common.validation.fixErrors'), {
+      description: messages.join('\n') || undefined,
+      ...fallbackToastOptions(fallback)
+    })
+  }
+
+  /** Validates only one step's own fields, focusing the first bad one. Resolves to whether the step may be left. */
+  const passesStep = async (
+    fields: readonly CheckoutField[],
+    fallbackFor?: (invalidFields: CheckoutField[]) => CheckoutFallback | undefined
+  ) => {
+    await methods.trigger(fields, { shouldFocus: true })
+
+    const invalidFields = fields.filter((field) => methods.getFieldState(field).invalid)
+    if (invalidFields.length === 0) return true
+
+    reportInvalid(
+      invalidFields.map((field) => methods.getFieldState(field).error),
+      fallbackFor?.(invalidFields)
+    )
+    return false
+  }
+
+  const handleGoToCards = async (shippingGateway: ShippingGateway | undefined, fallbacks: GoToCardsFallbacks = {}) => {
     if (!canQuoteShipping) {
       notifyUnavailable()
       return
@@ -123,24 +176,15 @@ export const useCheckoutFlow = ({
 
     if (!hasContact()) return
 
-    methods.clearErrors()
-
-    const parsed = createEstimateSchema(t).safeParse(methods.getValues())
-    if (!parsed.success) {
-      for (const issue of parsed.error.issues) {
-        const path = issue.path.join('.') as keyof CheckoutFormValues
-        methods.setError(path, { type: 'zod', message: issue.message })
-      }
-      toast.error(t('common.validation.fixErrors'))
-      return
-    }
+    if (!(await passesStep(DELIVERY_STEP_FIELDS, fallbacks.forInvalid))) return
 
     if (!(await isFulfillable())) return
 
     try {
       await estimateOrder({
-        body: buildEstimatePayload(parsed.data, items, productById, contact),
-        shippingGateway
+        body: buildEstimatePayload(methods.getValues(), items, productById, contact),
+        shippingGateway,
+        fallback: fallbacks.forQuoteError
       })
       setEstimatedGateway(shippingGateway)
       goToStep(stepAt(1, 1))
@@ -183,6 +227,16 @@ export const useCheckoutFlow = ({
     return uploaded.every((card) => card !== null) ? (uploaded as CheckoutFormValues['cards']) : null
   }
 
+  /** The earliest step still holding an error - the order is placed on the last step, but a bad field can be on any. */
+  const firstInvalidStep = (
+    errors: FieldErrors<CheckoutFormValues>
+  ): { step: CheckoutStep; fields: readonly CheckoutField[] } => {
+    if (DELIVERY_STEP_FIELDS.some((field) => errors[field])) return { step: 1, fields: DELIVERY_STEP_FIELDS }
+    if (ARE_CARDS_ENABLED && errors.cards) return { step: CHECKOUT_CARDS_STEP, fields: CARDS_STEP_FIELDS }
+
+    return { step: 3, fields: INVOICE_STEP_FIELDS }
+  }
+
   const handleConfirmOrder = (selection: CheckoutSelection) => {
     // Confirming both places the order and opens a payment session upstream.
     if (!canPlaceOrder || !isFeatureEnabled('payment')) {
@@ -219,8 +273,10 @@ export const useCheckoutFlow = ({
         }
       },
       (errors) => {
-        toast.error(t('common.validation.fixErrors'))
-        goToStep(ARE_CARDS_ENABLED && errors.cards ? CHECKOUT_CARDS_STEP : 3)
+        const { step: failedStep, fields } = firstInvalidStep(errors)
+
+        reportInvalid(fields.map((field) => errors[field]))
+        goToStep(failedStep)
       }
     )()
   }
@@ -244,6 +300,8 @@ export const useCheckoutFlow = ({
     estimatedGateway,
     goNext,
     goToStep,
+    passesCardsStep: () => passesStep(CARDS_STEP_FIELDS),
+    passesInvoiceStep: () => passesStep(INVOICE_STEP_FIELDS),
     handleGoToCards,
     handleConfirmOrder,
     handleCancel,

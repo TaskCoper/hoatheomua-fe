@@ -1,7 +1,8 @@
 'use client'
 
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
+import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import voucherService from '../service'
 import type {
   CheckoutVoucher,
@@ -10,6 +11,8 @@ import type {
   PublicVoucherResponse,
   VoucherVisibility
 } from '../types'
+
+const NO_VOUCHERS: CheckoutVoucher[] = []
 
 const toKind = (type: PublicVoucherResponse['discountType']) => (type === 'cash' ? 'fixed' : 'percent')
 
@@ -44,17 +47,51 @@ const toEstimatedVoucher = (
   maxOrderAmount: voucher.maxOrderAmount ?? null
 })
 
-export const useCheckoutVouchers = (productsSubtotal: number, products: FilterVoucherProduct[], orderTime: number) => {
-  const publicQuery = useQuery({
-    queryKey: ['vouchers', 'public', productsSubtotal, orderTime],
-    queryFn: () => voucherService.getPublicVouchers({ productFee: productsSubtotal, orderTime }),
-    enabled: productsSubtotal > 0
-  })
+interface LoadVouchersArgs {
+  productsSubtotal: number
+  products: FilterVoucherProduct[]
+  orderTime: number
+}
 
-  const filterQuery = useQuery({
-    queryKey: ['vouchers', 'filter', products, orderTime],
-    queryFn: () => voucherService.filterVouchers({ products, orderTime }),
-    enabled: products.length > 0
+/**
+ * The voucher lists are a mutation, not queries, so there is no cache to serve a
+ * stale offer from: every `loadVouchers` call goes to the API, and the previous
+ * result is dropped the moment it starts.
+ */
+export const useCheckoutVouchers = (productsSubtotal: number, orderTime: number) => {
+  const { t } = useTranslation()
+
+  const {
+    mutate: loadVouchers,
+    data: loaded,
+    isPending: isLoadingVouchers
+  } = useMutation({
+    mutationFn: async ({ productsSubtotal, products, orderTime }: LoadVouchersArgs) => {
+      const [publicVouchers, filteredVouchers] = await Promise.all([
+        productsSubtotal > 0 ? voucherService.getPublicVouchers({ productFee: productsSubtotal, orderTime }) : null,
+        // Only feeds the "not yet eligible" rows; losing it must not hide the usable offers.
+        products.length > 0 ? voucherService.filterVouchers({ products, orderTime }).catch(() => null) : null
+      ])
+
+      const usableIds = new Set(publicVouchers?.map((voucher) => voucher.id))
+
+      return {
+        vouchers: (publicVouchers ?? []).map(toPublicVoucher),
+        // Without the public list there is no telling what is usable, so nothing
+        // can be called unavailable either.
+        unavailableVouchers:
+          publicVouchers && filteredVouchers
+            ? filteredVouchers
+                .filter((voucher) => !usableIds.has(voucher.voucherId))
+                .map((voucher) => toEstimatedVoucher(voucher, 'public'))
+            : NO_VOUCHERS
+      }
+    },
+    onError: (error) => {
+      toast.error(t('orders.checkout.voucher.loadError'), {
+        description: error.response?.data?.detail
+      })
+    }
   })
 
   const privateEstimate = useMutation({
@@ -62,24 +99,15 @@ export const useCheckoutVouchers = (productsSubtotal: number, products: FilterVo
       voucherService.estimateVoucher({ code, productFee, orderTime })
   })
 
-  const vouchers = useMemo(() => (publicQuery.data ?? []).map(toPublicVoucher), [publicQuery.data])
-
-  const unavailableVouchers = useMemo(() => {
-    if (!publicQuery.isSuccess || !filterQuery.data) return []
-
-    const usableIds = new Set(publicQuery.data.map((voucher) => voucher.id))
-    return filterQuery.data
-      .filter((voucher) => !usableIds.has(voucher.voucherId))
-      .map((voucher) => toEstimatedVoucher(voucher, 'public'))
-  }, [publicQuery.isSuccess, publicQuery.data, filterQuery.data])
-
   const estimatePrivateVoucher = async (code: string) =>
     toEstimatedVoucher(await privateEstimate.mutateAsync({ code, productFee: productsSubtotal }), 'private')
 
   return {
-    vouchers,
-    isVouchersReady: publicQuery.isSuccess,
-    unavailableVouchers,
+    vouchers: loaded?.vouchers ?? NO_VOUCHERS,
+    isVouchersReady: loaded !== undefined,
+    unavailableVouchers: loaded?.unavailableVouchers ?? NO_VOUCHERS,
+    loadVouchers,
+    isLoadingVouchers,
     estimatePrivateVoucher,
     isEstimatingPrivate: privateEstimate.isPending
   }

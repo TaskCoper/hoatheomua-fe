@@ -15,6 +15,7 @@ import ProductGridEmpty from '@/features/products/components/product-grid-empty'
 import ProductGridSkeleton from '@/features/products/components/product-grid-skeleton'
 import { PRODUCTS_PAGE_SIZE } from '@/features/products/constants'
 import { useGetProducts } from '@/features/products/hooks/use-get-products'
+import { useKeepPagerPosition } from '@/features/products/hooks/use-keep-pager-position'
 import type { ProductDetail } from '@/features/products/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { DEFAULT_PAGE_INDEX } from '@/shared/constants'
@@ -88,6 +89,8 @@ export default function ProductGrid({
     priceTo
   })
 
+  const { pagerRef, rememberPagerPosition } = useKeepPagerPosition({ content: data, isFetching })
+
   const value = data?.value
   const items: ProductDetail[] = value?.items ?? []
   const hasPreviousPage = value?.hasPreviousPage ?? false
@@ -96,25 +99,31 @@ export default function ProductGrid({
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize))
   const pageNumbers = getPageNumbers(page, totalPages)
   const hrefFor = (target: number) => (pageHref ? pageHref(target) || '#' : '#')
+
+  const changePage = (target: number) => {
+    rememberPagerPosition()
+    onPageChange(target)
+  }
+
   const goToPage = (event: React.MouseEvent<HTMLAnchorElement>, target: number) => {
     if (isModifiedClick(event)) return
     event.preventDefault()
     if (isFetching || target < 1 || target > totalPages || target === page) return
-    onPageChange(target)
+    changePage(target)
   }
 
   const handlePreviousPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasPreviousPage || isFetching) return
-    onPageChange(page - 1)
+    changePage(page - 1)
   }
 
   const handleNextPage = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (isModifiedClick(event)) return
     event.preventDefault()
     if (!hasNextPage || isFetching) return
-    onPageChange(page + 1)
+    changePage(page + 1)
   }
 
   if (isLoading && items.length === 0) {
@@ -160,7 +169,7 @@ export default function ProductGrid({
         })}
       </motion.div>
 
-      <Pagination className='mt-8'>
+      <Pagination ref={pagerRef} className='mt-8'>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious

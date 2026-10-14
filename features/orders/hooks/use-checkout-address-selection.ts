@@ -56,8 +56,8 @@ export const useCheckoutAddressSelection = ({
       setValue('addressLine', address.addressLine ?? '', { shouldDirty: true, shouldValidate: true })
       setValue('city', address.city ?? '', { shouldDirty: true, shouldValidate: true })
       setValue('ward', address.ward ?? '', { shouldDirty: true, shouldValidate: true })
-      setValue('latitude', address.latitude ?? 0, { shouldDirty: true })
-      setValue('longitude', address.longitude ?? 0, { shouldDirty: true })
+      setValue('latitude', address.latitude ?? 0, { shouldDirty: true, shouldValidate: true })
+      setValue('longitude', address.longitude ?? 0, { shouldDirty: true, shouldValidate: true })
       setValue('mapId', address.mapId ?? '', { shouldDirty: true })
       appliedSnapshotRef.current = addressSnapshot(address)
     },

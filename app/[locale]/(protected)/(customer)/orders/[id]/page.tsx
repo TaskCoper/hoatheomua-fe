@@ -413,16 +413,18 @@ function OrderDetailContent({ order, formatDateTime, t }: OrderDetailContentProp
                 ) : null}
 
                 <SummaryRow label={t('orders.checkout.subtotal')} value={formatVnd(order.productFee)} />
-                <SummaryRow label={t('orders.checkout.shippingFee')} value={formatVnd(order.shippingFee)} />
-                {order.vatFee > 0 ? (
-                  <SummaryRow label={t('orders.checkout.vat')} value={formatVnd(order.vatFee)} />
-                ) : null}
+
                 {order.discountAmount !== null && order.discountAmount !== undefined ? (
                   <SummaryRow
                     label={t('orders.checkout.voucher.discountLabel')}
                     value={formatVnd(order.discountAmount > 0 ? -order.discountAmount : 0)}
                   />
                 ) : null}
+
+                {order.vatFee > 0 ? (
+                  <SummaryRow label={t('orders.checkout.vat')} value={formatVnd(order.vatFee)} />
+                ) : null}
+                <SummaryRow label={t('orders.checkout.shippingFee')} value={formatVnd(order.shippingFee)} />
               </dl>
 
               <div className='mt-3 flex items-baseline justify-between gap-2 border-t border-border/60 pt-3'>
