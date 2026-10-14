@@ -7,12 +7,14 @@ import { ViewIcon, ViewOffSlashIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
+import { useForwardedAuthHref } from '../hooks/use-auth-href'
 import { SignInFormValues } from '../validations'
 
 export default function SignInForm() {
   const { t } = useTranslation()
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const { control } = useFormContext<SignInFormValues>()
+  const forgotPasswordHref = useForwardedAuthHref('/forgot-password')
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((prev) => !prev)
@@ -74,7 +76,7 @@ export default function SignInForm() {
                 {fieldState.invalid && <FieldError className='text-xs truncate' errors={[fieldState.error]} />}
               </div>
               <Link
-                href='/forgot-password'
+                href={forgotPasswordHref}
                 replace
                 className='text-xs max-sm:min-w-25 font-medium text-primary transition-opacity hover:opacity-80'
               >

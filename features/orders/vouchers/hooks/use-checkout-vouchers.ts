@@ -50,6 +50,7 @@ const toEstimatedVoucher = (
 interface LoadVouchersArgs {
   productsSubtotal: number
   products: FilterVoucherProduct[]
+  orderTime: number
 }
 
 /**
@@ -57,7 +58,7 @@ interface LoadVouchersArgs {
  * stale offer from: every `loadVouchers` call goes to the API, and the previous
  * result is dropped the moment it starts.
  */
-export const useCheckoutVouchers = (productsSubtotal: number) => {
+export const useCheckoutVouchers = (productsSubtotal: number, orderTime: number) => {
   const { t } = useTranslation()
 
   const {
@@ -65,11 +66,11 @@ export const useCheckoutVouchers = (productsSubtotal: number) => {
     data: loaded,
     isPending: isLoadingVouchers
   } = useMutation({
-    mutationFn: async ({ productsSubtotal, products }: LoadVouchersArgs) => {
+    mutationFn: async ({ productsSubtotal, products, orderTime }: LoadVouchersArgs) => {
       const [publicVouchers, filteredVouchers] = await Promise.all([
-        productsSubtotal > 0 ? voucherService.getPublicVouchers({ productFee: productsSubtotal }) : null,
+        productsSubtotal > 0 ? voucherService.getPublicVouchers({ productFee: productsSubtotal, orderTime }) : null,
         // Only feeds the "not yet eligible" rows; losing it must not hide the usable offers.
-        products.length > 0 ? voucherService.filterVouchers({ products }).catch(() => null) : null
+        products.length > 0 ? voucherService.filterVouchers({ products, orderTime }).catch(() => null) : null
       ])
 
       const usableIds = new Set(publicVouchers?.map((voucher) => voucher.id))
@@ -95,7 +96,7 @@ export const useCheckoutVouchers = (productsSubtotal: number) => {
 
   const privateEstimate = useMutation({
     mutationFn: ({ code, productFee }: { code: string; productFee: number }) =>
-      voucherService.estimateVoucher({ code, productFee })
+      voucherService.estimateVoucher({ code, productFee, orderTime })
   })
 
   const estimatePrivateVoucher = async (code: string) =>
@@ -103,6 +104,7 @@ export const useCheckoutVouchers = (productsSubtotal: number) => {
 
   return {
     vouchers: loaded?.vouchers ?? NO_VOUCHERS,
+    isVouchersReady: loaded !== undefined,
     unavailableVouchers: loaded?.unavailableVouchers ?? NO_VOUCHERS,
     loadVouchers,
     isLoadingVouchers,

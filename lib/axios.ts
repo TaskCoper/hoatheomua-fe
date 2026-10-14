@@ -120,7 +120,8 @@ const refreshAccessToken = async (
       const isOnPublicRoute = isCurrentPublicRoutePath(window.location.pathname)
 
       if (!isOnPublicRoute) {
-        window.location.replace('/sign-in')
+        const from = `${window.location.pathname}${window.location.search}`
+        window.location.replace(`/sign-in?from=${encodeURIComponent(from)}`)
       }
     }
 

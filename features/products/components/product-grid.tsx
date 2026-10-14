@@ -74,6 +74,8 @@ export default function ProductGrid({
   const { t } = useTranslation()
   const [activeIndex, setActiveIndex] = useState(0)
 
+  const [hasRevealed, setHasRevealed] = useState(false)
+
   const trimmedSearch = search.trim()
 
   const {
@@ -147,8 +149,10 @@ export default function ProductGrid({
       <motion.div
         key={items[0]?.id ?? 'empty'}
         initial='hidden'
+        animate={hasRevealed ? 'visible' : undefined}
         whileInView='visible'
         viewport={{ once: true, margin: '-80px' }}
+        onViewportEnter={() => setHasRevealed(true)}
         variants={cardStagger}
         style={columnsStyle}
         className={cn('grid w-full gap-3 sm:gap-4 lg:gap-5', columnsClassName)}

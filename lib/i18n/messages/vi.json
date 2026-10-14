@@ -748,6 +748,7 @@
         "notEligible": "Đơn hàng chưa đủ điều kiện áp dụng",
         "minOrder": "Voucher chỉ áp dụng cho đơn hàng từ {amount}",
         "maxOrder": "Voucher chỉ áp dụng cho đơn hàng đến {amount}",
+        "expiredForDelivery": "Voucher không còn áp dụng cho thời gian giao đã chọn",
         "loadError": "Không thể tải danh sách voucher."
       },
       "back": "Quay lại",
@@ -1676,7 +1677,7 @@
         "body": "Dịp lễ ngày 20-10 thường xảy ra tình trạng thiếu hụt hoa đẹp do nhu cầu tăng cao. Do đó, việc tìm kiếm dịch vụ Đặt hoa 20/10 tphcm uy tín là vô cùng cần thiết. Hoa Theo Mùa là thương hiệu hoa tươi được đông đảo khách hàng tin tưởng hơn 7 năm qua.\n\nChúng tôi cam kết mọi đơn hàng đặt hoa 20 10, hoa chúc mừng đều được hoàn thiện tỉ mỉ và giao hàng đúng giờ khách lựa chọn.\n\nƯu đãi lớn khi quý khách hàng đặt hoa trực tiếp trên Website hoatheomua.com dịp lễ 20 tháng 10:",
         "items": {
           "gift": "Tặng ví da đựng son cho nàng - chỉ 130 phần. Mỗi đơn 1 phần, tặng đến khi hết. Đóng kèm hộp quà gửi cho người nhận. Áp dụng cho đơn từ 690K hẹn giao ngày 17 hoặc 18/10, cộng dồn giảm phí ship lên đến 50K.",
-          "shipping": "Giảm tối đa 50K phí ship cho đơn từ 149K hẹn giao 17, 18 hoặc 19/10."
+          "shipping": "Giảm tối đa 50K phí ship cho đơn từ 490K hẹn giao 17, 18 hoặc 19/10."
         },
         "final": "Mọi thủ tục Mua hoa 20/10 tại Hoa Theo Mùa rất nhanh chóng khi bạn đặt hàng trên website. Quý khách chỉ cần chọn mẫu, chọn thời gian giao, nhắn gửi lời chúc trên thiệp và thanh toán. Đội ngũ tư vấn sẽ xử lý đơn hàng và giao đúng khung giờ bạn lựa chọn."
       }

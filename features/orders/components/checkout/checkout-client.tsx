@@ -17,7 +17,7 @@ import { isFeatureEnabled } from '@/shared/feature-flags'
 import { cn } from '@/shared/utils'
 import { Alert02Icon, ArrowDown01Icon, ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { getCardsTotal } from '../../cards/card-data'
@@ -34,7 +34,7 @@ import { useCreateOrder } from '../../hooks/use-create-order'
 import { useDiscardCheckoutQueries } from '../../hooks/use-discard-checkout-queries'
 import { useEstimateOrder } from '../../hooks/use-estimate-order'
 import { useFreeShipKm } from '../../hooks/use-free-ship-km'
-import type { OrderContact } from '../../payloads'
+import { toOrderTimestamp, type OrderContact } from '../../payloads'
 import { resolveShippingFee } from '../../shipping-fee'
 import type { CheckoutFallback, TaxBusinessInfo } from '../../types'
 import type { CheckoutFormValues } from '../../validations'
@@ -264,14 +264,16 @@ export default function CheckoutClient() {
     materialBlockedProductIds
   })
 
+  const voucherOrderTime = toOrderTimestamp(watchedOrderTime ?? null)
   const {
     vouchers,
+    isVouchersReady,
     unavailableVouchers,
     loadVouchers,
     isLoadingVouchers,
     estimatePrivateVoucher,
     isEstimatingPrivate
-  } = useCheckoutVouchers(productsSubtotal)
+  } = useCheckoutVouchers(productsSubtotal, voucherOrderTime)
 
   // Cards were each validated when saved, but the config they are measured against can change
   // under them - so the step is re-checked on the way out rather than only at the final submit.
@@ -287,10 +289,38 @@ export default function CheckoutClient() {
       productsSubtotal,
       products: summaryLines
         .filter((line) => line.issue !== 'missing' && line.issue !== 'inactive' && line.quantity > 0)
-        .map((line) => ({ id: line.productId, quantity: line.quantity }))
+        .map((line) => ({ id: line.productId, quantity: line.quantity })),
+      orderTime: voucherOrderTime
     })
     goNext()
   }
+
+  const [voucherSync, setVoucherSync] = useState({ orderTime: voucherOrderTime, vouchers })
+  const [droppedVoucherCount, setDroppedVoucherCount] = useState(0)
+  const isOrderTimeChanged = voucherSync.orderTime !== voucherOrderTime
+  const isVouchersChanged = isVouchersReady && voucherSync.vouchers !== vouchers
+
+  if (isOrderTimeChanged || isVouchersChanged) {
+    setVoucherSync({ orderTime: voucherOrderTime, vouchers: isVouchersChanged ? vouchers : voucherSync.vouchers })
+
+    const nextVoucher =
+      selectedVoucher?.visibility === 'private'
+        ? isOrderTimeChanged
+          ? null
+          : selectedVoucher
+        : selectedVoucher && isVouchersChanged
+          ? (vouchers.find((voucher) => voucher.id === selectedVoucher.id) ?? null)
+          : selectedVoucher
+
+    if (nextVoucher !== selectedVoucher) {
+      setSelectedVoucher(nextVoucher)
+      if (!nextVoucher) setDroppedVoucherCount((count) => count + 1)
+    }
+  }
+
+  useEffect(() => {
+    if (droppedVoucherCount > 0) toast.info(t('orders.checkout.voucher.expiredForDelivery'))
+  }, [droppedVoucherCount, t])
 
   const isLoading =
     isEstimatingOrder ||
