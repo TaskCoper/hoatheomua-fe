@@ -742,7 +742,8 @@
         "apiOffer": "Voucher offer",
         "notEligible": "Your order isn't eligible yet",
         "minOrder": "Valid for orders from {amount}",
-        "maxOrder": "Valid for orders up to {amount}"
+        "maxOrder": "Valid for orders up to {amount}",
+        "expiredForDelivery": "This voucher no longer applies to the selected delivery time"
       },
       "back": "Back",
       "confirm": "Confirm order",

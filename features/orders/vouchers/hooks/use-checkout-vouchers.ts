@@ -44,22 +44,22 @@ const toEstimatedVoucher = (
   maxOrderAmount: voucher.maxOrderAmount ?? null
 })
 
-export const useCheckoutVouchers = (productsSubtotal: number, products: FilterVoucherProduct[]) => {
+export const useCheckoutVouchers = (productsSubtotal: number, products: FilterVoucherProduct[], orderTime: number) => {
   const publicQuery = useQuery({
-    queryKey: ['vouchers', 'public', productsSubtotal],
-    queryFn: () => voucherService.getPublicVouchers({ productFee: productsSubtotal }),
+    queryKey: ['vouchers', 'public', productsSubtotal, orderTime],
+    queryFn: () => voucherService.getPublicVouchers({ productFee: productsSubtotal, orderTime }),
     enabled: productsSubtotal > 0
   })
 
   const filterQuery = useQuery({
-    queryKey: ['vouchers', 'filter', products],
-    queryFn: () => voucherService.filterVouchers({ products }),
+    queryKey: ['vouchers', 'filter', products, orderTime],
+    queryFn: () => voucherService.filterVouchers({ products, orderTime }),
     enabled: products.length > 0
   })
 
   const privateEstimate = useMutation({
     mutationFn: ({ code, productFee }: { code: string; productFee: number }) =>
-      voucherService.estimateVoucher({ code, productFee })
+      voucherService.estimateVoucher({ code, productFee, orderTime })
   })
 
   const vouchers = useMemo(() => (publicQuery.data ?? []).map(toPublicVoucher), [publicQuery.data])
@@ -78,6 +78,7 @@ export const useCheckoutVouchers = (productsSubtotal: number, products: FilterVo
 
   return {
     vouchers,
+    isVouchersReady: publicQuery.isSuccess,
     unavailableVouchers,
     estimatePrivateVoucher,
     isEstimatingPrivate: privateEstimate.isPending

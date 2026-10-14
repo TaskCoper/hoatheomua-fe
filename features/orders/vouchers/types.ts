@@ -31,6 +31,7 @@ export interface CheckoutVoucher {
 export interface EstimateVoucherRequest {
   code: string
   productFee: number
+  orderTime: number
 }
 
 export interface EstimateVoucherResponse {
@@ -51,6 +52,7 @@ export interface FilterVoucherProduct {
 
 export interface FilterVoucherRequest {
   products: FilterVoucherProduct[]
+  orderTime: number
 }
 
 export interface FilterVoucherResponse extends EstimateVoucherResponse {
