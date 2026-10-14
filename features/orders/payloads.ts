@@ -42,7 +42,7 @@ export const buildEstimatePayload = (
   productById: Map<string, ProductSummary>,
   contact: OrderContact
 ): EstimatePayload => {
-  const fullAddress = `${values.addressLine}, ${values.ward}, ${values.city}`
+  const fullAddress = `${values.addressLine.trim()}, ${values.ward}, ${values.city}`
 
   return {
     latitude: values.latitude,

@@ -59,10 +59,11 @@ interface CheckoutSidebarProps {
   extraLines?: SummaryLine[]
   productsSubtotal: number
   vatAmount: number
+  /** What the VAT is charged on: the products after the voucher has come off. */
+  vatTaxableAmount: number
   hasTaxCode: boolean
   cardsFee?: number
   shippingFee: number
-  shippingDiscount?: number
   showShipping?: boolean
   grandTotal: number
   voucherDiscount?: number
@@ -72,6 +73,7 @@ interface CheckoutSidebarProps {
   onSelectVoucher?: (voucher: CheckoutVoucher | null) => void
   onEstimatePrivateVoucher?: (code: string) => Promise<CheckoutVoucher>
   isEstimatingPrivate?: boolean
+  isLoadingVouchers?: boolean
   action: {
     label: string
     onClick: () => void
@@ -105,10 +107,10 @@ export default function CheckoutSidebar({
   extraLines,
   productsSubtotal,
   vatAmount,
+  vatTaxableAmount,
   hasTaxCode,
   cardsFee = 0,
   shippingFee,
-  shippingDiscount = 0,
   showShipping = true,
   grandTotal,
   voucherDiscount = 0,
@@ -118,6 +120,7 @@ export default function CheckoutSidebar({
   onSelectVoucher,
   onEstimatePrivateVoucher,
   isEstimatingPrivate = false,
+  isLoadingVouchers = false,
   action,
   notice,
   showTerms = true,
@@ -185,23 +188,28 @@ export default function CheckoutSidebar({
               value={formatVnd(productsSubtotal)}
               loading={isPricingLoading}
             />
-            {hasTaxCode ? (
-              <SidebarRow label={t('orders.checkout.vat')} value={formatVnd(vatAmount)} loading={isPricingLoading} />
-            ) : null}
-            {cardsFee > 0 ? <SidebarRow label={t('orders.checkout.cardsFee')} value={formatVnd(cardsFee)} /> : null}
-            {showShipping ? (
-              <>
-                <SidebarRow label={t('orders.checkout.shippingFee')} value={formatVnd(shippingFee)} />
-                {shippingDiscount > 0 ? (
-                  <SidebarRow label={t('orders.checkout.shippingFeeDiscount')} value={formatVnd(-shippingDiscount)} />
-                ) : null}
-              </>
-            ) : null}
             {selectedVoucher ? (
               <SidebarRow
                 label={t('orders.checkout.voucher.discountLabel')}
                 value={formatVnd(voucherDiscount > 0 ? -voucherDiscount : 0)}
               />
+            ) : null}
+            {hasTaxCode ? (
+              <SidebarRow
+                label={t('orders.checkout.vat')}
+                // Only worth spelling out when the voucher moved the base off the subtotal.
+                hint={
+                  voucherDiscount > 0
+                    ? t('orders.checkout.vatAfterVoucher', { amount: formatVnd(vatTaxableAmount) })
+                    : undefined
+                }
+                value={formatVnd(vatAmount)}
+                loading={isPricingLoading}
+              />
+            ) : null}
+            {cardsFee > 0 ? <SidebarRow label={t('orders.checkout.cardsFee')} value={formatVnd(cardsFee)} /> : null}
+            {showShipping ? (
+              <SidebarRow label={t('orders.checkout.shippingFee')} value={formatVnd(shippingFee)} />
             ) : null}
           </dl>
           <div className='mt-4 flex items-center justify-between border-t border-dashed border-border pt-3'>
@@ -227,6 +235,7 @@ export default function CheckoutSidebar({
           onSelect={onSelectVoucher}
           onEstimatePrivateVoucher={onEstimatePrivateVoucher}
           isEstimatingPrivate={isEstimatingPrivate}
+          isLoading={isLoadingVouchers}
         />
       ) : null}
 
@@ -444,12 +453,15 @@ function CheckoutLineItemSkeleton() {
 
 function SidebarRow({
   label,
+  hint,
   value,
   multiline,
   loading,
   clamp
 }: {
   label: string
+  /** A muted line under the label that explains how the amount was reached. */
+  hint?: string
   value: string
   multiline?: boolean
   loading?: boolean
@@ -457,7 +469,10 @@ function SidebarRow({
 }) {
   return (
     <div className={cn('flex items-start justify-between gap-3', multiline && 'flex-col sm:flex-row')}>
-      <dt className='shrink-0 text-muted-foreground'>{label}</dt>
+      <dt className={cn('text-muted-foreground', hint ? 'min-w-0' : 'shrink-0')}>
+        {label}
+        {hint ? <span className='mt-0.5 block text-xs text-muted-foreground/70'>{hint}</span> : null}
+      </dt>
       <dd className={cn('text-right font-medium tabular-nums', multiline && 'min-w-0 sm:max-w-[60%]')}>
         {loading ? (
           <Skeleton className='ml-auto h-4 w-20 rounded-md' />

@@ -16,11 +16,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import type { CheckoutDeliveryOption } from '../checkout-methods'
 import { useGetShippingLocations } from '../hooks/use-get-shipping-locations'
+import { countWords, truncateWords } from '../cards/card-config'
 import { toOrderTimestamp } from '../payloads'
 import { matchShippingLocation } from '../utils/match-shipping-location'
 import { cn } from '@/shared/utils'
 import type { DeliverySlot } from '@/types/config.type'
-import type { CheckoutFormValues } from '../validations'
+import { ORDER_REMARKS_MAX_WORDS, type CheckoutFormValues } from '../validations'
 import { AddressAutocomplete } from './address-autocomplete'
 import { AddressMapField } from './address-map-field'
 import CheckoutSection from './checkout/checkout-section'
@@ -89,6 +90,14 @@ export default function CheckoutFields({
   } = useFormContext<CheckoutFormValues>()
   const fullNameReceiverError = errors.fullNameReceiver
   const phoneReceiverError = errors.phoneReceiver
+  // The schema reports a missing city/ward on the name fields, but the pickers are bound to
+  // the codes - so both are read, or a "required" error would have nowhere to show.
+  const cityError = errors.cityCode ?? errors.city
+  const wardError = errors.wardCode ?? errors.ward
+  const locationError = errors.latitude ?? errors.longitude
+  const addressLineError = errors.addressLine ?? locationError
+  // A saved address fills every field at once, so whichever part is unusable is reported in one place.
+  const savedAddressError = errors.addressLine ?? errors.city ?? errors.ward ?? locationError
   // The coordinate the typed address resolved to - map picks are constrained to
   // a radius around it so the pin can be fine-tuned but not moved to a new area.
   const [mapAnchor, setMapAnchor] = useState<{ latitude: number; longitude: number } | null>(null)
@@ -108,6 +117,14 @@ export default function CheckoutFields({
 
   const hasSavedAddresses = addresses.length > 0
   const showManualFields = manualAddress || !hasSavedAddresses
+
+  // The anchor belongs to a typed address. Once a saved one takes over it is stale, however the
+  // switch happened - the toggle below, or a toast's one-click fallback from the page.
+  const [wasManual, setWasManual] = useState(showManualFields)
+  if (wasManual !== showManualFields) {
+    setWasManual(showManualFields)
+    if (!showManualFields) setMapAnchor(null)
+  }
 
   const handleManualToggle = (checked: boolean) => {
     onManualAddressChange(checked)
@@ -259,7 +276,7 @@ export default function CheckoutFields({
     if (pendingWardRef.current === null || isLoadingWards || wards.length === 0) return
     const matchedWard = matchShippingLocation(wards, pendingWardRef.current)
     if (matchedWard) {
-      setValue('ward', matchedWard.name, { shouldDirty: true })
+      setValue('ward', matchedWard.name, { shouldDirty: true, shouldValidate: true })
       setValue('wardCode', matchedWard.id, { shouldDirty: true, shouldValidate: true })
     }
     pendingWardRef.current = null
@@ -294,6 +311,7 @@ export default function CheckoutFields({
             <SavedAddressPicker addresses={addresses} selectedAddress={selectedAddress} onSelect={onSelectAddress} />
             {fullNameReceiverError ? <FieldError className='text-xs' errors={[fullNameReceiverError]} /> : null}
             {phoneReceiverError ? <FieldError className='text-xs' errors={[phoneReceiverError]} /> : null}
+            {savedAddressError ? <FieldError className='text-xs' errors={[savedAddressError]} /> : null}
           </>
         ) : null}
 
@@ -351,8 +369,8 @@ export default function CheckoutFields({
               <Controller
                 name='cityCode'
                 control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid} className='gap-1'>
+                render={({ field }) => (
+                  <Field data-invalid={!!cityError} className='gap-1'>
                     <FieldLabel htmlFor={field.name}>{t('orders.checkout.city')}</FieldLabel>
                     <LocationCombobox
                       value={field.value === -1 ? '' : String(field.value)}
@@ -370,7 +388,7 @@ export default function CheckoutFields({
 
                         const cityName = cities.find((city) => city.id === newCityId)?.name
                         if (cityName) {
-                          setValue('city', cityName, { shouldDirty: true })
+                          setValue('city', cityName, { shouldDirty: true, shouldValidate: true })
                         }
 
                         if (newCityId !== cityCodeForm) {
@@ -383,10 +401,10 @@ export default function CheckoutFields({
                       searchPlaceholder={t('orders.checkout.citySearchPlaceholder')}
                       emptyMessage={t('orders.checkout.comboboxEmpty')}
                       disabled={isLoadingCities || cities.length === 0}
-                      invalid={fieldState.invalid}
+                      invalid={!!cityError}
                     />
                     <div className='min-h-4'>
-                      {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                      {cityError && <FieldError className='text-xs' errors={[cityError]} />}
                     </div>
                   </Field>
                 )}
@@ -395,8 +413,8 @@ export default function CheckoutFields({
               <Controller
                 name='wardCode'
                 control={control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid} className='gap-1'>
+                render={({ field }) => (
+                  <Field data-invalid={!!wardError} className='gap-1'>
                     <FieldLabel htmlFor={field.name}>{t('orders.checkout.ward')}</FieldLabel>
                     <LocationCombobox
                       value={field.value === -1 ? '' : String(field.value)}
@@ -412,7 +430,7 @@ export default function CheckoutFields({
 
                         const wardName = wards.find((ward) => ward.id === newWardId)?.name
                         if (wardName) {
-                          setValue('ward', wardName, { shouldDirty: true })
+                          setValue('ward', wardName, { shouldDirty: true, shouldValidate: true })
                         }
                       }}
                       options={wards.map((ward) => ({ label: ward.name, value: String(ward.id) }))}
@@ -420,10 +438,10 @@ export default function CheckoutFields({
                       searchPlaceholder={t('orders.checkout.wardSearchPlaceholder')}
                       emptyMessage={t('orders.checkout.comboboxEmpty')}
                       disabled={isLoadingWards || wards.length === 0}
-                      invalid={fieldState.invalid}
+                      invalid={!!wardError}
                     />
                     <div className='min-h-4'>
-                      {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                      {wardError && <FieldError className='text-xs' errors={[wardError]} />}
                     </div>
                   </Field>
                 )}
@@ -433,16 +451,16 @@ export default function CheckoutFields({
             <Controller
               name='addressLine'
               control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className='gap-1'>
+              render={({ field }) => (
+                <Field data-invalid={!!addressLineError} className='gap-1'>
                   <FieldLabel htmlFor={field.name}>{t('orders.checkout.addressLine')}</FieldLabel>
                   <AddressAutocomplete
                     id={field.name}
                     value={field.value ?? ''}
                     onValueChange={field.onChange}
                     onResolve={({ latitude, longitude, mapId, ward, city }) => {
-                      setValue('latitude', latitude, { shouldDirty: true })
-                      setValue('longitude', longitude, { shouldDirty: true })
+                      setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
+                      setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
                       setValue('mapId', mapId, { shouldDirty: true })
                       // This resolved point becomes the anchor the map pin is
                       // constrained to; subsequent drags are measured from here.
@@ -452,7 +470,7 @@ export default function CheckoutFields({
                       const matchedCity = matchShippingLocation(cities, city)
                       const cityChanged = Boolean(matchedCity && matchedCity.id !== cityCodeForm)
                       if (cityChanged && matchedCity) {
-                        setValue('city', matchedCity.name, { shouldDirty: true })
+                        setValue('city', matchedCity.name, { shouldDirty: true, shouldValidate: true })
                         setValue('cityCode', matchedCity.id, { shouldDirty: true, shouldValidate: true })
                         setValue('ward', '', { shouldDirty: true })
                         setValue('wardCode', -1, { shouldDirty: true, shouldValidate: true })
@@ -473,8 +491,9 @@ export default function CheckoutFields({
                     placeholder={t('orders.checkout.addressLinePlaceholder')}
                     searchingLabel={t('orders.checkout.addressLineSearching')}
                     emptyLabel={t('orders.checkout.addressLineEmpty')}
-                    invalid={fieldState.invalid}
+                    invalid={!!addressLineError}
                   />
+                  {addressLineError ? <FieldError className='text-xs' errors={[addressLineError]} /> : null}
                 </Field>
               )}
             />
@@ -485,18 +504,18 @@ export default function CheckoutFields({
               onResolve={({ latitude, longitude, mapId, addressLine, ward, city }) => {
                 // Sync every field to whatever the reverse geocode landed on:
                 // coordinate, address line, and the city/ward selectors.
-                setValue('latitude', latitude, { shouldDirty: true })
-                setValue('longitude', longitude, { shouldDirty: true })
+                setValue('latitude', latitude, { shouldDirty: true, shouldValidate: true })
+                setValue('longitude', longitude, { shouldDirty: true, shouldValidate: true })
                 setValue('mapId', mapId, { shouldDirty: true })
                 if (addressLine) {
-                  setValue('addressLine', addressLine, { shouldDirty: true })
+                  setValue('addressLine', addressLine, { shouldDirty: true, shouldValidate: true })
                 }
 
                 // Lift the resolved ward/city into their own selectors.
                 const matchedCity = matchShippingLocation(cities, city)
                 const cityChanged = Boolean(matchedCity && matchedCity.id !== cityCodeForm)
                 if (cityChanged && matchedCity) {
-                  setValue('city', matchedCity.name, { shouldDirty: true })
+                  setValue('city', matchedCity.name, { shouldDirty: true, shouldValidate: true })
                   setValue('cityCode', matchedCity.id, { shouldDirty: true, shouldValidate: true })
                   setValue('ward', '', { shouldDirty: true })
                   setValue('wardCode', -1, { shouldDirty: true, shouldValidate: true })
@@ -549,7 +568,7 @@ export default function CheckoutFields({
               const selected = field.value?.[0]
               return (
                 <Field data-invalid={fieldState.invalid} className='gap-1'>
-                  <FieldLabel htmlFor={field.name}>{t('orders.checkout.tag')}</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>{t('orders.checkout.tagLabel')}</FieldLabel>
                   <Select
                     value={selected !== undefined ? String(selected) : undefined}
                     onValueChange={(value) => {
@@ -611,12 +630,23 @@ export default function CheckoutFields({
               <Textarea
                 {...field}
                 value={field.value ?? ''}
+                onChange={(event) => field.onChange(truncateWords(event.target.value, ORDER_REMARKS_MAX_WORDS))}
                 id={field.name}
                 aria-invalid={fieldState.invalid}
                 rows={3}
                 placeholder={t('orders.checkout.remarksPlaceholder')}
               />
-              {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+              <div className='flex items-start justify-between gap-2'>
+                <div className='min-w-0 flex-1'>
+                  {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                </div>
+                <span className='shrink-0 text-xs text-muted-foreground tabular-nums'>
+                  {t('orders.checkout.cards.messageWordCount', {
+                    count: countWords(field.value ?? ''),
+                    max: ORDER_REMARKS_MAX_WORDS
+                  })}
+                </span>
+              </div>
             </Field>
           )}
         />

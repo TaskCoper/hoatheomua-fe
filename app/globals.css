@@ -2187,3 +2187,32 @@
 [data-sonner-toaster] [data-sonner-toast].cn-toast [data-description] {
   color: var(--muted-foreground);
 }
+
+/* A toast action sits under the message in the app's own primary-button style. Sonner's default
+   lays it out beside the text, filled with the inverted text colour (black in light mode). */
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'].cn-toast:has([data-button]) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'].cn-toast [data-button] {
+  grid-column: 2;
+  justify-self: start;
+  height: 2rem;
+  margin: 0.625rem 0 0;
+  padding-inline: 0.875rem;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  transition: background-color 150ms;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'].cn-toast [data-button]:hover {
+  background: color-mix(in oklch, var(--primary) 80%, transparent);
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'].cn-toast [data-button]:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 30%, transparent);
+}
