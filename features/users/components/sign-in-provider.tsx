@@ -5,6 +5,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { FormProvider, SubmitHandler } from 'react-hook-form'
+import { useForwardedAuthHref } from '../hooks/use-auth-href'
 import { useSignIn } from '../hooks/use-sign-in'
 import { SignInFormValues } from '../validations'
 import SignInForm from './sign-in-form'
@@ -12,6 +13,7 @@ import SignInForm from './sign-in-form'
 export default function SignInProvider() {
   const { t } = useTranslation()
   const { methods, signIn, isSigningIn } = useSignIn()
+  const signUpHref = useForwardedAuthHref('/sign-up')
 
   const onSubmit: SubmitHandler<SignInFormValues> = (body) => {
     signIn({ body })
@@ -29,7 +31,7 @@ export default function SignInProvider() {
               {t('auth.signIn.submit')}
             </Button>
 
-            <Link href='/sign-up' replace className='block text-center text-sm text-muted-foreground'>
+            <Link href={signUpHref} replace className='block text-center text-sm text-muted-foreground'>
               <Button variant='link'>{t('auth.signIn.signUpPrompt')}</Button>
             </Link>
           </div>

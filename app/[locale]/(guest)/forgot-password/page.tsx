@@ -5,6 +5,7 @@ import { LockPasswordIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { Suspense } from 'react'
 
 interface ForgotPasswordPageProps {
   params: Promise<{ locale: Locale }>
@@ -35,7 +36,9 @@ export default async function ForgotPasswordPage({ params }: ForgotPasswordPageP
           <p className='text-sm text-muted-foreground'>{t('description')}</p>
         </div>
 
-        <ForgotPasswordFlow />
+        <Suspense fallback={null}>
+          <ForgotPasswordFlow />
+        </Suspense>
       </div>
     </AuthPageShell>
   )

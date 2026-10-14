@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import ApplyJobDialog from '@/features/recruitment/components/apply-job-dialog'
+import { useAuthHref } from '@/features/users/hooks/use-auth-href'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useHasMounted } from '@/hooks/use-has-mounted'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { Link, usePathname } from '@/lib/i18n/navigation'
+import { Link } from '@/lib/i18n/navigation'
 import { sanitizeRichText } from '@/lib/sanitize'
 import ViewportAvatar from '@/shared/components/viewport-avatar'
 import { useImageFrame } from '@/shared/components/viewport-image'
@@ -44,7 +45,7 @@ type JobDetailProps = {
 
 export default function JobDetail({ job, detailHref }: JobDetailProps) {
   const { t } = useTranslation()
-  const pathname = usePathname()
+  const signInHref = useAuthHref('/sign-in')
   const salary = formatJobSalary(job, t)
   const avatarFallback = getJobAvatarFallback(job.title)
   const employmentTypeLabel = getJobEmploymentTypeLabel(job.employmentType, t)
@@ -173,7 +174,7 @@ export default function JobDetail({ job, detailHref }: JobDetailProps) {
               </ApplyJobDialog>
             ) : (
               <Button asChild size='lg' className='w-full'>
-                <Link href={{ pathname: '/sign-in', query: { from: pathname } }}>
+                <Link href={signInHref}>
                   {t('auth.signIn.title')}
                   <HugeiconsIcon icon={LoginCircle01Icon} strokeWidth={1.8} className='size-4' />
                 </Link>

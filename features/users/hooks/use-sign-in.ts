@@ -1,5 +1,4 @@
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
-import { routing } from '@/lib/i18n/routing'
 import { writeSessionHint } from '@/shared/session-hint'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
@@ -8,34 +7,13 @@ import { useSearchParams } from 'next/navigation'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { getAuthRedirectTarget, toBrowserPath } from '../auth-redirect'
 import authService from '../services'
 import { createSignInSchema, SignInFormValues } from '../validations'
 
 const defaultValues: SignInFormValues = {
   phoneNumber: '',
   password: ''
-}
-
-const toBrowserPath = (path: string, locale: string) => {
-  if (locale === routing.defaultLocale) {
-    return path
-  }
-
-  if (path === `/${locale}` || path.startsWith(`/${locale}/`)) {
-    return path
-  }
-
-  return `/${locale}${path}`
-}
-
-const isSafeInternalPath = (path: string | null): path is string => {
-  if (typeof window === 'undefined') return false
-  if (!path || !path.startsWith('/') || path.startsWith('//') || path.startsWith('/\\')) return false
-  try {
-    return new URL(path, window.location.origin).origin === window.location.origin
-  } catch {
-    return false
-  }
 }
 
 export const useSignIn = () => {
@@ -55,10 +33,7 @@ export const useSignIn = () => {
     onSuccess: () => {
       writeSessionHint()
 
-      const from = searchParams.get('from')
-      const target = isSafeInternalPath(from) ? from : '/'
-
-      window.location.assign(toBrowserPath(target, locale))
+      window.location.assign(toBrowserPath(getAuthRedirectTarget(searchParams.get('from')), locale))
     },
     onError: (error) => {
       toast.error(t('error.somethingWentWrong'), {

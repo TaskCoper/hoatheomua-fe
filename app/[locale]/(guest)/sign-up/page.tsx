@@ -3,6 +3,7 @@ import SignUpProvider from '@/features/users/components/sign-up-provider'
 import type { Locale } from '@/lib/i18n/routing'
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { Suspense } from 'react'
 
 interface SignUpPageProps {
   params: Promise<{ locale: Locale }>
@@ -30,7 +31,9 @@ export default async function SignUpPage({ params }: SignUpPageProps) {
           <p className='text-sm text-muted-foreground'>{t('description')}</p>
         </div>
 
-        <SignUpProvider />
+        <Suspense fallback={null}>
+          <SignUpProvider />
+        </Suspense>
       </div>
     </AuthPageShell>
   )

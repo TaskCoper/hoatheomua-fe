@@ -40,7 +40,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
     if (!hasMounted || isGettingMe) return
 
     if (shouldRedirectToSignIn) {
-      const from = fromRef.current ?? pathname
+      const from = `${fromRef.current ?? pathname}${window.location.search}`
       const params = new URLSearchParams({ from })
       router.replace(`/sign-in?${params.toString()}`)
       return
@@ -50,15 +50,7 @@ export default function AuthGuard({ requiresAuth, children }: AuthGuardProps) {
       if (isRedirectLoop(pathname, userHomePath, 'AuthGuard (already authenticated)')) return
       router.replace(userHomePath)
     }
-  }, [
-    hasMounted,
-    isGettingMe,
-    shouldRedirectToSignIn,
-    shouldRedirectAuthedAway,
-    pathname,
-    router,
-    userHomePath
-  ])
+  }, [hasMounted, isGettingMe, shouldRedirectToSignIn, shouldRedirectAuthedAway, pathname, router, userHomePath])
 
   if (shouldRedirectToSignIn || shouldRedirectAuthedAway || isModalOverlay) {
     return <AuthGuardLoading />

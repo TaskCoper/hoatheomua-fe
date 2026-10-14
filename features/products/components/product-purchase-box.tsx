@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { availableOf, useProductVariant } from '@/features/products/components/product-variant-context'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import type { ProductDetail } from '@/features/products/types'
+import { buildAuthHref } from '@/features/users/auth-redirect'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
@@ -95,8 +96,7 @@ export default function ProductPurchaseBox() {
 
     if (!isAuthenticated) {
       const queryString = typeof window === 'undefined' ? '' : window.location.search
-      const from = `${pathname}${queryString}`
-      router.push(`/sign-in?from=${encodeURIComponent(from)}`)
+      router.push(buildAuthHref('/sign-in', `${pathname}${queryString}`))
       return false
     }
 

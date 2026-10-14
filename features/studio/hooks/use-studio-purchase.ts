@@ -3,6 +3,7 @@
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
 import type { StudioTrim } from '@/features/studio/types'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
+import { useAuthHref } from '@/features/users/hooks/use-auth-href'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
 import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
@@ -45,6 +46,7 @@ export const useStudioPurchase = ({
 }: UseStudioPurchaseArgs) => {
   const { t } = useTranslation()
   const router = useRouter()
+  const signInHref = useAuthHref('/sign-in')
 
   const isReady = Boolean(productId && flowerId)
 
@@ -84,7 +86,7 @@ export const useStudioPurchase = ({
     if (!isReady || isGettingMe) return false
 
     if (!isAuthenticated) {
-      router.push('/sign-in')
+      router.push(signInHref)
       return false
     }
 
