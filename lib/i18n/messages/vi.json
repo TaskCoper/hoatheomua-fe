@@ -748,6 +748,7 @@
         "notEligible": "Đơn hàng chưa đủ điều kiện áp dụng",
         "minOrder": "Voucher chỉ áp dụng cho đơn hàng từ {amount}",
         "maxOrder": "Voucher chỉ áp dụng cho đơn hàng đến {amount}",
+        "expiredForDelivery": "Voucher không còn áp dụng cho thời gian giao đã chọn",
         "loadError": "Không thể tải danh sách voucher."
       },
       "back": "Quay lại",

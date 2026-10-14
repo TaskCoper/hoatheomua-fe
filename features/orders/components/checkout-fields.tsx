@@ -583,7 +583,7 @@ export default function CheckoutFields({
                         <span className='text-muted-foreground'>{t('orders.checkout.tagEmpty')}</span>
                       )}
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position='popper'>
                       {tagOptions.map((slot) => {
                         const remaining = getSlotRemaining(slot)
                         const isAvailable = isSlotSelectable(slot)

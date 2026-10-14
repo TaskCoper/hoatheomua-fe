@@ -8,23 +8,26 @@ import type {
 } from './types'
 
 class VoucherService {
-  getPublicVouchers = async ({ productFee }: { productFee?: number } = {}) => {
+  getPublicVouchers = async ({ productFee, orderTime }: { productFee?: number; orderTime?: number } = {}) => {
     const { data } = await api.get<BaseResponse<PublicVoucherResponse[]>>('v1/vouchers/public', {
-      params: { productFee }
+      params: { productFee, orderTime }
     })
 
     return data.value
   }
 
-  filterVouchers = async ({ products }: FilterVoucherRequest) => {
-    const { data } = await api.post<BaseResponse<FilterVoucherResponse[]>>('v1/vouchers/filter', { products })
+  filterVouchers = async ({ products, orderTime }: FilterVoucherRequest) => {
+    const { data } = await api.post<BaseResponse<FilterVoucherResponse[]>>('v1/vouchers/filter', {
+      products,
+      orderTime
+    })
 
     return data.value
   }
 
-  estimateVoucher = async ({ code, productFee }: EstimateVoucherRequest) => {
+  estimateVoucher = async ({ code, productFee, orderTime }: EstimateVoucherRequest) => {
     const { data } = await api.get<BaseResponse<EstimateVoucherResponse>>('v1/vouchers/estimate', {
-      params: { code, productFee }
+      params: { code, productFee, orderTime }
     })
 
     return data.value
