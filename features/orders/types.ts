@@ -402,6 +402,12 @@ export interface CheckoutPayload extends Omit<EstimatePayload, 'items'> {
   shippingFee: number
 }
 
+/** A one-click way out of a failed step: a toast offers it as an action that switches to another method. */
+export interface CheckoutFallback {
+  label: string
+  run: () => void
+}
+
 export interface CheckoutSelection {
   paymentMethod: PaymentMethod
   gateway: PaymentGateway

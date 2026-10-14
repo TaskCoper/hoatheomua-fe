@@ -78,6 +78,13 @@ export const countWords = (message: string): number => {
   return trimmed.length === 0 ? 0 : trimmed.split(/\s+/).length
 }
 
+/** Keeps the first `max` words and the spacing between them; a trailing space survives so typing isn't jammed. */
+export const truncateWords = (message: string, max: number): string => {
+  if (countWords(message) <= max) return message
+  const kept = message.trimStart().match(new RegExp(`^(?:\\S+\\s+){${max - 1}}\\S+`))
+  return kept ? kept[0] : message
+}
+
 export const findCardSize = (config: CardConfig, sizeName: string): CardSize | null =>
   config.sizes.find((size) => size.name === sizeName) ?? null
 

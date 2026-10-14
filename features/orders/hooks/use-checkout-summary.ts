@@ -5,6 +5,7 @@ import { useGetFlowerCompositions } from '@/features/studio/hooks/use-get-flower
 import type { CartItem } from '@/stores/cart.store'
 import { useMemo } from 'react'
 import type { CheckoutLineIssue, CheckoutSummaryLine } from '../components/checkout/checkout-sidebar'
+import { calculateVat } from '../vat'
 
 const NO_BLOCKED_PRODUCTS: ReadonlySet<string> = new Set()
 
@@ -13,6 +14,8 @@ interface UseCheckoutSummaryArgs {
   hasTaxCode: boolean
   shippingFee: number
   cardsTotal?: number
+  /** What the selected voucher takes off the products; VAT is charged after it. */
+  voucherDiscount?: number
   /** Products the last check-core verdict blamed for a material shortage. */
   materialBlockedProductIds?: ReadonlySet<string>
 }
@@ -22,6 +25,7 @@ export const useCheckoutSummary = ({
   hasTaxCode,
   shippingFee,
   cardsTotal = 0,
+  voucherDiscount = 0,
   materialBlockedProductIds = NO_BLOCKED_PRODUCTS
 }: UseCheckoutSummaryArgs) => {
   const productIds = useMemo(() => Array.from(new Set(items.map((item) => item.productId))), [items])
@@ -108,8 +112,14 @@ export const useCheckoutSummary = ({
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
   const productsSubtotal = summaryLines.reduce((sum, line) => sum + line.subtotal, 0)
-  const vatAmount = hasTaxCode ? Math.round(productsSubtotal * 0.08) : 0
-  const grandTotal = productsSubtotal + vatAmount + shippingFee + cardsTotal
+  // A voucher discounts the products only, so it can never take more than they cost.
+  const appliedVoucherDiscount = Math.min(Math.max(0, voucherDiscount), productsSubtotal)
+  const { taxableAmount, vatAmount } = calculateVat({
+    vatApplicableAmount: productsSubtotal,
+    voucherDiscount: appliedVoucherDiscount,
+    isSubjectToVat: hasTaxCode
+  })
+  const grandTotal = productsSubtotal - appliedVoucherDiscount + vatAmount + shippingFee + cardsTotal
 
   return {
     summaryLines,
@@ -117,6 +127,8 @@ export const useCheckoutSummary = ({
     hasUnavailableLines: unavailableLines.length > 0,
     totalItems,
     productsSubtotal,
+    appliedVoucherDiscount,
+    taxableAmount,
     vatAmount,
     cardsTotal,
     grandTotal

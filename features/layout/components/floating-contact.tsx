@@ -1,8 +1,11 @@
 'use client'
 
+import { MessengerIcon, ZaloIcon } from '@/features/layout/components/contact-channel-icons'
 import { useLiveChat } from '@/features/layout/hooks/use-live-chat'
+import { useGetPublicConfigs } from '@/hooks/use-get-public-configs'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { cn } from '@/shared/utils'
+import type { ContactConfigItem } from '@/types/config.type'
 import { BotIcon, Cancel01Icon, Loading03Icon, VolumeHighIcon, VolumeMute02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
@@ -57,27 +60,14 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
     toggle: toggleChat
   } = useLiveChat()
 
-  // const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
-  // const zalo = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
-  // const messenger = contactConfigs.find((item) => item.key === 'contact.messenger')?.value.value
+  const { configs: contactConfigs } = useGetPublicConfigs<ContactConfigItem>({ group: 'contact' })
+  const zalo = contactConfigs.find((item) => item.key === 'contact.zalo')?.value.value
+  const messenger = contactConfigs.find((item) => item.key === 'contact.messenger')?.value.value
 
-  // const CONTACT_CHANNELS = useMemo(
-  //   () => [
-  //     {
-  //       key: 'zalo',
-  //       href: zalo,
-  //       src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-4-1.webp',
-  //       labelKey: 'floatingContact.zalo' as I18nKey
-  //     },
-  //     {
-  //       key: 'messenger',
-  //       href: messenger,
-  //       src: 'https://hoatheomua.net/wp-content/uploads/2025/06/icon-web-1-1.webp',
-  //       labelKey: 'floatingContact.messenger' as I18nKey
-  //     }
-  //   ],
-  //   [zalo, messenger]
-  // )
+  const contactChannels = [
+    { key: 'zalo', href: zalo, Icon: ZaloIcon, labelKey: 'floatingContact.zalo' },
+    { key: 'messenger', href: messenger, Icon: MessengerIcon, labelKey: 'floatingContact.messenger' }
+  ] as const
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -224,31 +214,23 @@ export default function FloatingContact({ musicSrc }: { musicSrc?: string | null
             </>
           ) : null}
 
-          {/* {CONTACT_CHANNELS.map((channel) => {
-            const label = t(channel.labelKey)
+          {contactChannels.map(({ key, href, Icon, labelKey }) => {
+            if (!href) return null
+            const label = t(labelKey)
             return (
               <a
-                key={channel.key}
-                href={channel.href}
+                key={key}
+                href={href}
                 target='_blank'
                 rel='noopener noreferrer'
                 aria-label={label}
                 title={label}
                 className='pointer-events-auto group relative flex size-12 items-center justify-center rounded-full bg-card shadow-lg ring-1 ring-foreground/10 transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-xl sm:size-14'
               >
-                <Image
-                  src={channel.src}
-                  alt=''
-                  width={40}
-                  height={40}
-                  sizes='(min-width: 640px) 40px, 32px'
-                  quality={70}
-                  aria-hidden='true'
-                  className='size-8 object-contain transition-transform duration-300 group-hover:scale-110 sm:size-10'
-                />
+                <Icon className='size-8 transition-transform duration-300 group-hover:scale-110 sm:size-10' />
               </a>
             )
-          })} */}
+          })}
         </div>
 
         {isChatEnabled ? (

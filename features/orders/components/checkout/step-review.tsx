@@ -26,7 +26,7 @@ interface StepReviewProps {
   onRemoveCard: (index: number) => void
   deliveryMethod: CheckoutDeliveryOption | null
   paymentMethod: CheckoutPaymentOption | null
-  rawShippingFee: number
+  shippingFee: number
   isFreeShip: boolean
   onEditStep: (step: CheckoutStep) => void
 }
@@ -38,7 +38,7 @@ export default function StepReview({
   onRemoveCard,
   deliveryMethod,
   paymentMethod,
-  rawShippingFee,
+  shippingFee,
   isFreeShip,
   onEditStep
 }: StepReviewProps) {
@@ -98,11 +98,8 @@ export default function StepReview({
             </div>
             <div className='shrink-0 text-right'>
               <p className='text-sm font-semibold text-primary'>
-                {isFreeShip ? t('orders.checkout.shippingFree') : formatVnd(rawShippingFee)}
+                {isFreeShip ? t('orders.checkout.shippingFree') : formatVnd(shippingFee)}
               </p>
-              {isFreeShip ? (
-                <p className='text-xs text-muted-foreground line-through'>{formatVnd(rawShippingFee)}</p>
-              ) : null}
             </div>
           </div>
         ) : (

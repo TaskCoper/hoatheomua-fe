@@ -10,7 +10,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { useDebounce } from 'use-debounce'
 import orderService from '../services'
 import { InvoiceType, type TaxBusinessInfo } from '../types'
-import type { CheckoutFormValues } from '../validations'
+import { VN_TAX_CODE_REGEX, type CheckoutFormValues } from '../validations'
 
 interface InvoiceFieldsProps {
   taxBusinessInfo: TaxBusinessInfo | null
@@ -33,12 +33,14 @@ export function InvoiceFields({
   const invoiceTypeForm = watch('invoiceType')
 
   const [debouncedTaxCode] = useDebounce(taxCodeForm, 500)
-  const hasTaxCodeEntered = !!debouncedTaxCode?.trim()
+  // Only a well-formed code is worth the external lookup - a half-typed one would answer "not found"
+  // right under the format error telling the user to finish typing it.
+  const canLookUpTaxCode = VN_TAX_CODE_REGEX.test(debouncedTaxCode?.trim() ?? '')
 
   useEffect(() => {
     const taxCode = debouncedTaxCode?.trim() ?? ''
 
-    if (!taxCode) {
+    if (!VN_TAX_CODE_REGEX.test(taxCode)) {
       onTaxBusinessInfoChange(null)
       onTaxBusinessLookupStateChange('idle')
       return
@@ -131,7 +133,7 @@ export function InvoiceFields({
                     placeholder={t('orders.checkout.taxCodePlaceholder')}
                   />
 
-                  {hasTaxCodeEntered ? (
+                  {canLookUpTaxCode ? (
                     <div className='rounded-2xl border border-border/60 bg-muted/30 px-3 py-2 text-sm mt-2'>
                       {taxBusinessLookupState === 'loading' ? (
                         <p className='text-muted-foreground'>{t('orders.checkout.taxBusinessLoading')}</p>
