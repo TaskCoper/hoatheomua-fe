@@ -71,6 +71,7 @@ export const metadata: Metadata = {
   referrer: 'origin-when-cross-origin',
   formatDetection: { telephone: true, address: true, email: true },
   icons: { icon: '/icon.png' },
+  verification: { google: 'bQgPNiK9Fmh9tn8QPEVQx-q3wURq6vuuw1xn-V3_5Vs' },
   robots: {
     index: true,
     follow: true,
