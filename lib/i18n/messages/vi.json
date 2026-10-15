@@ -22,7 +22,10 @@
       "editDetails": "Sửa thông tin",
       "newPassword": "Mật khẩu mới",
       "resetPassword": "Đặt lại mật khẩu",
-      "resetSuccess": "Đã đặt lại mật khẩu. Vui lòng đăng nhập bằng mật khẩu mới."
+      "resetSuccess": "Đã đặt lại mật khẩu. Vui lòng đăng nhập bằng mật khẩu mới.",
+      "continueToPassword": "Tiếp tục",
+      "backToOtp": "Quay lại nhập mã",
+      "passwordStep": "Bước 2: Đặt mật khẩu mới"
     },
     "signIn": {
       "label": "Đăng nhập",

@@ -22,7 +22,10 @@
       "editDetails": "Edit details",
       "newPassword": "New password",
       "resetPassword": "Reset password",
-      "resetSuccess": "Password reset. Sign in with your new password."
+      "resetSuccess": "Password reset. Sign in with your new password.",
+      "continueToPassword": "Continue",
+      "backToOtp": "Back to code",
+      "passwordStep": "Step 2: Set your new password"
     },
     "signIn": {
       "label": "Sign in",

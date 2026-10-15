@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { isAxiosError } from 'axios'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -27,6 +28,7 @@ export default function ForgotPasswordFlow() {
   const [password, setPassword] = useState('')
   const [confirmation, setConfirmation] = useState('')
   const [completed, setCompleted] = useState(false)
+  const [step, setStep] = useState<'otp' | 'password'>('otp')
   const reset = useMutation({ mutationFn: userService.resetPhonePassword, retry: false })
   const busy = otp.isPending || reset.isPending
   async function requestCode() {
@@ -34,12 +36,17 @@ export default function ForgotPasswordFlow() {
     try {
       await otp.mutateAsync({ phoneNumber: phone, purpose: 'reset_password' })
       setCode('')
+      setStep('otp')
     } catch (error) { toast.error(phoneOtpError(error, t)) }
   }
   return <form className='mt-4 space-y-4' onSubmit={async event => {
     event.preventDefault()
     if (busy) return
     if (!otp.data) { await requestCode(); return }
+    if (step === 'otp') {
+      if (/^[0-9]{6}$/.test(code)) setStep('password')
+      return
+    }
     const validation = createPasswordSchema(t, t('auth.signUp.password')).safeParse(password)
     if (!validation.success) { toast.error(validation.error.issues[0].message); return }
     if (password !== confirmation) { toast.error(t('common.validation.passwordMismatch')); return }
@@ -48,27 +55,38 @@ export default function ForgotPasswordFlow() {
       clearSessionHint()
       queryClient.clear()
       setPassword(''); setConfirmation(''); setCode(''); setCompleted(true)
-    } catch (error) { toast.error(phoneOtpError(error, t)) }
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.data?.messageCode === 'InvalidPhoneOtp') {
+        setStep('otp')
+        setCode('')
+      }
+      toast.error(phoneOtpError(error, t))
+    }
   }}>
     {completed ? <p role='status'>{t('auth.phone.resetSuccess')}</p> : <>
-      <Field>
+      {step === 'otp' && <Field>
         <FieldLabel htmlFor='recovery-phone'>{t('auth.phone.phoneNumber')}</FieldLabel>
         <Input id='recovery-phone' type='tel' autoComplete='tel' value={phone} onChange={event => setPhone(event.target.value)}
           disabled={busy || !!otp.data} required maxLength={32} />
-      </Field>
+      </Field>}
       {otp.data && <>
-        <PhoneOtpFields phone={phone} code={code} setCode={setCode} remaining={otp.remaining} busy={busy} onResend={() => void requestCode()} />
+        {step === 'otp' ? <PhoneOtpFields phone={phone} code={code} setCode={setCode} remaining={otp.remaining} busy={busy} onResend={() => void requestCode()} /> : <>
+        <p className='text-sm text-muted-foreground' role='status'>{t('auth.phone.passwordStep')}</p>
         <Field>
           <FieldLabel htmlFor='recovery-password'>{t('auth.phone.newPassword')}</FieldLabel>
-          <Input id='recovery-password' type='password' autoComplete='new-password' value={password} onChange={event => setPassword(event.target.value)} required minLength={PASSWORD_MIN_LENGTH} maxLength={128} disabled={busy} />
+          <Input id='recovery-password' autoFocus type='password' autoComplete='new-password' value={password} onChange={event => setPassword(event.target.value)} required minLength={PASSWORD_MIN_LENGTH} maxLength={128} disabled={busy} />
         </Field>
         <Field>
           <FieldLabel htmlFor='recovery-confirm'>{t('auth.signUp.confirmPassword')}</FieldLabel>
           <Input id='recovery-confirm' type='password' autoComplete='new-password' value={confirmation} onChange={event => setConfirmation(event.target.value)} required maxLength={128} disabled={busy} />
         </Field>
+        </>}
       </>}
-      <Button className='w-full' disabled={busy || (!!otp.data && code.length !== 6)}>{otp.data ? t('auth.phone.resetPassword') : t('auth.phone.otpSend')}</Button>
-      {otp.data && <Button type='button' variant='ghost' className='w-full' disabled={busy} onClick={() => { otp.reset(); setCode('') }}>{t('auth.phone.editDetails')}</Button>}
+      <Button className='w-full' disabled={busy || (!!otp.data && code.length !== 6)}>{!otp.data ? t('auth.phone.otpSend') : step === 'otp' ? t('auth.phone.continueToPassword') : t('auth.phone.resetPassword')}</Button>
+      {otp.data && <Button type='button' variant='ghost' className='w-full' disabled={busy} onClick={() => {
+        if (step === 'password') { setStep('otp'); return }
+        otp.reset(); setCode(''); setPassword(''); setConfirmation('')
+      }}>{step === 'password' ? t('auth.phone.backToOtp') : t('auth.phone.editDetails')}</Button>}
     </>}
     <Button asChild variant='link' className='w-full'><Link href={signInHref} replace>{t('auth.signIn.title')}</Link></Button>
   </form>
