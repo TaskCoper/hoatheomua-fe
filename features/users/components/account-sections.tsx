@@ -7,6 +7,7 @@ import { AddressActionsMenu } from '@/features/addresses/components/address-acti
 import { AddressFormDialog } from '@/features/addresses/components/address-form-dialog'
 import { useGetAddresses } from '@/features/addresses/hooks/use-get-addresses'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
+import { formatFullName, getNameInitials } from '@/shared/utils'
 import { Add01Icon, Call02Icon, Home01Icon, Mail02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
@@ -89,13 +90,13 @@ export function AddressContent({ slug }: { slug?: string }) {
 }
 
 export function PersonalInfoContent({ slug }: { slug?: string }) {
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
   const { me } = useGetMe()
   const { user, isLoading } = useGetUser(slug ?? me?.slug)
   const [isEditing, setIsEditing] = useState(false)
 
-  const fullName = user ? `${user.lastName} ${user.firstName}` : ''
-  const initials = user ? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase() : ''
+  const fullName = formatFullName(user, locale)
+  const initials = getNameInitials(user, locale)
 
   if (isLoading) {
     return (

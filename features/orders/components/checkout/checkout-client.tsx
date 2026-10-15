@@ -14,7 +14,7 @@ import { Link, useRouter } from '@/lib/i18n/navigation'
 import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailable-notice'
 import StickyActionBar from '@/shared/components/sticky-action-bar'
 import { isFeatureEnabled } from '@/shared/feature-flags'
-import { cn } from '@/shared/utils'
+import { cn, formatFullName } from '@/shared/utils'
 import { Alert02Icon, ArrowDown01Icon, ArrowLeft02Icon, Call02Icon, CancelCircleIcon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useEffect, useMemo, useState } from 'react'
@@ -69,12 +69,14 @@ export default function CheckoutClient() {
 
   const isProfileLoading = isGettingMe || isLoadingUser
   const hasPhoneNumber = !!user?.phoneNumber
+  const firstName = user?.firstName
+  const lastName = user?.lastName
   const contact: OrderContact = useMemo(
     () => ({
-      fullName: [user?.firstName, user?.lastName].filter(Boolean).join(' '),
+      fullName: formatFullName({ firstName, lastName }, locale),
       phone: user?.phoneNumber ?? ''
     }),
-    [user?.firstName, user?.lastName, user?.phoneNumber]
+    [firstName, lastName, user?.phoneNumber, locale]
   )
 
   const freeShipKm = useFreeShipKm()

@@ -2,6 +2,7 @@ import { GetPresignedUrlParams } from '@/hooks/use-get-presigned-url'
 import { BasePaginationResponse } from '@/lib/axios'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import type { Locale } from '@/lib/i18n/types'
 import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
@@ -30,11 +31,26 @@ export const prepareFileUpload = (file: File, folder: string = 'general'): GetPr
   }
 }
 
-export const getAvatarFallback = (fullName: string) =>
-  fullName
-    .split(' ')
-    .map((n) => n[0])
+interface PersonName {
+  firstName?: string | null
+  lastName?: string | null
+}
+
+/** Vietnamese writes family name first ("Nguyễn An"); English writes given name first ("An Nguyen"). */
+export const getOrderedNameParts = (name: PersonName | null | undefined, locale: Locale): string[] => {
+  const first = name?.firstName?.trim() ?? ''
+  const last = name?.lastName?.trim() ?? ''
+  return (locale === 'vi' ? [last, first] : [first, last]).filter(Boolean)
+}
+
+export const formatFullName = (name: PersonName | null | undefined, locale: Locale): string =>
+  getOrderedNameParts(name, locale).join(' ')
+
+export const getNameInitials = (name: PersonName | null | undefined, locale: Locale): string =>
+  getOrderedNameParts(name, locale)
+    .map((part) => part.charAt(0))
     .join('')
+    .toUpperCase()
 
 const defaultPaginationResponse: BasePaginationResponse<unknown> = {
   value: {
