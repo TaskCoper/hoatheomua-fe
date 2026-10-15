@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { getAuthRedirectTarget, toBrowserPath } from '../auth-redirect'
 import authService from '../services'
+import { phoneOtpError } from '../otp-error'
 import { createSignUpSchema, type SignUpFormValues } from '../validations'
 
 const defaultValues: SignUpFormValues = {
@@ -41,9 +42,7 @@ export const useSignUp = () => {
       window.location.assign(toBrowserPath(getAuthRedirectTarget(searchParams.get('from')), locale))
     },
     onError: (error) => {
-      toast.error(t('error.somethingWentWrong'), {
-        description: error.response?.data?.detail
-      })
+      toast.error(phoneOtpError(error, t))
     }
   })
 

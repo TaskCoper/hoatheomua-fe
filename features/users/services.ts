@@ -1,6 +1,13 @@
+import { z } from 'zod'
 import { apiTaskcoper, BaseResponse } from '@/lib/axios'
 import { Me, UpdateMePayload, UserProfile } from './types'
 import { SignInFormValues, SignUpFormValues } from './validations'
+
+export const otpChallengeSchema = z.object({
+  challengeId: z.string().uuid(), expiresInSeconds: z.number().int().positive(), resendAfterSeconds: z.number().int().positive()
+})
+export type OtpChallenge = z.infer<typeof otpChallengeSchema>
+export type PhoneProof = { challengeId: string; code: string }
 
 class UserService {
   private readonly baseUrl = 'users'
@@ -32,12 +39,21 @@ class UserService {
     return data.value
   }
 
-  signUp = async ({ body }: { body: SignUpFormValues }) => {
+  signUp = async ({ body }: { body: SignUpFormValues & PhoneProof }) => {
     const { confirmPassword, ...payload } = body
     void confirmPassword
     const { data } = await apiTaskcoper.post<BaseResponse<unknown>>(`v2/${this.baseUrl}/register`, payload)
 
     return data
+  }
+
+  requestPhoneOtp = async (body: { phoneNumber: string; purpose: 'register' | 'reset_password' }) => {
+    const { data } = await apiTaskcoper.post<BaseResponse<unknown>>(`v2/${this.baseUrl}/request_phone_otp`, body)
+    return otpChallengeSchema.parse(data.value)
+  }
+
+  resetPhonePassword = async (body: PhoneProof & { phoneNumber: string; newPassword: string }) => {
+    await apiTaskcoper.post(`v2/${this.baseUrl}/reset_phone_password`, body)
   }
 
   signIn = async ({ body }: { body: SignInFormValues }) => {
