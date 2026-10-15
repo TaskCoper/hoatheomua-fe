@@ -11,7 +11,7 @@ import type { Me } from '@/features/users/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, useRouter } from '@/lib/i18n/navigation'
 import type { I18nKey } from '@/lib/i18n/types'
-import { cn, getAvatarFallback, isModifiedClick } from '@/shared/utils'
+import { cn, formatFullName, getNameInitials, isModifiedClick } from '@/shared/utils'
 import {
   AiMagicIcon,
   ArrowRight01Icon,
@@ -67,7 +67,7 @@ export default function MobileNavSheet({
   isActive,
   languageSwitcher
 }: MobileNavSheetProps) {
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
   const { signOut, isSigningOut } = useSignOut()
   const router = useRouter()
   const signInHref = useAuthHref('/sign-in')
@@ -108,7 +108,7 @@ export default function MobileNavSheet({
     { href: addressHref, labelKey: 'account.nav.addresses', icon: Location01Icon }
   ]
 
-  const fullName = me ? `${me.lastName ?? ''} ${me.firstName ?? ''}`.trim() : ''
+  const fullName = formatFullName(me, locale)
   const identityHref = canUseStorefront ? accountHref : '/'
 
   return (
@@ -153,7 +153,7 @@ export default function MobileNavSheet({
               <Avatar className='size-11 shrink-0 rounded-full ring-2 ring-primary ring-offset-1'>
                 <AvatarImage src={me.avatar || undefined} alt='' />
                 <AvatarFallback className='rounded-full text-sm'>
-                  {getAvatarFallback(`${me.firstName} ${me.lastName}`)}
+                  {getNameInitials(me, locale)}
                 </AvatarFallback>
               </Avatar>
               <div className='min-w-0 flex-1'>

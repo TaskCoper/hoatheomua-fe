@@ -5,7 +5,7 @@ import { ARE_CARDS_ENABLED } from '@/features/orders/cards/card-feature'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link } from '@/lib/i18n/navigation'
 import { SparkleDivider } from '@/shared/components/sparkle-dividier'
-import { cn } from '@/shared/utils'
+import { cn, formatFullName } from '@/shared/utils'
 import {
   AiMagicIcon,
   CustomerSupportIcon,
@@ -38,7 +38,7 @@ interface AccountShellProps {
 }
 
 export default function AccountShell({ active, onSelectSection, slug: slugFromRoute, children }: AccountShellProps) {
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
   const { me, isGettingMe } = useGetMe()
   const { signOut, isSigningOut } = useSignOut()
 
@@ -75,7 +75,7 @@ export default function AccountShell({ active, onSelectSection, slug: slugFromRo
     { key: 'support', label: t('account.nav.support'), icon: CustomerSupportIcon, href: '/contact' }
   ]
 
-  const fullName = me ? `${me.lastName} ${me.firstName}`.trim() : ''
+  const fullName = formatFullName(me, locale)
   const contactLine = me?.email?.trim() || me?.phoneNumber?.trim() || ''
 
   return (

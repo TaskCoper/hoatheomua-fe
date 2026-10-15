@@ -44,7 +44,8 @@ interface PersonalInfoFormInnerProps {
 }
 
 export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInfoFormInnerProps) {
-  const { t } = useTranslation()
+  const { t, locale } = useTranslation()
+  const nameFields = locale === 'vi' ? (['lastName', 'firstName'] as const) : (['firstName', 'lastName'] as const)
   const { me, isGettingMe } = useGetMe()
   const isPhone = me?.registrationMethod === 'Phone'
   const schema = useMemo(() => createUpdateMeSchema(t, isPhone), [t, isPhone])
@@ -138,32 +139,22 @@ export function PersonalInfoFormInner({ slug, onSuccess, onCancel }: PersonalInf
     <form className='space-y-4' onSubmit={onSubmit}>
       {isPhone && <p className='text-sm text-muted-foreground'>{t('auth.phone.profileNote')}</p>}
       <div className='grid gap-3 md:grid-cols-2'>
-        <Controller
-          name='firstName'
-          control={methods.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-              <FieldLabel htmlFor={field.name}>{t('profile.firstName')}</FieldLabel>
-              <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
-              <div className='min-h-4'>
-                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-              </div>
-            </Field>
-          )}
-        />
-        <Controller
-          name='lastName'
-          control={methods.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className='gap-0.5'>
-              <FieldLabel htmlFor={field.name}>{t('profile.lastName')}</FieldLabel>
-              <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
-              <div className='min-h-4'>
-                {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
-              </div>
-            </Field>
-          )}
-        />
+        {nameFields.map((name) => (
+          <Controller
+            key={name}
+            name={name}
+            control={methods.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid} className='gap-0.5'>
+                <FieldLabel htmlFor={field.name}>{t(`profile.${name}`)}</FieldLabel>
+                <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
+                <div className='min-h-4'>
+                  {fieldState.invalid && <FieldError className='text-xs' errors={[fieldState.error]} />}
+                </div>
+              </Field>
+            )}
+          />
+        ))}
       </div>
 
       <Controller

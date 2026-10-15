@@ -24,7 +24,7 @@ import { Me } from '@/features/users/types'
 import { useTranslation } from '@/lib/i18n/dictionary-provider'
 import { Link, usePathname, useRouter } from '@/lib/i18n/navigation'
 import { routing } from '@/lib/i18n/routing'
-import { getAvatarFallback } from '@/shared/utils'
+import { formatFullName, getNameInitials } from '@/shared/utils'
 import { GlobalIcon, Logout03Icon, UserCircle02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -65,7 +65,7 @@ export default function NavUser({ user }: NavUserProps) {
         <Avatar className='size-7 ring-2 ring-primary ring-offset-1 rounded-full cursor-pointer mr-0.5'>
           <AvatarImage src={user?.avatar || undefined} alt={user?.email ?? user?.phoneNumber ?? ''} />
           <AvatarFallback className='rounded-full text-xs'>
-            {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
+            {getNameInitials(user, locale)}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -80,12 +80,12 @@ export default function NavUser({ user }: NavUserProps) {
             <Avatar className='size-6 border ring-primary ring-offset-2 ring-2 rounded-full'>
               <AvatarImage src={user?.avatar || undefined} alt={user?.email ?? user?.phoneNumber ?? ''} />
               <AvatarFallback className='rounded-lg text-xs'>
-                {getAvatarFallback(`${user?.firstName} ${user?.lastName}`)}
+                {getNameInitials(user, locale)}
               </AvatarFallback>
             </Avatar>
             <div className='grid flex-1 text-left text-sm leading-tight'>
               <span className='truncate font-medium'>
-                {user?.firstName} {user?.lastName}
+                {formatFullName(user, locale)}
               </span>
               <span className='truncate text-xs'>{user?.email ?? user?.phoneNumber}</span>
             </div>
