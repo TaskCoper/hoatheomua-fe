@@ -3,10 +3,12 @@
 import { Button } from '@/components/ui/button'
 import { availableOf, useProductVariant } from '@/features/products/components/product-variant-context'
 import { useVerifySellableQuantity } from '@/features/products/hooks/use-verify-sellable-quantity'
+import { addToCart, startBuyNow, type PurchaseDeps } from '@/features/products/purchase'
 import type { ProductDetail } from '@/features/products/types'
 import { buildAuthHref } from '@/features/users/auth-redirect'
 import { useAccountPhoneNumber } from '@/features/users/hooks/use-account-phone-number'
 import { useGetMe } from '@/features/users/hooks/use-get-me'
+import { savePendingAction, type PendingActionType } from '@/features/users/pending-action'
 import { useFeatureUnavailableToast } from '@/hooks/use-feature-unavailable-toast'
 import { useHasMounted } from '@/hooks/use-has-mounted'
 import { formatVnd } from '@/lib/currency'
@@ -16,7 +18,7 @@ import { FeatureUnavailableNotice } from '@/shared/components/feature-unavailabl
 import StickyActionBar from '@/shared/components/sticky-action-bar'
 import { isFeatureEnabled } from '@/shared/feature-flags'
 import { cn } from '@/shared/utils'
-import { buildLineId, MAX_QUANTITY, useCartStore, type CartItem } from '@/stores/cart.store'
+import { buildLineId, MAX_QUANTITY, useCartStore } from '@/stores/cart.store'
 import { useCheckoutIntentStore } from '@/stores/checkout-intent.store'
 import { FlashIcon, MinusSignIcon, PlusSignIcon, ShoppingBasket02Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
@@ -91,10 +93,28 @@ export default function ProductPurchaseBox() {
   const decrement = () => setQuantity(Math.max(1, effectiveQuantity - 1))
   const increment = () => setQuantity(Math.min(stepperCap, effectiveQuantity + 1))
 
-  const guardPurchase = () => {
+  const purchaseRequest = { productId, productName, quantity: effectiveQuantity }
+  const purchaseDeps: PurchaseDeps = {
+    t,
+    toast,
+    verifySellableQuantity,
+    getInCartQuantity: () => inCartQuantity,
+    addItem,
+    setCheckoutIntent,
+    navigate: (href) => router.push(href)
+  }
+
+  const guardPurchase = (action: PendingActionType) => {
     if (isGettingMe) return false
 
     if (!isAuthenticated) {
+      // Leave the intent behind so it is picked up again once the visitor is back signed in.
+      savePendingAction({
+        type: action,
+        payload: { productId: purchaseRequest.productId, quantity: purchaseRequest.quantity },
+        path: pathname
+      })
+
       const queryString = typeof window === 'undefined' ? '' : window.location.search
       router.push(buildAuthHref('/sign-in', `${pathname}${queryString}`))
       return false
@@ -109,38 +129,10 @@ export default function ProductPurchaseBox() {
   }
 
   const handleAddToCart = async () => {
-    if (!guardPurchase()) return
+    if (!guardPurchase('cart.add')) return
 
-    // What already sits in the cart counts against stock too - `addItem` merges
-    // this line into it rather than replacing it.
-    const { ok } = await verifySellableQuantity([
-      { productId, productName, quantity: inCartQuantity + effectiveQuantity }
-    ])
-    if (!ok) return
-
-    addItem({
-      productId,
-      variantId: null,
-      quantity: effectiveQuantity,
-      selectedOptions
-    })
-
-    toast.success(t('products.detail.purchase.addedToCart'), { description: productName })
+    await addToCart(purchaseRequest, purchaseDeps)
   }
-
-  const buyNowItem = useMemo<CartItem>(() => {
-    const now = new Date().toISOString()
-    return {
-      lineId: targetLineId,
-      productId,
-      variantId: null,
-      quantity: effectiveQuantity,
-      selectedOptions,
-      aiFlower: null,
-      addedAt: now,
-      updatedAt: now
-    }
-  }, [targetLineId, productId, effectiveQuantity, selectedOptions])
 
   const handleBuyNow = async () => {
     if (!canBuyNow) {
@@ -148,18 +140,9 @@ export default function ProductPurchaseBox() {
       return
     }
 
-    if (!guardPurchase()) return
-    if (!hasPhoneNumber) {
-      toast.error(t('orders.checkout.contactMissing'))
-      return
-    }
+    if (!guardPurchase('cart.buyNow')) return
 
-    // Buy now checks out on its own, so only this line's amount is at stake.
-    const { ok } = await verifySellableQuantity([{ productId, productName, quantity: effectiveQuantity }])
-    if (!ok) return
-
-    setCheckoutIntent([buyNowItem], 'buy-now')
-    router.push('/checkout')
+    await startBuyNow(purchaseRequest, { ...purchaseDeps, hasPhoneNumber })
   }
 
   return (

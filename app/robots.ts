@@ -10,13 +10,9 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           '/api/',
           '/sign-in',
-          '/sign-up',
-          '/forgot-password',
           '/cart',
           '/verification',
           '/en/sign-in',
-          '/en/sign-up',
-          '/en/forgot-password',
           '/en/cart',
           '/en/verification'
         ]

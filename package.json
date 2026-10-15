@@ -23,8 +23,9 @@
     "i18n:dupes": "node scripts/i18n-check.mjs --dupes",
     "i18n:verify": "pnpm run i18n:lint && pnpm run i18n:check",
     "verify:phone-auth": "node scripts/verify-phone-auth.mjs",
+    "verify:pending-action": "node scripts/verify-pending-action.mjs",
     "verify:image-viewport": "node scripts/verify-image-viewport.mjs",
-    "check": "pnpm run lint && pnpm run i18n:verify && pnpm run typecheck && pnpm run verify:image-viewport && pnpm run verify:phone-auth"
+    "check": "pnpm run lint && pnpm run i18n:verify && pnpm run typecheck && pnpm run verify:image-viewport && pnpm run verify:phone-auth && pnpm run verify:pending-action"
   },
   "browserslist": [
     "chrome >= 87",

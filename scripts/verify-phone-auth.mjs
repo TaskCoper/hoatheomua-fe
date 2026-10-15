@@ -141,7 +141,7 @@ check('invalid legacy phone format is rejected', () =>
 )
 const proxy = load('proxy.ts').default
 const { NextRequest } = nativeRequire('next/server')
-for (const pathname of ['/sign-in', '/sign-up', '/en/sign-in', '/en/sign-up']) {
+for (const pathname of ['/sign-in', '/en/sign-in']) {
   check(`stale cookies do not bounce ${pathname}`, () => {
     const response = proxy(
       new NextRequest(`http://localhost${pathname}`, {

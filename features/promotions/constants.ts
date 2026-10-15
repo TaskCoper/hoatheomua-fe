@@ -18,7 +18,7 @@ export const DISMISS_STORAGE_KEY = 'htm:promo-popup:dismissed'
 
 export const DEFAULT_POPUP_FREQUENCY = 'once-per-session'
 
-export const AUTH_MODAL_PATHS: readonly string[] = ['/sign-in', '/sign-up', '/forgot-password']
+export const AUTH_MODAL_PATHS: readonly string[] = ['/sign-in']
 
 export const POLICY_PAGE_PATHS: readonly string[] = ['/delivery', '/ordering', '/privacy', '/returns', '/terms']
 

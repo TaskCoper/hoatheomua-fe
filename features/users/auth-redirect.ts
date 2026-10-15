@@ -1,6 +1,6 @@
 import { routing } from '@/lib/i18n/routing'
 
-export type AuthPath = '/sign-in' | '/sign-up' | '/forgot-password'
+export type AuthPath = '/sign-in'
 
 export const toBrowserPath = (path: string, locale: string) => {
   if (locale === routing.defaultLocale) {
