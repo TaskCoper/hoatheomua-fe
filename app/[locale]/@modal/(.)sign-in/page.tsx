@@ -18,7 +18,7 @@ export default function SignInModalPage() {
   const { isAuthenticated } = useGetMe()
   const [isUserClosing, setIsUserClosing] = useState(false)
 
-  const isOnSignInRoute = ['/sign-in', '/sign-up', '/forgot-password'].some((route) => pathname.startsWith(route))
+  const isOnSignInRoute = pathname.startsWith('/sign-in')
 
   const isOpen = isOnSignInRoute && !isUserClosing && !isAuthenticated
 

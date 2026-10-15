@@ -1,1 +1,1 @@
-export { default } from '../(.)sign-in/page'
+export { default } from '../../(guest)/sign-up/page'

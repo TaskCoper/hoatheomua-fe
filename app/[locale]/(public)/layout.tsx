@@ -4,6 +4,7 @@ import Footer from '@/features/layout/components/footer'
 import PublicHeader from '@/features/layout/components/public-header'
 import PromotionalPopupClient from '@/features/promotions/components/promotional-popup-client'
 import { getPublicConfigsGroup } from '@/features/public-configs/queries.server'
+import PendingActionReplayer from '@/features/users/components/pending-action-replayer'
 import RoleGuard from '@/guards/role-guard'
 import { ROLES } from '@/guards/utils'
 import { getQueryClient } from '@/lib/react-query-client'
@@ -37,6 +38,8 @@ export default async function PublicLayout({ children }: { children: React.React
           <FloatingContactClient musicSrc={homeMusicSrc} />
 
           <PromotionalPopupClient />
+
+          <PendingActionReplayer />
         </div>
       </HydrationBoundary>
     </RoleGuard>

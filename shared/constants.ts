@@ -13,6 +13,7 @@ export const SESSION_HINT_COOKIE = 'hasSession'
 export const PUBLIC_ROUTE_PATHS = new Set([
   '/',
   '/sign-in',
+  // Legacy URLs must remain public so their server pages can redirect to /sign-in.
   '/sign-up',
   '/forgot-password',
   '/verify-sent',
@@ -75,9 +76,9 @@ export const isPublicRoutePath = (pathname: string) => {
   return Array.from(PUBLIC_ROUTE_PATHS).some((routePath) => routePathMatches(routePath, normalizedPathname))
 }
 
-export const GUEST_ONLY_ROUTES = new Set<string>(['/sign-in', '/sign-up'])
+export const GUEST_ONLY_ROUTES = new Set<string>(['/sign-in'])
 
-const GUEST_AUTH_PATH_PREFIXES = ['/sign-in', '/sign-up', '/forgot-password', '/verify'] as const
+const GUEST_AUTH_PATH_PREFIXES = ['/sign-in', '/verify'] as const
 
 export const isGuestAuthPath = (pathname: string) => {
   return GUEST_AUTH_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
