@@ -25,12 +25,13 @@
       "resetSuccess": "Password reset. Sign in with your new password.",
       "continueToPassword": "Continue",
       "backToOtp": "Back to code",
-      "passwordStep": "Step 2: Set your new password"
+      "passwordStep": "Step 2: Set your new password",
+      "autoCreateAccount": "A new phone number gets an account after the code is verified."
     },
     "signIn": {
       "label": "Sign in",
       "title": "Sign in",
-      "description": "Enter your phone number and password to continue.",
+      "description": "Enter your phone number to receive a sign-in code on Zalo.",
       "password": "Password",
       "validation": {
         "password": {

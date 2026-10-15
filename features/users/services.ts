@@ -1,13 +1,14 @@
 import { z } from 'zod'
 import { apiTaskcoper, BaseResponse } from '@/lib/axios'
 import { Me, UpdateMePayload, UserProfile } from './types'
-import { SignInFormValues, SignUpFormValues } from './validations'
+import { SignInFormValues } from './validations'
 
 export const otpChallengeSchema = z.object({
-  challengeId: z.string().uuid(), expiresInSeconds: z.number().int().positive(), resendAfterSeconds: z.number().int().positive()
+  challengeId: z.string().uuid(),
+  expiresInSeconds: z.number().int().positive(),
+  resendAfterSeconds: z.number().int().positive()
 })
 export type OtpChallenge = z.infer<typeof otpChallengeSchema>
-export type PhoneProof = { challengeId: string; code: string }
 
 class UserService {
   private readonly baseUrl = 'users'
@@ -29,31 +30,26 @@ class UserService {
   updateMe = async (body: UpdateMePayload) => {
     const me = await this.getMe()
     const isPhone = me.registrationMethod === 'Phone'
-    const payload = isPhone ? {
-      firstName: body.firstName, lastName: body.lastName, avatar: body.avatar,
-      coverImageUrl: body.coverImageUrl, address: body.address, city: body.city,
-      state: body.state, timeZone: body.timeZone
-    } : body
+    const payload = isPhone
+      ? {
+          firstName: body.firstName,
+          lastName: body.lastName,
+          avatar: body.avatar,
+          coverImageUrl: body.coverImageUrl,
+          address: body.address,
+          city: body.city,
+          state: body.state,
+          timeZone: body.timeZone
+        }
+      : body
     const { data } = await apiTaskcoper.put<BaseResponse<Me>>(`${isPhone ? 'v2' : 'v1'}/${this.baseUrl}/me`, payload)
 
     return data.value
   }
 
-  signUp = async ({ body }: { body: SignUpFormValues & PhoneProof }) => {
-    const { confirmPassword, ...payload } = body
-    void confirmPassword
-    const { data } = await apiTaskcoper.post<BaseResponse<unknown>>(`v2/${this.baseUrl}/register`, payload)
-
-    return data
-  }
-
-  requestPhoneOtp = async (body: { phoneNumber: string; purpose: 'register' | 'reset_password' }) => {
+  requestPhoneOtp = async (body: { phoneNumber: string; purpose: 'login' }) => {
     const { data } = await apiTaskcoper.post<BaseResponse<unknown>>(`v2/${this.baseUrl}/request_phone_otp`, body)
     return otpChallengeSchema.parse(data.value)
-  }
-
-  resetPhonePassword = async (body: PhoneProof & { phoneNumber: string; newPassword: string }) => {
-    await apiTaskcoper.post(`v2/${this.baseUrl}/reset_phone_password`, body)
   }
 
   signIn = async ({ body }: { body: SignInFormValues }) => {

@@ -54,7 +54,9 @@ export default function AccountPage({ slug }: { slug: string }) {
 
   const paramSection = searchParams.get('section') ?? undefined
   const requestedSection = isAccountSection(paramSection) ? paramSection : undefined
-  const isRequestedSectionAvailable = requestedSection !== 'cards' || ARE_CARDS_ENABLED
+  const isRequestedSectionAvailable =
+    (requestedSection !== 'cards' || ARE_CARDS_ENABLED) &&
+    (requestedSection !== 'password' || (!!me && me.registrationMethod !== 'Phone'))
   const activeSection: AccountSection = isOwnAccount
     ? isRequestedSectionAvailable
       ? (requestedSection ?? 'orders')

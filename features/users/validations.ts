@@ -6,66 +6,12 @@ import { normalizePhoneNumber } from './phone-number'
 export const createSignInSchema = (t: TranslationFunction) =>
   z
     .object({
-      phoneNumber: z.string().trim().refine(value => normalizePhoneNumber(value) !== null, { error: t('auth.phone.invalidPhone') }),
-      password: z
-        .string()
-        .min(6, {
-          error: t('common.validation.minLength', {
-            field: t('auth.signIn.password'),
-            min: 6
-          })
-        })
-        .max(128, {
-          error: t('common.validation.maxLength', {
-            field: t('auth.signIn.password'),
-            max: 128
-          })
-        })
-    })
-    .strict()
-
-export const createSignUpSchema = (t: TranslationFunction) =>
-  z
-    .object({
-      firstName: z
+      phoneNumber: z
         .string()
         .trim()
-        .min(1, {
-          error: t('common.validation.minLength', {
-            field: t('auth.signUp.firstName'),
-            min: 1
-          })
-        })
-        .max(50, {
-          error: t('common.validation.maxLength', {
-            field: t('auth.signUp.firstName'),
-            max: 50
-          })
-        }),
-      lastName: z
-        .string()
-        .trim()
-        .min(1, {
-          error: t('common.validation.minLength', {
-            field: t('auth.signUp.lastName'),
-            min: 1
-          })
-        })
-        .max(50, {
-          error: t('common.validation.maxLength', {
-            field: t('auth.signUp.lastName'),
-            max: 50
-          })
-        }),
-      phoneNumber: z.string().trim().refine(value => normalizePhoneNumber(value) !== null, { error: t('auth.phone.invalidPhone') }),
-      password: createPasswordSchema(t, t('auth.signUp.password')),
-      confirmPassword: z.string().min(1, {
-        error: t('common.validation.required', { field: t('auth.signUp.confirmPassword') })
-      })
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      path: ['confirmPassword'],
-      error: t('common.validation.passwordMismatch')
+        .refine((value) => normalizePhoneNumber(value) !== null, { error: t('auth.phone.invalidPhone') }),
+      challengeId: z.string().uuid(),
+      code: z.string().regex(/^[0-9]{6}$/, { error: t('auth.phone.otpInvalid') })
     })
     .strict()
 
@@ -151,6 +97,5 @@ export const createChangePasswordSchema = (t: TranslationFunction) =>
     })
     .strict()
 export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>
-export type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>
 export type UpdateMeFormValues = z.infer<ReturnType<typeof createUpdateMeSchema>>
 export type ChangePasswordFormValues = z.infer<ReturnType<typeof createChangePasswordSchema>>

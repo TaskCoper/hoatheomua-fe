@@ -20,7 +20,11 @@ const requests = []
 const api = {
   post: async (url, body) => {
     requests.push({ url, body })
-    return { data: { value: null } }
+    return {
+      data: {
+        value: { challengeId: '11111111-1111-4111-8111-111111111111', expiresInSeconds: 300, resendAfterSeconds: 60 }
+      }
+    }
   }
 }
 function load(file) {
@@ -44,9 +48,7 @@ function load(file) {
   )
   return loadedModule.exports
 }
-const { createSignInSchema, createSignUpSchema, createChangePasswordSchema, createUpdateMeSchema } = load(
-  'features/users/validations.ts'
-)
+const { createSignInSchema, createChangePasswordSchema, createUpdateMeSchema } = load('features/users/validations.ts')
 const t = (key) => key
 let count = 0
 function check(name, run) {
@@ -55,28 +57,31 @@ function check(name, run) {
   console.log(`PASS ${name}`)
 }
 const signIn = createSignInSchema(t)
+const proof = { challengeId: '11111111-1111-4111-8111-111111111111', code: '123456' }
 check('email cannot be used as a login number', () =>
-  assert.equal(signIn.safeParse({ phoneNumber: 'old@example.com', password: 'Demo123!' }).success, false)
+  assert.equal(signIn.safeParse({ phoneNumber: 'old@example.com', ...proof }).success, false)
 )
 for (const phoneNumber of ['0901234567', '0812345678', '+84 901234567', '84901234567']) {
   check(`phone notation ${phoneNumber} accepted`, () =>
-    assert.equal(signIn.safeParse({ phoneNumber, password: 'Demo123!' }).success, true)
+    assert.equal(signIn.safeParse({ phoneNumber, ...proof }).success, true)
   )
 }
-check('password spaces are preserved', () =>
-  assert.equal(signIn.parse({ phoneNumber: '0901234567', password: ' Demo123! ' }).password, ' Demo123! ')
+check('legacy password-only login is rejected', () =>
+  assert.equal(signIn.safeParse({ phoneNumber: '0901234567', password: 'Demo123!' }).success, false)
 )
-check('registration requires matching passwords', () =>
-  assert.equal(
-    createSignUpSchema(t).safeParse({
-      firstName: 'Test',
-      lastName: 'Phone',
-      phoneNumber: '0901234567',
-      password: 'Demo123!',
-      confirmPassword: 'Other123!'
-    }).success,
-    false
+for (const code of ['', '12345', '1234567', 'abcdef']) {
+  check(`invalid OTP ${code} rejected`, () =>
+    assert.equal(signIn.safeParse({ phoneNumber: '0901234567', ...proof, code }).success, false)
   )
+}
+check('OTP leading zero preserved', () =>
+  assert.equal(signIn.parse({ phoneNumber: '0901234567', ...proof, code: '012345' }).code, '012345')
+)
+check('challenge ID required', () =>
+  assert.equal(signIn.safeParse({ phoneNumber: '0901234567', code: '123456' }).success, false)
+)
+check('password field rejected even with valid OTP', () =>
+  assert.equal(signIn.safeParse({ phoneNumber: '0901234567', ...proof, password: 'Demo123!' }).success, false)
 )
 check('password change rejects reuse', () =>
   assert.equal(
@@ -115,42 +120,24 @@ check('profile name limit matches API', () =>
   assert.equal(createUpdateMeSchema(t, true).safeParse({ ...profile, firstName: 'a'.repeat(51) }).success, false)
 )
 const service = load('features/users/services.ts').default
-await service.signIn({ body: { phoneNumber: '0901234567', password: 'Demo123!' } })
+await service.signIn({ body: { phoneNumber: '0901234567', ...proof } })
 check('login uses v2 phone payload', () =>
-  assert.deepEqual(requests.pop(), { url: 'v2/users/login', body: { phoneNumber: '0901234567', password: 'Demo123!' } })
+  assert.deepEqual(requests.pop(), { url: 'v2/users/login', body: { phoneNumber: '0901234567', ...proof } })
 )
-await service.signUp({
-  body: {
-    firstName: 'Test',
-    lastName: 'Phone',
-    phoneNumber: '0901234567',
-    password: 'Demo123!',
-    confirmPassword: 'Demo123!',
-    challengeId: '11111111-1111-4111-8111-111111111111',
-    code: '123456'
-  }
+const challenge = await service.requestPhoneOtp({ phoneNumber: '0901234567', purpose: 'login' })
+check('login OTP request validates response and purpose', () => {
+  assert.equal(challenge.challengeId, proof.challengeId)
+  assert.deepEqual(requests.pop(), {
+    url: 'v2/users/request_phone_otp',
+    body: { phoneNumber: '0901234567', purpose: 'login' }
+  })
 })
-check('registration excludes password confirmation', () => {
-  const request = requests.pop()
-  assert.equal(request.url, 'v2/users/register')
-  assert.equal('confirmPassword' in request.body, false)
-  assert.equal(request.body.code, '123456')
-  assert.equal(request.body.challengeId, '11111111-1111-4111-8111-111111111111')
-})
-await service.resetPhonePassword({
-  phoneNumber: '0901234567',
-  challengeId: '11111111-1111-4111-8111-111111111111',
-  code: '123456',
-  newPassword: 'New123!'
-})
-check('phone recovery uses v2 code-bound reset without email', () => {
-  const request = requests.pop()
-  assert.equal(request.url, 'v2/users/reset_phone_password')
-  assert.equal(request.body.code, '123456')
-  assert.equal('email' in request.body, false)
+check('removed phone signup and reset clients stay unavailable', () => {
+  assert.equal(service.signUp, undefined)
+  assert.equal(service.resetPhonePassword, undefined)
 })
 check('invalid legacy phone format is rejected', () =>
-  assert.equal(signIn.safeParse({ phoneNumber: '01234567890', password: 'Demo123!' }).success, false)
+  assert.equal(signIn.safeParse({ phoneNumber: '01234567890', ...proof }).success, false)
 )
 const proxy = load('proxy.ts').default
 const { NextRequest } = nativeRequire('next/server')
