@@ -58,7 +58,7 @@ const signIn = createSignInSchema(t)
 check('email cannot be used as a login number', () =>
   assert.equal(signIn.safeParse({ phoneNumber: 'old@example.com', password: 'Demo123!' }).success, false)
 )
-for (const phoneNumber of ['0901234567', '01234567890', '+84 901234567', '84901234567']) {
+for (const phoneNumber of ['0901234567', '0812345678', '+84 901234567', '84901234567']) {
   check(`phone notation ${phoneNumber} accepted`, () =>
     assert.equal(signIn.safeParse({ phoneNumber, password: 'Demo123!' }).success, true)
   )
@@ -125,14 +125,33 @@ await service.signUp({
     lastName: 'Phone',
     phoneNumber: '0901234567',
     password: 'Demo123!',
-    confirmPassword: 'Demo123!'
+    confirmPassword: 'Demo123!',
+    challengeId: '11111111-1111-4111-8111-111111111111',
+    code: '123456'
   }
 })
 check('registration excludes password confirmation', () => {
   const request = requests.pop()
   assert.equal(request.url, 'v2/users/register')
   assert.equal('confirmPassword' in request.body, false)
+  assert.equal(request.body.code, '123456')
+  assert.equal(request.body.challengeId, '11111111-1111-4111-8111-111111111111')
 })
+await service.resetPhonePassword({
+  phoneNumber: '0901234567',
+  challengeId: '11111111-1111-4111-8111-111111111111',
+  code: '123456',
+  newPassword: 'New123!'
+})
+check('phone recovery uses v2 code-bound reset without email', () => {
+  const request = requests.pop()
+  assert.equal(request.url, 'v2/users/reset_phone_password')
+  assert.equal(request.body.code, '123456')
+  assert.equal('email' in request.body, false)
+})
+check('invalid legacy phone format is rejected', () =>
+  assert.equal(signIn.safeParse({ phoneNumber: '01234567890', password: 'Demo123!' }).success, false)
+)
 const proxy = load('proxy.ts').default
 const { NextRequest } = nativeRequire('next/server')
 for (const pathname of ['/sign-in', '/sign-up', '/en/sign-in', '/en/sign-up']) {
