@@ -42,7 +42,6 @@ export default function NavUser({ user }: NavUserProps) {
   const { signOut, isSigningOut } = useSignOut()
   const accountHref = useAccountHref('info')
   const signInHref = useAuthHref('/sign-in')
-  const signUpHref = useAuthHref('/sign-up')
 
   const handleLanguageChange = (value: string) => {
     const nextLocale = value as (typeof routing.locales)[number]
@@ -55,10 +54,6 @@ export default function NavUser({ user }: NavUserProps) {
       <div className='flex items-center gap-2'>
         <Button asChild variant='ghost' size='sm'>
           <Link href={signInHref}>{t('auth.signIn.label')}</Link>
-        </Button>
-
-        <Button asChild size='sm'>
-          <Link href={signUpHref}>{t('auth.signUp.label')}</Link>
         </Button>
       </div>
     )

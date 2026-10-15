@@ -59,12 +59,16 @@ export default function AccountShell({ active, onSelectSection, slug: slugFromRo
       : []),
     { key: 'info', label: t('account.nav.profile'), icon: User03Icon, href: buildAccountHref(slug, 'info') },
     { key: 'address', label: t('account.nav.addresses'), icon: Home01Icon, href: buildAccountHref(slug, 'address') },
-    {
-      key: 'password',
-      label: t('account.nav.security'),
-      icon: LockPasswordIcon,
-      href: buildAccountHref(slug, 'password')
-    }
+    ...(me && me.registrationMethod !== 'Phone'
+      ? [
+          {
+            key: 'password' as const,
+            label: t('account.nav.security'),
+            icon: LockPasswordIcon,
+            href: buildAccountHref(slug, 'password')
+          }
+        ]
+      : [])
   ]
 
   const secondaryItems: AccountNavItem[] = [

@@ -71,7 +71,6 @@ export default function MobileNavSheet({
   const { signOut, isSigningOut } = useSignOut()
   const router = useRouter()
   const signInHref = useAuthHref('/sign-in')
-  const signUpHref = useAuthHref('/sign-up')
 
   const [open, setOpen] = useState(false)
   const exitTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -172,11 +171,6 @@ export default function MobileNavSheet({
                   <Link href={signInHref} onClick={navigate(signInHref)}>
                     {t('auth.signIn.label')}
                     <HugeiconsIcon icon={LoginCircle01Icon} />
-                  </Link>
-                </Button>
-                <Button asChild size='lg' variant='outline' className='w-full'>
-                  <Link href={signUpHref} onClick={navigate(signUpHref)}>
-                    {t('auth.signUp.label')}
                   </Link>
                 </Button>
               </div>
