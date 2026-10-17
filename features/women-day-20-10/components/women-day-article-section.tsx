@@ -60,7 +60,7 @@ export default function WomenDayArticleSection() {
         className='mx-auto max-w-6xl space-y-10'
       >
         <motion.div variants={fadeUp} className='mx-auto max-w-full text-center'>
-          <h2 className='mt-2 whitespace-nowrap font-title text-2xl leading-tight font-bold text-primary sm:text-3xl lg:text-4xl'>
+          <h2 className='mt-2 font-title text-2xl leading-tight font-bold text-primary sm:text-3xl lg:text-4xl xl:whitespace-nowrap'>
             {t('womenDay.article.title')}
           </h2>
           <p className='mt-4 text-sm leading-relaxed text-foreground sm:text-base'>{t('womenDay.article.intro')}</p>
