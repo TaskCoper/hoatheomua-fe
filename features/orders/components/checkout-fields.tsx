@@ -175,13 +175,18 @@ export default function CheckoutFields({
     const isToday = orderDate.toDateString() === now.toDateString()
     const earliestStartMinutes = getEarliestSlotStartMinutes(deliverySlots, now.getHours() * 60 + now.getMinutes())
 
-    return deliverySlots.filter((slot) => {
-      if (slotEndMinutes(slot.label) === null) return false
-      if (!isToday) return true
+    // Listed earliest first, whatever order the API returns them in.
+    const sortMinutes = (slot: DeliverySlot) => slotStartMinutes(slot.label) ?? slotEndMinutes(slot.label) ?? 0
 
-      const startMinutes = slotStartMinutes(slot.label)
-      return startMinutes !== null && startMinutes >= earliestStartMinutes
-    })
+    return deliverySlots
+      .filter((slot) => {
+        if (slotEndMinutes(slot.label) === null) return false
+        if (!isToday) return true
+
+        const startMinutes = slotStartMinutes(slot.label)
+        return startMinutes !== null && startMinutes >= earliestStartMinutes
+      })
+      .sort((a, b) => sortMinutes(a) - sortMinutes(b))
   }, [deliverySlots, orderTimeForm, minOrderDate])
 
   useEffect(() => {
@@ -189,12 +194,8 @@ export default function CheckoutFields({
 
     if (effectiveOrderDate.toDateString() !== new Date().toDateString()) return
 
-    // `tagOptions` already starts after the lead time, so the earliest open window is the pick.
-    const autoSelectedSlot = tagOptions
-      .filter((slot) => isSlotSelectable(slot))
-      .map((slot) => ({ slot, startMinutes: slotStartMinutes(slot.label) }))
-      .filter((item): item is { slot: DeliverySlot; startMinutes: number } => item.startMinutes !== null)
-      .sort((a, b) => a.startMinutes - b.startMinutes)[0]?.slot
+    // `tagOptions` is sorted and already starts after the lead time, so the first open window is the pick.
+    const autoSelectedSlot = tagOptions.find((slot) => isSlotSelectable(slot))
 
     if (autoSelectedSlot) {
       setValue('tagIds', [autoSelectedSlot.tagId], { shouldDirty: false, shouldValidate: true })
