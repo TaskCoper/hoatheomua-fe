@@ -46,6 +46,21 @@ const slotStartMinutes = (label: string) => {
   return Number(match[1]) * 60 + Number(match[2] ?? 0)
 }
 
+// A same-day order needs four hours to prepare, counted from the end of the window running now
+// (or from now itself, between windows) - so 11h, inside "10h - 12h", opens windows from 16h.
+const SLOT_LEAD_MINUTES = 4 * 60
+
+const getEarliestSlotStartMinutes = (slots: DeliverySlot[], minutesNow: number) => {
+  const runningSlotEnd = slots
+    .map((slot) => ({ startMinutes: slotStartMinutes(slot.label), endMinutes: slotEndMinutes(slot.label) }))
+    .find(
+      ({ startMinutes, endMinutes }) =>
+        startMinutes !== null && endMinutes !== null && startMinutes <= minutesNow && minutesNow < endMinutes
+    )?.endMinutes
+
+  return (runningSlotEnd ?? minutesNow) + SLOT_LEAD_MINUTES
+}
+
 const getSlotRemaining = (slot: DeliverySlot) => Math.max(0, slot.limit - Math.max(0, slot.occupied))
 
 const isSlotSelectable = (slot: DeliverySlot) => {
@@ -152,48 +167,35 @@ export default function CheckoutFields({
     isDeliverySlotAvailabilityError
   } = useGetDeliverySlotAvailability(effectiveOrderDate)
 
-  // Only today can have windows that already closed - a later date keeps every
+  // Only today is held back by the preparation lead time - a later date keeps every
   // slot. Availability and limits come from the user-facing availability API.
   const tagOptions = useMemo(() => {
     const now = new Date()
     const orderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
     const isToday = orderDate.toDateString() === now.toDateString()
-    const minutesNow = now.getHours() * 60 + now.getMinutes()
+    const earliestStartMinutes = getEarliestSlotStartMinutes(deliverySlots, now.getHours() * 60 + now.getMinutes())
 
-    return deliverySlots.filter((slot) => {
-      const endMinutes = slotEndMinutes(slot.label)
-      if (endMinutes === null) return false
+    // Listed earliest first, whatever order the API returns them in.
+    const sortMinutes = (slot: DeliverySlot) => slotStartMinutes(slot.label) ?? slotEndMinutes(slot.label) ?? 0
 
-      return !isToday || endMinutes > minutesNow
-    })
+    return deliverySlots
+      .filter((slot) => {
+        if (slotEndMinutes(slot.label) === null) return false
+        if (!isToday) return true
+
+        const startMinutes = slotStartMinutes(slot.label)
+        return startMinutes !== null && startMinutes >= earliestStartMinutes
+      })
+      .sort((a, b) => sortMinutes(a) - sortMinutes(b))
   }, [deliverySlots, orderTimeForm, minOrderDate])
 
   useEffect(() => {
     if (selectedTagId !== undefined || isGettingDeliverySlotAvailability || isDeliverySlotAvailabilityError) return
 
-    const now = new Date()
-    if (effectiveOrderDate.toDateString() !== now.toDateString()) return
+    if (effectiveOrderDate.toDateString() !== new Date().toDateString()) return
 
-    const minutesNow = now.getHours() * 60 + now.getMinutes()
-    const currentSlot = tagOptions.find((slot) => {
-      const startMinutes = slotStartMinutes(slot.label)
-      const endMinutes = slotEndMinutes(slot.label)
-
-      return (
-        startMinutes !== null &&
-        endMinutes !== null &&
-        startMinutes <= minutesNow &&
-        minutesNow < endMinutes &&
-        isSlotSelectable(slot)
-      )
-    })
-    const nextAvailableSlot = tagOptions
-      .filter((slot) => isSlotSelectable(slot))
-      .map((slot) => ({ slot, startMinutes: slotStartMinutes(slot.label) }))
-      .filter((item): item is { slot: DeliverySlot; startMinutes: number } => item.startMinutes !== null)
-      .filter((item) => item.startMinutes > minutesNow)
-      .sort((a, b) => a.startMinutes - b.startMinutes)[0]?.slot
-    const autoSelectedSlot = currentSlot ?? nextAvailableSlot
+    // `tagOptions` is sorted and already starts after the lead time, so the first open window is the pick.
+    const autoSelectedSlot = tagOptions.find((slot) => isSlotSelectable(slot))
 
     if (autoSelectedSlot) {
       setValue('tagIds', [autoSelectedSlot.tagId], { shouldDirty: false, shouldValidate: true })

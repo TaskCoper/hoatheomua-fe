@@ -6,7 +6,7 @@ import ConfirmDialog from '@/shared/components/confirm-dialog'
 import RouteScrollReset from '@/shared/components/route-scroll-reset'
 import ViewportInsets from '@/shared/components/viewport-insets'
 import { IS_UNDER_DEVELOPMENT } from '@/shared/feature-flags'
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import type { Metadata, Viewport } from 'next'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
@@ -57,6 +57,7 @@ const lora = Lora({
 })
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://hoatheomua.com'
+const GTM_ID = 'GTM-M4K6Z6TF'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -123,7 +124,16 @@ export default async function RootLayout({
         IS_UNDER_DEVELOPMENT ? 'has-dev-banner' : ''
       }`}
     >
+      <GoogleTagManager gtmId={GTM_ID} />
       <body className='min-h-full flex flex-col'>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height='0'
+            width='0'
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
         <RouteScrollReset />
         <ViewportInsets />
 
