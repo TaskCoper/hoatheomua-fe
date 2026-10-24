@@ -46,19 +46,34 @@ const slotStartMinutes = (label: string) => {
   return Number(match[1]) * 60 + Number(match[2] ?? 0)
 }
 
-// A same-day order needs four hours to prepare, counted from the end of the window running now
-// (or from now itself, between windows) - so 11h, inside "10h - 12h", opens windows from 16h.
+// A same-day order needs four hours to prepare. The server counts them from the end of a reference
+// window: the one running when the customer arrives, else the last one that ended, else - before the
+// first window of the day - the one about to open. So 9h, inside "8h - 10h", means 14h, and so does
+// 6h, before "8h - 10h" opens. A window is offered while it reaches that cutoff: it contains it,
+// ends on it, or starts after it. Keep this in step with the order API, which refuses the rest.
 const SLOT_LEAD_MINUTES = 4 * 60
 
-const getEarliestSlotStartMinutes = (slots: DeliverySlot[], minutesNow: number) => {
-  const runningSlotEnd = slots
-    .map((slot) => ({ startMinutes: slotStartMinutes(slot.label), endMinutes: slotEndMinutes(slot.label) }))
-    .find(
-      ({ startMinutes, endMinutes }) =>
-        startMinutes !== null && endMinutes !== null && startMinutes <= minutesNow && minutesNow < endMinutes
-    )?.endMinutes
+const getEarliestDeliveryMinutes = (slots: DeliverySlot[], minutesNow: number) => {
+  const windows = slots.flatMap((slot) => {
+    const startMinutes = slotStartMinutes(slot.label)
+    const endMinutes = slotEndMinutes(slot.label)
 
-  return (runningSlotEnd ?? minutesNow) + SLOT_LEAD_MINUTES
+    return startMinutes !== null && endMinutes !== null && startMinutes < endMinutes
+      ? [{ startMinutes, endMinutes }]
+      : []
+  })
+
+  const running = windows.find(({ startMinutes, endMinutes }) => startMinutes <= minutesNow && minutesNow < endMinutes)
+  const lastEnded = windows
+    .filter(({ endMinutes }) => endMinutes <= minutesNow)
+    .sort((a, b) => b.endMinutes - a.endMinutes)[0]
+  const nextToOpen = windows
+    .filter(({ startMinutes }) => startMinutes > minutesNow)
+    .sort((a, b) => a.startMinutes - b.startMinutes)[0]
+
+  const reference = running ?? lastEnded ?? nextToOpen
+
+  return (reference?.endMinutes ?? minutesNow) + SLOT_LEAD_MINUTES
 }
 
 const getSlotRemaining = (slot: DeliverySlot) => Math.max(0, slot.limit - Math.max(0, slot.occupied))
@@ -117,6 +132,9 @@ export default function CheckoutFields({
   // a radius around it so the pin can be fine-tuned but not moved to a new area.
   const [mapAnchor, setMapAnchor] = useState<{ latitude: number; longitude: number } | null>(null)
 
+  // The moment the customer arrived: the running window and the lead time are measured from here,
+  // so the list does not shift under them while they fill in the form.
+  const [enteredAt] = useState(() => new Date())
   const minOrderDate = useMemo(() => new Date(new Date().setHours(0, 0, 0, 0)), [])
   const maxOrderDate = useMemo(
     () => new Date(new Date(new Date().setHours(23, 59, 59, 999)).getTime() + 7 * 24 * 60 * 60 * 1000),
@@ -170,31 +188,34 @@ export default function CheckoutFields({
   // Only today is held back by the preparation lead time - a later date keeps every
   // slot. Availability and limits come from the user-facing availability API.
   const tagOptions = useMemo(() => {
-    const now = new Date()
     const orderDate = orderTimeForm ? new Date(orderTimeForm) : minOrderDate
-    const isToday = orderDate.toDateString() === now.toDateString()
-    const earliestStartMinutes = getEarliestSlotStartMinutes(deliverySlots, now.getHours() * 60 + now.getMinutes())
+    const isToday = orderDate.toDateString() === enteredAt.toDateString()
+    const earliestDeliveryMinutes = getEarliestDeliveryMinutes(
+      deliverySlots,
+      enteredAt.getHours() * 60 + enteredAt.getMinutes()
+    )
 
     // Listed earliest first, whatever order the API returns them in.
     const sortMinutes = (slot: DeliverySlot) => slotStartMinutes(slot.label) ?? slotEndMinutes(slot.label) ?? 0
 
     return deliverySlots
       .filter((slot) => {
-        if (slotEndMinutes(slot.label) === null) return false
-        if (!isToday) return true
+        const endMinutes = slotEndMinutes(slot.label)
+        if (endMinutes === null) return false
 
-        const startMinutes = slotStartMinutes(slot.label)
-        return startMinutes !== null && startMinutes >= earliestStartMinutes
+        // A window still counts while it reaches the cutoff - it contains it, ends on it or starts after it.
+        // That also drops every window already in the past.
+        return !isToday || endMinutes >= earliestDeliveryMinutes
       })
       .sort((a, b) => sortMinutes(a) - sortMinutes(b))
-  }, [deliverySlots, orderTimeForm, minOrderDate])
+  }, [deliverySlots, orderTimeForm, minOrderDate, enteredAt])
 
   useEffect(() => {
     if (selectedTagId !== undefined || isGettingDeliverySlotAvailability || isDeliverySlotAvailabilityError) return
 
     if (effectiveOrderDate.toDateString() !== new Date().toDateString()) return
 
-    // `tagOptions` is sorted and already starts after the lead time, so the first open window is the pick.
+    // `tagOptions` is sorted and already cut at the lead time, so the first open window is the pick.
     const autoSelectedSlot = tagOptions.find((slot) => isSlotSelectable(slot))
 
     if (autoSelectedSlot) {
@@ -214,7 +235,8 @@ export default function CheckoutFields({
   useEffect(() => {
     if (selectedTagId === undefined || isGettingDeliverySlotAvailability || isDeliverySlotAvailabilityError) return
     const selectedSlot = deliverySlots.find((slot) => slot.tagId === selectedTagId)
-    if (selectedSlot && tagOptions.some((slot) => slot.tagId === selectedTagId) && isSlotSelectable(selectedSlot)) return
+    if (selectedSlot && tagOptions.some((slot) => slot.tagId === selectedTagId) && isSlotSelectable(selectedSlot))
+      return
 
     setValue('tagIds', [], { shouldDirty: true, shouldValidate: true })
   }, [
@@ -596,7 +618,8 @@ export default function CheckoutFields({
                             value={String(slot.tagId)}
                             disabled={!isAvailable}
                             textValue={slot.label}
-                            className='*:last:w-full'
+                            // A full window can never show the tick, so its label takes that corner.
+                            className={cn('*:last:w-full', !isAvailable && 'pr-3')}
                           >
                             <span className='flex w-full items-center gap-4 pr-1'>
                               <span className='min-w-0 flex-1 truncate'>{slot.label}</span>
